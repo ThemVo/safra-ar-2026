@@ -1,0 +1,4 @@
+html, body, #root { margin: 0; height: 100%; }
+body { background: #1b1f2d; overflow: hidden; font-family: 'Google Sans Flex', 'Google Sans', system-ui, sans-serif; }
+.stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+.frame { position: relative; flex: none; overflow: hidden; transform-origin: 50% 50%; background: #272c3f; }

@@ -1,0 +1,353 @@
+/* Styles for the artboard (ported from the design component). */
+body{margin:0;background:#272C3F}
+.mh img{user-select:none;-webkit-user-drag:none}
+.mh .px{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.mh .ph{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.mh .px:hover .ph{transform:scale(1.035)}
+.mh .logo,.mh .agm{opacity:0}
+.mh .dim{opacity:.92}
+/* 1 → 2: the bar falls from the n like a drip; where it hits the bottom edge, section 2's gradient blooms
+   outward in a circle and swallows it. 2 → 1 runs it backwards: the bloom shrinks back into the bar's tip,
+   then the bar pulls up into the n. The bar sits beneath section 2, so nothing has to pop or fade. */
+.mh .bar{transform-origin:50% 0;transform:scaleY(0);transition:transform .38s cubic-bezier(.3,0,.2,1) .5s}
+.go2 .bar{transform:scaleY(1);transition:transform .4s cubic-bezier(.6,0,.9,.5) 0s}
+.mh .s2{clip-path:circle(0px at var(--cx) 900px);transition:clip-path .55s cubic-bezier(.55,0,.85,.4) 0s}
+.go2 .s2{clip-path:circle(1250px at var(--cx) 900px);transition:clip-path .95s cubic-bezier(.25,.55,.3,1) .38s}
+.mh .layer1{transition:transform .7s cubic-bezier(.65,0,.35,1) 0s,filter .7s ease 0s}
+.go2 .layer1{transform:scale(.97);filter:blur(3px);transition:transform 1s cubic-bezier(.65,0,.35,1) .4s,filter 1s ease .4s}
+.mh .glance{transition:transform .9s cubic-bezier(.65,0,.35,1)}
+.mh .gt{-webkit-background-clip:text;background-clip:text;color:transparent}
+.mh .more{transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s ease}
+.mh .more:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(39,44,63,.25)}
+.mh .rt{display:inline-flex;position:relative;vertical-align:middle}
+.mh .rt-a{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.mh .rt-v{display:inline-flex;align-items:center}
+.mh .rt-sp{display:inline-block;width:.28em}
+/* each letter rolls up and an identical copy rolls in from below, staggered left → right (as on safra.sg/agm2026) */
+.mh .rt-w{display:inline-block;position:relative;overflow:hidden;height:1.25em;line-height:1.25em;vertical-align:middle}
+.mh .rt-u,.mh .rt-l{display:inline-block;background-image:linear-gradient(90deg,#6452A4 0%,#C0469A 45%,#F04290 70%,#F68C45 100%);background-size:calc(var(--ct) * .66em) 100%;background-position:calc(var(--ci) * -.66em) 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;transition:transform .35s cubic-bezier(.25,1,.5,1) calc(var(--ci) * .02s)}
+.mh .rt-l{position:absolute;top:100%;left:0}
+.mh .more:hover .rt-u,.mh .more:hover .rt-l,.mh .more:focus-visible .rt-u,.mh .more:focus-visible .rt-l{transform:translateY(-100%)}
+.mh .more .ar{transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.mh .more:hover .ar{transform:translate(3px,-3px)}
+.mh .more:focus-visible,.mh .cue:focus-visible{outline:2px solid #FFFFFF;outline-offset:4px}
+.mh .cue .txt{transform-origin:80px 80px;animation:mhSpin 18s linear infinite}
+.mh .cue .dn{animation:mhBob 1.4s cubic-bezier(.45,0,.55,1) infinite}
+/* arrow → bar: on leaving for section 3 the arrowhead folds away, the ring fades, and the stem grows into the L of AT A GLANCE */
+.mh .cue .rg{transition:opacity .25s ease}
+.mh .cue .wg{transform-origin:80px 104px;transition:opacity .2s ease,transform .25s cubic-bezier(.4,0,.2,1)}
+.mh .bar3{transform-origin:50% 0;transform:scaleY(0);transition:transform .4s cubic-bezier(.65,0,.35,1)}
+.go3 .cue .rg{opacity:0}
+.go3 .cue .wg{opacity:0;transform:scale(.15)}
+.go3 .cue .dn{animation:none}
+.go3 .bar3{transform:scaleY(1);transition:transform .7s cubic-bezier(.45,0,.25,1) .05s}
+.mh .gLf{transform-origin:0 50%}
+.mh .grad{background:linear-gradient(90deg,#6452A4 0%,#F04290 52%,#F68C45 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding:.2em .06em .35em;margin:-.2em 0 0 -.06em}
+.mh .hd{padding:.2em .06em .3em;margin:-.2em 0 0 -.06em}
+.mh .sweep{transform-origin:0 50%}
+.mh .hvg{background-image:linear-gradient(90deg,#6452A4 0%,#A84A9C 22%,#E8448F 45%,#F3477F 62%,#F3666A 82%,#F68C45 100%);background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.12em;margin-bottom:-.12em}
+.mh .lt{display:inline-block;white-space:pre;transform-origin:50% 70%;transition:transform .6s cubic-bezier(.34,1.7,.5,1)}
+.mh .gl{background-image:linear-gradient(90deg,#6452A4 0%,#F04290 52%,#F68C45 100%);background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;padding:.2em 0 .35em;margin:-.2em 0 -.35em}
+.mh .pic{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.mh .frame:hover .pic{transform:scale(1.04)}
+.mh .replay{transition:background .2s ease,border-color .2s ease,color .2s ease}
+.mh .replay:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5);color:#FFFFFF}
+.mh .replay:focus-visible{outline:2px solid #F5765E;outline-offset:3px}
+
+@keyframes mhLogoIn{from{opacity:0;transform:scale(.94);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes mhLogoOut{from{opacity:1;transform:none;filter:none}to{opacity:0;transform:scale(.9);filter:blur(6px)}}
+@keyframes mhAgmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes mhAgmOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-8px)}}
+@keyframes mhPhIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@keyframes mhZoomOut{from{transform:scale(1.14)}to{transform:scale(1)}}
+@keyframes mhDim{from{opacity:0}to{opacity:.92}}
+@keyframes mhLine{from{opacity:0;transform:translateY(24px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes mhGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes mhGrowX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes mhFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes mhWipeL{from{clip-path:inset(-25% var(--wr) -25% var(--wl))}to{clip-path:inset(-25% -2% -25% -2%)}}
+@keyframes mhSubIn{from{opacity:0;transform:translateY(16px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@keyframes mhSweepBand{0%{transform:translateY(101%)}46%,54%{transform:translateY(0)}100%{transform:translateY(-101%)}}
+@property --ta{syntax:'<angle>';inherits:false;initial-value:160deg}
+@keyframes mhSnake{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
+@keyframes mhSnakeT{from{stroke-dashoffset:22}to{stroke-dashoffset:-78}}
+@keyframes mhRiseUp{from{transform:translateY(215px)}to{transform:none}}
+@keyframes mhRise{from{opacity:0;transform:translateY(90px)}to{opacity:1;transform:none}}
+@keyframes mhPicIn{0%,49%{opacity:0}50%,100%{opacity:1}}
+@keyframes nvGrow{0%{clip-path:inset(348.6px 522.5px 183.0px 522.5px round 12.0px)}5%{clip-path:inset(348.4px 522.2px 182.9px 522.2px round 12.1px)}10%{clip-path:inset(347.2px 520.4px 182.3px 520.4px round 12.8px)}15%{clip-path:inset(343.9px 515.4px 180.6px 515.4px round 14.6px)}20%{clip-path:inset(337.5px 505.8px 177.2px 505.8px round 18.0px)}25%{clip-path:inset(326.8px 489.8px 171.6px 489.8px round 23.7px)}30%{clip-path:inset(311.0px 466.1px 163.3px 466.1px round 32.0px)}35%{clip-path:inset(288.8px 432.9px 151.6px 432.9px round 42.8px)}40%{clip-path:inset(259.4px 388.7px 136.2px 388.7px round 55.0px)}45%{clip-path:inset(221.5px 332.0px 116.3px 332.0px round 65.9px)}50%{clip-path:inset(174.3px 261.2px 91.5px 261.2px round 70.0px)}55%{clip-path:inset(127.1px 190.5px 66.7px 190.5px round 62.7px)}60%{clip-path:inset(89.2px 133.8px 46.9px 133.8px round 49.2px)}65%{clip-path:inset(59.8px 89.6px 31.4px 89.6px round 34.9px)}70%{clip-path:inset(37.6px 56.4px 19.8px 56.4px round 22.6px)}75%{clip-path:inset(21.8px 32.7px 11.4px 32.7px round 13.2px)}80%{clip-path:inset(11.2px 16.7px 5.9px 16.7px round 6.8px)}85%{clip-path:inset(4.7px 7.1px 2.5px 7.1px round 2.9px)}90%{clip-path:inset(1.4px 2.1px 0.7px 2.1px round 0.9px)}95%{clip-path:inset(0.2px 0.3px 0.1px 0.3px round 0.1px)}100%{clip-path:inset(0.0px 0.0px 0.0px 0.0px round 0.0px)}}
+@keyframes nvShrink{0%{clip-path:inset(0.0px 0.0px 0.0px 0.0px round 0.0px)}5%{clip-path:inset(0.2px 0.3px 0.1px 0.3px round 0.1px)}10%{clip-path:inset(1.4px 2.1px 0.7px 2.1px round 0.9px)}15%{clip-path:inset(4.7px 7.1px 2.5px 7.1px round 2.9px)}20%{clip-path:inset(11.2px 16.7px 5.9px 16.7px round 6.8px)}25%{clip-path:inset(21.8px 32.7px 11.4px 32.7px round 13.2px)}30%{clip-path:inset(37.6px 56.4px 19.8px 56.4px round 22.6px)}35%{clip-path:inset(59.8px 89.6px 31.4px 89.6px round 34.9px)}40%{clip-path:inset(89.2px 133.8px 46.9px 133.8px round 49.2px)}45%{clip-path:inset(127.1px 190.5px 66.7px 190.5px round 62.7px)}50%{clip-path:inset(174.3px 261.2px 91.5px 261.2px round 70.0px)}55%{clip-path:inset(221.5px 332.0px 116.3px 332.0px round 65.9px)}60%{clip-path:inset(259.4px 388.7px 136.2px 388.7px round 55.0px)}65%{clip-path:inset(288.8px 432.9px 151.6px 432.9px round 42.8px)}70%{clip-path:inset(311.0px 466.1px 163.3px 466.1px round 32.0px)}75%{clip-path:inset(326.8px 489.8px 171.6px 489.8px round 23.7px)}80%{clip-path:inset(337.5px 505.8px 177.2px 505.8px round 18.0px)}85%{clip-path:inset(343.9px 515.4px 180.6px 515.4px round 14.6px)}90%{clip-path:inset(347.2px 520.4px 182.3px 520.4px round 12.8px)}95%{clip-path:inset(348.4px 522.2px 182.9px 522.2px round 12.1px)}100%{clip-path:inset(348.6px 522.5px 183.0px 522.5px round 12.0px)}}
+@keyframes mhShow{from{opacity:0}to{opacity:1}}
+@keyframes mhWipeC{from{clip-path:inset(-25% 50% -25% 50%)}to{clip-path:inset(-25% -2% -25% -2%)}}
+@keyframes mhSlide{from{opacity:0;transform:translateX(72px)}to{opacity:1;transform:none}}
+@keyframes mhUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+
+/* 1. logo + AGM line → 2. photos → 3. logo out + zoom out → 4. lines */
+.is-run .logo{animation:mhShow .01s linear .2s both,mhLogoOut .6s cubic-bezier(.4,0,.2,1) 2.0s forwards}
+/* title first, then KEY HIGHLIGHTS */
+.is-run .lg1{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .2s both}
+.is-run .lg2{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .65s both}
+.is-run .agm{animation:mhAgmIn .7s cubic-bezier(.2,.7,.2,1) .55s both,mhAgmOut .5s cubic-bezier(.4,0,.2,1) 1.95s forwards}
+.is-run .ph1{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) .8s both}
+.is-run .ph2{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) .92s both}
+.is-run .ph3{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) 1.04s both}
+.is-run .ph4{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) 1.16s both}
+.is-run .dim{animation:mhDim .8s cubic-bezier(.4,0,.2,1) 2.1s both}
+/* headline at reading pace, in sentence order: Explore our efforts in → strengthening → commitment → to → defence → and supporting → NSmen's needs */
+.is-run .ln1{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 2.5s both}
+.is-run .ln2{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 3.45s both}
+.is-run .ln3{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 4.05s both}
+.is-run .ln4a{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 4.6s both}
+.is-run .ln4b{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 4.85s both}
+.is-run .ln4c{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 5.3s both}
+.is-run .ln5{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 5.9s both}
+/* 5. on scrolling to section 2: bar drops → section 2 opens out of it (see top of sheet) */
+/* 6. once section 2 has opened, each element slides in, one after another */
+.is-s2 .k1a{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) .85s backwards}
+.is-s2 .k1b{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) .95s backwards}
+.is-s2 .k2{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) 1.07s backwards}
+.is-s2 .k3{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) 1.16s backwards}
+.is-s2 .k4{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) 1.25s backwards}
+.is-s2 .k4s{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) 1.34s backwards}
+.is-s2 .k5{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) 1.46s backwards}
+.is-s2 .k6{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) 1.56s backwards}
+.is-s2 .k7{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) 1.66s backwards}
+.is-s2 .k8{animation:mhSlide .7s cubic-bezier(.2,.7,.2,1) 1.78s backwards}
+.is-s2 .k9{animation:mhRiseUp .85s cubic-bezier(.2,.75,.2,1) 2.36s backwards}
+/* once the content is in, the navy tongue rises from the bottom edge, carrying the scroll indicator with it */
+.is-s2 .tg{animation:mhRiseUp .85s cubic-bezier(.2,.75,.2,1) 2.3s backwards}
+.mh:not(.is-s2) .k{opacity:0}
+/* 7. on arriving at section 3: AT A GLANCE → membership */
+.is-s3 .gLs{animation:mhShow .01s linear .74s both}
+.is-s3 .gLf{animation:mhGrowX .22s cubic-bezier(.3,0,.2,1) .74s both}
+.is-s3 .hd{animation:mhWipeL .7s cubic-bezier(.3,0,.15,1) .92s both}
+/* section 3 holds in place; each scroll steps Membership → Outreach & Engagement → Sustainability */
+.mh{--b:.3s}
+.mh.fresh{--b:1.2s}
+.mh .sl{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility 0s .3s}
+.mh .sl.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .15s ease,visibility 0s 0s}
+.is-s3 .sl.on .sub{animation:mhSubIn .6s cubic-bezier(.2,.7,.2,1) calc(var(--b) - .12s) both}
+.is-s3 .sl.on .cd{animation:mhRise .85s cubic-bezier(.16,.8,.24,1) calc(var(--b) + var(--i) * .07s) both}
+/* photos: a gradient band sweeps across each frame; the new image is revealed behind it */
+.mh .sl .frame{clip-path:inset(0 round 14px);isolation:isolate}
+.mh .sl .frame::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(0deg,#6C51A2 0%,#B0489E 30%,#E8448F 55%,#F3606F 78%,#F68A49 100%);transform:translateY(101%)}
+.is-s3 .sl.on .frame::after{animation:mhSweepBand 1.05s cubic-bezier(.7,0,.3,1) calc(var(--b) + var(--i) * .07s + .05s) both}
+.is-s3 .sl.on .frame .pic{animation:mhPicIn 1.05s linear calc(var(--b) + var(--i) * .07s + .05s) both}
+.mh .sweep{transform-origin:0 50%;transition:transform .85s cubic-bezier(.65,0,.35,1) .1s}
+.fresh .sweep{transition-delay:1.7s}
+/* gradient slide between panels: sweeps in to cover the old panel, the content swaps underneath, then sweeps off */
+.mh:not(.is-s3) .hd{clip-path:inset(-25% var(--wr) -25% var(--wl))}
+.mh:not(.is-s3) .gLs{opacity:0}
+.mh:not(.is-s3) .gLf{transform:scaleX(0)}
+.mh:not(.is-s3) .sub,.mh:not(.is-s3) .cd{opacity:0}
+.mh:not(.is-s3) .sweep{transform:scaleX(0) !important}
+.is-final :not(.ring):not(.arw):not(.txt):not(.dn){animation:none !important}
+
+/* section 1 plays backwards: once the intro has finished (.post), scrolling up returns to the SAFRA logo (.lg);
+   scrolling down from there plays the intro forward again. Each element's timing differs by direction. */
+.post .logo,.post .agm,.post .ph,.post .layer,.post .dim,.post .ln{animation:none !important}
+.post .ln{opacity:1;transform:none;filter:none;transition:opacity 1.1s cubic-bezier(.2,.7,.2,1) var(--lf),transform 1.1s cubic-bezier(.2,.7,.2,1) var(--lf),filter 1.1s cubic-bezier(.2,.7,.2,1) var(--lf)}
+.post .ln1{--lf:.6s;--lb:.3s} .post .ln2{--lf:1.55s;--lb:.25s} .post .ln3{--lf:2.15s;--lb:.2s} .post .ln4a{--lf:2.7s;--lb:.15s} .post .ln4b{--lf:2.95s;--lb:.1s} .post .ln4c{--lf:3.4s;--lb:.05s} .post .ln5{--lf:4.0s;--lb:0s}
+.post.lg .ln{opacity:0;transform:translateY(24px);filter:blur(6px);transition:opacity .45s cubic-bezier(.4,0,.2,1) var(--lb),transform .45s cubic-bezier(.4,0,.2,1) var(--lb),filter .45s cubic-bezier(.4,0,.2,1) var(--lb)}
+.post .dim{opacity:.92;transition:opacity .8s cubic-bezier(.4,0,.2,1) .2s}
+.post.lg .dim{opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1) .3s}
+.post .layer{transform:none;transition:transform 1.1s cubic-bezier(.33,0,.2,1) .1s}
+.post.lg .layer{transform:none} /* logo screen: photos at their layout positions and sizes */
+.post .ph{opacity:1;transition:opacity .7s cubic-bezier(.2,.7,.2,1) var(--pf),transform .5s cubic-bezier(.2,.7,.2,1)}
+.post .ph1{--pf:0s;--pb:.8s} .post .ph2{--pf:.1s;--pb:.7s} .post .ph3{--pf:.2s;--pb:.6s} .post .ph4{--pf:.3s;--pb:.5s}
+.post .logo{opacity:0;transform:scale(.9);filter:blur(6px);transition:opacity .55s cubic-bezier(.4,0,.2,1) .05s,transform .6s cubic-bezier(.4,0,.2,1) 0s,filter .6s ease 0s}
+.post.lg .logo{opacity:1;transform:none;filter:none;transition:opacity .01s linear .8s,transform 0s .8s,filter 0s .8s}
+.post .lgl{opacity:0;transform:translateY(24px);filter:blur(6px);transition:opacity .3s ease,transform .3s ease,filter .3s ease}
+.post.lg .lg1{opacity:1;transform:none;filter:none;transition:opacity .8s cubic-bezier(.2,.7,.2,1) .8s,transform .8s cubic-bezier(.2,.7,.2,1) .8s,filter .8s cubic-bezier(.2,.7,.2,1) .8s}
+.post.lg .lg2{opacity:1;transform:none;filter:none;transition:opacity .8s cubic-bezier(.2,.7,.2,1) 1.25s,transform .8s cubic-bezier(.2,.7,.2,1) 1.25s,filter .8s cubic-bezier(.2,.7,.2,1) 1.25s}
+.post .agm{opacity:0;transform:translateY(-8px);transition:opacity .45s ease 0s,transform .5s ease 0s}
+.post.lg .agm{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.2,.7,.2,1) 1.05s,transform .7s cubic-bezier(.2,.7,.2,1) 1.05s}
+/* 5 → 6: one continuous camera move into the first topic card. The camera travels through the card (its outline
+   slides off the screen edges) while section 6 — same navy — fades and grows in underneath the end of the move. */
+.mh .s45{transform-origin:0 0;transition:transform .55s cubic-bezier(.65,0,.35,1) .45s} /* back: grow to full navy, hold, then pull out */ /* on the way back, wait for the navy to grow back to full screen */
+.go6 .s45{transform:translate(-18.1px,-34.5px) scale(1.06);opacity:0;transition:transform .6s cubic-bezier(.2,.7,.2,1) 0s,opacity .45s ease 0s}
+.go6 .s45 .tc,.go7 .s45 .tc,.go8 .s45 .tc,.hopping .s45 .tc{pointer-events:none}
+.go8 .s45{transform:translate(-68.5px,-34.5px) scale(1.06);opacity:0;transition:transform .6s cubic-bezier(.2,.7,.2,1) 0s,opacity .45s ease 0s} /* card 3 centre (1141,575) → screen centre */
+.go7 .s45{transform:translate(-43.3px,-34.5px) scale(1.06);opacity:0;transition:transform .6s cubic-bezier(.2,.7,.2,1) 0s,opacity .45s ease 0s} /* card 2 centre (721,575) → screen centre */
+.mh .s45 .tc .tc-i{transition:opacity .35s ease .7s}
+.mh:not(.go6):not(.go7) .s45 .tc:not(:hover) .tc-t{transition:opacity .15s ease 0s,transform .25s cubic-bezier(.2,.7,.2,1) 0s} /* titles return once the camera has pulled back */
+.go6 .s45 .tc .tc-t,.go6 .s45 .tc .tc-b,.go6 .s45 .tc .tc-i,.go6 .s45 .tc .tc-s,.go7 .s45 .tc .tc-t,.go7 .s45 .tc .tc-b,.go7 .s45 .tc .tc-i,.go7 .s45 .tc .tc-s,.go8 .s45 .tc .tc-t,.go8 .s45 .tc .tc-b,.go8 .s45 .tc .tc-i,.go8 .s45 .tc .tc-s{opacity:0;transition:opacity .3s ease 0s}
+.mh .s7{visibility:hidden;pointer-events:none;transition:visibility 0s .45s}
+.go7 .s7{visibility:visible;pointer-events:auto;transition:visibility 0s .5s} /* appears the moment the navy card fills the screen */
+.mh .nv7{position:absolute;inset:0;z-index:5;background:#000722;pointer-events:none;clip-path:inset(0px 0px 0px 0px round 0px);opacity:1;transition:clip-path .45s cubic-bezier(.65,0,.35,1) 0s,opacity 0s 0s}
+.go7 .nv7{clip-path:inset(348.6px 522.5px 183.0px 522.5px round 12px);opacity:0;animation:nvShrink .6s linear .55s both;transition:opacity 0s linear 1.15s} /* full-screen navy shrinks into the story panel, corners rounding as it goes */
+.mh .s8{visibility:hidden;pointer-events:none;transition:visibility 0s .45s}
+.go8 .s8{visibility:visible;pointer-events:auto;transition:visibility 0s .5s} /* appears the moment the navy card fills the screen */
+.mh .nv8{position:absolute;inset:0;z-index:5;background:#000722;pointer-events:none;clip-path:inset(0px 0px 0px 0px round 0px);opacity:1;transition:clip-path .45s cubic-bezier(.65,0,.35,1) 0s,opacity 0s 0s}
+.go8 .nv8{clip-path:inset(348.6px 522.5px 183.0px 522.5px round 12px);opacity:0;animation:nvShrink .6s linear .55s both;transition:opacity 0s linear 1.15s} /* full-screen navy shrinks into the story panel, corners rounding as it goes */
+.mh .s6{visibility:hidden;pointer-events:none;transition:visibility 0s .45s}
+.go6 .s6{visibility:visible;pointer-events:auto;transition:visibility 0s .5s} /* appears the moment the navy card fills the screen */
+.mh .dcpn::after{content:"";position:absolute;inset:0;z-index:50;background:#000722;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s ease .05s}
+.mh.landing .dcpn::after{opacity:1;transition:none} /* the navy box becomes this panel; its copy fades in once it lands */
+/* no navy boxes: cards ease forward and fade while the story cross-fades in; topic ⇄ topic is a straight cross-fade */
+.mh .nv6,.mh .nv7,.mh .nv8{display:none !important}
+.mh .s6,.mh .s7,.mh .s8{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .45s ease,visibility 0s .45s !important}
+.go6 .s6,.go7 .s7,.go8 .s8{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .55s ease .12s,visibility 0s 0s !important}
+.mh .s45{transition:transform .7s cubic-bezier(.2,.7,.2,1),opacity .5s ease .1s}
+.lv .s45 .tc.lvc{background-color:transparent !important}
+.mh.landing .dcpn::after{opacity:0 !important}
+.mh .nv6{position:absolute;inset:0;z-index:5;background:#000722;pointer-events:none;clip-path:inset(0px 0px 0px 0px round 0px);opacity:1;transition:clip-path .45s cubic-bezier(.65,0,.35,1) 0s,opacity 0s 0s}
+.go6 .nv6{clip-path:inset(348.6px 522.5px 183.0px 522.5px round 12px);opacity:0;animation:nvShrink .6s linear .55s both;transition:opacity 0s linear 1.15s} /* full-screen navy shrinks into the story panel, corners rounding as it goes */
+/* way back: the panel grows back out to full-screen navy, rounding through the middle */
+.lv .nv6,.lv .nv7,.lv .nv8{z-index:6;opacity:1 !important;transition:none !important;animation:nvGrow .35s linear 0s both}
+/* 6. Bringing defence closer: heading words slide in (line 1 from above, line 2 from below); stories step on scroll */
+@keyframes dcWord{from{transform:translateY(calc(var(--wy) * 112%))}to{transform:none}}
+.is-s6 .dcwi{animation:dcWord .65s cubic-bezier(.645,.045,.355,1) calc(.95s + var(--wd)) both}
+.mh:not(.is-s6) .dcwi{transform:translateY(calc(var(--wy) * 112%))}
+.is-s7 .dcwi7{animation:dcWord .65s cubic-bezier(.645,.045,.355,1) calc(.95s + var(--wd)) both}
+.mh:not(.is-s7) .dcwi7{transform:translateY(calc(var(--wy) * 112%))}
+.is-s8 .dcwi8{animation:dcWord .65s cubic-bezier(.645,.045,.355,1) calc(.95s + var(--wd)) both}
+.mh:not(.is-s8) .dcwi8{transform:translateY(calc(var(--wy) * 112%))}
+/* 9. Transition-2: lines slide up in turn, like the first statement */
+.is-s9 .t9a{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .55s both}
+.is-s9 .t9b{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .8s both}
+.is-s9 .t9c{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) 1.0s both}
+.mh:not(.is-s9) .t9{opacity:0}
+/* 10. Membership: content rises in, tabs switch the panel */
+.is-s10 .mk1{animation:mhUp .7s cubic-bezier(.2,.7,.2,1) .5s both}
+.is-s10 .mk2{animation:mhUp .7s cubic-bezier(.2,.7,.2,1) .6s both}
+.is-s10 .mk3{animation:mhUp .7s cubic-bezier(.2,.7,.2,1) .7s both}
+.is-s10 .mk4{animation:mhUp .7s cubic-bezier(.2,.7,.2,1) .82s both}
+.is-s10 .mk5{animation:mhUp .7s cubic-bezier(.2,.7,.2,1) .95s both}
+.is-s10 .mk6{animation:mhUp .8s cubic-bezier(.2,.7,.2,1) 1.05s both}
+.mh:not(.is-s10) .mbk{opacity:0}
+/* topic titles: whole lines rise in together (line 1, then line 2), once per topic */
+.mh .s6 h2 > span:first-child :is(.dcwi,.dcwi7,.dcwi8),.mh .s7 h2 > span:first-child :is(.dcwi,.dcwi7,.dcwi8),.mh .s8 h2 > span:first-child :is(.dcwi,.dcwi7,.dcwi8){--wd:0s !important;--wy:1 !important}
+.mh .s6 h2 > span:nth-child(2) :is(.dcwi,.dcwi7,.dcwi8),.mh .s7 h2 > span:nth-child(2) :is(.dcwi,.dcwi7,.dcwi8),.mh .s8 h2 > span:nth-child(2) :is(.dcwi,.dcwi7,.dcwi8){--wd:.14s !important;--wy:1 !important}
+.is-s6 .dcwi,.is-s7 .dcwi7,.is-s8 .dcwi8{animation-duration:.8s !important;animation-delay:calc(.35s + var(--wd)) !important;animation-timing-function:cubic-bezier(.2,.7,.2,1) !important}
+
+.mh .s6 .dcph,.mh .s7 .dcph,.mh .s8 .dcph{border-radius:16px !important;clip-path:inset(0 round 16px) !important} /* every story photo: 16px corners */ /* skip buttons removed */
+/* sections 11–14: year in summary, statement, what's next, closing */
+.mh .fyk,.mh .nxk,.mh .enk{opacity:0}
+.is-s11 .fyk,.is-s13 .nxk,.is-s14 .enk{animation:mhUp .75s cubic-bezier(.2,.7,.2,1) var(--d,.6s) both}
+.is-s12 .t12a{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .55s both}
+.is-s12 .t12b{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .8s both}
+.mh:not(.is-s12) .t12{opacity:0}
+.mh .fyc{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease}
+.mh .fyc:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(40,10,60,.25)}
+.mh .nxt{color:#A7A9AE;transition:color .25s ease}
+.mh .nxt:hover{color:#FFFFFF}
+.mh .nxt.on{color:#F34141;font-weight:500}
+.mh .nxt:focus-visible,.mh .dlb:focus-visible{outline:2px solid #F5765E;outline-offset:3px}
+.mh .nxp{position:absolute;left:0;top:0;right:0;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .3s ease,transform .45s cubic-bezier(.2,.7,.2,1),visibility 0s .3s}
+.mh .nxp.on{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease .05s,transform .5s cubic-bezier(.2,.7,.2,1) .05s,visibility 0s 0s}
+.mh .dlb{transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease}
+.mh .dlb:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(60,10,50,.25)}
+.mh .nxt,.v-in .nxt,.mh .dlb,.mh .dlb *,.v-in .dlb,.v-in .dlb *{cursor:url(/assets/hover-cursor.svg) 10 8,pointer !important}
+.mh .mbt{color:#A7A9AE;transition:color .25s ease}
+.mh .mbt:hover{color:#FFFFFF}
+.mh .mbt.on{color:#F34141;font-weight:500}
+.mh .mbt:focus-visible{outline:2px solid #F5765E;outline-offset:2px}
+.mh .mbp{position:absolute;left:48px;top:57px;right:48px;bottom:0;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .3s ease,transform .45s cubic-bezier(.2,.7,.2,1),visibility 0s .3s}
+.mh .mbp.on{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease .05s,transform .5s cubic-bezier(.2,.7,.2,1) .05s,visibility 0s 0s}
+.mh .mbi img{transition:scale .5s cubic-bezier(.2,.7,.2,1)}
+.mh .mbi:hover img{scale:1.05}
+.mh .st6{position:absolute;inset:0;visibility:hidden;opacity:0;transition:opacity .25s ease,visibility 0s .25s}
+.mh .st6.on{visibility:inherit;opacity:1;transition:opacity .01s,visibility 0s}
+.mh .skipb{z-index:4;transition:background-color .25s ease,border-color .25s ease,color .25s ease}
+.mh .skipb:hover{background-color:rgba(255,255,255,.08);border-color:#FFFFFF;color:#FFFFFF}
+.mh .skipb:focus-visible{outline:2px solid #F5765E;outline-offset:3px}
+.is-s6 .s6 .skipb,.is-s7 .s7 .skipb,.is-s8 .s8 .skipb{animation:mhFade .6s ease 1.3s both}
+.mh .dcph{cursor:pointer;transition:translate .6s cubic-bezier(.2,.7,.2,1)}
+.mh .dcph img{transition:scale .5s cubic-bezier(.2,.7,.2,1)}
+.mh .dcph:hover img{scale:1.04}
+.v-in .dcph,.v-in .dcph *{cursor:url(/assets/viewall-cursor.svg) 46 46,pointer !important}
+.v-in .tc,.v-in .tc *{cursor:url(/assets/initiatives-cursor.svg) 64 64,pointer !important}
+/* hand cursor for every other clickable element */
+.mh .more,.mh .more *,.mh .cue,.mh .cue *,.mh .skipb,.mh .mbt,.mh .lb-x,.mh .lb-x *,.mh .lb-t,.mh .lb-t *,.v-in .more,.v-in .more *,.v-in .cue,.v-in .cue *,.v-in .skipb,.v-in .mbt,.v-in .lb-x,.v-in .lb-x *,.v-in .lb-t,.v-in .lb-t *{cursor:url(/assets/hover-cursor.svg) 10 8,pointer !important}
+.mh .dcph:focus-visible{outline:2px solid #F5765E;outline-offset:4px}
+/* gallery */
+.mh .lb{opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s}
+.mh .lb.open{opacity:1;visibility:visible;transition:opacity .35s ease,visibility 0s}
+.mh .lb .lb-img{transform:scale(.94);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.mh .lb.open .lb-img{transform:none}
+.mh .lb-t{cursor:pointer;position:relative}
+.mh .lb-t::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.2);transition:background .2s}
+.mh .lb-t.sel::after,.mh .lb-t:hover::after{background:transparent}
+.mh .lb-t.none{display:none}
+.mh .lb-x:focus-visible,.mh .lb-t:focus-visible{outline:2px solid #F5765E;outline-offset:3px}
+/* camera: one scroll moves from the masthead to the next section */
+/* 4. Transition-1: the statement lands mid-screen; 5. Topics: it lifts to the top and the cards rise in */
+.is-s4 .t4a{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .55s both}
+@keyframes mhWipeLR{from{clip-path:inset(-30% 100% -30% 0);transform:translateX(-70px)}to{clip-path:inset(-30% -3% -30% 0);transform:none}}
+.is-s4 .t4b{animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .8s both} /* same slide-up as the first line */
+.mh:not(.is-s4) .t4a,.mh:not(.is-s4) .t4b{opacity:0}
+.mh .tx{transform:none}
+.mh .tc{opacity:0;transform:translateY(110px);pointer-events:none;transition:opacity .35s ease,transform .5s cubic-bezier(.4,0,.6,1)}
+.lv .s45 .tc{transition:opacity .45s ease,transform .7s cubic-bezier(.16,.8,.24,1),background-color .4s ease 1.0s !important}
+.lv .s45 .tc.lvc{background-color:#000722}
+.lv .s45 .tc{pointer-events:none} /* no hover while the camera pulls back */
+.lv .s45 .tc .tc-b,.lv .s45 .tc .tc-s,.lv .s45 .tc .ic{opacity:0 !important}
+.lv .s45 .tc .tc-t{opacity:1 !important;transform:none !important;transition:opacity .3s ease .8s !important}
+.lv .s45 .tc::before{opacity:1 !important}
+.go5 .tc{opacity:1;transform:none;pointer-events:auto;transition:opacity .45s ease calc(.6s + var(--i) * .08s),transform .7s cubic-bezier(.16,.8,.24,1) calc(.6s + var(--i) * .08s),background-color .35s ease} /* cards rise right after the statement */
+/* topic cards: gradient ring at rest; on hover/focus the ring turns and the text + icon fill with the gradient */
+.mh .tc::before{content:"";position:absolute;inset:0;border-radius:22px;padding:3px;background:linear-gradient(var(--ta),#6452A4 0%,#C0469A 32%,#F04290 58%,#F68C45 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
+.mh .tc::before{transition:opacity .25s ease}
+.mh .tc:hover::before,.mh .tc:focus-visible::before{opacity:.16}
+.mh .tc::before{transition:opacity .4s ease}
+/* hover: a Snake-game body of square segments steps around the outline */
+.mh .tc .tc-s{opacity:0;transition:opacity .2s ease}
+.mh .tc:hover .tc-s,.mh .tc:focus-visible .tc-s{opacity:1}
+.mh .tc .tc-s{transition:opacity .35s ease}
+.mh .tc:hover .tc-head,.mh .tc:focus-visible .tc-head{animation:mhSnake 2.8s linear infinite}
+.mh .tc:hover .tc-tail,.mh .tc:focus-visible .tc-tail{animation:mhSnakeT 2.8s linear infinite}
+.mh .tc .tc-g,.mh .tc .ic{opacity:0;transition:opacity .35s ease}
+.mh .tc .tc-i{transition:transform .35s cubic-bezier(.34,1.5,.5,1)}
+.mh .tc:hover .tc-g,.mh .tc:hover .ic,.mh .tc:focus-visible .tc-g,.mh .tc:focus-visible .ic{opacity:1}
+.mh .tc:hover .tc-i,.mh .tc:focus-visible .tc-i{transform:scale(1.08)}
+.mh .tc:focus-visible{outline:2px solid #F5765E;outline-offset:4px}
+/* hover: the title steps aside for the body copy; gradient icon + snake outline stay */
+.mh .tc .tc-t{transition:opacity .25s ease,transform .4s cubic-bezier(.2,.7,.2,1)}
+.mh .tc{background:transparent;transition:opacity .35s ease,transform .5s cubic-bezier(.4,0,.6,1),background-color .35s ease}
+.mh .tc:hover,.mh .tc:focus-visible,.go6 .tc[aria-label^="Bringing"],.go7 .tc[aria-label^="Appreciating"],.go8 .tc[aria-label^="Strengthening"]{background-color:#000722} /* deep navy on hover, kept while the camera zooms into the card */
+.mh .tc .tc-stk{position:absolute;left:3px;right:3px;bottom:3px;height:196px;z-index:0;pointer-events:none;overflow:hidden;border-radius:0 0 19px 19px;opacity:0;transition:opacity .12s ease} /* full-width photo on top, copy below */
+.mh .tc:hover .tc-stk,.mh .tc:focus-visible .tc-stk{opacity:1;transition:none}
+.go6 .s45 .tc .tc-stk,.go7 .s45 .tc .tc-stk,.go8 .s45 .tc .tc-stk,.lv .s45 .tc .tc-stk{opacity:0 !important;transition:opacity .2s ease 0s !important}
+.mh .tc:hover .tc-i,.mh .tc:focus-visible .tc-i{opacity:0 !important;transform:none !important;transition:none !important} /* no icon on hover */
+.mh .tc .tc-b{top:33px !important}
+.mh .tc:hover,.mh .tc:focus-visible{z-index:1} /* photos may overlap the neighbouring cards */
+.mh .tc .tc-t,.mh .tc .tc-b,.mh .tc .tc-i{z-index:2}
+.mh .tc .tc-i{position:absolute}
+/* hover: section photos pop in one after another as a tilted stack (flip-book), copy stays on top */
+.mh .tc .stk{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
+.mh .tc .stk.pop{animation:stkIn 1.6s cubic-bezier(.2,.7,.2,1) both}
+.mh .tc .stk.out{animation:stkFade .45s ease .25s both}
+@keyframes stkIn{0%{opacity:0;transform:scale(1.08)}30%{opacity:1}100%{opacity:1;transform:scale(1)}}
+.mh .tc .stk.now{opacity:1;animation:stkZ 1.4s cubic-bezier(.2,.7,.2,1) both}
+@keyframes stkZ{from{transform:scale(1.06)}to{transform:scale(1)}}
+@keyframes stkFade{from{opacity:1;transform:scale(1.02)}to{opacity:0;transform:scale(1.02)}}
+.mh .tc .tc-stk::after{display:none;content:"";position:absolute;inset:0;z-index:100;background:linear-gradient(180deg,rgba(0,7,34,1) 0%,rgba(0,7,34,.96) 36%,rgba(0,7,34,.4) 56%,rgba(0,7,34,0) 72%,rgba(0,7,34,.15) 86%,rgba(0,7,34,.55) 100%);opacity:0;transition:opacity .3s ease}
+.mh .tc:hover .tc-stk::after,.mh .tc:focus-visible .tc-stk::after{opacity:1}
+.mh .tc:hover .tc-b,.mh .tc:focus-visible .tc-b{color:#FFFFFF}
+.mh .tc .tc-b{opacity:0;transform:translateY(16px);transition:opacity .12s ease,transform 0s .12s}
+.mh .tc:hover .tc-t,.mh .tc:focus-visible .tc-t{opacity:0;transform:translateY(-16px);transition:none !important}
+.mh .tc:hover .tc-b,.mh .tc:focus-visible .tc-b{opacity:1;transform:none;transition:opacity .15s ease,transform .35s cubic-bezier(.2,.7,.2,1)}
+.mh .cam{transition:transform .75s cubic-bezier(.6,0,.3,1)}
+/* cursors */
+.v-top,.v-top *{cursor:none !important}
+.v-in,.v-in *{cursor:url(/assets/84363ef1e2d7d1540c7d723685269b99.svg) 3 3,auto !important}
+.mh .cur{transition:opacity .25s ease}
+.mh .cur-in{transition:transform .35s cubic-bezier(.34,1.6,.5,1)}
+.mh .ring{animation:mhSpin 14s linear infinite}
+.v-in.v-t2,.v-in.v-t2 *{cursor:none !important} /* statement uses the masthead-style follow cursor */
+.mh .arw{animation:mhBob 1.4s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes mhBob{0%,100%{transform:translateY(-5px)}50%{transform:translateY(6px)}}
+@keyframes mhSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.is-reset .logo,.is-reset .agm,.is-reset .ph,.is-reset .ln,.is-reset .dim{opacity:0;animation:none}
+.is-reset .bar{transform:scaleY(0);animation:none}
+.is-reset .sweep{transform:scaleX(0);animation:none}
+.is-reset .layer{transform:none;animation:none}
+
+@media (prefers-reduced-motion:reduce){
+.is-run .logo,.is-run .lgl,.is-run .agm,.is-run .ph,.is-run .layer,.is-run .dim,.is-run .ln,.is-run .bar,.is-s2 .k,.mh .cue .txt,.mh .cue .dn,.is-s3 .hd,.is-s3 .sub,.is-s3 .cd,.is-s3 .sl.on .frame::after,.is-s3 .sl.on .frame .pic,.is-s3 .sweep,.is-s3 .replay,.mh .ring,.mh .arw{animation-duration:.01s !important;animation-delay:0s !important}
+.mh .cam{transition-duration:.01s}
+.mh .px,.mh .pic,.mh .glance,.mh .bar,.mh .more,.mh .more .ar,.mh .bar3,.mh .cue .wg,.mh .cue .rg,.mh .s2,.mh .layer1,.mh .tx,.mh .tc,.mh .s6,.mh .z6,.mh .s7,.mh .z7,.mh .s8,.mh .nv6,.mh .nv7,.mh .nv8,.mh .mbp,.mh .s45,.post .ln,.post .dim,.post .layer,.post .ph,.post .logo,.post .agm{transition:none !important}
+.is-s4 .t4a,.is-s4 .t4b,.is-s6 .dcwi,.is-s7 .dcwi7,.is-s8 .dcwi8,.is-s9 .t9,.is-s10 .mbk,.is-s11 .fyk,.is-s12 .t12,.is-s13 .nxk,.is-s14 .enk,.mh .tc .tc-r{animation:none !important}
+.is-s3 .gLs,.is-s3 .gLf{animation-duration:.01s !important;animation-delay:0s !important}
+}

@@ -1,9 +1,7 @@
-/* eslint-disable */
-// Behaviour for the SAFRA AR FY2025/26 highlights artboard: navigation state machine,
-// camera views, story timelines, hover effects and layout measuring.
-// Ported verbatim from the design component's logic class; `renderVals()` returns
-// the values the markup in Artboard.jsx binds to.
-import React from 'react';
+// Behaviour for the artboard: the camera/view state machine, timers, measuring and every value the markup binds to.
+// Ported unchanged from the prototype; only the class header and module wiring are new.
+import { Logic } from './Logic.js';
+
 // Ink boxes measured from the original comp: each line is fitted so its ink spans x0..x1 and sits on `base`.
 const FAM = '"Google Sans Flex", "Google Sans", system-ui, sans-serif';
 const SPEC = {
@@ -19,24 +17,30 @@ const TO = { text: 'to', x0: 209, base: 558 };
 const MS = 1, MCX = 720, MCY = 450; // headline at full comp size (Figma Masthead_2)
 for (const id in SPEC) { const s = SPEC[id]; s.x0 = MCX + (s.x0 - MCX) * MS; s.x1 = MCX + (s.x1 - MCX) * MS; s.base = MCY + (s.base - MCY) * MS; s.fs *= MS; }
 TO.x0 = MCX + (TO.x0 - MCX) * MS; TO.base = MCY + (TO.base - MCY) * MS;
-const GLANCE_BASE = 1066; // AT A GLANCE baseline (143px into section 3; section 2 overlays section 1, section 3 sits below)
+const GLANCE_BASE = 1066;
+const TG_SCALE = 160 / 72, TG_BASE = 918 + 546; // transition to At a glance: the heading at 160px, centred in the screen (Figma 3714:567) // AT A GLANCE baseline (143px into section 3; section 2 overlays section 1, section 3 sits below)
 const BAR_END = 900; // the bar drips into the top of section 2's gradient
 const AGM_AT = Date.parse('2026-11-22T14:30:00+08:00'); // 53rd SAFRA AGM start, Singapore time
-const CAM = { logo: 0, top: 0, s2: 0, s3: -918, s4: -1818, s5: -1818, s6: -1818, s7: -1818, s8: -1818, t2: -2718, mb: -3618, fy: -4518, wc: -5418, nx: -6318, end: -7218 };
+const CAM = { logo: 0, top: 0, s2: 0, tg: -918, s3: -918, s4: -1818, s5: -1818, s6: -1818, s7: -1818, s8: -1818, t2: -2718, mb: -3618, fc1: -4518, fc2: -5251, fy: -6151, wc: -6151, nx: -7051, end: -7951 };
 // section 6 stories, in the order given: values, description lines (as laid out), red bar width, photos
-const DC = [{"stats": ["500", "13"], "desc": ["Through NS Experience Camps, families got a", "taste of NS-inspired activities, gaining a deeper", "appreciation of their loved ones’ service."], "bar": 130, "photos": ["/assets/dc4-big.jpg", "/assets/dc4-a.jpg", "/assets/dc4-b.jpg"], "alts": ["Participants in life vests sit in an inflatable boat in a swimming pool", "Children and adults assemble a raft frame from white water containers and pipes on a turf court", "Families stretch a green tarp between trees to build a shelter"], "gallery": ["/assets/g1-0.jpg", "/assets/g1-1.jpg", "/assets/g1-2.jpg", "/assets/g1-3.jpg", "/assets/g1-4.jpg", "/assets/g1-5.jpg", "/assets/g1-6.jpg"], "gi": [0, 2, 1]}, {"stats": ["140K+"], "desc": ["Be@SAFRA Open Houses brought families", "together to reflect on the SAF’s role as they", "enjoyed interactive activities, flight simulators and", "military K9 encounters."], "bar": 260, "photos": ["/assets/dc3-big.jpg", "/assets/dc3-a.jpg", "/assets/dc3-b.jpg"], "alts": ["Parents and children play a giant board game with large red dice on a turf court", "Children play with toy blasters among camouflage tents on a green court", "An adult and child pose in flight suits and helmets against camouflage netting"], "gallery": ["/assets/g2-0.jpg", "/assets/g2-1.jpg", "/assets/g2-2.jpg", "/assets/g2-3.jpg", "/assets/g2-4.jpg", "/assets/g2-5.jpg"], "gi": [0, 2, 1]}, {"stats": ["20K+"], "desc": ["Commitment to Defence (C2D)", "Ambassadors from the SAF Veterans’ League", "shared real-life experiences, reinforcing the", "importance of a strong defence."], "bar": 390, "photos": ["/assets/dc1-big.jpg", "/assets/dc1-a.jpg"], "alts": ["A speaker addresses pupils seated in a classroom", "Service personnel seated outdoors listen to standing speakers"], "gallery": ["/assets/g3-0.jpg", "/assets/g3-1.jpg"], "gi": [0, 1]}, {"stats": ["40K+"], "desc": ["Total Defence Day commemorative activities", "equipped participants with practical skills through", "hands-on demonstrations and interactive games."], "bar": 520, "photos": ["/assets/dc2-big.jpg", "/assets/dc2-a.jpg", "/assets/dc2-b.jpg"], "alts": ["Children practise CPR on training manikins with instructors", "Emergency responders demonstrate a rescue to an audience under a sheltered walkway", "Boys look into a camouflage field pack held open by an instructor"], "gallery": ["/assets/g4-0.jpg", "/assets/g4-1.jpg", "/assets/g4-2.jpg", "/assets/g4-3.jpg"], "gi": [0, 1, 2]}]; // red bar = story progress: 1/4 … 4/4 of the panel
+const DC = [{"stats": ["500", "13"], "desc": ["Through NS Experience Camps, families got a", "taste of NS-inspired activities, gaining a deeper", "appreciation of their loved ones’ service."], "bar": 130, "photos": ["./assets/dc4-big.jpg", "./assets/dc4-a.jpg", "./assets/dc4-b.jpg"], "alts": ["Participants in life vests sit in an inflatable boat in a swimming pool", "Children and adults assemble a raft frame from white water containers and pipes on a turf court", "Families stretch a green tarp between trees to build a shelter"], "gallery": ["./assets/g1-0.jpg", "./assets/g1-1.jpg", "./assets/g1-2.jpg", "./assets/g1-3.jpg", "./assets/g1-4.jpg", "./assets/g1-5.jpg", "./assets/g1-6.jpg"], "gi": [0, 2, 1]}, {"stats": ["140K+"], "desc": ["Be@SAFRA Open Houses brought families", "together to reflect on the SAF’s role as they", "enjoyed interactive activities, flight simulators and", "military K9 encounters."], "bar": 260, "photos": ["./assets/dc3-big.jpg", "./assets/dc3-a.jpg", "./assets/dc3-b.jpg"], "alts": ["Parents and children play a giant board game with large red dice on a turf court", "Children play with toy blasters among camouflage tents on a green court", "An adult and child pose in flight suits and helmets against camouflage netting"], "gallery": ["./assets/g2-0.jpg", "./assets/g2-1.jpg", "./assets/g2-2.jpg", "./assets/g2-3.jpg", "./assets/g2-4.jpg", "./assets/g2-5.jpg"], "gi": [0, 2, 1]}, {"stats": ["20K+"], "desc": ["Commitment to Defence (C2D)", "Ambassadors from the SAF Veterans’ League", "shared real-life experiences, reinforcing the", "importance of a strong defence."], "bar": 390, "photos": ["./assets/dc1-big.jpg", "./assets/dc1-a.jpg"], "alts": ["A speaker addresses pupils seated in a classroom", "Service personnel seated outdoors listen to standing speakers"], "gallery": ["./assets/g3-0.jpg", "./assets/g3-1.jpg"], "gi": [0, 1]}, {"stats": ["40K+"], "desc": ["Total Defence Day commemorative activities", "equipped participants with practical skills through", "hands-on demonstrations and interactive games."], "bar": 520, "photos": ["./assets/dc2-big.jpg", "./assets/dc2-a.jpg", "./assets/dc2-b.jpg"], "alts": ["Children practise CPR on training manikins with instructors", "Emergency responders demonstrate a rescue to an audience under a sheltered walkway", "Boys look into a camouflage field pack held open by an instructor"], "gallery": ["./assets/g4-0.jpg", "./assets/g4-1.jpg", "./assets/g4-2.jpg", "./assets/g4-3.jpg"], "gi": [0, 1, 2]}]; // red bar = story progress: 1/4 … 4/4 of the panel
 const DC_WORDS = ['BRINGING', 'DEFENCE', 'CLOSER', 'TO', 'THE', 'COMMUNITY'];
 // section 7: Appreciating national servicemen (one story so far; the red bar shows 1 of 4)
-const DC7 = [{"stats": ["35K+", "460"], "desc": ["Through the Appreciating NSmen Art Jam,", "preschoolers learnt of NSmen's contributions and", "made heartfelt gifts for their fathers."], "bar": 130, "photos": ["/assets/an1-big.jpg", "/assets/an1-a.jpg", "/assets/an1-b.jpg"], "alts": ["A child holds a hand-drawn thank-you card with a family photo for an NSman father", "A preschool teacher shows the class photos of servicemen", "A preschooler works on an art gift at a table"], "gallery": ["/assets/an1-big.jpg", "/assets/an1-a.jpg", "/assets/an1-b.jpg"], "gi": [0, 1, 2]}];
+const DC7 = [{"stats": ["35K+", "460"], "desc": ["Through the Appreciating NSmen Art Jam,", "preschoolers learnt of NSmen's contributions and", "made heartfelt gifts for their fathers."], "bar": 130, "photos": ["./assets/an1-big.jpg", "./assets/an1-a.jpg", "./assets/an1-b.jpg"], "alts": ["A child holds a hand-drawn thank-you card with a family photo for an NSman father", "A preschool teacher shows the class photos of servicemen", "A preschooler works on an art gift at a table"], "gallery": ["./assets/an1-big.jpg", "./assets/an1-a.jpg", "./assets/an1-b.jpg"], "gi": [0, 1, 2]}];
 const AN_WORDS = ['APPRECIATING', 'NATIONAL', 'SERVICEMEN'];
 // photos each topic card flips through on hover (from its own section)
+const CARD_IMGS = {
+  '#dc-title': ['./assets/dc1-big.jpg', './assets/dc2-a.jpg', './assets/dc3-big.jpg', './assets/dc4-a.jpg', './assets/dc1-a.jpg', './assets/dc2-big.jpg', './assets/dc3-a.jpg', './assets/dc4-big.jpg', './assets/dc1-b.jpg', './assets/dc2-b.jpg', './assets/dc4-b.jpg'],
+  '#an-title': ['./assets/an1-big.jpg', './assets/an1-a.jpg', './assets/an1-b.jpg'],
+  '#sb-title': ['./assets/sb1-big.jpg', './assets/sb1-a.jpg', './assets/sb1-b.jpg']
+};
 // section 8: Strengthening bonds (one story so far)
-const DC8 = [{"stats": ["52K+"], "desc": ["SAFRA's Vibrant Heartbeat SG60 National Day", "celebrations brought NSmen and families together", "to celebrate national pride."], "bar": 130, "photos": ["/assets/sb1-big.jpg", "/assets/sb1-a.jpg", "/assets/sb1-b.jpg"], "alts": ["A family smiles in front of heart-shaped red fireworks", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["/assets/sb1-big.jpg", "/assets/sb1-a.jpg", "/assets/sb1-b.jpg"], "gi": [0, 1, 2]}];
+const DC8 = [{"stats": ["52K+"], "desc": ["SAFRA's Vibrant Heartbeat SG60 National Day", "celebrations brought NSmen and families together", "to celebrate national pride."], "bar": 130, "photos": ["./assets/sb1-big.jpg", "./assets/sb1-a.jpg", "./assets/sb1-b.jpg"], "alts": ["A family smiles in front of heart-shaped red fireworks", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["./assets/sb1-big.jpg", "./assets/sb1-a.jpg", "./assets/sb1-b.jpg"], "gi": [0, 1, 2]}];
 // section 10: membership categories
 const NX_TABS = ['Bringing defence closer', 'Creating better spaces', 'Making visits seamless'];
 const MB_TABS = ['FOOD & GROCERIES', 'EDUCATION', 'MOVIES & ENTERTAINMENT', 'TRAVEL, STAYCATIONS & LOCAL ATTRACTIONS'];
 // how far along the page each view is (views off the main ORDER sit beside their neighbours)
-const RANK = { logo: -1, top: 0, s2: 1, s3: 2, s5: 3, s6: 4, s7: 4, s8: 4, t2: 5, mb: 6, fy: 7, wc: 8, nx: 9, end: 10 };
+const RANK = { logo: -1, top: 0, s2: 1, tg: 2, s3: 2, s5: 3, s6: 4, s7: 4, s8: 4, t2: 5, mb: 6, fc1: 6, fc2: 6, fy: 7, wc: 8, nx: 9, end: 10 };
 const SCR = { cps: 60, settle: 0.3, set: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%#_' };
 const dcSeconds = (d) => Math.max(0.8, 1.25, d.desc.join(' ').length / SCR.cps + SCR.settle);
 const eOut2 = (x) => 1 - Math.pow(1 - x, 3); // power2.out
@@ -46,22 +50,21 @@ function scramble(lines, t, seed) {
   let o = 0; const step = Math.floor(Math.max(0, t) * SCR.cps);
   return lines.map((line) => { let out = ''; for (const c of line) { const at = o / SCR.cps; if (t >= at) out += (t >= at + SCR.settle || /\s/.test(c)) ? c : SCR.set[(Math.imul(seed + o * 31 + step * 7, 2654435761) >>> 0) % SCR.set.length]; o++; } o++; return out; });
 }
-const ORDER = ['top', 's2', 's3', 's5', 's6']; // s7 is reached from the last s6 story via the cards (see go) // the statement and the topic cards are one stop (s5)
+const ORDER = ['top', 'tg', 's3', 's5', 's6']; // section 2 (AGM countdown) removed: the masthead leads straight into At a glance // s7 is reached from the last s6 story via the cards (see go) // the statement and the topic cards are one stop (s5)
 const CUE_X = 720; // centre of the arrow-down in section 2 (cam coords)
 const STEM_TOP = 732 + 56; // top of the arrow's stem (cam coords)
 const ROLL_AFTER = 1500, ROLL_DUR = 1200; // countdown roll-up once the tiles have slid in
-const viewOf = (v) => /^14|one year|closing/i.test(v || '') ? 'end' : /^13|what.s next/i.test(v || '') ? 'nx' : /^12|work continues/i.test(v || '') ? 'wc' : /^11|summary/i.test(v || '') ? 'fy' : /^10|membership/i.test(v || '') ? 'mb' : /^9|transition-2/i.test(v || '') ? 't2' : /^8|strengthening|1sg60/i.test(v || '') ? 's8' : /^7|appreciating/i.test(v || '') ? 's7' : /^6|defence closer|community/i.test(v || '') ? 's6' : /^5|topic/i.test(v || '') ? 's5' : /^4|transition/i.test(v || '') ? 's5' : /^3|glance/i.test(v || '') ? 's3' : /^2|countdown|registration/i.test(v || '') ? 's2' : 'top';
+const viewOf = (v) => /^10|membership/i.test(v || '') ? 'mb' : /^9|transition-2/i.test(v || '') ? 't2' : /^8|strengthening|1sg60/i.test(v || '') ? 's8' : /^7|appreciating/i.test(v || '') ? 's7' : /^6|defence closer|community/i.test(v || '') ? 's6' : /^5|topic/i.test(v || '') ? 's5' : /^4|transition/i.test(v || '') ? 's5' : /^3|glance/i.test(v || '') ? 's3' : /^2|countdown|registration/i.test(v || '') ? 's2' : 'top';
 const AGM_INK_TOP = 561.2; // logo's visible bottom edge (513.2 at 80%) + 48px
 const AGM_FS = 27.2;
 const COUNT_AFTER = 1600; // ms after arriving at section 3
 const INTRO_DONE = 7000; // last headline line has landed → masthead animation complete
 
-export class ArtboardLogic extends React.Component {
+export class ArtboardLogic extends Logic {
   constructor(props) {
     super(props);
     const sv = viewOf(props.startView);
-    this.state = { phase: 'run', mx: 0, my: 0, p: 0, lay: null, view: sv, s2: sv !== 'top', s3: ORDER.indexOf(sv) >= 2, s4: ORDER.indexOf(sv) >= 3, s6: sv === 's6', step6: 0, t6: null, s7: sv === 's7', step7: 0, t7: null, s8: sv === 's8', step8: 0, t8: null, s9: sv === 't2' || sv === 'mb', s10: sv === 'mb', mbTab: 0, lb: null, hx: null, hy: null, ready: false, now: Date.now(), step: 0, fresh: sv === 's3', cdP: sv === 'top' ? 0 : 1 };
-    { const r = RANK[sv] ?? 0; Object.assign(this.state, { s9: this.state.s9 || r >= 5, s10: this.state.s10 || r >= 6, s11: r >= 7, s12: r >= 8, s13: r >= 9, s14: r >= 10 }); } // deep-linking to a later section
+    this.state = { phase: 'run', mx: 0, my: 0, p: 0, lay: null, view: sv, s2: sv !== 'top', s3: ORDER.indexOf(sv) >= 2, s4: ORDER.indexOf(sv) >= 3, s6: sv === 's6', step6: 0, t6: null, s7: sv === 's7', step7: 0, t7: null, s8: sv === 's8', step8: 0, t8: null, s9: sv === 't2' || sv === 'mb', s10: sv === 'mb', mbTab: 0, mbOrd: [3, 2, 1, 0], mbMv: null, lb: null, hx: null, hy: null, ready: false, now: Date.now(), step: 0, fresh: sv === 's3', cdP: sv === 'top' ? 0 : 1 };
     this.played2 = sv !== 'top';
   }
   componentDidMount() {
@@ -185,6 +188,69 @@ export class ArtboardLogic extends React.Component {
   }
   land() { clearTimeout(this.landT); this.setState({ landing: true }); this.landT = setTimeout(() => this.setState({ landing: false }), 1150); }
   arrive8() { this.land(); this.setState({ s8: true }); this.play8(0, 0.15, 0.3); }
+  mbTo(t) {
+    const ord = this.state.mbOrd || [3, 2, 1, 0];
+    let steps = 3 - ord.indexOf(t);
+    if (steps <= 0 || this.mbBusy) return;
+    this.mbBusy = true;
+    const step = () => {
+      const o = this.state.mbOrd || [3, 2, 1, 0], n = [o[3], o[0], o[1], o[2]];
+      this.setState({ mbOrd: n, mbTab: n[3], mbMv: o[3] });
+      steps--;
+      clearTimeout(this.mbT);
+      this.mbT = setTimeout(() => { this.setState({ mbMv: null }); if (steps > 0) step(); else this.mbBusy = false; }, steps > 0 ? 300 : 560);
+    };
+    step();
+  }
+  // While AT A GLANCE scales down, the connector is trimmed so it never runs past the top of the L;
+  // scaling back up lets it reach up to the masthead again.
+  arriveFy() {
+    if (this.playedFy) return; this.playedFy = true;
+    if (this.rafF) cancelAnimationFrame(this.rafF);
+    const t0 = performance.now() + 1100; // cards have started rising
+    const step = (now) => { const x = Math.min(1, Math.max(0, (now - t0) / 1400)); this.setState({ pF: 1 - Math.pow(1 - x, 3) }); if (x < 1) this.rafF = requestAnimationFrame(step); };
+    this.setState({ pF: 0 }); this.rafF = requestAnimationFrame(step);
+  }
+  // Looking forward: the section holds still while the right column scrolls; at the end of a topic's
+  // content the indicator moves to the next label (and back up at the top); past the last/first topic the page moves on.
+  nxEl() { try { return document.querySelector('.mh .nxs'); } catch (err) { return null; } }
+  nxMax(el) { return Math.max(0, el.scrollHeight - el.clientHeight); }
+  nxPin() { return 0; }
+  nxFade() {}
+  nxReveal() {}
+  nxGo(el, target) {
+    this.nxPos = target;
+    if (this.nxRaf) return;
+    const tick = () => {
+      const e = this.nxEl(); if (!e) { this.nxRaf = 0; return; }
+      const cur = e.scrollTop, d = this.nxPos - cur;
+      e.scrollTop = Math.abs(d) < 0.5 ? this.nxPos : cur + d * 0.16;
+      this.nxReveal(e);
+      this.nxRaf = Math.abs(d) < 0.5 ? 0 : requestAnimationFrame(tick);
+    };
+    this.nxRaf = requestAnimationFrame(tick);
+  }
+  nxSet(k, at) {
+    this.setState({ nxTab: k });
+    requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; el.style.scrollBehavior = 'auto'; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = at === 'end' ? this.nxMax(el) : 0; this.nxPos = el.scrollTop; this.nxReveal(el); el.style.scrollBehavior = ''; });
+  }
+  nxWheel(dy) {
+    if (this.state.view !== 'nx' || this.state.lb) return false;
+    const now = Date.now();
+    if (this.lockUntil && now < this.lockUntil) return true;
+    const el = this.nxEl(); if (!el) return false;
+    const max = this.nxMax(el), k = this.state.nxTab || 0, min = k > 0 ? this.nxPin(el) : 0;
+    const streak = now - (this.nxLast || 0) < 160; this.nxLast = now; // a continuing wheel/trackpad stream
+    const pos = this.nxPos ?? el.scrollTop;
+    if (dy > 0 && pos < max - 1) { this.nxGo(el, Math.min(max, pos + dy)); this.nxEdge = now; return true; }
+    if (dy < 0 && pos > min + 1) { this.nxGo(el, Math.max(min, pos + dy)); this.nxEdge = now; return true; }
+    if (streak && now - (this.nxEdge || 0) < 900) return true; // just hit the edge: let the scroll settle before moving on
+    if (dy > 0 && k < 2) { this.lockUntil = now + 650; this.nxSet(k + 1, 'pin'); this.nxEdge = now; return true; }
+    if (dy < 0 && k > 0) { this.lockUntil = now + 650; this.nxSet(k - 1, 'end'); this.nxEdge = now; return true; }
+    this.nxPos = null;
+    return false;
+  }
+  nxEnter(dir) { this.nxPos = null; this.nxEdge = Date.now(); this.nxSet(dir > 0 ? 0 : 2, dir > 0 ? 'top' : 'end'); }
   arriveMb() {
     const first = !this.state.s10; this.setState({ s10: true });
     if (!first) return;
@@ -204,6 +270,28 @@ export class ArtboardLogic extends React.Component {
     this.setState({ view: 's5', hopping: false });
   }
   // skip buttons: straight to the named screen — the story panel grows to full navy, then the next section opens out of it
+  // sticky menu: jump straight to a section
+  jumpTo(to) {
+    if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8);
+    clearTimeout(this.hopT); clearTimeout(this.lvT);
+    this.lockUntil = Date.now() + 1300;
+    const flag = { fy: 's11', nx: 's13' }[to];
+    this.setState({ menu: false, lv: null, hopping: false, view: to, ...(flag ? { [flag]: true } : {}), ...(to === 's5' ? { s4: true } : {}) });
+    if (to === 's2') this.arrive2();
+    if (to === 'fy') this.arriveFy();
+    if (to === 'nx') this.nxEnter(1);
+    if (to === 's3') { if (this.played3) { if (this.state.step !== 0) this.setStep(0); } else this.arrive3(); }
+  }
+  // topic tabs: switch straight to a topic (always its first story)
+  tabTo(to) {
+    const from = this.state.view;
+    if (from === to || !['s6', 's7', 's8'].includes(from)) return;
+    if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8);
+    clearTimeout(this.hopT);
+    this.lockUntil = Date.now() + 900;
+    this.setState({ view: to, tabLast: { s6: 0, s7: 1, s8: 2 }[to] });
+    if (to === 's6') { this.setState({ s6: true }); this.play6(0, 0.15, 0.3); } else if (to === 's7') this.arrive7(); else this.arrive8();
+  }
   skipTo(to) {
     const from = this.state.view;
     if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8);
@@ -250,7 +338,7 @@ export class ArtboardLogic extends React.Component {
     if (this.played3 && !force) return;
     this.played3 = true;
     clearTimeout(this.countT);
-    this.setState({ s2: true, s3: true, p: 0, step: 0, fresh: true });
+    this.setState({ s2: true, s3: true, hd: true, p: 0, step: 0, fresh: true });
     this.countT = setTimeout(() => this.countUp(), COUNT_AFTER);
   }
   // Section 1.5 plays its entrance the first time it is reached.
@@ -283,12 +371,14 @@ export class ArtboardLogic extends React.Component {
     if (this.state.view === 'top' && dir < 0) { if (this.state.ready) { this.lockUntil = now + 1700; this.setState({ view: 'logo' }); } return; }
     if (this.state.view === 'logo') { if (dir > 0) { this.lockUntil = now + 1300; this.setState({ view: 'top' }); } return; }
     if (this.state.lb) return; // gallery open
-    { const TAIL = ['mb', 'fy', 'wc', 'nx', 'end'], ti = TAIL.indexOf(this.state.view);
+    { const TAIL = ['mb', 'fc1', 'fc2', 'wc', 'nx', 'end'] /* 'fy' (Our year in summary) removed */, ti = TAIL.indexOf(this.state.view);
       if (ti >= 0) {
         if (ti === 0 && dir < 0) { this.lockUntil = now + 1000; this.setState({ view: 't2' }); return; }
         const nv = TAIL[ti + dir]; if (!nv) return;
-        this.lockUntil = now + 1200; this.setState({ view: nv, [{ fy: 's11', wc: 's12', nx: 's13', end: 's14' }[nv] || 's10']: true });
+        this.lockUntil = now + 1200; this.setState({ view: nv, [{ fc1: 's15', fc2: 's16', fy: 's11', wc: 's12', nx: 's13', end: 's14' }[nv] || 's10']: true });
         if (nv === 'wc') setTimeout(() => this.hvLayout(), 60);
+        if (nv === 'fy') this.arriveFy();
+        if (nv === 'nx') this.nxEnter(dir);
         return;
       } }
     if (this.state.view === 't2') { if (dir > 0) { this.lockUntil = now + 1200; this.setState({ view: 'mb' }); this.arriveMb(); } else this.hop('s8'); return; }
@@ -320,6 +410,7 @@ export class ArtboardLogic extends React.Component {
     if (this.state.view === 's6' && v === 's5') this.leaveTo5('s6');
     this.setState({ view: v });
     if (v === 's2') this.arrive2();
+    if (v === 'tg') this.setState({ hd: true });
     if (v === 's3') { if (this.played3) { if (dir > 0 && this.state.step !== 0) this.setStep(0); } else this.arrive3(); }
     if (v === 's5') this.setState({ s4: true });
     if (v === 's6') this.arrive6();
@@ -338,7 +429,7 @@ export class ArtboardLogic extends React.Component {
     this.clearAll();
     this.played3 = false; this.played2 = false;
     this.lockUntil = Date.now() + 1200;
-    this.setState({ phase: 'reset', p: 0, cdP: 0, step: 0, fresh: false, s2: false, s3: false, view: 'top', ready: false });
+    this.setState({ phase: 'reset', p: 0, cdP: 0, step: 0, fresh: false, s2: false, s3: false, hd: false, view: 'top', ready: false });
     this.readyT = setTimeout(() => this.setState({ ready: true }), INTRO_DONE + 90);
     this.resetT = setTimeout(() => { this.setState({ phase: 'run' }); }, 90);
   }
@@ -568,10 +659,11 @@ export class ArtboardLogic extends React.Component {
       s8Class: (fin || this.state.s8) ? 'is-s8' : '',
       go8Class: view === 's8' ? 'go8' : '',
       s9Class: (fin || this.state.s9) ? 'is-s9' : '',
+      fyv: (() => { const k = fin ? 1 : (this.state.pF ?? 0); const r = {}; ['$134.6M', '$154.2M', '$19.6M', '$20.9M', '$1.9M', '$405.5M'].forEach((v, i) => { r['n' + i] = fmtCount(v, k); }); return r; })(),
       s10Class: (fin || this.state.s10) ? 'is-s10' : '',
-      s11Class: (fin || this.state.s11) ? 'is-s11' : '', s12Class: (fin || this.state.s12) ? 'is-s12' : '', s13Class: (fin || this.state.s13) ? 'is-s13' : '', s14Class: (fin || this.state.s14) ? 'is-s14' : '',
-      nxv: (() => { const k = this.state.nxTab || 0, X = [0, 335, 647], W = [335, 312, 308]; return { t0: k === 0 ? 'on' : '', t1: k === 1 ? 'on' : '', t2: k === 2 ? 'on' : '', x: X[k], w: W[k], p0: k === 0 ? 'on' : '', px: k === 0 ? '' : 'on', name: NX_TABS[k] }; })(),
-      nxTab0: (e) => { e.stopPropagation(); this.setState({ nxTab: 0 }); }, nxTab1: (e) => { e.stopPropagation(); this.setState({ nxTab: 1 }); }, nxTab2: (e) => { e.stopPropagation(); this.setState({ nxTab: 2 }); },
+      s11Class: (fin || this.state.s11) ? 'is-s11' : '', s12Class: (fin || this.state.s12) ? 'is-s12' : '', s13Class: (fin || this.state.s13) ? 'is-s13' : '', s14Class: (fin || this.state.s14) ? 'is-s14' : '', s15Class: (fin || this.state.s15) ? 'is-s15' : '', s16Class: (fin || this.state.s16) ? 'is-s16' : '',
+      nxv: (() => { const k = this.state.nxTab || 0; return { t0: k === 0 ? 'on' : '', t1: k === 1 ? 'on' : '', t2: k === 2 ? 'on' : '', a0: String(k === 0), a1: String(k === 1), a2: String(k === 2), top: 64 * k, p0: k === 0 ? 'on' : '', px: k === 0 ? '' : 'on', name: NX_TABS[k] }; })(),
+      nxTab0: (e) => { e.stopPropagation(); this.nxSet(0, 'pin'); }, nxTab1: (e) => { e.stopPropagation(); this.nxSet(1, 'pin'); }, nxTab2: (e) => { e.stopPropagation(); this.nxSet(2, 'pin'); },
       skip6: (e) => { e.stopPropagation(); if (this.state.view === 's6') this.skipTo('s7'); },
       skip7: (e) => { e.stopPropagation(); if (this.state.view === 's7') this.skipTo('s8'); },
       skip8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.skipTo('t2'); },
@@ -593,10 +685,11 @@ export class ArtboardLogic extends React.Component {
       mbv: (() => {
         const k = this.state.mbTab || 0, pm = fin ? 1 : (this.state.pM ?? 1), r = { ind: [0, 64, 128, 192][k], indh: [62, 62, 62, 98][k], p0: k === 0 ? 'on' : '', px: k === 0 ? '' : 'on', name: MB_TABS[k],
           c0: fmtCount('100+', pm), c1: fmtCount('180,000+', pm) };
+        { const ord = this.state.mbOrd || [3, 2, 1, 0], mv = this.state.mbMv; [3, 2, 1, 0].forEach((t, j) => { const q = ord.indexOf(t); r['y' + j] = 107 * q; r['z' + j] = q + 1; r['v' + j] = (q === 3 ? 'on' : '') + (t === mv ? ' mv' : ''); r['e' + j] = q === 3 ? 'true' : 'false'; }); }
         MB_TABS.forEach((_, i) => { r['t' + i] = i === k ? 'on' : ''; });
         return r;
       })(),
-      ...(() => { const r = {}; MB_TABS.forEach((_, i) => { r['mbTab' + i] = (e) => { e.stopPropagation(); this.setState({ mbTab: i }); }; }); return r; })(),
+      ...(() => { const r = {}; MB_TABS.forEach((_, i) => { r['mbTab' + i] = (e) => { e.stopPropagation(); this.mbTo(i); }; }); return r; })(),
       ...(() => { const r = {}; DC8.forEach((d, si) => d.photos.forEach((_, pi) => { r['lb8_' + si + '_' + pi] = (e) => { e.stopPropagation(); this.setState({ lb: { t: 8, s: si, i: d.gi[pi] } }); }; })); return r; })(),
       topic2: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's7' }); this.arrive7(); } },
       dcw7: (() => { const o = (this.state.lay && this.state.lay.dcw7) || [0, 0, -440]; const r = { W: (this.state.lay && this.state.lay.dcW7) || 846 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
@@ -640,20 +733,34 @@ export class ArtboardLogic extends React.Component {
       ...(() => { const r = {}; DC7.forEach((d, si) => d.photos.forEach((_, pi) => { r['lb7_' + si + '_' + pi] = (e) => { e.stopPropagation(); this.setState({ lb: { t: 7, s: si, i: d.gi[pi] } }); }; })); return r; })(),
       ...(() => { const r = {}; DC.forEach((d, si) => d.photos.forEach((_, pi) => { r['lb_' + si + '_' + pi] = (e) => { e.stopPropagation(); this.setState({ lb: { s: si, i: d.gi[pi] } }); }; })); return r; })(),
       lw: lay ? lay.lW : 9,
-      bar3: (() => { const w = lay ? lay.lW : 9, top = STEM_TOP, bot = lay ? lay.lBase : GLANCE_BASE; // the bar becomes the L's whole upright
-        return { x: +(CUE_X - w / 2).toFixed(2), y: +top.toFixed(2), w, h: +(bot - top).toFixed(2), r: 0 }; })(),
+      bar3: (() => { const big = this.state.view === 'tg', lw = (lay ? lay.lW : 9) * (big ? TG_SCALE : 1), nx = lay ? lay.barX : 696, nw = lay ? lay.barW : 15, top = lay ? lay.barTop : 686, bot = big ? TG_BASE : (lay ? lay.lBase : GLANCE_BASE); // the n's stem drips down and becomes the L's upright
+        // the line sits on the L's upright; while it leaves the masthead it is offset/widened to sit on the n's stem
+        return { x: +(CUE_X - lw / 2).toFixed(2), y: +top.toFixed(2), w: lw, h: +(bot - top).toFixed(2), dx: +((nx + nw / 2) - CUE_X).toFixed(2), k: +(nw / lw).toFixed(4) }; })(),
+      tgClass: view === 'tg' ? 'at-tg' : '', hdClass: (fin || this.state.hd) ? 'is-hd' : '',
       cd,
       next: () => this.go(1),
       noop: (e) => { e.preventDefault(); e.stopPropagation(); },
       cur2: (() => { const on = view === 't2' && hx != null; return { x: ((hx ?? 720) - 60).toFixed(1), y: ((hy ?? 450) - 60).toFixed(1), o: on ? 1 : 0, s: on ? 1 : 0.4 }; })(),
       cur: { x: ((hx ?? 720) - 60).toFixed(1), y: ((hy ?? 450) - 60).toFixed(1), o: (circle && hx != null) ? 1 : 0, s: (circle && hx != null) ? 1 : 0.4 },
-      wheel: (e) => { if (Math.abs(e.deltaY) < 4) return; this.go(e.deltaY > 0 ? 1 : -1); },
-      tap: () => { if (this.state.view === 'top' || this.state.view === 'logo' || this.state.view === 't2') this.go(1); },
+      wheel: (e) => { if (Math.abs(e.deltaY) < 4) return; if (this.state.menu) { this.setState({ menu: false }); return; } if (this.nxWheel(e.deltaY)) return; this.go(e.deltaY > 0 ? 1 : -1); },
+      tabs: (() => { const k = { s6: 0, s7: 1, s8: 2 }[view], X = [48, 603, 1077], W = [454, 377, 280], on = k != null && !this.state.lb; const i = k ?? (this.state.tabLast ?? 0); return { cls: on ? 'on' : '', x: X[i], w: W[i], s6: i === 0 ? 'on' : '', s7: i === 1 ? 'on' : '', s8: i === 2 ? 'on' : '', s6sel: String(i === 0), s7sel: String(i === 1), s8sel: String(i === 2) }; })(),
+      tab_s6: (e) => { e.stopPropagation(); this.tabTo('s6'); }, tab_s7: (e) => { e.stopPropagation(); this.tabTo('s7'); }, tab_s8: (e) => { e.stopPropagation(); this.tabTo('s8'); },
+      menu: { cls: ((RANK[view] ?? 0) >= 2 && !this.state.lb ? 'on' : '') + (this.state.menu ? ' open' : '') + (['fy', 'end', 'mb', 'fc1', 'fc2'].includes(view) ? ' grad' : ''), exp: this.state.menu ? 'true' : 'false' },
+      menuOpen: (e) => { e.stopPropagation(); this.setState({ menu: true }); },
+      menuClose: (e) => { e.stopPropagation(); this.setState({ menu: false }); },
+      menuStop: (e) => { e.stopPropagation(); if (e.currentTarget.tagName === 'A') e.preventDefault(); },
+      nav_top: (e) => { e.stopPropagation(); this.jumpTo('top'); },
+      nav_s2: (e) => { e.stopPropagation(); this.jumpTo('s2'); },
+      nav_s3: (e) => { e.stopPropagation(); this.jumpTo('s3'); },
+      nav_s5: (e) => { e.stopPropagation(); this.jumpTo('s5'); },
+      nav_fy: (e) => { e.stopPropagation(); this.jumpTo('fy'); },
+      nav_nx: (e) => { e.stopPropagation(); this.jumpTo('nx'); },
+      tap: () => { if (this.state.menu) { this.setState({ menu: false }); return; } if (this.state.view === 'top' || this.state.view === 'logo' || this.state.view === 't2') this.go(1); },
       touchStart: (e) => { this.ty = e.touches && e.touches[0] ? e.touches[0].clientY : null; },
       touchEnd: (e) => {
         const y = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null;
         if (this.ty == null || y == null) return;
-        if (Math.abs(this.ty - y) > 30) this.go(this.ty > y ? 1 : -1);
+        if (Math.abs(this.ty - y) > 30) { if (this.nxWheel((this.ty - y) * 1.5)) return; this.go(this.ty > y ? 1 : -1); }
       },
       t,
       ...letters,
@@ -662,7 +769,7 @@ export class ArtboardLogic extends React.Component {
       // section 2 starts as exactly the bar's rectangle, then opens to the full frame
       wipe: lay && lay.wipe ? lay.wipe : { l: 45, r: 45 },
       bloomX: (+barX + barW / 2).toFixed(2),
-      head: { x: head.x, y: head.y, ox: head.ox, oy: head.oy, s: 1 },
+      head: (() => { const big = view === 'tg', capH = lay && lay.Ld ? lay.Ld.sh : 52; return { x: head.x, y: head.y, ox: head.ox, oy: head.oy, s: big ? TG_SCALE.toFixed(4) : 1, ty: big ? +(TG_BASE - GLANCE_BASE - capH * (TG_SCALE - 1)).toFixed(2) : 0 }; })(),
       v: (() => {
         const st = this.state.step, q = (i) => (st === i ? p : 1);
         const K = (n, i, suf) => Math.round(n * q(i)) + suf;

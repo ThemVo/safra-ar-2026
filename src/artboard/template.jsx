@@ -1,25 +1,32 @@
 // Markup for the artboard. Generated from the original prototype's template, then kept as plain JSX.
 // `v` is the object returned by ArtboardLogic.renderVals(); every {{binding}} of the original reads from it.
 import { Fragment } from 'react';
-import { T, arr, css, s } from './bind.jsx';
+import { T, arr, css, s, bleedPath } from './bind.jsx';
+
+// the tab-shaped band under sections 9 and 12; its outer corners sit at the window edges
+// Shared gradient for the band → Membership → Clubs & Facilities stretch, in camera coordinates: it runs at 30°
+// from the band's top-left corner (y 3402) and reaches full orange at the bottom-right of Clubs & Facilities.
+const ZONE_GRAD = { x1: 0, y1: 3402, x2: 2269.8, y2: 4712.5 };
+
+const TONGUE = 'M719.999 0C762.331 0 799.274 23.3611 818.941 58.046C835.286 86.8717 860.872 115.444 894.009 115.444H1332.24C1369.96 115.444 1388.82 115.444 1403.23 122.877C1415.9 129.415 1426.2 139.848 1432.66 152.679C1440 167.267 1440 178.167 1440 216.361H0C0 178.167 0.00020976 167.267 7.34089 152.679C13.7979 139.848 24.101 129.415 36.7735 122.877C51.1804 115.444 70.0402 115.444 107.76 115.444H545.989C579.126 115.444 604.712 86.8717 621.057 58.046C640.724 23.3611 677.667 0 719.999 0Z';
 
 export default function render(v) {
   return (
     <>
-    <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.hdClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
+    <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.hdClass)} ${s(v.fcFreeClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", boxShadow: "0 0 0 var(--gx, 0px) #272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
       <div className="cam" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "8851px", transform: `translateY(${s(v.camY)}px)` }}>
         <section className="layer1" aria-label="SAFRA masthead" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", overflow: "hidden", transformOrigin: "50% 80%" }}>
           <div className="layer" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", transformOrigin: "50% 46%" }}>
-            <div className="px" style={{ position: "absolute", left: "885px", top: "0px", width: "555px", height: "349px", borderRadius: "0 0 0 16px", overflow: "hidden", transform: `${s(v.pFamily)}` }}>
+            <div className="px" style={{ position: "absolute", left: "885px", top: "0px", width: "555px", height: "349px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pFamily)}` }}>
               <img className="ph ph1" src="./assets/mh-tr.jpg" alt="A father and child crawl under camouflage netting on an obstacle course" style={{ display: "block", width: "555px", height: "349px" }} />
             </div>
             <div className="px" style={{ position: "absolute", left: "104px", top: "141px", width: "339px", height: "214px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pConcert)}` }}>
               <img className="ph ph2" src="./assets/mh-tl.jpg" alt="A family in red poses with the SAFRA mascot at a National Day picnic" style={{ display: "block", width: "339px", height: "214px" }} />
             </div>
-            <div className="px" style={{ position: "absolute", left: "0px", top: "652px", width: "394px", height: "248px", borderRadius: "0 16px 0 0", overflow: "hidden", transform: `${s(v.pKids)}` }}>
+            <div className="px" style={{ position: "absolute", left: "0px", top: "652px", width: "394px", height: "248px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pKids)}` }}>
               <img className="ph ph3" src="./assets/mh-bl.jpg" alt="Members on exercise bikes in a spin class" style={{ display: "block", width: "394px", height: "248px" }} />
             </div>
-            <div className="px" style={{ position: "absolute", left: "1196px", top: "746px", width: "244px", height: "154px", borderRadius: "16px 0 0 0", overflow: "hidden", transform: `${s(v.pTyres)}` }}>
+            <div className="px" style={{ position: "absolute", left: "1196px", top: "746px", width: "244px", height: "154px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pTyres)}` }}>
               <img className="ph ph4" src="./assets/mh-br.jpg" alt="A group of members holding bowling balls at a bowling alley" style={{ display: "block", width: "244px", height: "154px" }} />
             </div>
           </div>
@@ -110,7 +117,7 @@ export default function render(v) {
           </h1>
         </section>
         <span className="bar" aria-hidden="true" style={{ position: "absolute", left: `${s(v.bar?.x)}px`, top: `${s(v.bar?.y)}px`, display: "block", width: `${s(v.bar?.w)}px`, height: `${s(v.bar?.h)}px`, background: "linear-gradient(180deg, #E84392 0%, #F5765E 40%, #F3597B 72%, #E8448F 100%)", clipPath: `${s(v.bar?.clip)}`, pointerEvents: "none" }} />
-        <section className="s2" aria-labelledby="cd-title" style={{ "--cx": `${s(v.bloomX)}px`, position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(122deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)" }}>
+        <section className="s2" aria-labelledby="cd-title" style={{ "--cx": `${s(v.bloomX)}px`, position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(122deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(122deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="cd-title" style={{ position: "absolute", left: "104px", top: "160px", margin: "0", fontSize: "56px", fontWeight: "500", lineHeight: "1.12", letterSpacing: "-0.01em", color: "#FFFFFF" }}>
             <span className="k k1a" style={{ display: "block" }}>
               Countdown to
@@ -121,7 +128,7 @@ export default function render(v) {
           </h2>
           <div role="timer" aria-live="off" aria-label={v.cd?.aria}>
             <div className="k k2" style={{ position: "absolute", left: "104px", top: "332px", width: "118px", height: "120px", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "11px", background: "#EFEFEF" }}>
-              <span className="gt" style={{ fontSize: "61px", fontWeight: "600", lineHeight: "1", letterSpacing: "-2px", fontVariantNumeric: "tabular-nums", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", padding: "0 .04em .05em" }}>
+              <span className="gt" style={{ fontSize: "61px", fontWeight: "400", lineHeight: "1", letterSpacing: "0", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", padding: "0 .04em .05em" }}>
                 <T v={v.cd?.d} />
               </span>
               <span className="gt" style={{ marginTop: "3px", fontSize: "17px", fontWeight: "500", lineHeight: "1", letterSpacing: "0", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", paddingBottom: ".15em" }}>
@@ -129,7 +136,7 @@ export default function render(v) {
               </span>
             </div>
             <div className="k k3" style={{ position: "absolute", left: "229px", top: "332px", width: "118px", height: "120px", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "11px", background: "#EFEFEF" }}>
-              <span className="gt" style={{ fontSize: "61px", fontWeight: "600", lineHeight: "1", letterSpacing: "-2px", fontVariantNumeric: "tabular-nums", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", padding: "0 .04em .05em" }}>
+              <span className="gt" style={{ fontSize: "61px", fontWeight: "400", lineHeight: "1", letterSpacing: "0", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", padding: "0 .04em .05em" }}>
                 <T v={v.cd?.h} />
               </span>
               <span className="gt" style={{ marginTop: "3px", fontSize: "17px", fontWeight: "500", lineHeight: "1", letterSpacing: "0", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", paddingBottom: ".15em" }}>
@@ -137,7 +144,7 @@ export default function render(v) {
               </span>
             </div>
             <div className="k k4" style={{ position: "absolute", left: "354px", top: "332px", width: "118px", height: "120px", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "11px", background: "#EFEFEF" }}>
-              <span className="gt" style={{ fontSize: "61px", fontWeight: "600", lineHeight: "1", letterSpacing: "-2px", fontVariantNumeric: "tabular-nums", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", padding: "0 .04em .05em" }}>
+              <span className="gt" style={{ fontSize: "61px", fontWeight: "400", lineHeight: "1", letterSpacing: "0", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", padding: "0 .04em .05em" }}>
                 <T v={v.cd?.m} />
               </span>
               <span className="gt" style={{ marginTop: "3px", fontSize: "17px", fontWeight: "500", lineHeight: "1", letterSpacing: "0", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", paddingBottom: ".15em" }}>
@@ -145,7 +152,7 @@ export default function render(v) {
               </span>
             </div>
             <div className="k k4s" style={{ position: "absolute", left: "479px", top: "332px", width: "118px", height: "120px", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "11px", background: "#EFEFEF" }}>
-              <span className="gt" style={{ fontSize: "61px", fontWeight: "600", lineHeight: "1", letterSpacing: "-2px", fontVariantNumeric: "tabular-nums", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", padding: "0 .04em .05em" }}>
+              <span className="gt" style={{ fontSize: "61px", fontWeight: "400", lineHeight: "1", letterSpacing: "0", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", padding: "0 .04em .05em" }}>
                 <T v={v.cd?.s} />
               </span>
               <span className="gt" style={{ marginTop: "3px", fontSize: "17px", fontWeight: "500", lineHeight: "1", letterSpacing: "0", backgroundImage: "linear-gradient(90deg, #6452A4 0%, #F04290 52%, #F68C45 100%)", paddingBottom: ".15em" }}>
@@ -382,7 +389,7 @@ export default function render(v) {
               <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.25", color: "#FFFFFF" }}>
                 Members
               </p>
-              <p aria-label="Over 417K" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+              <p aria-label="Over 417K" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                 <span style={{ marginRight: "14px", fontSize: "22px", letterSpacing: "0", verticalAlign: "0.3em" }}>
                   Over
                 </span>
@@ -399,7 +406,7 @@ export default function render(v) {
               <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.25", color: "#FFFFFF" }}>
                 Satisfaction Rating
               </p>
-              <p aria-label="86%" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+              <p aria-label="86%" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                 <T v={v.v?.m2} />
               </p>
             </div>
@@ -419,7 +426,7 @@ export default function render(v) {
                 <br />
                 Activities
               </p>
-              <p aria-label="Over 1.72M" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+              <p aria-label="Over 1.72M" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                 <span style={{ marginRight: "14px", fontSize: "22px", letterSpacing: "0", verticalAlign: "0.3em" }}>
                   Over
                 </span>
@@ -434,7 +441,7 @@ export default function render(v) {
                 <br />
                 Initiatives
               </p>
-              <p aria-label="Over 75K" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+              <p aria-label="Over 75K" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                 <span style={{ marginRight: "14px", fontSize: "22px", letterSpacing: "0", verticalAlign: "0.3em" }}>
                   Over
                 </span>
@@ -453,7 +460,7 @@ export default function render(v) {
                 <br />
                 Outreach Initiatives
               </p>
-              <p aria-label="Over 211K" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+              <p aria-label="Over 211K" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                 <span style={{ marginRight: "14px", fontSize: "22px", letterSpacing: "0", verticalAlign: "0.3em" }}>
                   Over
                 </span>
@@ -466,7 +473,7 @@ export default function render(v) {
                 <br />
                 Activities for NS Units
               </p>
-              <p aria-label="Over 52K" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+              <p aria-label="Over 52K" style={{ margin: "0", fontSize: "66px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                 <span style={{ marginRight: "14px", fontSize: "22px", letterSpacing: "0", verticalAlign: "0.3em" }}>
                   Over
                 </span>
@@ -491,7 +498,7 @@ export default function render(v) {
                 <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.25", color: "#FFFFFF" }}>
                   Solar Energy Generated
                 </p>
-                <p aria-label="1,074 MWh" style={{ margin: "0", fontSize: "52px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+                <p aria-label="1,074 MWh" style={{ margin: "0", fontSize: "52px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                   <T v={v.v?.s1} />
                 </p>
                 <p style={{ margin: "4px 0 0", fontSize: "16px", fontWeight: "400", lineHeight: "1.25", color: "rgba(255,255,255,.92)" }}>
@@ -512,7 +519,7 @@ export default function render(v) {
                   <br />
                   Emissions
                 </p>
-                <p aria-label="432 Tonnes" style={{ margin: "0", fontSize: "52px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+                <p aria-label="432 Tonnes" style={{ margin: "0", fontSize: "52px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                   <T v={v.v?.s2} />
                 </p>
                 <p style={{ margin: "4px 0 0", fontSize: "16px", fontWeight: "400", lineHeight: "1.25", color: "rgba(255,255,255,.92)" }}>
@@ -535,7 +542,7 @@ export default function render(v) {
                   <br />
                   Installed at SAFRA Yishun
                 </p>
-                <p aria-label="6,850" style={{ margin: "0", fontSize: "52px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "-0.04em", color: "#F34241", fontVariantNumeric: "tabular-nums" }}>
+                <p aria-label="6,850" style={{ margin: "0", fontSize: "52px", fontWeight: "400", lineHeight: "1.05", letterSpacing: "0", color: "#F34241" }}>
                   <T v={v.v?.s3} />
                 </p>
               </div>
@@ -544,7 +551,7 @@ export default function render(v) {
               <img className="pic" src="./assets/ag-trees-fy26.jpg" alt="Looking up into the green canopy of a large tree" style={{ display: "block", marginLeft: "2px", width: "826px", height: "274px", objectFit: "cover" }} />
             </div>
           </div>
-          <div className="sweep" aria-hidden="true" style={{ position: "absolute", left: "0", top: "910px", width: "1440px", height: "8px", transform: `scaleX(${s(v.sweepS)})`, background: "linear-gradient(90deg, #74509F 0%, #F46074 55%, #F68F43 100%)" }} />
+          <div className="sweep" aria-hidden="true" style={{ position: "absolute", left: "calc(-1 * var(--gx, 0px))", top: "910px", width: "calc(1440px + 2 * var(--gx, 0px))", height: "8px", transform: `scaleX(${s(v.sweepS)})`, background: "linear-gradient(90deg, #74509F 0%, #F46074 55%, #F68F43 100%)" }} />
         </section>
         <section className="s45" aria-labelledby="t1-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden" }}>
           <div className="tx" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "490px" }}>
@@ -743,7 +750,7 @@ export default function render(v) {
             </a>
           </nav>
         </section>
-        <section className="s6" aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F" }}>
+        <section className="s6" aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z6" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="dc-title" aria-label="Bringing defence closer to the community" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -790,144 +797,145 @@ export default function render(v) {
                 SKIP TO ‘APPRECIATING NSMEN’
               </button>
               <article className={`st6 ${s(v.d6?.on0)}`} aria-label="Making defence more accessible">
-                <button className="dcph" type="button" aria-label="View photo: Participants in life vests sit in an inflatable boat in a swimming pool" onClick={v.lb_0_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "734px", top: "148px", width: "706px", height: "752px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
+                <button className="dcph" type="button" aria-label="View photo: Participants in life vests sit in an inflatable boat in a swimming pool" onClick={v.lb_0_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "148px", width: "625px", height: "752px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/dc4-big.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s0?.ph)}%)` }} />
                 </button>
-                <button className="dcph" type="button" aria-label="View photo: Children and adults assemble a raft frame from white water containers and pipes on a turf court" onClick={v.lb_0_1} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "231px", top: "177px", width: "245px", height: "300px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
+                <button className="dcph" type="button" aria-label="View photo: Children and adults assemble a raft frame from white water containers and pipes on a turf court" onClick={v.lb_0_1} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "227.5px", top: "178px", width: "245px", height: "300px", padding: "0", border: "0", borderRadius: "12px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/dc4-a.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s0?.ph)}%)` }} />
                 </button>
-                <button className="dcph" type="button" aria-label="View photo: Families stretch a green tarp between trees to build a shelter" onClick={v.lb_0_2} style={{ translate: `${s(v.pp?.d2)}`, position: "absolute", left: "92px", top: "515px", width: "300px", height: "200px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
+                <button className="dcph" type="button" aria-label="View photo: Families stretch a green tarp between trees to build a shelter" onClick={v.lb_0_2} style={{ translate: `${s(v.pp?.d2)}`, position: "absolute", left: "64px", top: "516px", width: "300px", height: "200px", padding: "0", border: "0", borderRadius: "12px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/dc4-b.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s0?.ph)}%)` }} />
                 </button>
-                <div className="dcpn" style={{ position: "absolute", left: "460px", top: "231px", width: "520px", height: "485px", boxSizing: "border-box", padding: "29px 32px 42px", borderRadius: "16px", background: "#000722", overflow: "hidden" }}>
-                  <h3 style={{ margin: "0", fontSize: "26px", fontWeight: "500", lineHeight: "34px", letterSpacing: "0.003em", color: "#F34141" }}>
+                <div className="dcpn" style={{ position: "absolute", left: "460px", top: "246px", width: "520px", boxSizing: "border-box", padding: "32px 32px 40px", display: "flex", flexDirection: "column", gap: "48px", borderRadius: "16px", background: "#000722", color: "#FFFFFF", overflow: "hidden" }}>
+                  <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "500", lineHeight: "1.2", letterSpacing: "0.48px", color: "#F34141" }}>
                     Making defence more accessible
                   </h3>
-                  <p style={{ margin: "45px 0 0", fontSize: "16px", lineHeight: "20px", color: "#FFFFFF" }}>
-                    Over
-                  </p>
-                  <div style={{ display: "flex", gap: "46px" }}>
-                    <div style={{ minWidth: "150px" }}>
-                      <p aria-label="500" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "-0.04em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
-                        <T v={v.d6?.s0?.c0} />
-                      </p>
-                      <p style={{ margin: "14px 0 0", fontSize: "22px", lineHeight: "1.2", color: "#FFFFFF" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                    <div style={{ display: "flex", alignItems: "flex-end", gap: "64px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                        <p style={{ margin: "0", fontSize: "18px", lineHeight: "1.2" }}>
+                          Over
+                        </p>
+                        <p aria-label="500" style={{ margin: "0", fontSize: "56px", fontWeight: "400", lineHeight: "1.2", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                          <T v={v.d6?.s0?.c0} />
+                        </p>
+                      </div>
+                      <p style={{ margin: "0", fontSize: "24px", lineHeight: "1.5", whiteSpace: "nowrap" }}>
                         participants
                       </p>
                     </div>
-                    <div style={{ minWidth: "150px" }}>
-                      <p aria-label="13" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "-0.04em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
-                        <T v={v.d6?.s0?.c1} />
-                      </p>
-                      <p style={{ margin: "14px 0 0", fontSize: "22px", lineHeight: "1.2", color: "#FFFFFF" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                        <p aria-label="13" style={{ margin: "0", fontSize: "56px", fontWeight: "400", lineHeight: "1.2", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                          <T v={v.d6?.s0?.c1} />
+                        </p>
+                      </div>
+                      <p style={{ margin: "0", fontSize: "24px", lineHeight: "1.5", whiteSpace: "nowrap" }}>
                         camps
                       </p>
                     </div>
+                    </div>
+                    <div style={{ height: "1px", background: "rgba(255,255,255,.3)" }} />
+                    <p aria-label="Through NS Experience Camps, families got a taste of NS-inspired activities, gaining a deeper appreciation of their loved ones’ service." style={{ margin: "0", fontSize: "18px", lineHeight: "1.8" }}>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s0?.l0} />
+                      </span>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s0?.l1} />
+                      </span>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s0?.l2} />
+                      </span>
+                    </p>
                   </div>
-                  <div style={{ height: "1px", marginTop: "36px", background: "rgba(255,255,255,.3)" }} />
-                  <p aria-label="Through NS Experience Camps, families got a taste of NS-inspired activities, gaining a deeper appreciation of their loved ones’ service." style={{ margin: "30px 0 0", fontSize: "20px", lineHeight: "36px", color: "#FFFFFF" }}>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s0?.l0} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s0?.l1} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s0?.l2} />
-                    </span>
-                  </p>
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d6?.s0?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d6?.on1)}`} aria-label="Commemorating SAF60 at SAFRA">
-                <button className="dcph" type="button" aria-label="View photo: Parents and children play a giant board game with large red dice on a turf court" onClick={v.lb_1_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "734px", top: "148px", width: "706px", height: "752px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
+              <article className={`st6 ${s(v.d6?.on1)}`} aria-label="Making defence more accessible">
+                <button className="dcph" type="button" aria-label="View photo: Parents and children play a giant board game with large red dice on a turf court" onClick={v.lb_1_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "148px", width: "625px", height: "752px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/dc3-big.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s1?.ph)}%)` }} />
                 </button>
-                <button className="dcph" type="button" aria-label="View photo: Children play with toy blasters among camouflage tents on a green court" onClick={v.lb_1_1} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "64px", top: "163px", width: "450px", height: "300px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
+                <button className="dcph" type="button" aria-label="View photo: Children play with toy blasters among camouflage tents on a green court" onClick={v.lb_1_1} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "99px", top: "168px", width: "380px", height: "253.33px", padding: "0", border: "0", borderRadius: "12px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 12px)" }}>
                   <img src="./assets/dc3-a.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s1?.ph)}%)` }} />
                 </button>
-                <button className="dcph" type="button" aria-label="View photo: An adult and child pose in flight suits and helmets against camouflage netting" onClick={v.lb_1_2} style={{ translate: `${s(v.pp?.d2)}`, position: "absolute", left: "160px", top: "500px", width: "210px", height: "278px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
+                <button className="dcph" type="button" aria-label="View photo: An adult and child pose in flight suits and helmets against camouflage netting" onClick={v.lb_1_2} style={{ translate: `${s(v.pp?.d2)}`, position: "absolute", left: "168.5px", top: "496px", width: "200px", height: "260px", padding: "0", border: "0", borderRadius: "13.18px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 13.18px)" }}>
                   <img src="./assets/dc3-b.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s1?.ph)}%)` }} />
                 </button>
-                <div className="dcpn" style={{ position: "absolute", left: "460px", top: "231px", width: "520px", height: "485px", boxSizing: "border-box", padding: "29px 32px 42px", borderRadius: "16px", background: "#000722", overflow: "hidden" }}>
-                  <h3 style={{ margin: "0", fontSize: "26px", fontWeight: "500", lineHeight: "34px", letterSpacing: "0.003em", color: "#F34141" }}>
-                    Commemorating SAF60 at SAFRA
+                <div className="dcpn" style={{ position: "absolute", left: "460px", top: "240px", width: "520px", boxSizing: "border-box", padding: "32px 32px 40px", display: "flex", flexDirection: "column", gap: "64px", borderRadius: "16px", background: "#000722", color: "#FFFFFF", overflow: "hidden" }}>
+                  <h3 style={{ margin: "0", fontSize: "28px", fontWeight: "500", lineHeight: "1.2", letterSpacing: "0.56px", color: "#F34141", whiteSpace: "nowrap" }}>
+                    Making defence more accessible
                   </h3>
-                  <p style={{ margin: "45px 0 0", fontSize: "16px", lineHeight: "20px", color: "#FFFFFF" }}>
-                    Over
-                  </p>
-                  <div style={{ display: "flex", gap: "46px" }}>
-                    <div style={{ minWidth: "150px" }}>
-                      <p aria-label="140K+" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "-0.04em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <p aria-label="140K+" style={{ margin: "0 0 -4px", fontSize: "64px", fontWeight: "400", lineHeight: "1.2", letterSpacing: "0", whiteSpace: "nowrap" }}>
                         <T v={v.d6?.s1?.c0} />
                       </p>
-                      <p style={{ margin: "14px 0 0", fontSize: "22px", lineHeight: "1.2", color: "#FFFFFF" }}>
-                        people engaged
+                      <p style={{ margin: "0", fontSize: "24px", lineHeight: "1.5", whiteSpace: "nowrap" }}>
+                        celebrated at SAFRA clubs
                       </p>
                     </div>
+                    <div style={{ height: "1px", background: "rgba(255,255,255,.3)" }} />
+                    <p aria-label="SAF60 Be@SAFRA Open House brought the SAF closer to families through flight simulators, military K9 encounters and interactive activities." style={{ margin: "0", fontSize: "20px", lineHeight: "1.8" }}>
+                      <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s1?.l0} />
+                      </span>
+                      <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s1?.l1} />
+                      </span>
+                      <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s1?.l2} />
+                      </span>
+                    </p>
                   </div>
-                  <div style={{ height: "1px", marginTop: "36px", background: "rgba(255,255,255,.3)" }} />
-                  <p aria-label="Be@SAFRA Open Houses brought families together to reflect on the SAF’s role as they enjoyed interactive activities, flight simulators and military K9 encounters." style={{ margin: "30px 0 0", fontSize: "20px", lineHeight: "36px", color: "#FFFFFF" }}>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s1?.l0} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s1?.l1} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s1?.l2} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s1?.l3} />
-                    </span>
-                  </p>
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d6?.s1?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
               <article className={`st6 ${s(v.d6?.on2)}`} aria-label="Sharing lessons from the past">
-                <button className="dcph" type="button" aria-label="View photo: A speaker addresses pupils seated in a classroom" onClick={v.lb_2_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "734px", top: "148px", width: "706px", height: "752px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
+                <button className="dcph" type="button" aria-label="View photo: A speaker addresses pupils seated in a classroom" onClick={v.lb_2_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "148px", width: "625px", height: "752px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/dc1-big.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s2?.ph)}%)` }} />
                 </button>
                 <button className="dcph" type="button" aria-label="View photo: Service personnel seated outdoors listen to standing speakers" onClick={v.lb_2_1} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "96px", top: "170px", width: "330px", height: "396px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/dc1-a.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s2?.ph)}%)` }} />
                 </button>
-                <div className="dcpn" style={{ position: "absolute", left: "460px", top: "231px", width: "520px", height: "485px", boxSizing: "border-box", padding: "29px 32px 42px", borderRadius: "16px", background: "#000722", overflow: "hidden" }}>
-                  <h3 style={{ margin: "0", fontSize: "26px", fontWeight: "500", lineHeight: "34px", letterSpacing: "0.003em", color: "#F34141" }}>
+                <div className="dcpn" style={{ position: "absolute", left: "460px", top: "246px", width: "520px", boxSizing: "border-box", padding: "32px 32px 40px", display: "flex", flexDirection: "column", gap: "48px", borderRadius: "16px", background: "#000722", color: "#FFFFFF", overflow: "hidden" }}>
+                  <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "500", lineHeight: "1.2", letterSpacing: "0.48px", color: "#F34141" }}>
                     Sharing lessons from the past
                   </h3>
-                  <p style={{ margin: "45px 0 0", fontSize: "16px", lineHeight: "20px", color: "#FFFFFF" }}>
-                    Over
-                  </p>
-                  <div style={{ display: "flex", gap: "46px" }}>
-                    <div style={{ minWidth: "150px" }}>
-                      <p aria-label="20K+" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "-0.04em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
-                        <T v={v.d6?.s2?.c0} />
-                      </p>
-                      <p style={{ margin: "14px 0 0", fontSize: "22px", lineHeight: "1.2", color: "#FFFFFF" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                    <div style={{ display: "flex", alignItems: "flex-end", gap: "64px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                        <p style={{ margin: "0", fontSize: "18px", lineHeight: "1.2" }}>
+                          Over
+                        </p>
+                        <p aria-label="20K+" style={{ margin: "0", fontSize: "56px", fontWeight: "400", lineHeight: "1.2", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                          <T v={v.d6?.s2?.c0} />
+                        </p>
+                      </div>
+                      <p style={{ margin: "0", fontSize: "24px", lineHeight: "1.5", whiteSpace: "nowrap" }}>
                         people engaged
                       </p>
                     </div>
+                    </div>
+                    <div style={{ height: "1px", background: "rgba(255,255,255,.3)" }} />
+                    <p aria-label="Commitment to Defence (C2D) Ambassadors from the SAF Veterans’ League shared real-life experiences, reinforcing the importance of a strong defence." style={{ margin: "0", fontSize: "18px", lineHeight: "1.8" }}>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s2?.l0} />
+                      </span>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s2?.l1} />
+                      </span>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s2?.l2} />
+                      </span>
+                    </p>
                   </div>
-                  <div style={{ height: "1px", marginTop: "36px", background: "rgba(255,255,255,.3)" }} />
-                  <p aria-label="Commitment to Defence (C2D) Ambassadors from the SAF Veterans’ League shared real-life experiences, reinforcing the importance of a strong defence." style={{ margin: "30px 0 0", fontSize: "20px", lineHeight: "36px", color: "#FFFFFF" }}>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s2?.l0} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s2?.l1} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s2?.l2} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s2?.l3} />
-                    </span>
-                  </p>
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d6?.s2?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
               <article className={`st6 ${s(v.d6?.on3)}`} aria-label="Building preparedness together">
-                <button className="dcph" type="button" aria-label="View photo: Children practise CPR on training manikins with instructors" onClick={v.lb_3_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "734px", top: "148px", width: "706px", height: "752px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
+                <button className="dcph" type="button" aria-label="View photo: Children practise CPR on training manikins with instructors" onClick={v.lb_3_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "148px", width: "625px", height: "752px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/dc2-big.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s3?.ph)}%)` }} />
                 </button>
                 <button className="dcph" type="button" aria-label="View photo: Emergency responders demonstrate a rescue to an audience under a sheltered walkway" onClick={v.lb_3_1} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "64px", top: "163px", width: "450px", height: "277px", padding: "0", border: "0", borderRadius: "20px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 20px)" }}>
@@ -936,35 +944,39 @@ export default function render(v) {
                 <button className="dcph" type="button" aria-label="View photo: Boys look into a camouflage field pack held open by an instructor" onClick={v.lb_3_2} style={{ translate: `${s(v.pp?.d2)}`, position: "absolute", left: "142px", top: "488px", width: "276px", height: "240px", padding: "0", border: "0", borderRadius: "14px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 14px)" }}>
                   <img src="./assets/dc2-b.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s3?.ph)}%)` }} />
                 </button>
-                <div className="dcpn" style={{ position: "absolute", left: "460px", top: "231px", width: "520px", height: "485px", boxSizing: "border-box", padding: "29px 32px 42px", borderRadius: "16px", background: "#000722", overflow: "hidden" }}>
-                  <h3 style={{ margin: "0", fontSize: "26px", fontWeight: "500", lineHeight: "34px", letterSpacing: "0.003em", color: "#F34141" }}>
+                <div className="dcpn" style={{ position: "absolute", left: "460px", top: "246px", width: "520px", boxSizing: "border-box", padding: "32px 32px 40px", display: "flex", flexDirection: "column", gap: "48px", borderRadius: "16px", background: "#000722", color: "#FFFFFF", overflow: "hidden" }}>
+                  <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "500", lineHeight: "1.2", letterSpacing: "0.48px", color: "#F34141" }}>
                     Building preparedness together
                   </h3>
-                  <p style={{ margin: "45px 0 0", fontSize: "16px", lineHeight: "20px", color: "#FFFFFF" }}>
-                    Over
-                  </p>
-                  <div style={{ display: "flex", gap: "46px" }}>
-                    <div style={{ minWidth: "150px" }}>
-                      <p aria-label="40K+" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "-0.04em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
-                        <T v={v.d6?.s3?.c0} />
-                      </p>
-                      <p style={{ margin: "14px 0 0", fontSize: "22px", lineHeight: "1.2", color: "#FFFFFF" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                    <div style={{ display: "flex", alignItems: "flex-end", gap: "64px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                        <p style={{ margin: "0", fontSize: "18px", lineHeight: "1.2" }}>
+                          Over
+                        </p>
+                        <p aria-label="40K+" style={{ margin: "0", fontSize: "56px", fontWeight: "400", lineHeight: "1.2", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                          <T v={v.d6?.s3?.c0} />
+                        </p>
+                      </div>
+                      <p style={{ margin: "0", fontSize: "24px", lineHeight: "1.5", whiteSpace: "nowrap" }}>
                         people engaged
                       </p>
                     </div>
+                    </div>
+                    <div style={{ height: "1px", background: "rgba(255,255,255,.3)" }} />
+                    <p aria-label="Total Defence Day commemorative activities equipped participants with practical skills through hands-on demonstrations and interactive games." style={{ margin: "0", fontSize: "18px", lineHeight: "1.8" }}>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s3?.l0} />
+                      </span>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s3?.l1} />
+                      </span>
+                      <span style={{ display: "block", height: "32.4px", whiteSpace: "pre" }}>
+                        <T v={v.d6?.s3?.l2} />
+                      </span>
+                    </p>
                   </div>
-                  <div style={{ height: "1px", marginTop: "36px", background: "rgba(255,255,255,.3)" }} />
-                  <p aria-label="Total Defence Day commemorative activities equipped participants with practical skills through hands-on demonstrations and interactive games." style={{ margin: "30px 0 0", fontSize: "20px", lineHeight: "36px", color: "#FFFFFF" }}>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s3?.l0} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s3?.l1} />
-                    </span>
-                    <span style={{ display: "block", height: "36px", whiteSpace: "pre" }}>
-                      <T v={v.d6?.s3?.l2} />
-                    </span>
-                  </p>
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d6?.s3?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
@@ -972,7 +984,7 @@ export default function render(v) {
           </div>
           <div className="nv6" aria-hidden="true" />
         </section>
-        <section className="s7" aria-labelledby="an-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F" }}>
+        <section className="s7" aria-labelledby="an-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z7" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="an-title" aria-label="Appreciating national servicemen" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -1016,7 +1028,7 @@ export default function render(v) {
                   </h3>
                   <div style={{ display: "flex", gap: "68px", marginTop: "51px" }}>
                     <div style={{ minWidth: "150px" }}>
-                      <p aria-label="35K+" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "-0.04em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                      <p aria-label="35K+" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "0", color: "#FFFFFF", whiteSpace: "nowrap" }}>
                         <T v={v.d7?.s0?.c0} />
                       </p>
                       <p style={{ margin: "14px 0 0", fontSize: "22px", lineHeight: "1.2", color: "#FFFFFF" }}>
@@ -1024,7 +1036,7 @@ export default function render(v) {
                       </p>
                     </div>
                     <div style={{ minWidth: "150px" }}>
-                      <p aria-label="460" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "-0.04em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                      <p aria-label="460" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "0", color: "#FFFFFF", whiteSpace: "nowrap" }}>
                         <T v={v.d7?.s0?.c1} />
                       </p>
                       <p style={{ margin: "14px 0 0", fontSize: "22px", lineHeight: "1.2", color: "#FFFFFF" }}>
@@ -1051,7 +1063,7 @@ export default function render(v) {
           </div>
           <div className="nv7" aria-hidden="true" />
         </section>
-        <section className="s8" aria-labelledby="sb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F" }}>
+        <section className="s8" aria-labelledby="sb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z8" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="sb-title" aria-label="Strengthening bonds" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -1089,7 +1101,7 @@ export default function render(v) {
                   </h3>
                   <div style={{ display: "flex", gap: "68px", marginTop: "51px" }}>
                     <div style={{ minWidth: "150px" }}>
-                      <p aria-label="52K+" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "-0.04em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                      <p aria-label="52K+" style={{ margin: "0", fontSize: "64px", fontWeight: "400", lineHeight: "1", letterSpacing: "0", color: "#FFFFFF", whiteSpace: "nowrap" }}>
                         <T v={v.d8?.s0?.c0} />
                       </p>
                       <p style={{ margin: "14px 0 0", fontSize: "22px", lineHeight: "1.2", color: "#FFFFFF" }}>
@@ -1116,7 +1128,7 @@ export default function render(v) {
           </div>
           <div className="nv8" aria-hidden="true" />
         </section>
-        <section className="s9" aria-labelledby="t2-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F" }}>
+        <section className="s9" aria-labelledby="t2-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="t2-title" aria-label="& beyond National Service, we support NSmen and their families in everyday life." style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "684px", margin: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", fontWeight: "400", textAlign: "center" }}>
             <span className="t9 t9a" style={{ display: "block", fontSize: "64px", fontWeight: "400", lineHeight: "1.1", letterSpacing: "1.28px", color: "#6E778B" }}>
               <span className="hv" aria-hidden="true" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
@@ -1365,16 +1377,17 @@ export default function render(v) {
               </span>
             </span>
           </h2>
-          <svg className="tg9" aria-hidden="true" style={{ position: "absolute", left: "0", top: "684px", width: "1440px", height: "217px", display: "block" }} viewBox="0 0 1440 217" preserveAspectRatio="none">
+          <svg className="tg9" aria-hidden="true" style={{ position: "absolute", left: `${-(v.gx || 0)}px`, top: "684px", width: `${1440 + 2 * (v.gx || 0)}px`, height: "217px", display: "block" }} viewBox={`${-(v.gx || 0)} 0 ${1440 + 2 * (v.gx || 0)} 217`} preserveAspectRatio="none">
             <defs>
-              <linearGradient id="tg9G" x1="0" y1="108.18" x2="1758.57" y2="1056.72" gradientUnits="userSpaceOnUse">
+              {/* the shared gradient (see ZONE_GRAD), in this band's own coordinates: it starts at the band's top */}
+              <linearGradient id="tg9G" x1={ZONE_GRAD.x1} y1={ZONE_GRAD.y1 - 3402} x2={ZONE_GRAD.x2} y2={ZONE_GRAD.y2 - 3402} gradientUnits="userSpaceOnUse">
                 <stop stopColor="#6252A4" />
-                <stop offset="0.490385" stopColor="#F14192" />
-                <stop offset="0.927885" stopColor="#F6765D" />
-                <stop offset="0.9999" stopColor="#F69141" />
+                <stop offset="0.4" stopColor="#F14192" />
+                <stop offset="0.75" stopColor="#F6765D" />
+                <stop offset="1" stopColor="#F69141" />
               </linearGradient>
             </defs>
-            <path fill="url(#tg9G)" d="M719.999 0C762.331 0 799.274 23.3611 818.941 58.046C835.286 86.8717 860.872 115.444 894.009 115.444H1332.24C1369.96 115.444 1388.82 115.444 1403.23 122.877C1415.9 129.415 1426.2 139.848 1432.66 152.679C1440 167.267 1440 178.167 1440 216.361H0C0 178.167 0.00020976 167.267 7.34089 152.679C13.7979 139.848 24.101 129.415 36.7735 122.877C51.1804 115.444 70.0402 115.444 107.76 115.444H545.989C579.126 115.444 604.712 86.8717 621.057 58.046C640.724 23.3611 677.667 0 719.999 0Z" />
+            <path fill="url(#tg9G)" d={bleedPath(TONGUE, v.gx)} />
           </svg>
           <button className="cue9" type="button" aria-label="Scroll to continue" onClick={v.next} style={{ position: "absolute", left: "642px", top: "712px", width: "160px", height: "160px", padding: "0", border: "0", borderRadius: "50%", background: "transparent", cursor: "pointer" }}>
             <svg width="160" height="160" viewBox="0 0 160 160" style={{ display: "block", overflow: "visible" }}>
@@ -1395,7 +1408,19 @@ export default function render(v) {
             </svg>
           </button>
         </section>
-        <section className="s10" aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(122.38deg, #6252A4 0.567%, #F14192 47.171%, #F6765D 88.748%, #F69141 95.592%)" }}>
+        {/* one gradient behind the band under section 9, Membership and Clubs & Facilities, so it flows through all three */}
+        <svg className="zbg" aria-hidden="true" style={{ position: "absolute", left: `${-(v.gx || 0)}px`, top: "3618px", width: `${1440 + 2 * (v.gx || 0)}px`, height: "2533px", display: "block", pointerEvents: "none" }} viewBox={`${-(v.gx || 0)} 3618 ${1440 + 2 * (v.gx || 0)} 2533`} preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="zG" x1={ZONE_GRAD.x1} y1={ZONE_GRAD.y1} x2={ZONE_GRAD.x2} y2={ZONE_GRAD.y2} gradientUnits="userSpaceOnUse">
+                <stop stopColor="#6252A4" />
+                <stop offset="0.4" stopColor="#F14192" />
+                <stop offset="0.75" stopColor="#F6765D" />
+                <stop offset="1" stopColor="#F69141" />
+            </linearGradient>
+          </defs>
+          <rect x={-(v.gx || 0)} y="3618" width={1440 + 2 * (v.gx || 0)} height="2533" fill="url(#zG)" />
+        </svg>
+        <section className="s10" aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden" }}>
           <div style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "1124px", transformOrigin: "0 0", transform: "translate(72px, -36px) scale(0.9)" }}>
             <div style={{ position: "absolute", left: "104px", top: "104px", width: "396px", paddingTop: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
               <h2 id="mb-title" className="mbk mk2" aria-label="Membership, made more rewarding" style={{ margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
@@ -1472,7 +1497,7 @@ export default function render(v) {
                   <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
                     <div style={{ display: "flex", gap: "16px" }}>
                       <div style={{ flex: "1 0 0", minWidth: "0" }}>
-                        <p aria-label="100+" style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                        <p aria-label="100+" style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", letterSpacing: "0", lineHeight: "1.4", color: "#EEEEEE", whiteSpace: "nowrap" }}>
                           <T v={v.mbv?.c0} />
                         </p>
                         <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", letterSpacing: "0.96px", color: "#EEEEEE" }}>
@@ -1480,7 +1505,7 @@ export default function render(v) {
                         </p>
                       </div>
                       <div style={{ flex: "1 0 0", minWidth: "0" }}>
-                        <p aria-label="180,000+" style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                        <p aria-label="180,000+" style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", letterSpacing: "0", lineHeight: "1.4", color: "#EEEEEE", whiteSpace: "nowrap" }}>
                           <T v={v.mbv?.c1} />
                         </p>
                         <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", letterSpacing: "0.96px", color: "#EEEEEE" }}>
@@ -1508,7 +1533,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s15" aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "4518px", width: "1440px", height: "1633px", overflow: "hidden", background: "linear-gradient(108.9deg, #6252A4 -40.7%, #F14192 15.278%, #F6765D 64.002%, #F69141 72.022%)" }}>
+        <section className="s15" aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "4518px", width: "1440px", height: "1633px", overflow: "hidden" }}>
           <div style={{ position: "absolute", left: "104px", top: "104px", width: "1232px", display: "flex", flexDirection: "column", gap: "24px", textAlign: "center" }}>
             <h2 id="fc-title" className="fck fc1k" style={{ "--d": ".45s", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
               <span style={{ color: "#FFFFFF" }}>
@@ -1547,7 +1572,7 @@ export default function render(v) {
             </p>
           </article>
         </section>
-        <section className="s11" hidden aria-labelledby="fy-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(123.69deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)" }}>
+        <section className="s11" hidden aria-labelledby="fy-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(123.69deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", borderImage: "linear-gradient(123.69deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "1207px", transformOrigin: "0 0", transform: "translate(144px, -40px) scale(0.8)" }}>
             <h2 id="fy-title" className="fyk" style={{ "--d": ".55s", position: "absolute", left: "0", top: "104px", width: "1440px", margin: "0", textAlign: "center", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase", color: "#FFFFFF" }}>
               Our year in summary
@@ -1558,7 +1583,7 @@ export default function render(v) {
             <div style={{ position: "absolute", left: "108.83px", top: "269.41px", width: "394px", height: "380px", transform: "rotate(1deg)" }}>
               <article className="fyk fyc" style={{ "--d": "1.00s", width: "100%", minHeight: "100%", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "32px", borderRadius: "16px", background: "#FFFFFF" }}>
                 <div style={{ width: "100%", fontWeight: "500", lineHeight: "1.4" }}>
-                  <p style={{ margin: "0 0 -4px", fontSize: "56px", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", fontVariantNumeric: "tabular-nums" }} aria-label="$134.6M">
+                  <p style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }} aria-label="$134.6M">
                     <T v={v.fyv?.n0} />
                   </p>
                   <p style={{ margin: "0", fontSize: "24px", color: "#272C3F" }}>
@@ -1576,7 +1601,7 @@ export default function render(v) {
             <div style={{ position: "absolute", left: "523.48px", top: "269.41px", width: "394px", height: "380px", transform: "rotate(0deg)" }}>
               <article className="fyk fyc" style={{ "--d": "1.08s", width: "100%", minHeight: "100%", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "32px", borderRadius: "16px", background: "#FFFFFF" }}>
                 <div style={{ width: "100%", fontWeight: "500", lineHeight: "1.4" }}>
-                  <p style={{ margin: "0 0 -4px", fontSize: "56px", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", fontVariantNumeric: "tabular-nums" }} aria-label="$154.2M">
+                  <p style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }} aria-label="$154.2M">
                     <T v={v.fyv?.n1} />
                   </p>
                   <p style={{ margin: "0", fontSize: "24px", color: "#272C3F" }}>
@@ -1594,7 +1619,7 @@ export default function render(v) {
             <div style={{ position: "absolute", left: "944.79px", top: "275.29px", width: "394px", height: "382px", transform: "rotate(-1deg)" }}>
               <article className="fyk fyc" style={{ "--d": "1.16s", width: "100%", minHeight: "100%", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "32px", borderRadius: "16px", background: "#FFFFFF" }}>
                 <div style={{ width: "100%", fontWeight: "500", lineHeight: "1.4" }}>
-                  <p style={{ margin: "0 0 -4px", fontSize: "56px", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", fontVariantNumeric: "tabular-nums" }} aria-label="$19.6M">
+                  <p style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }} aria-label="$19.6M">
                     <T v={v.fyv?.n2} />
                   </p>
                   <p style={{ margin: "0", fontSize: "24px", color: "#272C3F" }}>
@@ -1614,7 +1639,7 @@ export default function render(v) {
             <div style={{ position: "absolute", left: "98.43px", top: "684.57px", width: "394px", height: "412px", transform: "rotate(0deg)" }}>
               <article className="fyk fyc" style={{ "--d": "1.24s", width: "100%", minHeight: "100%", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "32px", borderRadius: "16px", background: "#FFFFFF" }}>
                 <div style={{ width: "100%", fontWeight: "500", lineHeight: "1.4" }}>
-                  <p style={{ margin: "0 0 -4px", fontSize: "56px", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", fontVariantNumeric: "tabular-nums" }} aria-label="$20.9M">
+                  <p style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }} aria-label="$20.9M">
                     <T v={v.fyv?.n3} />
                   </p>
                   <p style={{ margin: "0", fontSize: "24px", color: "#272C3F" }}>
@@ -1632,7 +1657,7 @@ export default function render(v) {
             <div style={{ position: "absolute", left: "537.88px", top: "684.57px", width: "394px", height: "412px", transform: "rotate(2deg)" }}>
               <article className="fyk fyc" style={{ "--d": "1.32s", width: "100%", minHeight: "100%", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "32px", borderRadius: "16px", background: "#FFFFFF" }}>
                 <div style={{ width: "100%", fontWeight: "500", lineHeight: "1.4" }}>
-                  <p style={{ margin: "0 0 -4px", fontSize: "56px", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", fontVariantNumeric: "tabular-nums" }} aria-label="$1.9M">
+                  <p style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }} aria-label="$1.9M">
                     <T v={v.fyv?.n4} />
                   </p>
                   <p style={{ margin: "0", fontSize: "24px", color: "#272C3F" }}>
@@ -1650,7 +1675,7 @@ export default function render(v) {
             <div style={{ position: "absolute", left: "948.57px", top: "684.57px", width: "394px", height: "412px", transform: "rotate(0deg)" }}>
               <article className="fyk fyc" style={{ "--d": "1.40s", width: "100%", minHeight: "100%", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "32px", borderRadius: "16px", background: "#FFFFFF" }}>
                 <div style={{ width: "100%", fontWeight: "500", lineHeight: "1.4" }}>
-                  <p style={{ margin: "0 0 -4px", fontSize: "56px", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", fontVariantNumeric: "tabular-nums" }} aria-label="$405.5M">
+                  <p style={{ margin: "0 0 -4px", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }} aria-label="$405.5M">
                     <T v={v.fyv?.n5} />
                   </p>
                   <p style={{ margin: "0", fontSize: "24px", color: "#272C3F" }}>
@@ -1667,7 +1692,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s12" aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F" }}>
+        <section className="s12" aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="wc-title" aria-label="The year may be over. Our work continues." style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "684px", margin: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", fontWeight: "400", textAlign: "center" }}>
             <span className="t12 t12a" style={{ display: "block", fontSize: "64px", fontWeight: "400", lineHeight: "1.1", letterSpacing: "1.28px", color: "#6E778B" }}>
               <span className="hv" aria-hidden="true" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
@@ -1798,8 +1823,8 @@ export default function render(v) {
               </span>
             </span>
           </h2>
-          <svg className="tg2" aria-hidden="true" style={{ position: "absolute", left: "0", top: "684px", width: "1440px", height: "217px", display: "block" }} viewBox="0 0 1440 217" preserveAspectRatio="none">
-            <path fill="#18212A" d="M719.999 0C762.331 0 799.274 23.3611 818.941 58.046C835.286 86.8717 860.872 115.444 894.009 115.444H1332.24C1369.96 115.444 1388.82 115.444 1403.23 122.877C1415.9 129.415 1426.2 139.848 1432.66 152.679C1440 167.267 1440 178.167 1440 216.361H0C0 178.167 0.00020976 167.267 7.34089 152.679C13.7979 139.848 24.101 129.415 36.7735 122.877C51.1804 115.444 70.0402 115.444 107.76 115.444H545.989C579.126 115.444 604.712 86.8717 621.057 58.046C640.724 23.3611 677.667 0 719.999 0Z" />
+          <svg className="tg2" aria-hidden="true" style={{ position: "absolute", left: `${-(v.gx || 0)}px`, top: "684px", width: `${1440 + 2 * (v.gx || 0)}px`, height: "217px", display: "block" }} viewBox={`${-(v.gx || 0)} 0 ${1440 + 2 * (v.gx || 0)} 217`} preserveAspectRatio="none">
+            <path fill="#18212A" d={bleedPath(TONGUE, v.gx)} />
           </svg>
           <button className="cue2" type="button" aria-label="Scroll down to see what's next for SAFRA" onClick={v.next} style={{ position: "absolute", left: "642px", top: "712px", width: "160px", height: "160px", padding: "0", border: "0", borderRadius: "50%", background: "transparent", cursor: "pointer" }}>
             <svg width="160" height="160" viewBox="0 0 160 160" style={{ display: "block", overflow: "visible" }}>
@@ -1830,7 +1855,7 @@ export default function render(v) {
             </svg>
           </button>
         </section>
-        <section className="s13" aria-labelledby="nx-title" style={{ position: "absolute", left: "0", top: "7051px", width: "1440px", height: "900px", overflow: "hidden", background: "#18212A" }}>
+        <section className="s13" aria-labelledby="nx-title" style={{ position: "absolute", left: "0", top: "7051px", width: "1440px", height: "900px", overflow: "hidden", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div style={{ position: "absolute", left: "104px", top: "120px", width: "1232px", display: "flex", flexDirection: "column", gap: "16px", textAlign: "center" }}>
             <h2 id="nx-title" className="nxk" style={{ "--d": ".55s", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
               <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
@@ -1872,7 +1897,7 @@ export default function render(v) {
                     </h3>
                     <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
                       <div style={{ flex: "1 0 0", minWidth: "0", paddingBottom: "16px", display: "flex", flexDirection: "column", gap: "2px" }}>
-                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
+                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", lineHeight: "1.4", color: "#EEEEEE" }}>
                           3,000
                         </p>
                         <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
@@ -1890,7 +1915,7 @@ export default function render(v) {
                     </h3>
                     <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
                       <div style={{ flex: "1 0 0", minWidth: "0", paddingBottom: "16px", display: "flex", flexDirection: "column", gap: "2px" }}>
-                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
+                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", lineHeight: "1.4", color: "#EEEEEE" }}>
                           1,300+
                         </p>
                         <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
@@ -1910,7 +1935,7 @@ export default function render(v) {
                     </h3>
                     <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
                       <div style={{ flex: "1 0 0", minWidth: "0", paddingBottom: "16px", display: "flex", flexDirection: "column", gap: "2px" }}>
-                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
+                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", lineHeight: "1.4", color: "#EEEEEE" }}>
                           2027
                         </p>
                         <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
@@ -1957,7 +1982,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s14" aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "7951px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)" }}>
+        <section className="s14" aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "7951px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="end-title" className="enk" style={{ "--d": ".55s", position: "absolute", left: "104px", top: "325px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "64px", letterSpacing: "0.01em", color: "#FFFFFF" }}>
             ONE YEAR.
             <br />
@@ -2003,7 +2028,7 @@ export default function render(v) {
           </h2>
         </div>
       </div>
-      <div className={`lb ${s(v.lbv?.cls)}`} role="dialog" aria-modal="true" aria-label="Photo gallery" style={{ position: "absolute", inset: "0", zIndex: "20", background: "#18212A" }}>
+      <div className={`lb ${s(v.lbv?.cls)}`} role="dialog" aria-modal="true" aria-label="Photo gallery" style={{ position: "absolute", inset: "0", zIndex: "20", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
         <div style={{ position: "absolute", left: "64px", top: "142px", width: "1312px", height: "590px", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img className="lb-img" src={v.lbv?.src} alt={v.lbv?.alt} style={{ height: "590px", width: "auto", maxWidth: "1312px", objectFit: "contain", display: "block" }} />
         </div>
@@ -2038,9 +2063,9 @@ export default function render(v) {
         </button>
       </div>
       <div className={`tabs ${s(v.tabs?.cls)}`} role="tablist" aria-label="Our impact topics">
-        <span className="tt-div" aria-hidden="true" style={{ left: "555px" }} />
-        <span className="tt-div" aria-hidden="true" style={{ left: "1030px" }} />
-        <button className={`tt ${s(v.tabs?.s6)}`} type="button" role="tab" aria-selected={v.tabs?.s6sel} onClick={v.tab_s6} style={{ left: "48px" }}>
+        <span className="tt-div" aria-hidden="true" style={{ left: "538px" }} />
+        <span className="tt-div" aria-hidden="true" style={{ left: "997px" }} />
+        <button className={`tt ${s(v.tabs?.s6)}`} type="button" role="tab" aria-selected={v.tabs?.s6sel} onClick={v.tab_s6} style={{ left: "40px" }}>
           <span className="tt-l">
             <span className="tt-g">
               Bringing defence closer
@@ -2052,7 +2077,7 @@ export default function render(v) {
             </span>
           </span>
         </button>
-        <button className={`tt ${s(v.tabs?.s7)}`} type="button" role="tab" aria-selected={v.tabs?.s7sel} onClick={v.tab_s7} style={{ left: "603px" }}>
+        <button className={`tt ${s(v.tabs?.s7)}`} type="button" role="tab" aria-selected={v.tabs?.s7sel} onClick={v.tab_s7} style={{ left: "578px" }}>
           <span className="tt-l">
             <span className="tt-g">
               Appreciating
@@ -2064,7 +2089,7 @@ export default function render(v) {
             </span>
           </span>
         </button>
-        <button className={`tt ${s(v.tabs?.s8)}`} type="button" role="tab" aria-selected={v.tabs?.s8sel} onClick={v.tab_s8} style={{ left: "1077px" }}>
+        <button className={`tt ${s(v.tabs?.s8)}`} type="button" role="tab" aria-selected={v.tabs?.s8sel} onClick={v.tab_s8} style={{ left: "1037px" }}>
           <span className="tt-l">
             <span className="tt-g">
               Strengthening
@@ -2150,13 +2175,6 @@ export default function render(v) {
           </div>
         </div>
       </nav>
-      <div className="cur" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", width: "120px", height: "120px", transform: `translate(${s(v.cur2?.x)}px, ${s(v.cur2?.y)}px)`, opacity: `${s(v.cur2?.o)}`, pointerEvents: "none", zIndex: "10" }}>
-        <div className="cur-in" style={{ position: "relative", width: "120px", height: "120px", transform: `scale(${s(v.cur2?.s)})` }}>
-          <div style={{ position: "absolute", left: "0", top: "0", width: "120px", height: "120px", borderRadius: "50%", background: "#F34141" }} />
-          <img className="arw" src="./assets/scroll-arrow.svg" alt="" style={{ position: "absolute", left: "0", top: "0", width: "120px", height: "120px" }} />
-          <img className="ring" src="./assets/scroll-ring.svg" alt="" style={{ position: "absolute", left: "0", top: "0", width: "120px", height: "120px" }} />
-        </div>
-      </div>
       <div className="cur" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", width: "120px", height: "120px", transform: `translate(${s(v.cur?.x)}px, ${s(v.cur?.y)}px)`, opacity: `${s(v.cur?.o)}`, pointerEvents: "none", zIndex: "10" }}>
         <div className="cur-in" style={{ position: "relative", width: "120px", height: "120px", transform: `scale(${s(v.cur?.s)})` }}>
           <div style={{ position: "absolute", left: "0", top: "0", width: "120px", height: "120px", borderRadius: "50%", background: "#F34141" }} />

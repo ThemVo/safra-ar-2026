@@ -1,0 +1,55 @@
+/* Mobile layout (.mh.m): 390 × 844 frame, 16px margins. Positions live in templateMobile.jsx; these rules
+   adjust the pieces that the desktop stylesheet sizes in px. Hover effects are switched off for .m in artboard.css. */
+
+/* no custom cursors or cursor followers on touch */
+.mh.m .cur { display: none !important; }
+.mh.m, .mh.m * { cursor: auto !important; }
+
+/* sticky menu: smaller button, 16px from the edges; the panel opens to the frame width */
+.mh.m .smenu { right: 16px; top: 16px; }
+.mh.m .sm-btn, .mh.m .sm-btn::before { width: 44px; height: 44px; border-radius: 12px; }
+.mh.m .sm-ic { transform: translate(-50%, -50%) scale(.75); }
+.mh.m .sm-panel { width: 358px; box-sizing: border-box; padding: 20px 20px 32px 24px; gap: 20px; transform-origin: calc(100% - 22px) 22px; }
+.mh.m .sm-body { gap: 24px; }
+.mh.m .sm-list { gap: 10px; }
+.mh.m .nvi { font-size: 18px; }
+.mh.m .sm-cta { font-size: 15px; padding: 10px 16px; }
+
+/* At a glance: the cards rise a shorter way */
+@keyframes mhRiseM { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+.is-s3.m .sl.on .cd { animation-name: mhRiseM; }
+.mh.m .sl .frame { clip-path: inset(0 round 10px); }
+/* sustainability figures stay on one line */
+.mh.m .sl .cd p[aria-label] { white-space: nowrap; }
+
+/* topic cards: zoom toward the tapped card (scale 1.06 about its centre) */
+.go6.m .s45 { transform: translate(-11.7px, -19.5px) scale(1.06); }
+.go7.m .s45 { transform: translate(-11.7px, -31.3px) scale(1.06); }
+.go8.m .s45 { transform: translate(-11.7px, -43.0px) scale(1.06); }
+
+/* L2 tabs: three narrow columns that wrap */
+.mh.m .tabs { width: 390px; height: 84px; }
+.mh.m .tt { top: 76px; font-size: 11px; line-height: 13px; letter-spacing: .02em; white-space: normal; }
+.mh.m .tt::before { top: -12px; height: 4px; }
+.mh.m .tt-div { top: 76px; height: 40px; }
+.mh.m .s6 .dcph, .mh.m .s7 .dcph, .mh.m .s8 .dcph { border-radius: 12px !important; clip-path: inset(0 round 12px) !important; }
+
+/* bands under the two statements: shorter rise to match the 130px band */
+@keyframes mhRiseUpM { from { transform: translateY(130px); } to { transform: none; } }
+.is-s9.m .tg9, .is-s9.m .cue9, .is-s12.m .tg2, .is-s12.m .cue2 { animation-name: mhRiseUpM; }
+.mh.m:not(.is-s9) .tg9, .mh.m:not(.is-s9) .cue9, .mh.m:not(.is-s12) .tg2, .mh.m:not(.is-s12) .cue2 { transform: translateY(130px); }
+
+/* Looking forward: the three topics run across, the indicator underlines the active one */
+.mh.m .nxt { width: 110px; height: auto; flex: none; padding: 0 0 12px; font-size: 12px; line-height: 1.3; white-space: normal; align-items: flex-end; }
+.mh.m .nxt.on { line-height: 1.3; }
+.mh.m .nxi { top: auto; bottom: 0; width: 110px; height: 3px; background: linear-gradient(90deg, #6252A4 0%, #F14192 55%, #F6765D 90%, #F69141 100%); transition: left .45s cubic-bezier(.2,.7,.2,1); }
+
+/* fewer pixels to travel for the masthead headline lines */
+@keyframes mhLineM { from { opacity: 0; transform: translateY(10px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* Keep the shared reveal timing, with travel and blur suited to the mobile type sizes. */
+.mh.m.is-run .ln, .mh.m.is-run .lgl,
+.mh.m.post .ln,
+.mh.m.is-s4 .t4a, .mh.m.is-s4 .t4b,
+.mh.m.is-s9 .t9a, .mh.m.is-s9 .t9b, .mh.m.is-s9 .t9c,
+.mh.m.is-s12 .t12a, .mh.m.is-s12 .t12b { animation-name: mhLineM; }

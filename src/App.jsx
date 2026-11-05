@@ -1,20 +1,22 @@
-import { useLayoutEffect, useRef, useState } from 'react';
-import Artboard from './artboard/Artboard.jsx';
+import { useLayoutEffect, useRef, useState } from "react";
+import Artboard from "./artboard/Artboard.jsx";
 
-const MOBILE_QUERY = '(max-width: 767px)';
+const MOBILE_QUERY = "(max-width: 767px)";
 const FRAME = { desktop: [1440, 900], mobile: [390, 844] };
 
 export default function App() {
   const wrap = useRef(null);
-  const [mobile, setMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches);
+  const [mobile, setMobile] = useState(
+    () => window.matchMedia(MOBILE_QUERY).matches,
+  );
   const [gx, setGx] = useState(0);
 
   useLayoutEffect(() => {
     const media = window.matchMedia(MOBILE_QUERY);
     const update = () => setMobile(media.matches);
     update();
-    media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
   }, []);
 
   useLayoutEffect(() => {
@@ -30,22 +32,22 @@ export default function App() {
       el.style.width = `${fw}px`;
       el.style.height = `${fh}px`;
       el.style.transform = `scale(${scale})`;
-      el.style.setProperty('--gx', `${gutter.toFixed(2)}px`);
+      el.style.setProperty("--gx", `${gutter.toFixed(2)}px`);
       setGx(+gutter.toFixed(2));
     };
     fit();
-    window.addEventListener('resize', fit);
-    window.visualViewport?.addEventListener('resize', fit);
+    window.addEventListener("resize", fit);
+    window.visualViewport?.addEventListener("resize", fit);
     return () => {
-      window.removeEventListener('resize', fit);
-      window.visualViewport?.removeEventListener('resize', fit);
+      window.removeEventListener("resize", fit);
+      window.visualViewport?.removeEventListener("resize", fit);
     };
   }, [mobile]);
 
   return (
-    <div className={'stage' + (mobile ? ' stage-m' : '')}>
+    <div className={"stage" + (mobile ? " stage-m" : "")}>
       <div className="wrap" id="wrap" ref={wrap}>
-        <Artboard key={mobile ? 'm' : 'd'} mobile={mobile} gx={gx} />
+        <Artboard key={mobile ? "m" : "d"} mobile={mobile} gx={gx} />
       </div>
     </div>
   );

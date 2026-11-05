@@ -3,7 +3,7 @@ import render from "./template.jsx";
 import renderMobile from "./templateMobile.jsx";
 import "../styles/artboard.css";
 import "../styles/mobile.css";
-import { ArtboardLogic } from "./artboardLogic.js";
+import { ArtboardLogic } from "./ArtboardLogic.js";
 
 // Default settings from the prototype's component props.
 const DEFAULTS = { startView: "1 · Masthead", showFinal: false, parallax: 1 };

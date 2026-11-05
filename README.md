@@ -22,9 +22,12 @@ section; `?final=1` shows every animation in its end state.
 index.html                    Google Sans / Google Sans Flex font links
 public/assets/                photos, cursors, logo art (served as /assets/…)
 src/main.jsx                  mounts <App />
-src/App.jsx                   scales the fixed 1440×900 artboard to the window
-src/index.css                 page/stage styles
-src/artboard/Artboard.jsx     the artboard markup (JSX); binds to renderVals()
+src/App.jsx                   selects and scales the layout to the viewport
+src/styles/app.css            page/stage styles
+src/styles/mobile.css         mobile sizing and animation geometry
+src/artboard/Artboard.jsx     shared animation host
+src/artboard/template.jsx     desktop markup (1440×900)
+src/artboard/templateMobile.jsx mobile markup (390×844)
 src/artboard/ArtboardLogic.js navigation state machine, camera, story timelines,
                               hover effects, layout measuring; content data
                               (stories, galleries, tabs) is at the top of the file
@@ -61,4 +64,6 @@ Story photos open a gallery (VIEW ALL cursor).
 ## Notes
 
 - No `<React.StrictMode>`: its dev-only double mount would start the timers twice.
-- Desktop-first fixed artboard (1440×900), scaled to fit; there's no separate mobile layout.
+- Responsive layouts: desktop at 768px and above (1440×900 artboard), mobile below 768px (390×844 artboard), scaled to fit the viewport.
+- Layout selection is automatic; saved preview choices and the former desktop-only flag are no longer used.
+- Both layouts share the navigation, animation timing, counters and story engine. Mobile uses shorter text reveals and swipe navigation; desktop supports wheel navigation and hover effects.

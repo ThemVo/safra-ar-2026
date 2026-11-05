@@ -23,3 +23,32 @@ export function css(str) {
   }
   return out;
 }
+
+// Stretch a 1440-wide band path (absolute M/C/H/L commands) out to the window edges: points in the outer
+// 108px on each side move out by `gx`, so the corners land at the edges and the middle stays put.
+export function bleedPath(d, gx) {
+  const g = gx || 0;
+  if (!g) return d;
+  const sx = (x) => (x >= 1332 ? x + g : x <= 108 ? x - g : x);
+  return d.replace(/([MCLHVZ])([^MCLHVZ]*)/gi, (_, cmd, args) => {
+    const n = args.trim() ? args.trim().split(/[\s,]+/).map(Number) : [];
+    if (cmd === 'H') return 'H' + n.map(sx).join(' ');
+    if (cmd === 'V' || cmd === 'Z' || cmd === 'z') return cmd + args;
+    return cmd + n.map((v, i) => (i % 2 === 0 ? sx(v) : v)).join(' ');
+  });
+}
+
+// Mobile version of the same band: drawn at 60% size across the 390px frame. The bump stays centred, the outer
+// corners sit at the frame edges (plus `gx` beyond them on wider phones), the straight runs stretch in between.
+export function tongueM(d, gx) {
+  const k = 0.6, W = 390, g = gx || 0;
+  const sx = (x) => (x >= 1332 ? W + g - (1440 - x) * k : x <= 108 ? -g + x * k : W / 2 + (x - 720) * k);
+  const r = (v) => +v.toFixed(2);
+  return d.replace(/([MCLHVZ])([^MCLHVZ]*)/gi, (_, cmd, args) => {
+    const n = args.trim() ? args.trim().split(/[\s,]+/).map(Number) : [];
+    if (cmd === 'H') return 'H' + n.map((x) => r(sx(x))).join(' ');
+    if (cmd === 'V') return 'V' + n.map((y) => r(y * k)).join(' ');
+    if (cmd === 'Z' || cmd === 'z') return cmd + args;
+    return cmd + n.map((v, i) => r(i % 2 === 0 ? sx(v) : v * k)).join(' ');
+  });
+}

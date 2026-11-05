@@ -1,4 +1,9 @@
-:root { --bg: #1B1F2D; --fg: #C9CEDA; }
+:root { --bg: #272C3F; --fg: #C9CEDA; }
 html, html body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
-.stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
-.wrap { position: relative; width: 1440px; height: 900px; transform-origin: 50% 50%; flex: none; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, .4); }
+.stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+/* 1440 × 900 content column; the artboard paints its backgrounds out into the side gutters (--gx) */
+.wrap { position: relative; width: 1440px; height: 900px; transform-origin: 50% 50%; flex: none; }
+.stage { cursor: url(../assets/cursors/pointer-cursor.svg) 3 3, auto; } /* side margins use the site's arrow cursor */
+.stage:has(.v-cur), .stage:has(.v-cur) * { cursor: none !important; } /* masthead once the red circle shows: no system cursor anywhere */
+/* mobile: the page is driven by swipes, so the browser shouldn't scroll or zoom it */
+.stage-m { touch-action: none; overscroll-behavior: none; cursor: auto; }

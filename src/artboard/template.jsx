@@ -553,7 +553,7 @@ export default function render(v) {
           </div>
           <div className="sweep" aria-hidden="true" style={{ position: "absolute", left: "calc(-1 * var(--gx, 0px))", top: "910px", width: "calc(1440px + 2 * var(--gx, 0px))", height: "8px", transform: `scaleX(${s(v.sweepS)})`, background: "linear-gradient(90deg, #74509F 0%, #F46074 55%, #F68F43 100%)" }} />
         </section>
-        <section className="s45" aria-labelledby="t1-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden" }}>
+        <section className="s45" hidden aria-labelledby="t1-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden" }}>
           <div className="tx" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "490px" }}>
             <h2 id="t1-title" aria-label="The numbers tell our impact. The stories show what it means." style={{ position: "absolute", left: "0", top: "115px", width: "1440px", margin: "0", textAlign: "center", fontWeight: "400", lineHeight: "1.12" }}>
               <span className="t4a" aria-hidden="true" style={{ display: "block", fontSize: "63px", color: "#6E778B", whiteSpace: "nowrap" }}>
@@ -750,7 +750,7 @@ export default function render(v) {
             </a>
           </nav>
         </section>
-        <section className="s6" aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s6" hidden aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z6" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="dc-title" aria-label="Bringing defence closer to the community" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -984,7 +984,7 @@ export default function render(v) {
           </div>
           <div className="nv6" aria-hidden="true" />
         </section>
-        <section className="s7" aria-labelledby="an-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s7" hidden aria-labelledby="an-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z7" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="an-title" aria-label="Appreciating national servicemen" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -1063,7 +1063,7 @@ export default function render(v) {
           </div>
           <div className="nv7" aria-hidden="true" />
         </section>
-        <section className="s8" aria-labelledby="sb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s8" hidden aria-labelledby="sb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z8" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="sb-title" aria-label="Strengthening bonds" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -1128,7 +1128,7 @@ export default function render(v) {
           </div>
           <div className="nv8" aria-hidden="true" />
         </section>
-        <section className="s9" aria-labelledby="t2-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s9" hidden aria-labelledby="t2-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="t2-title" aria-label="& beyond National Service, we support NSmen and their families in everyday life." style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "684px", margin: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", fontWeight: "400", textAlign: "center" }}>
             <span className="t9 t9a" style={{ display: "block", fontSize: "64px", fontWeight: "400", lineHeight: "1.1", letterSpacing: "1.28px", color: "#6E778B" }}>
               <span className="hv" aria-hidden="true" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
@@ -1420,7 +1420,7 @@ export default function render(v) {
           </defs>
           <rect x={-(v.gx || 0)} y="3618" width={1440 + 2 * (v.gx || 0)} height="2533" fill="url(#zG)" />
         </svg>
-        <section className="s10" aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden" }}>
+        <section className="s10" hidden aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden" }}>
           <div style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "1124px", transformOrigin: "0 0", transform: "translate(72px, -36px) scale(0.9)" }}>
             <div style={{ position: "absolute", left: "104px", top: "104px", width: "396px", paddingTop: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
               <h2 id="mb-title" className="mbk mk2" aria-label="Membership, made more rewarding" style={{ margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
@@ -1533,7 +1533,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s15" aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "4518px", width: "1440px", height: "1633px", overflow: "hidden" }}>
+        <section className="s15" hidden aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "4518px", width: "1440px", height: "1633px", overflow: "hidden" }}>
           <div style={{ position: "absolute", left: "104px", top: "104px", width: "1232px", display: "flex", flexDirection: "column", gap: "24px", textAlign: "center" }}>
             <h2 id="fc-title" className="fck fc1k" style={{ "--d": ".45s", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
               <span style={{ color: "#FFFFFF" }}>
@@ -1692,7 +1692,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s12" aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s12" hidden aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="wc-title" aria-label="The year may be over. Our work continues." style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "684px", margin: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", fontWeight: "400", textAlign: "center" }}>
             <span className="t12 t12a" style={{ display: "block", fontSize: "64px", fontWeight: "400", lineHeight: "1.1", letterSpacing: "1.28px", color: "#6E778B" }}>
               <span className="hv" aria-hidden="true" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
@@ -1855,7 +1855,7 @@ export default function render(v) {
             </svg>
           </button>
         </section>
-        <section className="s13" aria-labelledby="nx-title" style={{ position: "absolute", left: "0", top: "7051px", width: "1440px", height: "900px", overflow: "hidden", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s13" hidden aria-labelledby="nx-title" style={{ position: "absolute", left: "0", top: "7051px", width: "1440px", height: "900px", overflow: "hidden", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div style={{ position: "absolute", left: "104px", top: "120px", width: "1232px", display: "flex", flexDirection: "column", gap: "16px", textAlign: "center" }}>
             <h2 id="nx-title" className="nxk" style={{ "--d": ".55s", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
               <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
@@ -1982,7 +1982,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s14" aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "7951px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s14" hidden aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "7951px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="end-title" className="enk" style={{ "--d": ".55s", position: "absolute", left: "104px", top: "325px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "64px", letterSpacing: "0.01em", color: "#FFFFFF" }}>
             ONE YEAR.
             <br />
@@ -2141,12 +2141,12 @@ export default function render(v) {
                   At a glance
                 </button>
               </li>
-              <li>
+              <li hidden>
                 <button className="nvi" type="button" onClick={v.nav_s5}>
                   Our impact
                 </button>
               </li>
-              <li>
+              <li hidden>
                 <button className="nvi" type="button" onClick={v.nav_nx}>
                   Future plan
                 </button>

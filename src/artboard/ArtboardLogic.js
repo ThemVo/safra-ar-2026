@@ -420,7 +420,8 @@ function scramble(lines, t, seed) {
     return out;
   });
 }
-const ORDER = ["top", "tg", "s3", "s5", "t2"]; // the initiatives (s6/s7/s8) are L2 pages opened from the topic cards, off the main scroll; // section 2 (AGM countdown) removed: the masthead leads straight into At a glance // s7 is reached from the last s6 story via the cards (see go) // the statement and the topic cards are one stop (s5)
+// The page currently ends after the three At a glance panels.
+const ORDER = ["top", "tg", "s3"];
 const STEM_TOP = 732 + 56; // top of the arrow's stem (cam coords)
 const ROLL_AFTER = 1500,
   ROLL_DUR = 1200; // countdown roll-up once the tiles have slid in
@@ -455,7 +456,8 @@ export class ArtboardLogic extends Logic {
   constructor(props) {
     super(props);
     applyGeo(props.mobile);
-    const sv = viewOf(props.startView);
+    const initialView = viewOf(props.startView);
+    const sv = ORDER.includes(initialView) ? initialView : "top";
     this.state = {
       phase: "run",
       mx: 0,
@@ -539,7 +541,8 @@ export class ArtboardLogic extends Logic {
     // leaving section 6/7 for the cards: hold the entered card navy until the camera has pulled back out
 
     if (prev.startView !== this.props.startView) {
-      const v = viewOf(this.props.startView);
+      const requestedView = viewOf(this.props.startView);
+      const v = ORDER.includes(requestedView) ? requestedView : "top";
       this.setState({ view: v });
       if (v !== "top") this.setState({ s2: true });
       if (v === "s3") this.arrive3();
@@ -1016,6 +1019,7 @@ export class ArtboardLogic extends Logic {
   // skip buttons: straight to the named screen — the story panel grows to full navy, then the next section opens out of it
   // sticky menu: jump straight to a section
   jumpTo(to) {
+    if (!ORDER.includes(to)) return;
     if (this.raf6) cancelAnimationFrame(this.raf6);
     if (this.raf7) cancelAnimationFrame(this.raf7);
     if (this.raf8) cancelAnimationFrame(this.raf8);

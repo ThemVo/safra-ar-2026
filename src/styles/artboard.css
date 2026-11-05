@@ -447,3 +447,6 @@ body{margin:0;background:#272C3F}
 .is-s4 .t4a,.is-s4 .t4b,.is-s6 .dcwi,.is-s7 .dcwi7,.is-s8 .dcwi8,.is-s9 .t9,.is-s10 .mbk,.is-s11 .fyk,.is-s12 .t12,.is-s13 .nxk,.is-s14 .enk,.is-s15 .fck,.is-s15 .fcin,.is-s16 .fcin,.mh .tc .tc-r{animation:none !important}
 .is-hd .gLs,.is-hd .gLf{animation-duration:.01s !important;animation-delay:0s !important}
 }
+
+/* Keep hidden page sections and their menu entries hidden on desktop and mobile. */
+.mh [hidden]{display:none !important}

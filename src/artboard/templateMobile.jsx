@@ -1887,7 +1887,7 @@ export default function render(v) {
             />
           </section>
           <section
-            className="s45"
+            className="s45" hidden
             aria-labelledby="t1-title"
             style={{
               position: "absolute",
@@ -2639,7 +2639,7 @@ export default function render(v) {
             </nav>
           </section>
           <section
-            className="s6"
+            className="s6" hidden
             aria-labelledby="dc-title"
             style={{
               position: "absolute",
@@ -3789,7 +3789,7 @@ export default function render(v) {
             <div className="nv6" aria-hidden="true" />
           </section>
           <section
-            className="s7"
+            className="s7" hidden
             aria-labelledby="an-title"
             style={{
               position: "absolute",
@@ -4197,7 +4197,7 @@ export default function render(v) {
             <div className="nv7" aria-hidden="true" />
           </section>
           <section
-            className="s8"
+            className="s8" hidden
             aria-labelledby="sb-title"
             style={{
               position: "absolute",
@@ -4548,7 +4548,7 @@ export default function render(v) {
             <div className="nv8" aria-hidden="true" />
           </section>
           <section
-            className="s9"
+            className="s9" hidden
             aria-labelledby="t2-title"
             style={{
               position: "absolute",
@@ -4859,7 +4859,7 @@ export default function render(v) {
             />
           </svg>
           <section
-            className="s10"
+            className="s10" hidden
             aria-labelledby="mb-title"
             style={{
               position: "absolute",
@@ -5405,7 +5405,7 @@ export default function render(v) {
             </div>
           </section>
           <section
-            className="s15"
+            className="s15" hidden
             aria-labelledby="fc-title"
             style={{
               position: "absolute",
@@ -6259,7 +6259,7 @@ export default function render(v) {
             </div>
           </section>
           <section
-            className="s12"
+            className="s12" hidden
             aria-labelledby="wc-title"
             style={{
               position: "absolute",
@@ -6478,7 +6478,7 @@ export default function render(v) {
             </button>
           </section>
           <section
-            className="s13"
+            className="s13" hidden
             aria-labelledby="nx-title"
             style={{
               position: "absolute",
@@ -7003,7 +7003,7 @@ export default function render(v) {
             </div>
           </section>
           <section
-            className="s14"
+            className="s14" hidden
             aria-labelledby="end-title"
             style={{
               position: "absolute",
@@ -7683,12 +7683,12 @@ export default function render(v) {
                     At a glance
                   </button>
                 </li>
-                <li>
+                <li hidden>
                   <button className="nvi" type="button" onClick={v.nav_s5}>
                     Our impact
                   </button>
                 </li>
-                <li>
+                <li hidden>
                   <button className="nvi" type="button" onClick={v.nav_nx}>
                     Future plan
                   </button>

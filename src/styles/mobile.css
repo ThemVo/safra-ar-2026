@@ -46,10 +46,3 @@
 
 /* fewer pixels to travel for the masthead headline lines */
 @keyframes mhLineM { from { opacity: 0; transform: translateY(10px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
-
-/* Keep the shared reveal timing, with travel and blur suited to the mobile type sizes. */
-.mh.m.is-run .ln, .mh.m.is-run .lgl,
-.mh.m.post .ln,
-.mh.m.is-s4 .t4a, .mh.m.is-s4 .t4b,
-.mh.m.is-s9 .t9a, .mh.m.is-s9 .t9b, .mh.m.is-s9 .t9c,
-.mh.m.is-s12 .t12a, .mh.m.is-s12 .t12b { animation-name: mhLineM; }

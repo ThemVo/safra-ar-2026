@@ -13,8 +13,8 @@ const TONGUE = 'M719.999 0C762.331 0 799.274 23.3611 818.941 58.046C835.286 86.8
 export default function render(v) {
   return (
     <>
-    <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.hdClass)} ${s(v.fcFreeClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", boxShadow: "0 0 0 var(--gx, 0px) #272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
-      <div className="cam" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "8851px", transform: `translateY(${s(v.camY)}px)` }}>
+    <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.goMClass)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.hdClass)} ${s(v.fcFreeClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", boxShadow: "0 0 0 var(--gx, 0px) #272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
+      <div className="cam" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "7951px", transform: `translateY(${s(v.camY)}px)` }}>
         <section className="layer1" aria-label="SAFRA masthead" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", overflow: "hidden", transformOrigin: "50% 80%" }}>
           <div className="layer" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", transformOrigin: "50% 46%" }}>
             <div className="px" style={{ position: "absolute", left: "885px", top: "0px", width: "555px", height: "349px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pFamily)}` }}>
@@ -553,10 +553,10 @@ export default function render(v) {
           </div>
           <div className="sweep" aria-hidden="true" style={{ position: "absolute", left: "calc(-1 * var(--gx, 0px))", top: "910px", width: "calc(1440px + 2 * var(--gx, 0px))", height: "8px", transform: `scaleX(${s(v.sweepS)})`, background: "linear-gradient(90deg, #74509F 0%, #F46074 55%, #F68F43 100%)" }} />
         </section>
-        <section className="s45" hidden aria-labelledby="t1-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden" }}>
-          <div className="tx" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "490px" }}>
-            <h2 id="t1-title" aria-label="The numbers tell our impact. The stories show what it means." style={{ position: "absolute", left: "0", top: "115px", width: "1440px", margin: "0", textAlign: "center", fontWeight: "400", lineHeight: "1.12" }}>
-              <span className="t4a" aria-hidden="true" style={{ display: "block", fontSize: "63px", color: "#6E778B", whiteSpace: "nowrap" }}>
+        <section className="s45" aria-labelledby="t1-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden" }}>
+          <div className="tx" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "280px" }}>
+            <h2 id="t1-title" aria-label="Beyond the numbers. Discover stories of our support for NSmen and their families." style={{ position: "absolute", left: "0", top: "72px", width: "1440px", margin: "0", textAlign: "center", fontWeight: "400", lineHeight: "1.1" }}>
+              <span className="t4a" aria-hidden="true" style={{ display: "block", fontSize: "43.52px", letterSpacing: "0.02em", color: "#6E778B", whiteSpace: "nowrap" }}>
                 {arr(v.L_s4a).map((c, $index) => (
                   <Fragment key={$index}>
                     <span className="lt" style={{ transform: `${s(c?.tf)}` }}>
@@ -565,192 +565,175 @@ export default function render(v) {
                   </Fragment>
                 ))}
               </span>
-              <span className="t4b" aria-hidden="true" style={{ display: "inline-block", marginTop: "8px", fontSize: "82px", whiteSpace: "nowrap" }}>
-                {arr(v.L_s4b).map((c, $index) => (
-                  <Fragment key={$index}>
-                    <span className="lt gl" style={{ transform: `${s(c?.tf)}`, backgroundImage: "linear-gradient(90deg, #6452A4 0%, #A84A9C 22%, #E8448F 45%, #F3477F 62%, #F3666A 82%, #F68C45 100%)", backgroundSize: `${s(c?.bw)}px 100%`, backgroundPosition: `${s(c?.bx)}px 0` }}>
-                      <T v={c?.ch} />
-                    </span>
-                  </Fragment>
-                ))}
+              <span className="t4b" aria-hidden="true" style={{ display: "block", marginTop: "8.16px", fontSize: "48.96px", letterSpacing: "0.02em", whiteSpace: "nowrap" }}>
+                <span style={{ display: "block" }}>
+                  {arr(v.L_s4b).map((c, $index) => (
+                    <Fragment key={$index}>
+                      <span className="lt gl" style={{ transform: `${s(c?.tf)}`, backgroundImage: "linear-gradient(90deg, #6252A4 0%, #F14192 49.04%, #F6765D 92.79%, #F69141 100%)", backgroundSize: `${s(c?.bw)}px 100%`, backgroundPosition: `${s(c?.bx)}px 0` }}>
+                        <T v={c?.ch} />
+                      </span>
+                    </Fragment>
+                  ))}
+                </span>
+                <span style={{ display: "block" }}>
+                  {arr(v.L_s4c).map((c, $index) => (
+                    <Fragment key={$index}>
+                      <span className="lt gl" style={{ transform: `${s(c?.tf)}`, backgroundImage: "linear-gradient(90deg, #6252A4 0%, #F14192 49.04%, #F6765D 92.79%, #F69141 100%)", backgroundSize: `${s(c?.bw)}px 100%`, backgroundPosition: `${s(c?.bx)}px 0` }}>
+                        <T v={c?.ch} />
+                      </span>
+                    </Fragment>
+                  ))}
+                </span>
               </span>
             </h2>
           </div>
           <nav aria-label="Topics">
-            <a className={`tc ${s(v.lv1)}`} href="#dc-title" onClick={v.topic1} aria-label="Bringing defence closer to the community" style={{ "--i": "0", position: "absolute", left: "104px", top: "365px", width: "394px", height: "420px", boxSizing: "border-box", padding: "37px 34px", borderRadius: "22px", textDecoration: "none" }}>
-              <svg className="tc-s" aria-hidden="true" width="394" height="420" viewBox="0 0 394 420" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
-                <defs>
-                  <linearGradient id="tcs0" x1="0" y1="0" x2="394" y2="420" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".45" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <rect className="tc-r tc-tail" x="1.5" y="1.5" width="391" height="417" rx="20.5" pathLength="100" fill="none" stroke="url(#tcs0)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
-                <rect className="tc-r tc-head" x="1.5" y="1.5" width="391" height="417" rx="20.5" pathLength="100" fill="none" stroke="url(#tcs0)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
-              </svg>
-              <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "32px", fontWeight: "700", lineHeight: "41px", letterSpacing: "0.012em", textTransform: "uppercase", color: "#A7A9AE" }}>
-                Bringing
-                <br />
-                defence closer
-                <br />
-                to the
-                <br />
-                community
-                <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                  Bringing
-                  <br />
-                  defence closer
-                  <br />
-                  to the
-                  <br />
-                  community
+            <div className="tcw" style={{ position: "absolute", left: "299.42px", top: "289.6px", width: "1237px", height: "800px", transform: "scale(0.68)", transformOrigin: "0 0" }}>
+              <a className={`tc ${s(v.lv1)}`} href="#dc-title" onClick={v.topic1} aria-label="Bringing defence closer to the community" style={{ "--i": "0", position: "absolute", left: "0px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+                <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
+                  <defs>
+                    <linearGradient id="tcs0" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#6452A4" />
+                      <stop offset=".45" stopColor="#F04290" />
+                      <stop offset="1" stopColor="#F68C45" />
+                    </linearGradient>
+                  </defs>
+                  <rect className="tc-r tc-tail" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs0)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
+                  <rect className="tc-r tc-head" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs0)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
+                </svg>
+                <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "32px", fontWeight: "700", lineHeight: "1.2", letterSpacing: "0.02em", textTransform: "uppercase", color: "#AAAAAA" }}>
+                  {"Bringing Defence Closer to The Community"}
+                  <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", right: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                    {"Bringing Defence Closer to The Community"}
+                  </span>
                 </span>
-              </span>
-              <span className="tc-stk" aria-hidden="true">
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-              </span>
-              <span className="tc-b" style={{ position: "absolute", left: "34px", top: "33px", right: "30px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE" }}>
-                Fostering a deeper understanding of how the wider community can play a part in Total Defence.
-              </span>
-              <svg className="tc-i" aria-hidden="true" width="58" height="58" viewBox="0 0 24 24" style={{ position: "absolute", right: "28px", bottom: "27px", overflow: "visible" }}>
-                <defs>
-                  <linearGradient id="tcg0" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".55" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <g className="ig">
-                  <path d="M12 2.2 4.2 5.1v6.2c0 4.9 3.3 9.1 7.8 10.5 4.5-1.4 7.8-5.6 7.8-10.5V5.1L12 2.2Z" fill="none" stroke="#A7A9AE" strokeWidth="2.1" strokeLinejoin="round" />
-                  <path d="M12 6.1 7.6 7.8v3.7c0 2.9 1.9 5.4 4.4 6.3 2.5-.9 4.4-3.4 4.4-6.3V7.8L12 6.1Z" fill="#A7A9AE" />
-                </g>
-                <g className="ic">
-                  <path d="M12 2.2 4.2 5.1v6.2c0 4.9 3.3 9.1 7.8 10.5 4.5-1.4 7.8-5.6 7.8-10.5V5.1L12 2.2Z" fill="none" stroke="url(#tcg0)" strokeWidth="2.1" strokeLinejoin="round" />
-                  <path d="M12 6.1 7.6 7.8v3.7c0 2.9 1.9 5.4 4.4 6.3 2.5-.9 4.4-3.4 4.4-6.3V7.8L12 6.1Z" fill="url(#tcg0)" />
-                </g>
-              </svg>
-            </a>
-            <a className={`tc ${s(v.lv2)}`} href="#an-title" onClick={v.topic2} aria-label="Appreciating national servicemen" style={{ "--i": "1", position: "absolute", left: "524px", top: "365px", width: "394px", height: "420px", boxSizing: "border-box", padding: "37px 34px", borderRadius: "22px", textDecoration: "none" }}>
-              <svg className="tc-s" aria-hidden="true" width="394" height="420" viewBox="0 0 394 420" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
-                <defs>
-                  <linearGradient id="tcs1" x1="0" y1="0" x2="394" y2="420" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".45" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <rect className="tc-r tc-tail" x="1.5" y="1.5" width="391" height="417" rx="20.5" pathLength="100" fill="none" stroke="url(#tcs1)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
-                <rect className="tc-r tc-head" x="1.5" y="1.5" width="391" height="417" rx="20.5" pathLength="100" fill="none" stroke="url(#tcs1)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
-              </svg>
-              <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "32px", fontWeight: "700", lineHeight: "41px", letterSpacing: "0.012em", textTransform: "uppercase", color: "#A7A9AE" }}>
-                Appreciating
-                <br />
-                national
-                <br />
-                servicemen
-                <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                  Appreciating
-                  <br />
-                  national
-                  <br />
-                  servicemen
+                <span className="tc-stk" aria-hidden="true">
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
                 </span>
-              </span>
-              <span className="tc-stk" aria-hidden="true">
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-              </span>
-              <span className="tc-b" style={{ position: "absolute", left: "34px", top: "33px", right: "30px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE" }}>
-                Education institutions and
-                <br />
-                businesses step up to honour
-                <br />
-                the ongoing dedication of our
-                <br />
-                national servicemen.
-              </span>
-              <svg className="tc-i" aria-hidden="true" width="58" height="58" viewBox="0 0 24 24" style={{ position: "absolute", right: "28px", bottom: "27px", overflow: "visible" }}>
-                <defs>
-                  <linearGradient id="tcg1" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".55" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <g className="ig">
-                  <path fillRule="evenodd" d="M12 2.5a9.5 9.5 0 0 0-8.3 14.1L2.6 21.4l4.9-1.2A9.5 9.5 0 1 0 12 2.5Zm0 13.6-3.5-3.4a2.1 2.1 0 0 1 3-3l.5.5.5-.5a2.1 2.1 0 0 1 3 3L12 16.1Z" fill="#A7A9AE" />
-                </g>
-                <g className="ic">
-                  <path fillRule="evenodd" d="M12 2.5a9.5 9.5 0 0 0-8.3 14.1L2.6 21.4l4.9-1.2A9.5 9.5 0 1 0 12 2.5Zm0 13.6-3.5-3.4a2.1 2.1 0 0 1 3-3l.5.5.5-.5a2.1 2.1 0 0 1 3 3L12 16.1Z" fill="url(#tcg1)" />
-                </g>
-              </svg>
-            </a>
-            <a className={`tc ${s(v.lv3)}`} href="#sb-title" onClick={v.topic3} aria-label="Strengthening bonds" style={{ "--i": "2", position: "absolute", left: "944px", top: "365px", width: "394px", height: "420px", boxSizing: "border-box", padding: "37px 34px", borderRadius: "22px", textDecoration: "none" }}>
-              <svg className="tc-s" aria-hidden="true" width="394" height="420" viewBox="0 0 394 420" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
-                <defs>
-                  <linearGradient id="tcs2" x1="0" y1="0" x2="394" y2="420" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".45" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <rect className="tc-r tc-tail" x="1.5" y="1.5" width="391" height="417" rx="20.5" pathLength="100" fill="none" stroke="url(#tcs2)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
-                <rect className="tc-r tc-head" x="1.5" y="1.5" width="391" height="417" rx="20.5" pathLength="100" fill="none" stroke="url(#tcs2)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
-              </svg>
-              <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "32px", fontWeight: "700", lineHeight: "41px", letterSpacing: "0.012em", textTransform: "uppercase", color: "#A7A9AE" }}>
-                Strengthening
-                <br />
-                bonds
-                <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                  Strengthening
-                  <br />
-                  bonds
+                <span className="tc-b" style={{ position: "absolute", left: "36px", top: "33px", right: "36px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE" }}>
+                  {"Fostering a deeper understanding of how the wider community can play a part in Total Defence."}
                 </span>
-              </span>
-              <span className="tc-stk" aria-hidden="true">
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-              </span>
-              <span className="tc-b" style={{ position: "absolute", left: "34px", top: "33px", right: "30px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE" }}>
-                Forging closer bonds among national servicemen and creating opportunity for quality time with their loved ones.
-              </span>
-              <svg className="tc-i" aria-hidden="true" width="58" height="58" viewBox="0 0 24 24" style={{ position: "absolute", right: "28px", bottom: "27px", overflow: "visible" }}>
-                <defs>
-                  <linearGradient id="tcg2" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".55" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <g className="ig">
-                  <circle cx="12" cy="6.3" r="2.4" fill="#A7A9AE" />
-                  <circle cx="4.5" cy="9.6" r="2.2" fill="#A7A9AE" />
-                  <circle cx="19.5" cy="9.6" r="2.2" fill="#A7A9AE" />
-                  <path d="M8.9 10.2h6.2c.7 0 1.2.5 1.2 1.2v1.8L12 17.2l-4.3-4V11.4c0-.7.5-1.2 1.2-1.2Z" fill="#A7A9AE" />
-                  <path d="M1.2 20.8v-5.2c0-1.2 1-2.2 2.2-2.2h1.4c1.2 0 2.2 1 2.2 2.2v5.2H1.2Zm15.8 0v-5.2c0-1.2 1-2.2 2.2-2.2h1.4c1.2 0 2.2 1 2.2 2.2v5.2H17Z" fill="#A7A9AE" />
-                  <path d="M6.3 14.6 9.5 18.4c1.4 1.7 3.6 1.7 5 0l3.2-3.8" fill="none" stroke="#A7A9AE" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
-                </g>
-                <g className="ic">
-                  <circle cx="12" cy="6.3" r="2.4" fill="url(#tcg2)" />
-                  <circle cx="4.5" cy="9.6" r="2.2" fill="url(#tcg2)" />
-                  <circle cx="19.5" cy="9.6" r="2.2" fill="url(#tcg2)" />
-                  <path d="M8.9 10.2h6.2c.7 0 1.2.5 1.2 1.2v1.8L12 17.2l-4.3-4V11.4c0-.7.5-1.2 1.2-1.2Z" fill="url(#tcg2)" />
-                  <path d="M1.2 20.8v-5.2c0-1.2 1-2.2 2.2-2.2h1.4c1.2 0 2.2 1 2.2 2.2v5.2H1.2Zm15.8 0v-5.2c0-1.2 1-2.2 2.2-2.2h1.4c1.2 0 2.2 1 2.2 2.2v5.2H17Z" fill="url(#tcg2)" />
-                  <path d="M6.3 14.6 9.5 18.4c1.4 1.7 3.6 1.7 5 0l3.2-3.8" fill="none" stroke="url(#tcg2)" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
-                </g>
-              </svg>
-            </a>
+                <svg className="tc-i" aria-hidden="true" width="44.81" height="46.94" viewBox="0 0 42 44" fill="none" style={{ position: "absolute", right: "36px", bottom: "36px", overflow: "visible" }}>
+                  <g className="ig"><path d="M21 43.9995C20.1846 44.0117 19.3801 43.8193 18.6667 43.4416L17.9667 43.0622C12.5144 40.1122 7.97839 35.8312 4.82192 30.6563C1.66544 25.4814 0.00156343 19.5982 0.00018702 13.6072V13.2948C-0.00720944 12.5046 0.204908 11.7267 0.61486 11.0407C1.02481 10.3546 1.6179 9.78487 2.3335 9.38979L18.6667 0.597913C19.3761 0.206213 20.1808 0 21 0C21.8192 0 22.6239 0.206213 23.3333 0.597913L39.6665 9.38979C40.3821 9.78487 40.9752 10.3546 41.3851 11.0407C41.7951 11.7267 42.0072 12.5046 41.9998 13.2948V13.6072C41.9938 19.6026 40.3228 25.4889 37.1579 30.6641C33.993 35.8394 29.4476 40.1179 23.9866 43.0622L23.2866 43.4416C22.587 43.8118 21.7996 44.0039 21 43.9995Z" fill="#AAAAAA" /><path d="M21 35.9997C20.4952 36.0074 19.9972 35.885 19.5556 35.6446L19.1222 35.4032C15.747 33.5259 12.939 30.8016 10.985 27.5086C9.03099 24.2155 8.00097 20.4716 8.00012 16.6591V16.4603C7.99554 15.9575 8.12685 15.4625 8.38063 15.0259C8.63441 14.5893 9.00156 14.2267 9.44455 13.9753L19.5556 8.38049C19.9947 8.13123 20.4929 8 21 8C21.5071 8 22.0053 8.13123 22.4444 8.38049L32.5555 13.9753C32.9984 14.2267 33.3656 14.5893 33.6194 15.0259C33.8732 15.4625 34.0045 15.9575 33.9999 16.4603V16.6591C33.9961 20.4744 32.9618 24.2202 31.0025 27.5135C29.0433 30.8069 26.2295 33.5296 22.8489 35.4032L22.4155 35.6446C21.9824 35.8803 21.495 36.0025 21 35.9997Z" stroke="#272C3F" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /></g>
+                </svg>
+              </a>
+              <a className={`tc ${s(v.lv2)}`} href="#an-title" onClick={v.topic2} aria-label="Appreciating national servicemen" style={{ "--i": "1", position: "absolute", left: "420.33px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+                <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
+                  <defs>
+                    <linearGradient id="tcs1" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#6452A4" />
+                      <stop offset=".45" stopColor="#F04290" />
+                      <stop offset="1" stopColor="#F68C45" />
+                    </linearGradient>
+                  </defs>
+                  <rect className="tc-r tc-tail" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs1)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
+                  <rect className="tc-r tc-head" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs1)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
+                </svg>
+                <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "32px", fontWeight: "700", lineHeight: "1.2", letterSpacing: "0.02em", textTransform: "uppercase", color: "#AAAAAA" }}>
+                  {"Appreciating NSmen"}
+                  <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", right: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                    {"Appreciating NSmen"}
+                  </span>
+                </span>
+                <span className="tc-stk" aria-hidden="true">
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                </span>
+                <span className="tc-b" style={{ position: "absolute", left: "36px", top: "33px", right: "36px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE" }}>
+                  {"Education institutions and businesses step up to honour the ongoing dedication of our national servicemen."}
+                </span>
+                <svg className="tc-i" aria-hidden="true" width="50.94" height="50.94" viewBox="0 0 48 48" fill="none" style={{ position: "absolute", right: "36px", bottom: "36px", overflow: "visible" }}>
+                  <g className="ig"><path fillRule="evenodd" clipRule="evenodd" d="M48 24C48 37.2547 37.2547 48 24 48C20.1607 48 16.5321 47.0986 13.3141 45.4956C12.4589 45.0698 11.4814 44.928 10.5585 45.175L5.21604 46.6044C2.89682 47.2248 0.77508 45.1032 1.39562 42.7841L2.82509 37.4414C3.07202 36.5186 2.93026 35.5411 2.5043 34.686C0.901488 31.4678 0 27.8393 0 24C0 10.7452 10.7452 0 24 0C37.2547 0 48 10.7452 48 24ZM13.2 21.8602C13.2 25.1443 16.3652 28.5902 19.2686 31.0601C21.2458 32.7422 22.2346 33.5834 24 33.5834C25.7654 33.5834 26.7542 32.7422 28.7314 31.0601C31.6349 28.5902 34.8 25.1443 34.8 21.8602C34.8 15.435 28.8598 13.0361 24 17.9995C19.1402 13.0361 13.2 15.435 13.2 21.8602Z" fill="#AAAAAA" /></g>
+                </svg>
+              </a>
+              <a className={`tc ${s(v.lv3)}`} href="#sb-title" onClick={v.topic3} aria-label="Strengthening bonds" style={{ "--i": "2", position: "absolute", left: "840.67px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+                <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
+                  <defs>
+                    <linearGradient id="tcs2" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#6452A4" />
+                      <stop offset=".45" stopColor="#F04290" />
+                      <stop offset="1" stopColor="#F68C45" />
+                    </linearGradient>
+                  </defs>
+                  <rect className="tc-r tc-tail" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs2)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
+                  <rect className="tc-r tc-head" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs2)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
+                </svg>
+                <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "32px", fontWeight: "700", lineHeight: "1.2", letterSpacing: "0.02em", textTransform: "uppercase", color: "#AAAAAA" }}>
+                  {"Strengthening bonds"}
+                  <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", right: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                    {"Strengthening bonds"}
+                  </span>
+                </span>
+                <span className="tc-stk" aria-hidden="true">
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                  <img className="stk" alt="" src="" style={{ display: "none" }} />
+                </span>
+                <span className="tc-b" style={{ position: "absolute", left: "36px", top: "33px", right: "36px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE" }}>
+                  {"Forging closer bonds among national servicemen and creating opportunity for quality time with their loved ones."}
+                </span>
+                <svg className="tc-i" aria-hidden="true" width="56.25" height="45.02" viewBox="0 0 53.31 42.67" fill="none" style={{ position: "absolute", right: "36px", bottom: "36px", overflow: "visible" }}>
+                  <g className="ig"><path d="M26.6933 0C25.2788 0 23.9223 0.561903 22.9221 1.5621C21.9219 2.56229 21.36 3.91885 21.36 5.33333C21.36 6.74782 21.9219 8.10437 22.9221 9.10457C23.9223 10.1048 25.2788 10.6667 26.6933 10.6667C28.1078 10.6667 29.4644 10.1048 30.4646 9.10457C31.4648 8.10437 32.0267 6.74782 32.0267 5.33333C32.0267 3.91885 31.4648 2.56229 30.4646 1.5621C29.4644 0.561903 28.1078 0 26.6933 0ZM8.02667 8C6.61218 8 5.25562 8.5619 4.25543 9.5621C3.25524 10.5623 2.69333 11.9188 2.69333 13.3333C2.69333 14.7478 3.25524 16.1044 4.25543 17.1046C5.25562 18.1048 6.61218 18.6667 8.02667 18.6667C9.44115 18.6667 10.7977 18.1048 11.7979 17.1046C12.7981 16.1044 13.36 14.7478 13.36 13.3333C13.36 11.9188 12.7981 10.5623 11.7979 9.5621C10.7977 8.5619 9.44115 8 8.02667 8ZM45.36 8C43.9455 8 42.589 8.5619 41.5888 9.5621C40.5886 10.5623 40.0267 11.9188 40.0267 13.3333C40.0267 14.7478 40.5886 16.1044 41.5888 17.1046C42.589 18.1048 43.9455 18.6667 45.36 18.6667C46.7745 18.6667 48.131 18.1048 49.1312 17.1046C50.1314 16.1044 50.6933 14.7478 50.6933 13.3333C50.6933 11.9188 50.1314 10.5623 49.1312 9.5621C48.131 8.5619 46.7745 8 45.36 8ZM46.6933 21.3333H44.8267C42.5867 21.3333 40.5333 22.4533 39.28 24.2933L30.5867 37.3333H22.7733L14.08 24.2933C12.8533 22.4267 10.7733 21.3333 8.53333 21.3333H6.66667C4.89856 21.3333 3.20286 22.0357 1.95262 23.286C0.702379 24.5362 0 26.2319 0 28L0 42.6667H13.3333V32.8L18.32 40.2933C19.3067 41.7867 20.96 42.6667 22.7467 42.6667H30.56C32.3467 42.6667 34 41.7867 34.9867 40.2933L39.9733 32.8V42.6667H53.3067V28C53.3067 26.2319 52.6043 24.5362 51.354 23.286C50.1038 22.0357 48.4081 21.3333 46.64 21.3333H46.6933Z" fill="#AAAAAA" /><path d="M27.7334 31.9999L34.6934 21.5733V17.3333C34.6934 15.1199 32.9067 13.3333 30.6934 13.3333H22.6934C20.48 13.3333 18.6934 15.1199 18.6934 17.3333V21.5733L25.6534 31.9999H27.76H27.7334Z" fill="#AAAAAA" /></g>
+                </svg>
+              </a>
+              <a className={`tc tc-x ${s(v.lv4)}`} href="#mb-title" onClick={v.topic4} aria-label="Rewarding privileges" style={{ "--i": "3", position: "absolute", left: "210.17px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+                <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
+                  <defs>
+                    <linearGradient id="tcs3" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#6452A4" />
+                      <stop offset=".45" stopColor="#F04290" />
+                      <stop offset="1" stopColor="#F68C45" />
+                    </linearGradient>
+                  </defs>
+                  <rect className="tc-r tc-tail" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs3)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
+                  <rect className="tc-r tc-head" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs3)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
+                </svg>
+                <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "32px", fontWeight: "700", lineHeight: "1.2", letterSpacing: "0.02em", textTransform: "uppercase", color: "#AAAAAA" }}>
+                  {"rewarding privileges"}
+                  <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", right: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                    {"rewarding privileges"}
+                  </span>
+                </span>
+                <svg className="tc-i" aria-hidden="true" width="50.94" height="50.94" viewBox="0 0 48 48" fill="none" style={{ position: "absolute", right: "36px", bottom: "36px", overflow: "visible" }}>
+                  <g className="ig"><path d="M42.4 12.5H39.617C39.916 11.557 40.1 10.43 40.1 9.05C40.1 4.611 36.489 1 32.05 1C28.324 1 25.84 4.404 24.23 8.107C22.643 4.634 20.021 1 15.95 1C11.511 1 7.9 4.611 7.9 9.05C7.9 10.43 8.084 11.557 8.383 12.5H5.6C3.07 12.5 1 14.57 1 17.1C1 19.63 3.07 21.7 5.6 21.7H42.4C44.93 21.7 47 19.63 47 17.1C47 14.57 44.93 12.5 42.4 12.5ZM32.05 5.6C33.959 5.6 35.5 7.141 35.5 9.05C35.5 12.5 34.051 12.5 33.2 12.5H27.496C28.669 8.866 30.371 5.6 32.05 5.6ZM12.5 9.05C12.5 7.141 14.041 5.6 15.95 5.6C17.997 5.6 19.883 9.119 21.01 12.5H14.8C13.949 12.5 12.5 12.5 12.5 9.05ZM7.9 26.3H5.6V42.4C5.6 44.93 7.67 47 10.2 47H21.7V26.3H7.9ZM37.8 26.3H26.3V47H37.8C40.33 47 42.4 44.93 42.4 42.4V26.3H37.8Z" fill="#AAAAAA" /></g>
+                </svg>
+              </a>
+              <div className="tc tc-x" aria-disabled="true" aria-label="Enhancing SAFRA Clubs & Facilities" style={{ "--i": "4", position: "absolute", left: "630.5px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+                <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
+                  <defs>
+                    <linearGradient id="tcs4" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#6452A4" />
+                      <stop offset=".45" stopColor="#F04290" />
+                      <stop offset="1" stopColor="#F68C45" />
+                    </linearGradient>
+                  </defs>
+                  <rect className="tc-r tc-tail" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs4)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
+                  <rect className="tc-r tc-head" x="2" y="2" width="392.33" height="380" rx="22" pathLength="100" fill="none" stroke="url(#tcs4)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
+                </svg>
+                <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "32px", fontWeight: "700", lineHeight: "1.2", letterSpacing: "0.02em", textTransform: "uppercase", color: "#AAAAAA" }}>
+                  Enhancing
+                  <br />
+                  {"SAFRA Clubs & Facilities"}
+                  <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", right: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                    Enhancing
+                    <br />
+                    {"SAFRA Clubs & Facilities"}
+                  </span>
+                </span>
+                <svg className="tc-i" aria-hidden="true" width="50.94" height="50.94" viewBox="0 0 48 48" fill="none" style={{ position: "absolute", right: "36px", bottom: "36px", overflow: "visible" }}>
+                  <g className="ig"><path d="M38.0121 7.41008C38.386 7.27429 38.6907 6.99551 38.8591 6.63506C39.0275 6.27462 39.0459 5.86204 38.9101 5.48808C38.7743 5.11413 38.4955 4.80943 38.1351 4.64102C37.7746 4.47261 37.362 4.45429 36.9881 4.59008L12.0001 13.6761V6.00008C12.0001 5.60226 11.842 5.22073 11.5607 4.93942C11.2794 4.65812 10.8979 4.50008 10.5001 4.50008H7.50008C7.10226 4.50008 6.72073 4.65812 6.43942 4.93942C6.15812 5.22073 6.00008 5.60226 6.00008 6.00008V15.8601L3.98808 16.5901C3.61413 16.7259 3.30943 17.0047 3.14102 17.3651C2.97261 17.7255 2.95429 18.1381 3.09008 18.5121C3.22587 18.886 3.50466 19.1907 3.8651 19.3591C4.22555 19.5275 4.63813 19.5459 5.01208 19.4101L38.0121 7.41008Z" fill="#AAAAAA" /><path fillRule="evenodd" clipRule="evenodd" d="M6.038 22.228L36 11.334V18.176L44.012 21.09C44.386 21.2258 44.6907 21.5046 44.8591 21.865C45.0275 22.2254 45.0458 22.638 44.91 23.012C44.7742 23.3859 44.4954 23.6906 44.135 23.859C43.7745 24.0275 43.362 24.0458 42.988 23.91L42 23.55V40.5H43.5C43.8978 40.5 44.2794 40.658 44.5607 40.9393C44.842 41.2206 45 41.6022 45 42C45 42.3978 44.842 42.7793 44.5607 43.0606C44.2794 43.3419 43.8978 43.5 43.5 43.5H4.5C4.10218 43.5 3.72064 43.3419 3.43934 43.0606C3.15804 42.7793 3 42.3978 3 42C3 41.6022 3.15804 41.2206 3.43934 40.9393C3.72064 40.658 4.10218 40.5 4.5 40.5H6V22.242L6.038 22.228ZM36 40.5V21.368L39 22.46V40.5H36ZM18 28.5C17.6022 28.5 17.2206 28.658 16.9393 28.9393C16.658 29.2206 16.5 29.6022 16.5 30V39C16.5 39.828 17.172 40.5 18 40.5H24C24.3978 40.5 24.7794 40.342 25.0607 40.0606C25.342 39.7793 25.5 39.3978 25.5 39V30C25.5 29.6022 25.342 29.2206 25.0607 28.9393C24.7794 28.658 24.3978 28.5 24 28.5H18Z" fill="#AAAAAA" /></g>
+                </svg>
+              </div>
+            </div>
           </nav>
         </section>
-        <section className="s6" hidden aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s6" aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z6" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="dc-title" aria-label="Bringing defence closer to the community" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -984,7 +967,7 @@ export default function render(v) {
           </div>
           <div className="nv6" aria-hidden="true" />
         </section>
-        <section className="s7" hidden aria-labelledby="an-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s7" aria-labelledby="an-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z7" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="an-title" aria-label="Appreciating national servicemen" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -1063,7 +1046,7 @@ export default function render(v) {
           </div>
           <div className="nv7" aria-hidden="true" />
         </section>
-        <section className="s8" hidden aria-labelledby="sb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s8" aria-labelledby="sb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z8" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="sb-title" aria-label="Strengthening bonds" style={{ position: "absolute", left: "63px", top: "80px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "67px", letterSpacing: "0.004em" }}>
@@ -1128,7 +1111,7 @@ export default function render(v) {
           </div>
           <div className="nv8" aria-hidden="true" />
         </section>
-        <section className="s9" hidden aria-labelledby="t2-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s9" aria-labelledby="t2-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="t2-title" aria-label="& beyond National Service, we support NSmen and their families in everyday life." style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "684px", margin: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", fontWeight: "400", textAlign: "center" }}>
             <span className="t9 t9a" style={{ display: "block", fontSize: "64px", fontWeight: "400", lineHeight: "1.1", letterSpacing: "1.28px", color: "#6E778B" }}>
               <span className="hv" aria-hidden="true" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
@@ -1408,8 +1391,8 @@ export default function render(v) {
             </svg>
           </button>
         </section>
-        {/* one gradient behind the band under section 9, Membership and Clubs & Facilities, so it flows through all three */}
-        <svg className="zbg" aria-hidden="true" style={{ position: "absolute", left: `${-(v.gx || 0)}px`, top: "3618px", width: `${1440 + 2 * (v.gx || 0)}px`, height: "2533px", display: "block", pointerEvents: "none" }} viewBox={`${-(v.gx || 0)} 3618 ${1440 + 2 * (v.gx || 0)} 2533`} preserveAspectRatio="none">
+        {/* one gradient behind the band under section 9 and Clubs & Facilities, so it flows through both (Membership is an L2 page on desktop) */}
+        <svg className="zbg" aria-hidden="true" style={{ position: "absolute", left: `${-(v.gx || 0)}px`, top: "3618px", width: `${1440 + 2 * (v.gx || 0)}px`, height: "1633px", display: "block", pointerEvents: "none" }} viewBox={`${-(v.gx || 0)} 3618 ${1440 + 2 * (v.gx || 0)} 1633`} preserveAspectRatio="none">
           <defs>
             <linearGradient id="zG" x1={ZONE_GRAD.x1} y1={ZONE_GRAD.y1} x2={ZONE_GRAD.x2} y2={ZONE_GRAD.y2} gradientUnits="userSpaceOnUse">
                 <stop stopColor="#6252A4" />
@@ -1418,28 +1401,26 @@ export default function render(v) {
                 <stop offset="1" stopColor="#F69141" />
             </linearGradient>
           </defs>
-          <rect x={-(v.gx || 0)} y="3618" width={1440 + 2 * (v.gx || 0)} height="2533" fill="url(#zG)" />
+          <rect x={-(v.gx || 0)} y="3618" width={1440 + 2 * (v.gx || 0)} height="1633" fill="url(#zG)" />
         </svg>
-        <section className="s10" hidden aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden" }}>
-          <div style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "1124px", transformOrigin: "0 0", transform: "translate(72px, -36px) scale(0.9)" }}>
+        <section className="s10" aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%)", borderImage: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+          {/* Figma 2110:7454 at 78% so the open card fits the screen */}
+          <div style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "1217px", transformOrigin: "0 0", transform: "translate(158.4px, 2px) scale(0.78)" }}>
             <div style={{ position: "absolute", left: "104px", top: "104px", width: "396px", paddingTop: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
-              <h2 id="mb-title" className="mbk mk2" aria-label="Membership, made more rewarding" style={{ margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
-                <span style={{ display: "block", color: "#FFFFFF" }}>
-                  Membership, made more rewarding
-                </span>
+              <h2 id="mb-title" className="mbk mk2" aria-label="Rewarding privileges" style={{ margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase", color: "#FFFFFF" }}>
+                Rewarding
+                <br />
+                privileges
               </h2>
-              <div className="mbk mk4" style={{ fontSize: "24px", fontWeight: "400", lineHeight: "1.6", letterSpacing: "0.48px", color: "#DDDDDD" }}>
-                <p style={{ margin: "0" }}>
-                  From staying active and unwinding to enjoying greater value on everyday essentials.
-                </p>
-                <p style={{ margin: "0" }}>
-                  <br aria-hidden="true" />
-                  SAFRA continues to support NSmen and their families beyond National Service.
-                </p>
-              </div>
+              <p className="mbk mk4" style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.6", letterSpacing: "0.48px", color: "#DDDDDD" }}>
+                Preferential rates and exclusive privileges enabled SAFRA members to stretch every dollar and reap greater cost savings on a wide variety of product and services throughout the year.
+              </p>
             </div>
-            <div className="mbk mk5" role="group" aria-label="Membership categories" style={{ position: "absolute", left: "564px", top: "104px", width: "772px", height: "916px", overflow: "hidden", borderRadius: "16px" }}>
-              <div className={`mbs ${s(v.mbv?.v0)}`} style={{ position: "absolute", left: "0", top: `${s(v.mbv?.y0)}px`, zIndex: `${s(v.mbv?.z0)}`, width: "772px", height: "702px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "32px", borderRadius: "16px", background: "#272C3F" }}>
+            <p className="mbk mk5" style={{ position: "absolute", left: "564px", top: "104px", width: "772px", margin: "0", textAlign: "center", fontSize: "32px", fontWeight: "700", lineHeight: "1.6", letterSpacing: "0.64px", color: "#FFFFFF" }}>
+              TOP PICKS
+            </p>
+            <div className="mbk mk5" role="group" aria-label="Top picks by category" style={{ position: "absolute", left: "564px", top: "171px", width: "772px", height: "942px", overflow: "hidden", borderRadius: "16px" }}>
+              <div className={`mbs ${s(v.mbv?.v0)}`} style={{ position: "absolute", left: "0", top: `${s(v.mbv?.y0)}px`, zIndex: `${s(v.mbv?.z0)}`, width: "772px", minHeight: "595px", maxHeight: "621px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "32px", borderRadius: "16px", background: "#272C3F" }}>
                 <h3 style={{ margin: "0" }}>
                   <button className="mbh" type="button" aria-expanded={v.mbv?.e0} onClick={v.mbTab3} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
                     <img src="./assets/mb-ic-travel.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
@@ -1448,52 +1429,7 @@ export default function render(v) {
                     </span>
                   </button>
                 </h3>
-                <div className="mbc">
-                  <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#DDDDDD", opacity: ".8" }}>
-                    Content for this category is still to come.
-                  </p>
-                </div>
-              </div>
-              <div className={`mbs ${s(v.mbv?.v1)}`} style={{ position: "absolute", left: "0", top: `${s(v.mbv?.y1)}px`, zIndex: `${s(v.mbv?.z1)}`, width: "772px", height: "702px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "32px", borderRadius: "16px", background: "#313851" }}>
-                <h3 style={{ margin: "0" }}>
-                  <button className="mbh" type="button" aria-expanded={v.mbv?.e1} onClick={v.mbTab2} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
-                    <img src="./assets/mb-ic-movies.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
-                    <span style={{ fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
-                      {"Movies & Entertainment"}
-                    </span>
-                  </button>
-                </h3>
-                <div className="mbc">
-                  <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#DDDDDD", opacity: ".8" }}>
-                    Content for this category is still to come.
-                  </p>
-                </div>
-              </div>
-              <div className={`mbs ${s(v.mbv?.v2)}`} style={{ position: "absolute", left: "0", top: `${s(v.mbv?.y2)}px`, zIndex: `${s(v.mbv?.z2)}`, width: "772px", height: "702px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "32px", borderRadius: "16px", background: "#272C3F" }}>
-                <h3 style={{ margin: "0" }}>
-                  <button className="mbh" type="button" aria-expanded={v.mbv?.e2} onClick={v.mbTab1} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
-                    <img src="./assets/mb-ic-education.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
-                    <span style={{ fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
-                      Education
-                    </span>
-                  </button>
-                </h3>
-                <div className="mbc">
-                  <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#DDDDDD", opacity: ".8" }}>
-                    Content for this category is still to come.
-                  </p>
-                </div>
-              </div>
-              <div className={`mbs ${s(v.mbv?.v3)}`} style={{ position: "absolute", left: "0", top: `${s(v.mbv?.y3)}px`, zIndex: `${s(v.mbv?.z3)}`, width: "772px", height: "702px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "32px", borderRadius: "16px", background: "#313851" }}>
-                <h3 style={{ margin: "0" }}>
-                  <button className="mbh" type="button" aria-expanded={v.mbv?.e3} onClick={v.mbTab0} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
-                    <img src="./assets/mb-ic-food.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
-                    <span style={{ fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
-                      {"Food & Groceries"}
-                    </span>
-                  </button>
-                </h3>
-                <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+                <div className="mbc" onWheel={v.mbScroll} style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
                     <div style={{ display: "flex", gap: "16px" }}>
                       <div style={{ flex: "1 0 0", minWidth: "0" }}>
@@ -1509,7 +1445,7 @@ export default function render(v) {
                           <T v={v.mbv?.c1} />
                         </p>
                         <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", letterSpacing: "0.96px", color: "#EEEEEE" }}>
-                          SG60 vouchers enjoyed
+                          {"SG60 vouchers enjoyed"}
                         </p>
                       </div>
                     </div>
@@ -1518,10 +1454,137 @@ export default function render(v) {
                     </p>
                   </div>
                   <div style={{ paddingTop: "32px", display: "flex", gap: "24px", alignItems: "flex-start" }}>
-                    <div className="mbi" style={{ flex: "1 0 0", minWidth: "0", aspectRatio: "1", overflow: "hidden" }}>
+                    <div className="mbi" style={{ flex: "none", width: "151px", height: "151px", overflow: "hidden" }}>
                       <img src="./assets/mb-f1.jpg" alt="Délifrance 1-for-1 signature sandwich offer for SAFRA members" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} />
                     </div>
+                    <div className="mbi" style={{ flex: "none", width: "151px", height: "151px", overflow: "hidden" }}>
+                      <img src="./assets/mb-f2.jpg" alt="PlayMade 1-for-1 beverage offer for SAFRA members" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                    <div className="mbi" style={{ flex: "none", width: "358px", height: "136px", overflow: "hidden" }}>
+                      <img src="./assets/mb-f3.jpg" alt="Hawker discount day at Bukit Merah Central Food Centre" style={{ display: "block", width: "358px", height: "136px", objectFit: "cover" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className={`mbs ${s(v.mbv?.v1)}`} style={{ position: "absolute", left: "0", top: `${s(v.mbv?.y1)}px`, zIndex: `${s(v.mbv?.z1)}`, width: "772px", minHeight: "595px", maxHeight: "621px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#313851" }}>
+                <h3 style={{ margin: "0" }}>
+                  <button className="mbh" type="button" aria-expanded={v.mbv?.e1} onClick={v.mbTab2} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
+                    <img src="./assets/mb-ic-movies.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
+                    <span style={{ fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
+                      {"Movies & Live Entertainment"}
+                    </span>
+                  </button>
+                </h3>
+                <div className="mbc" onWheel={v.mbScroll} style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "24px", color: "#EEEEEE", lineHeight: "1.4" }}>
+                    <div style={{ flex: "1 0 0", minWidth: "0", display: "flex", flexDirection: "column", gap: "2px", paddingLeft: "24px", borderLeft: "1px solid #C3C3C3" }}>
+                      <p style={{ margin: "0", fontSize: "16px", letterSpacing: "0.32px" }}>
+                        Over
+                      </p>
+                      <p aria-label="240K" style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                        <T v={v.mbv?.c5} />
+                      </p>
+                      <p style={{ margin: "0", fontSize: "16px", letterSpacing: "0.32px" }}>
+                        discounted movie tickets
+                        <br />
+                        and vouchers
+                      </p>
+                    </div>
+                    <div style={{ flex: "1 0 0", minWidth: "0", display: "flex", flexDirection: "column", gap: "2px", paddingLeft: "24px", borderLeft: "1px solid #C3C3C3" }}>
+                      <p style={{ margin: "0", fontSize: "16px", letterSpacing: "0.32px" }}>
+                        Close to
+                      </p>
+                      <p aria-label="12K" style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                        <T v={v.mbv?.c6} />
+                      </p>
+                      <p style={{ margin: "0", fontSize: "16px", letterSpacing: "0.32px" }}>
+                        complimentary movie
+                        <br />
+                        tickets
+                      </p>
+                    </div>
+                  </div>
+                  <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#DDDDDD", opacity: ".8" }}>
+                    Members enjoyed daily discounts and 1-for-1 weekend movie ticket deals at Shaw Theatres, along with complimentary ticket giveaways to watch blockbuster movies throughout the year. They also enjoyed up to 20% off on a variety of concerts, musicals and events.
+                  </p>
+                  <div style={{ paddingTop: "32px", display: "flex", gap: "24px", alignItems: "flex-start" }}>
                     <div className="mbi" style={{ flex: "1 0 0", minWidth: "0", aspectRatio: "1", overflow: "hidden" }}>
+                      <img src="./assets/mb-mv1.jpg" alt={"Disney On Ice Magic in the Stars: SAFRA members enjoy 12% off"} style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                    <div className="mbi" style={{ flex: "1 0 0", minWidth: "0", aspectRatio: "1", overflow: "hidden" }}>
+                      <img src="./assets/mb-mv2.jpg" alt={"Singapore Festival of Football: SAFRA exclusive 20% off Arsenal vs AC Milan tickets"} style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                    <div className="mbi" style={{ flex: "1 0 0", minWidth: "0", aspectRatio: "1", overflow: "hidden" }}>
+                      <img src="./assets/mb-mv3.jpg" alt={"SAFRA Members’ Exclusive movie deals: daily discounts, 1-for-1 weekend tickets, Free Fridays and voucher deals"} style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className={`mbs ${s(v.mbv?.v2)}`} style={{ position: "absolute", left: "0", top: `${s(v.mbv?.y2)}px`, zIndex: `${s(v.mbv?.z2)}`, width: "772px", minHeight: "595px", maxHeight: "621px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#272C3F" }}>
+                <h3 style={{ margin: "0" }}>
+                  <button className="mbh" type="button" aria-expanded={v.mbv?.e2} onClick={v.mbTab1} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
+                    <img src="./assets/mb-ic-education.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
+                    <span style={{ fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
+                      {"Education"}
+                    </span>
+                  </button>
+                </h3>
+                <div className="mbc" onWheel={v.mbScroll} style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "24px", color: "#EEEEEE", lineHeight: "1.4" }}>
+                    <div style={{ flex: "1 0 0", minWidth: "0", display: "flex", flexDirection: "column", gap: "2px", paddingLeft: "24px", borderLeft: "1px solid #C3C3C3" }}>
+                      <p aria-label="27" style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                        <T v={v.mbv?.c3} />
+                      </p>
+                      <p style={{ margin: "0", fontSize: "16px", letterSpacing: "0.32px" }}>
+                        Sponsorships awarded
+                      </p>
+                    </div>
+                    <div style={{ flex: "1 0 0", minWidth: "0", display: "flex", flexDirection: "column", gap: "2px", paddingLeft: "24px", borderLeft: "1px solid #C3C3C3" }}>
+                      <p style={{ margin: "0", fontSize: "16px", letterSpacing: "0.32px" }}>
+                        Worth over
+                      </p>
+                      <p aria-label="$615K" style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                        <T v={v.mbv?.c4} />
+                      </p>
+                    </div>
+                  </div>
+                  <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#DDDDDD", opacity: ".8" }}>
+                    These bond-free sponsorship helped members as they pursued their diploma. bachelor’s and master’s degree, in support of their education and career asprirations.
+                  </p>
+                  <div className="mbi" style={{ flex: "none", width: "100%", height: "260px", overflow: "hidden", background: "#FFFFFF" }}>
+                    <img src="./assets/mb-edu.jpg" alt="Sponsorship recipients on stage at the SAFRA Bond-Free Education Scheme Awards Presentation" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} />
+                  </div>
+                </div>
+              </div>
+              <div className={`mbs ${s(v.mbv?.v3)}`} style={{ position: "absolute", left: "0", top: `${s(v.mbv?.y3)}px`, zIndex: `${s(v.mbv?.z3)}`, width: "772px", minHeight: "621px", maxHeight: "621px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#313851" }}>
+                <h3 style={{ margin: "0" }}>
+                  <button className="mbh" type="button" aria-expanded={v.mbv?.e3} onClick={v.mbTab0} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
+                    <img src="./assets/mb-ic-food.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
+                    <span style={{ fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
+                      {"Food & Groceries"}
+                    </span>
+                  </button>
+                </h3>
+                <div className="mbc" onWheel={v.mbScroll} style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "2px", paddingLeft: "24px", borderLeft: "1px solid #C3C3C3", color: "#EEEEEE", lineHeight: "1.4" }}>
+                    <p style={{ margin: "0", fontSize: "16px", letterSpacing: "0.32px" }}>
+                      Over
+                    </p>
+                    <p aria-label="100K" style={{ margin: "0", fontSize: "44px", fontWeight: "400", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                      <T v={v.mbv?.c2} />
+                    </p>
+                    <p style={{ margin: "0", fontSize: "16px", letterSpacing: "0.32px" }}>
+                      Discounts at establishment
+                    </p>
+                  </div>
+                  <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#DDDDDD", opacity: ".8" }}>
+                    {"Members enjoyed attractive deals such as special 1-for-1 offers and up to 50% discounts at outlets islandwide. They could also purchase F&B vouchers at a special rate of $6 (U.P. $10) via the SAFRA Treats & Deals portal."}
+                  </p>
+                  <div style={{ paddingTop: "32px", display: "flex", gap: "24px", alignItems: "center" }}>
+                    <div className="mbi" style={{ flex: "none", width: "151px", height: "151px", overflow: "hidden" }}>
+                      <img src="./assets/mb-f1.jpg" alt="Délifrance 1-for-1 signature sandwich offer for SAFRA members" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                    <div className="mbi" style={{ flex: "none", width: "151px", height: "151px", overflow: "hidden" }}>
                       <img src="./assets/mb-f2.jpg" alt="PlayMade 1-for-1 beverage offer for SAFRA members" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }} />
                     </div>
                     <div className="mbi" style={{ flex: "none", width: "358px", height: "136px", overflow: "hidden" }}>
@@ -1533,7 +1596,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s15" hidden aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "4518px", width: "1440px", height: "1633px", overflow: "hidden" }}>
+        <section className="s15" aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "1633px", overflow: "hidden" }}>
           <div style={{ position: "absolute", left: "104px", top: "104px", width: "1232px", display: "flex", flexDirection: "column", gap: "24px", textAlign: "center" }}>
             <h2 id="fc-title" className="fck fc1k" style={{ "--d": ".45s", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
               <span style={{ color: "#FFFFFF" }}>
@@ -1572,7 +1635,7 @@ export default function render(v) {
             </p>
           </article>
         </section>
-        <section className="s11" hidden aria-labelledby="fy-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(123.69deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", borderImage: "linear-gradient(123.69deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s11" hidden aria-labelledby="fy-title" style={{ position: "absolute", left: "0", top: "5251px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(123.69deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", borderImage: "linear-gradient(123.69deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "1207px", transformOrigin: "0 0", transform: "translate(144px, -40px) scale(0.8)" }}>
             <h2 id="fy-title" className="fyk" style={{ "--d": ".55s", position: "absolute", left: "0", top: "104px", width: "1440px", margin: "0", textAlign: "center", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase", color: "#FFFFFF" }}>
               Our year in summary
@@ -1692,7 +1755,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s12" hidden aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s12" aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "5251px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="wc-title" aria-label="The year may be over. Our work continues." style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "684px", margin: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", fontWeight: "400", textAlign: "center" }}>
             <span className="t12 t12a" style={{ display: "block", fontSize: "64px", fontWeight: "400", lineHeight: "1.1", letterSpacing: "1.28px", color: "#6E778B" }}>
               <span className="hv" aria-hidden="true" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
@@ -1855,7 +1918,7 @@ export default function render(v) {
             </svg>
           </button>
         </section>
-        <section className="s13" hidden aria-labelledby="nx-title" style={{ position: "absolute", left: "0", top: "7051px", width: "1440px", height: "900px", overflow: "hidden", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s13" aria-labelledby="nx-title" style={{ position: "absolute", left: "0", top: "6151px", width: "1440px", height: "900px", overflow: "hidden", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div style={{ position: "absolute", left: "104px", top: "120px", width: "1232px", display: "flex", flexDirection: "column", gap: "16px", textAlign: "center" }}>
             <h2 id="nx-title" className="nxk" style={{ "--d": ".55s", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
               <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
@@ -1982,7 +2045,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s14" hidden aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "7951px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section className="s14" aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "7051px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="end-title" className="enk" style={{ "--d": ".55s", position: "absolute", left: "104px", top: "325px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "64px", letterSpacing: "0.01em", color: "#FFFFFF" }}>
             ONE YEAR.
             <br />
@@ -2141,12 +2204,12 @@ export default function render(v) {
                   At a glance
                 </button>
               </li>
-              <li hidden>
+              <li>
                 <button className="nvi" type="button" onClick={v.nav_s5}>
                   Our impact
                 </button>
               </li>
-              <li hidden>
+              <li>
                 <button className="nvi" type="button" onClick={v.nav_nx}>
                   Future plan
                 </button>

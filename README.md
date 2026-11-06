@@ -67,3 +67,20 @@ Story photos open a gallery (VIEW ALL cursor).
 - Responsive layouts: desktop at 768px and above (1440×900 artboard), mobile below 768px (390×844 artboard), scaled to fit the viewport.
 - Layout selection is automatic; saved preview choices and the former desktop-only flag are no longer used.
 - Both layouts share the navigation, animation timing, counters and story engine. Mobile uses shorter text reveals and swipe navigation; desktop supports wheel navigation and hover effects.
+
+## Build asset paths
+
+Set the content URL prefixes in `.env` before running `npm run build`:
+
+```dotenv
+URL_IMAGE="./"
+URL_CSS="./"
+URL_JS="./"
+```
+
+These prefixes apply to images (including story galleries and CSS cursors),
+stylesheets, and JavaScript respectively. The `assets/` folder and filenames
+are appended automatically, so the defaults produce `./assets/...` URLs
+and support hosting the build in a subdirectory. Upload all of `dist/`, keeping
+its folder structure. If you change a prefix, serve the corresponding files
+under that location; the build does not upload or relocate them.

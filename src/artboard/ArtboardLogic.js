@@ -29,11 +29,10 @@ let TG_SCALE = 160 / 72, TG_BASE = 918 + 546; // transition to At a glance: the 
 let BAR_END = 900; // the bar drips into the top of section 2's gradient
 let CUE_X = 720; // centre of the arrow-down in section 2 (cam coords)
 let S4_FS = { a: 63, b: 82 }; // statement above the topic cards
-// statement lines: [key, text, font size, centre y in the section]. Desktop follows Figma 2116:2829 ("Beyond the numbers."), scaled to fit one screen;
-// mobile keeps its own statement until its layout is redone.
+// Responsive lines for the statement above the topic cards; centres also drive letter hover effects.
 const S4_LINES = () => MOBILE
-  ? [['a', 'The numbers tell our impact.', S4_FS.a, 115 + 36], ['b', 'The stories show what it means.', S4_FS.b, 115 + 71 + 8 + 47]]
-  : [['a', 'Beyond the numbers.', S4_FS.a, 96], ['b', 'Discover stories of our support for', S4_FS.b, 155], ['c', 'NSmen and their families.', S4_FS.b, 209]];
+  ? [['b', 'Discover how our initiatives', S4_FS.b, 102], ['c', 'made a difference in the lives of', S4_FS.b, 129], ['d', 'national servicemen and', S4_FS.b, 156], ['e', 'their families.', S4_FS.b, 183]]
+  : [['b', 'Discover how our initiatives', S4_FS.b, 107], ['c', 'made a difference in the lives of', S4_FS.b, 161], ['d', 'national servicemen and their families.', S4_FS.b, 215]];
 const S4_W = () => 400; // font weight
 const S4_LS = () => MOBILE ? 0 : 0.02; // letter spacing (em)
 let TABS_X = [40, 578, 1037], TABS_W = [458, 379, 281];
@@ -45,7 +44,7 @@ function applyGeo(mobile) {
   if (MOBILE) {
     W = 390; SPEC = SPEC_M; TO = TO_M; CAM = CAM_M;
     GL_FS = 32; GLANCE_BASE = 844 + 92; TG_SCALE = 52 / 32; TG_BASE = 844 + 440; BAR_END = 844; CUE_X = 195;
-    S4_FS = { a: +(63 * 0.3105).toFixed(2), b: +(82 * 0.3105).toFixed(2) };
+    S4_FS = { a: +(63 * 0.3105).toFixed(2), b: 24 };
     TABS_X = [16, 140, 264]; TABS_W = [110, 110, 110]; MB_STEP = 56; NX_LEFT = [0, 124, 248];
   } else {
     W = 1440; SPEC = SPEC_D; TO = TO_D; CAM = CAM_D;
@@ -71,12 +70,6 @@ const DC_WORDS = ['BRINGING', 'DEFENCE', 'CLOSER', 'TO', 'THE', 'COMMUNITY'];
 // section 7: Appreciating national servicemen (one story so far; the red bar shows 1 of 4)
 const DC7 = [{"stats": ["35K+", "460"], "desc": ["Through the Appreciating NSmen Art Jam,", "preschoolers learnt of NSmen's contributions and", "made heartfelt gifts for their fathers."], "bar": 130, "photos": ["./assets/an1-big.jpg", "./assets/an1-a.jpg", "./assets/an1-b.jpg"], "alts": ["A child holds a hand-drawn thank-you card with a family photo for an NSman father", "A preschool teacher shows the class photos of servicemen", "A preschooler works on an art gift at a table"], "gallery": ["./assets/an1-big.jpg", "./assets/an1-a.jpg", "./assets/an1-b.jpg"], "gi": [0, 1, 2]}];
 const AN_WORDS = ['APPRECIATING', 'NATIONAL', 'SERVICEMEN'];
-// photos each topic card flips through on hover (from its own section)
-const CARD_IMGS = {
-  '#dc-title': ['./assets/dc1-big.jpg', './assets/dc2-a.jpg', './assets/dc3-big.jpg', './assets/dc4-a.jpg', './assets/dc1-a.jpg', './assets/dc2-big.jpg', './assets/dc3-a.jpg', './assets/dc4-big.jpg', './assets/dc1-b.jpg', './assets/dc2-b.jpg', './assets/dc4-b.jpg'],
-  '#an-title': ['./assets/an1-big.jpg', './assets/an1-a.jpg', './assets/an1-b.jpg'],
-  '#sb-title': ['./assets/sb1-big.jpg', './assets/sb1-a.jpg', './assets/sb1-b.jpg']
-};
 // section 8: Strengthening bonds (one story so far)
 const DC8 = [{"stats": ["52K+"], "desc": ["SAFRA's Vibrant Heartbeat SG60 National Day", "celebrations brought NSmen and families together", "to celebrate national pride."], "bar": 130, "photos": ["./assets/sb1-big.jpg", "./assets/sb1-a.jpg", "./assets/sb1-b.jpg"], "alts": ["A family smiles in front of heart-shaped red fireworks", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["./assets/sb1-big.jpg", "./assets/sb1-a.jpg", "./assets/sb1-b.jpg"], "gi": [0, 1, 2]}];
 // section 10: membership categories
@@ -138,7 +131,6 @@ export class ArtboardLogic extends Logic {
   // leaving section 6/7 for the cards: hold the entered card navy and quiet until the camera has pulled back out
   leaveTo5(from) { clearTimeout(this.lvT); this.setState({ lv: from }); this.lvT = setTimeout(() => this.setState({ lv: null }), 1500); }
   componentDidUpdate(prev, prevState) {
-    if (this.stkCard && this.state.view !== 's5') this.cardStack(null);
     if (prevState && prevState.view !== this.state.view && this.state.view === 't2') { this.hvLayout(); setTimeout(() => this.hvLayout(), 400); }
     // leaving section 6/7 for the cards: hold the entered card navy until the camera has pulled back out
 
@@ -151,29 +143,6 @@ export class ArtboardLogic extends Logic {
     }
   }
   // generic letter hover for statement text (.hv): same push/tilt as the masthead headline
-  // topic-card hover: cycle the card's section photos as a popping, tilted stack
-  cardStack(card) {
-    if (card === this.stkCard) return;
-    clearInterval(this.stkT);
-    if (this.stkCard) { const old = this.stkCard; clearTimeout(old._stkOff); old._stkOff = setTimeout(() => { if (old !== this.stkCard) old.querySelectorAll('.stk').forEach((im) => { im.style.display = 'none'; im.classList.remove('pop', 'out', 'now'); }); }, 200); }
-    this.stkCard = card;
-    if (!card) return;
-    const src = { '#dc-title': DC, '#an-title': DC7, '#sb-title': DC8 }[card.getAttribute('href')] || [];
-    const list = [...new Set(src.flatMap((d) => d.gallery || []))];
-    if (!list.length) return;
-    clearTimeout(card._stkOff);
-    const slots = [...card.querySelectorAll('.stk')].slice(0, 2); let n = 0;
-    const TILT = [-4, 3.5, -2.5, 4.5];
-    const step = () => {
-      const im = slots[n % 2], prev = slots[(n + 1) % 2];
-      if (n > 0) { prev.style.zIndex = '1'; }
-      im.classList.remove('out', 'pop', 'now'); im.src = list[n % list.length];
-      im.style.setProperty('--sr', TILT[n % TILT.length] + 'deg'); im.style.zIndex = '2'; im.style.display = 'block';
-      void im.offsetWidth; im.classList.add(n === 0 ? 'now' : 'pop');
-      n++;
-    };
-    step(); this.stkT = setInterval(step, 1100);
-  }
   hvLayout() {
     const root = this.findRoot(); if (!root) return;
     if (document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(() => this.hvLayout());
@@ -200,7 +169,7 @@ export class ArtboardLogic extends Logic {
       });
     });
   }
-  componentWillUnmount() { clearInterval(this.stkT); this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); }
+  componentWillUnmount() { this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); }
   // Section 6: play a story's entrance (photos rise into their frames, numbers count, description decodes, red bar fills)
   play6(n, delay, hold) {
     if (this.raf6) cancelAnimationFrame(this.raf6);
@@ -281,6 +250,22 @@ export class ArtboardLogic extends Logic {
   nxSet(k, at) {
     this.setState({ nxTab: k });
     requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; el.style.scrollBehavior = 'auto'; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = at === 'end' ? this.nxMax(el) : 0; this.nxPos = el.scrollTop; this.nxReveal(el); el.style.scrollBehavior = ''; });
+  }
+  // The mobile topics list scrolls through all five cards before the next screen.
+  topicsWheel(dy) {
+    if (!MOBILE || this.state.view !== 's5' || this.state.lb) return false;
+    const now = Date.now();
+    if (this.lockUntil && now < this.lockUntil) return true;
+    const el = this.findRoot()?.querySelector('.mobile-topics-scroll');
+    if (!el) return false;
+    const max = Math.max(0, el.scrollHeight - el.clientHeight);
+    const next = Math.max(0, Math.min(max, el.scrollTop + dy));
+    const streak = now - (this.topicsLast || 0) < 180;
+    this.topicsLast = now;
+    if (Math.abs(next - el.scrollTop) > 0.5) {
+      el.scrollTop = next; this.topicsEdge = now; return true;
+    }
+    return streak && now - (this.topicsEdge || 0) < 900;
   }
   nxWheel(dy) {
     if (this.state.view !== 'nx' || this.state.lb || this.state.link) return false;
@@ -915,7 +900,7 @@ export class ArtboardLogic extends Logic {
         const now = Date.now(), cont = now - (this.lastWheel || 0) < 220; this.lastWheel = now;
         if (this.holdTg && cont && this.state.view === 'tg') return;
         this.holdTg = false;
-        if (this.state.menu) { this.setState({ menu: false }); return; } if (this.nxWheel(e.deltaY)) return; if (this.linkWheel(e.deltaY)) return; this.go(e.deltaY > 0 ? 1 : -1);
+        if (this.state.menu) { this.setState({ menu: false }); return; } if (this.topicsWheel(e.deltaY)) return; if (this.nxWheel(e.deltaY)) return; if (this.linkWheel(e.deltaY)) return; this.go(e.deltaY > 0 ? 1 : -1);
       },
       tabs: (() => { const k = { s6: 0, s7: 1, s8: 2 }[view], on = k != null && !this.state.lb; const i = k ?? (this.state.tabLast ?? 0); return { cls: on ? 'on' : '', x: TABS_X[i], w: TABS_W[i], s6: i === 0 ? 'on' : '', s7: i === 1 ? 'on' : '', s8: i === 2 ? 'on' : '', s6sel: String(i === 0), s7sel: String(i === 1), s8sel: String(i === 2) }; })(),
       tab_s6: (e) => { e.stopPropagation(); this.tabTo('s6'); }, tab_s7: (e) => { e.stopPropagation(); this.tabTo('s7'); }, tab_s8: (e) => { e.stopPropagation(); this.tabTo('s8'); },
@@ -930,6 +915,12 @@ export class ArtboardLogic extends Logic {
       nav_fy: (e) => { e.stopPropagation(); this.jumpTo('fy'); },
       nav_nx: (e) => { e.stopPropagation(); this.jumpTo('nx'); },
       tap: () => { if (this.state.menu) { this.setState({ menu: false }); return; } if (this.state.view === 'top' || this.state.view === 'logo' || this.state.view === 't2') this.go(1); },
+      topicsKey: (e) => {
+        const el = e.currentTarget;
+        const delta = { ArrowDown: 48, ArrowUp: -48, PageDown: el.clientHeight * 0.8, PageUp: -el.clientHeight * 0.8, Home: -el.scrollHeight, End: el.scrollHeight }[e.key];
+        if (delta == null) return;
+        e.preventDefault(); e.stopPropagation(); el.scrollTop += delta;
+      },
       touchStart: (e) => { this.ty = e.touches && e.touches[0] ? e.touches[0].clientY : null; this.tyLast = this.ty; this.tMoved = false; },
       // mobile: inside the scroll-linked stretches (and Looking forward's column) the page follows the finger
       touchMove: (e) => {
@@ -939,13 +930,13 @@ export class ArtboardLogic extends Logic {
         const k = r && r.width ? W / r.width : 1; // screen px → artboard px
         const dy = (this.tyLast - y) * k; this.tyLast = y;
         if (Math.abs(dy) < 0.5) return;
-        if (this.nxWheel(dy) || ((this.state.link || linkOf(this.state.view)) && this.linkWheel(dy))) this.tMoved = true;
+        if (this.topicsWheel(dy) || this.nxWheel(dy) || ((this.state.link || linkOf(this.state.view)) && this.linkWheel(dy))) this.tMoved = true;
       },
       touchEnd: (e) => {
         const y = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null;
         if (this.ty == null || y == null) return;
         if (this.tMoved) { this.tMoved = false; return; } // already followed the finger
-        if (Math.abs(this.ty - y) > 30) { if (this.nxWheel((this.ty - y) * 1.5)) return; if (this.linkWheel((this.ty - y) * 1.5)) return; this.go(this.ty > y ? 1 : -1); }
+        if (Math.abs(this.ty - y) > 30) { if (this.topicsWheel((this.ty - y) * 1.5)) return; if (this.nxWheel((this.ty - y) * 1.5)) return; if (this.linkWheel((this.ty - y) * 1.5)) return; this.go(this.ty > y ? 1 : -1); }
       },
       t,
       ...letters,
@@ -980,9 +971,8 @@ export class ArtboardLogic extends Logic {
         const cl = (x) => Math.max(-0.5, Math.min(0.5, x));
         this.setState({ mx: cl((e.clientX - r.left) / r.width - 0.5), my: cl((e.clientY - r.top) / (r.width * 0.625) - 0.5), hx: (e.clientX - r.left) * s, hy: (e.clientY - r.top) * s });
         this.hvMove((e.clientX - r.left) * s, (e.clientY - r.top) * s, s);
-        const tc = e.target && e.target.closest ? e.target.closest('.tc') : null; this.cardStack(this.state.view === 's5' ? tc : null);
       },
-      leave: (e) => { if (MOBILE) return; if (e && e.relatedTarget) return; /* still in the window (side margins): keep following */ this.setState({ mx: 0, my: 0, hx: null, hy: null }); this.hvMove(null, null, 1); this.cardStack(null); },
+      leave: (e) => { if (MOBILE) return; if (e && e.relatedTarget) return; /* still in the window (side margins): keep following */ this.setState({ mx: 0, my: 0, hx: null, hy: null }); this.hvMove(null, null, 1); },
       hook: (e) => {
         try { const r = e.currentTarget.closest('.mh'); if (r) { this.root = r; requestAnimationFrame(() => this.measure()); } } catch (err) {}
       },

@@ -1,6 +1,7 @@
 // Markup for the artboard. Generated from the original prototype's template, then kept as plain JSX.
 // `v` is the object returned by ArtboardLogic.renderVals(); every {{binding}} of the original reads from it.
 import { Fragment } from 'react';
+import { MobileTopicCards } from './MobileTopicCards.jsx';
 import { T, arr, css, s, bleedPath, tongueM } from './bind.jsx';
 
 // the tab-shaped band under sections 9 and 12; its outer corners sit at the window edges
@@ -14,7 +15,7 @@ const TONGUE = 'M719.999 0C762.331 0 799.274 23.3611 818.941 58.046C835.286 86.8
 export default function render(v) {
   return (
     <>
-    <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.hdClass)} ${s(v.fcFreeClass)} ${s(v.mClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchMove={v.touchMove} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "390px", height: "844px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", boxShadow: "0 0 0 var(--gx, 0px) #272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
+    <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.goMClass)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.hdClass)} ${s(v.fcFreeClass)} ${s(v.mClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchMove={v.touchMove} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "390px", height: "844px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", boxShadow: "0 0 0 var(--gx, 0px) #272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
       <div className="cam" style={{ position: "absolute", left: "0", top: "0", width: "390px", height: "8192px", transform: `translateY(${s(v.camY)}px)` }}>
         <section className="layer1" aria-label="SAFRA masthead" style={{ position: "absolute", left: "0", top: "0", width: "390px", height: "844px", overflow: "hidden", transformOrigin: "50% 80%" }}>
           <div className="layer" style={{ position: "absolute", left: "0", top: "0", width: "390px", height: "844px", transformOrigin: "50% 46%" }}>
@@ -555,201 +556,24 @@ export default function render(v) {
           <div className="sweep" aria-hidden="true" style={{ position: "absolute", left: "calc(-1 * var(--gx, 0px))", top: "836px", width: `calc(390px + 2 * var(--gx, 0px))`, height: "6px", transform: `scaleX(${s(v.sweepS)})`, background: "linear-gradient(90deg, #74509F 0%, #F46074 55%, #F68F43 100%)" }} />
         </section>
         <section className="s45" aria-labelledby="t1-title" style={{ position: "absolute", left: "0", top: "1688px", width: "390px", height: "844px", overflow: "hidden" }}>
+          <div className="mobile-topics-scroll" onKeyDown={v.topicsKey}>
           <div className="tx" style={{ position: "absolute", left: "0", top: "0", width: "390px", height: "220px" }}>
-            <h2 id="t1-title" aria-label="The numbers tell our impact. The stories show what it means." style={{ position: "absolute", left: "0", top: "112px", width: "390px", margin: "0", textAlign: "center", fontWeight: "400", lineHeight: "1.12" }}>
-              <span className="t4a" aria-hidden="true" style={{ display: "block", fontSize: "18px", color: "#6E778B", whiteSpace: "nowrap" }}>
-                {arr(v.L_s4a).map((c, $index) => (
-                  <Fragment key={$index}>
-                    <span className="lt" style={{ transform: `${s(c?.tf)}` }}>
-                      <T v={c?.ch} />
-                    </span>
-                  </Fragment>
-                ))}
-              </span>
-              <span className="t4b" aria-hidden="true" style={{ display: "inline-block", marginTop: "3px", fontSize: "23.4px", whiteSpace: "nowrap" }}>
-                {arr(v.L_s4b).map((c, $index) => (
-                  <Fragment key={$index}>
-                    <span className="lt gl" style={{ transform: `${s(c?.tf)}`, backgroundImage: "linear-gradient(90deg, #6452A4 0%, #A84A9C 22%, #E8448F 45%, #F3477F 62%, #F3666A 82%, #F68C45 100%)", backgroundSize: `${s(c?.bw)}px 100%`, backgroundPosition: `${s(c?.bx)}px 0` }}>
-                      <T v={c?.ch} />
-                    </span>
-                  </Fragment>
+            <h2 id="t1-title" aria-label="Discover how our initiatives made a difference in the lives of national servicemen and their families." style={{ position: "absolute", left: "0", top: "88px", width: "390px", margin: "0", textAlign: "center", fontWeight: "400", lineHeight: "1.125" }}>
+              <span className="t4b" aria-hidden="true" style={{ display: "block", marginTop: "0px", fontSize: "24px", letterSpacing: "0", whiteSpace: "nowrap" }}>
+                {['b', 'c', 'd', 'e'].map((line) => (
+                  <span key={line} style={{ display: "block" }}>
+                    {arr(v['L_s4' + line]).map((c, $index) => (
+                      <span key={$index} className="lt gl" style={{ transform: `${s(c?.tf)}`, backgroundImage: "linear-gradient(90deg, #6252A4 0%, #F14192 49.04%, #F6765D 92.79%, #F69141 100%)", backgroundSize: `${s(c?.bw)}px 100%`, backgroundPosition: `${s(c?.bx)}px 0` }}>
+                        <T v={c?.ch} />
+                      </span>
+                    ))}
+                  </span>
                 ))}
               </span>
             </h2>
           </div>
-          <nav aria-label="Topics">
-            <a className={`tc ${s(v.lv1)}`} href="#dc-title" onClick={v.topic1} aria-label="Bringing defence closer to the community" style={{ "--i": "0", position: "absolute", left: "16px", top: "236px", width: "358px", height: "184px", boxSizing: "border-box", padding: "18px 20px", borderRadius: "16px", textDecoration: "none" }}>
-              <svg className="tc-s" aria-hidden="true" width="358" height="184" viewBox="0 0 358 184" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
-                <defs>
-                  <linearGradient id="tcs0" x1="0" y1="0" x2="358" y2="184" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".45" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <rect className="tc-r tc-tail" x="1.5" y="1.5" width="355" height="181" rx="14.5" pathLength="100" fill="none" stroke="url(#tcs0)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
-                <rect className="tc-r tc-head" x="1.5" y="1.5" width="355" height="181" rx="14.5" pathLength="100" fill="none" stroke="url(#tcs0)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
-              </svg>
-              <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "22px", fontWeight: "700", lineHeight: "28px", letterSpacing: "0.012em", textTransform: "uppercase", color: "#A7A9AE" }}>
-                Bringing
-                <br />
-                defence closer
-                <br />
-                to the
-                <br />
-                community
-                <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                  Bringing
-                  <br />
-                  defence closer
-                  <br />
-                  to the
-                  <br />
-                  community
-                </span>
-              </span>
-              <span className="tc-stk" aria-hidden="true" style={{ display: "none" }}>
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-              </span>
-              <span className="tc-b" style={{ position: "absolute", left: "34px", top: "33px", right: "30px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE", display: "none"  }}>
-                Fostering a deeper understanding of how the wider community can play a part in Total Defence.
-              </span>
-              <svg className="tc-i" aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" style={{ position: "absolute", right: "16px", bottom: "16px", overflow: "visible" }}>
-                <defs>
-                  <linearGradient id="tcg0" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".55" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <g className="ig">
-                  <path d="M12 2.2 4.2 5.1v6.2c0 4.9 3.3 9.1 7.8 10.5 4.5-1.4 7.8-5.6 7.8-10.5V5.1L12 2.2Z" fill="none" stroke="#A7A9AE" strokeWidth="2.1" strokeLinejoin="round" />
-                  <path d="M12 6.1 7.6 7.8v3.7c0 2.9 1.9 5.4 4.4 6.3 2.5-.9 4.4-3.4 4.4-6.3V7.8L12 6.1Z" fill="#A7A9AE" />
-                </g>
-                <g className="ic">
-                  <path d="M12 2.2 4.2 5.1v6.2c0 4.9 3.3 9.1 7.8 10.5 4.5-1.4 7.8-5.6 7.8-10.5V5.1L12 2.2Z" fill="none" stroke="url(#tcg0)" strokeWidth="2.1" strokeLinejoin="round" />
-                  <path d="M12 6.1 7.6 7.8v3.7c0 2.9 1.9 5.4 4.4 6.3 2.5-.9 4.4-3.4 4.4-6.3V7.8L12 6.1Z" fill="url(#tcg0)" />
-                </g>
-              </svg>
-            </a>
-            <a className={`tc ${s(v.lv2)}`} href="#an-title" onClick={v.topic2} aria-label="Appreciating national servicemen" style={{ "--i": "1", position: "absolute", left: "16px", top: "432px", width: "358px", height: "184px", boxSizing: "border-box", padding: "18px 20px", borderRadius: "16px", textDecoration: "none" }}>
-              <svg className="tc-s" aria-hidden="true" width="358" height="184" viewBox="0 0 358 184" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
-                <defs>
-                  <linearGradient id="tcs1" x1="0" y1="0" x2="358" y2="184" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".45" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <rect className="tc-r tc-tail" x="1.5" y="1.5" width="355" height="181" rx="14.5" pathLength="100" fill="none" stroke="url(#tcs1)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
-                <rect className="tc-r tc-head" x="1.5" y="1.5" width="355" height="181" rx="14.5" pathLength="100" fill="none" stroke="url(#tcs1)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
-              </svg>
-              <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "22px", fontWeight: "700", lineHeight: "28px", letterSpacing: "0.012em", textTransform: "uppercase", color: "#A7A9AE" }}>
-                Appreciating
-                <br />
-                national
-                <br />
-                servicemen
-                <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                  Appreciating
-                  <br />
-                  national
-                  <br />
-                  servicemen
-                </span>
-              </span>
-              <span className="tc-stk" aria-hidden="true" style={{ display: "none" }}>
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-              </span>
-              <span className="tc-b" style={{ position: "absolute", left: "34px", top: "33px", right: "30px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE", display: "none"  }}>
-                Education institutions and
-                <br />
-                businesses step up to honour
-                <br />
-                the ongoing dedication of our
-                <br />
-                national servicemen.
-              </span>
-              <svg className="tc-i" aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" style={{ position: "absolute", right: "16px", bottom: "16px", overflow: "visible" }}>
-                <defs>
-                  <linearGradient id="tcg1" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".55" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <g className="ig">
-                  <path fillRule="evenodd" d="M12 2.5a9.5 9.5 0 0 0-8.3 14.1L2.6 21.4l4.9-1.2A9.5 9.5 0 1 0 12 2.5Zm0 13.6-3.5-3.4a2.1 2.1 0 0 1 3-3l.5.5.5-.5a2.1 2.1 0 0 1 3 3L12 16.1Z" fill="#A7A9AE" />
-                </g>
-                <g className="ic">
-                  <path fillRule="evenodd" d="M12 2.5a9.5 9.5 0 0 0-8.3 14.1L2.6 21.4l4.9-1.2A9.5 9.5 0 1 0 12 2.5Zm0 13.6-3.5-3.4a2.1 2.1 0 0 1 3-3l.5.5.5-.5a2.1 2.1 0 0 1 3 3L12 16.1Z" fill="url(#tcg1)" />
-                </g>
-              </svg>
-            </a>
-            <a className={`tc ${s(v.lv3)}`} href="#sb-title" onClick={v.topic3} aria-label="Strengthening bonds" style={{ "--i": "2", position: "absolute", left: "16px", top: "628px", width: "358px", height: "184px", boxSizing: "border-box", padding: "18px 20px", borderRadius: "16px", textDecoration: "none" }}>
-              <svg className="tc-s" aria-hidden="true" width="358" height="184" viewBox="0 0 358 184" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
-                <defs>
-                  <linearGradient id="tcs2" x1="0" y1="0" x2="358" y2="184" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".45" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <rect className="tc-r tc-tail" x="1.5" y="1.5" width="355" height="181" rx="14.5" pathLength="100" fill="none" stroke="url(#tcs2)" strokeWidth="4" strokeDasharray="46 54" strokeLinecap="round" opacity=".28" />
-                <rect className="tc-r tc-head" x="1.5" y="1.5" width="355" height="181" rx="14.5" pathLength="100" fill="none" stroke="url(#tcs2)" strokeWidth="4" strokeDasharray="24 76" strokeLinecap="round" />
-              </svg>
-              <span className="tc-t" style={{ position: "relative", display: "block", fontSize: "22px", fontWeight: "700", lineHeight: "28px", letterSpacing: "0.012em", textTransform: "uppercase", color: "#A7A9AE" }}>
-                Strengthening
-                <br />
-                bonds
-                <span className="tc-g" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", paddingBottom: ".1em", background: "linear-gradient(120deg, #6452A4 0%, #C0469A 35%, #F04290 60%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                  Strengthening
-                  <br />
-                  bonds
-                </span>
-              </span>
-              <span className="tc-stk" aria-hidden="true" style={{ display: "none" }}>
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-                <img className="stk" alt="" src="" style={{ display: "none" }} />
-              </span>
-              <span className="tc-b" style={{ position: "absolute", left: "34px", top: "33px", right: "30px", fontSize: "21px", fontWeight: "400", lineHeight: "40px", letterSpacing: "0", color: "#A7A9AE", display: "none"  }}>
-                Forging closer bonds among national servicemen and creating opportunity for quality time with their loved ones.
-              </span>
-              <svg className="tc-i" aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" style={{ position: "absolute", right: "16px", bottom: "16px", overflow: "visible" }}>
-                <defs>
-                  <linearGradient id="tcg2" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#6452A4" />
-                    <stop offset=".55" stopColor="#F04290" />
-                    <stop offset="1" stopColor="#F68C45" />
-                  </linearGradient>
-                </defs>
-                <g className="ig">
-                  <circle cx="12" cy="6.3" r="2.4" fill="#A7A9AE" />
-                  <circle cx="4.5" cy="9.6" r="2.2" fill="#A7A9AE" />
-                  <circle cx="19.5" cy="9.6" r="2.2" fill="#A7A9AE" />
-                  <path d="M8.9 10.2h6.2c.7 0 1.2.5 1.2 1.2v1.8L12 17.2l-4.3-4V11.4c0-.7.5-1.2 1.2-1.2Z" fill="#A7A9AE" />
-                  <path d="M1.2 20.8v-5.2c0-1.2 1-2.2 2.2-2.2h1.4c1.2 0 2.2 1 2.2 2.2v5.2H1.2Zm15.8 0v-5.2c0-1.2 1-2.2 2.2-2.2h1.4c1.2 0 2.2 1 2.2 2.2v5.2H17Z" fill="#A7A9AE" />
-                  <path d="M6.3 14.6 9.5 18.4c1.4 1.7 3.6 1.7 5 0l3.2-3.8" fill="none" stroke="#A7A9AE" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
-                </g>
-                <g className="ic">
-                  <circle cx="12" cy="6.3" r="2.4" fill="url(#tcg2)" />
-                  <circle cx="4.5" cy="9.6" r="2.2" fill="url(#tcg2)" />
-                  <circle cx="19.5" cy="9.6" r="2.2" fill="url(#tcg2)" />
-                  <path d="M8.9 10.2h6.2c.7 0 1.2.5 1.2 1.2v1.8L12 17.2l-4.3-4V11.4c0-.7.5-1.2 1.2-1.2Z" fill="url(#tcg2)" />
-                  <path d="M1.2 20.8v-5.2c0-1.2 1-2.2 2.2-2.2h1.4c1.2 0 2.2 1 2.2 2.2v5.2H1.2Zm15.8 0v-5.2c0-1.2 1-2.2 2.2-2.2h1.4c1.2 0 2.2 1 2.2 2.2v5.2H17Z" fill="url(#tcg2)" />
-                  <path d="M6.3 14.6 9.5 18.4c1.4 1.7 3.6 1.7 5 0l3.2-3.8" fill="none" stroke="url(#tcg2)" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
-                </g>
-              </svg>
-            </a>
-          </nav>
+          <MobileTopicCards v={v} />
+          </div>
         </section>
         <section className="s6" aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1688px", width: "390px", height: "844px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z6" style={{ position: "absolute", inset: "0" }}>

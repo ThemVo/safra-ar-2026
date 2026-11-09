@@ -22,10 +22,16 @@
 /* sustainability figures stay on one line */
 .mh.m .sl .cd p[aria-label] { white-space: nowrap; }
 
-/* topic cards: zoom toward the tapped card (scale 1.06 about its centre) */
-.go6.m .s45 { transform: translate(-11.7px, -19.5px) scale(1.06); }
-.go7.m .s45 { transform: translate(-11.7px, -31.3px) scale(1.06); }
-.go8.m .s45 { transform: translate(-11.7px, -43.0px) scale(1.06); }
+/* Figma 3962:84: the five mobile cards show descriptions without hover. */
+.mh.m .mobile-topics-scroll { position: absolute; inset: 0; overflow: hidden; overscroll-behavior: contain; }
+.mh.m .mobile-topics { display: flex; flex-direction: column; gap: 12px; padding: 236px 16px 40px; }
+.mh.m .mobile-topic { position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-end; gap: 24px; flex-shrink: 0; min-height: 356px; padding: 28px 24px; border-radius: 20px; text-decoration: none; }
+.mh.m .mobile-topic::before { border-radius: 20px; padding: 4px; }
+.mh.m .mobile-topic-copy { display: flex; flex: 1; flex-direction: column; gap: 24px; width: 100%; }
+.mh.m .mobile-topic-title { display: block; font-size: 24px; font-weight: 700; line-height: 1.2; letter-spacing: .48px; text-transform: uppercase; color: #aaa; }
+.mh.m .mobile-topic-description { display: block; font-size: 18px; font-weight: 400; line-height: 1.8; color: #ccc; }
+.mh.m .mobile-topic-icon { display: block; flex-shrink: 0; }
+.go6.m .s45, .go7.m .s45, .go8.m .s45, .goM.m .s45 { transform: translate(-11.7px, -25.3px) scale(1.06); }
 
 /* L2 tabs: three narrow columns that wrap */
 .mh.m .tabs { width: 390px; height: 84px; }

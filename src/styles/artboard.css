@@ -400,7 +400,7 @@ body{margin:0;background:#272C3F}
 .mh .tc .tc-t{transition:opacity .25s ease,transform .4s cubic-bezier(.2,.7,.2,1)}
 .mh .tc{background:transparent;transition:opacity .35s ease,transform .5s cubic-bezier(.4,0,.6,1),background-color .35s ease}
 .mh:where(:not(.m)) .tc:hover,.mh .tc:focus-visible,.go6 .tc[aria-label^="Bringing"],.go7 .tc[aria-label^="Appreciating"],.go8 .tc[aria-label^="Strengthening"]{background-color:#000722} /* deep navy on hover, kept while the camera zooms into the card */
-.mh .tc .tc-stk{position:absolute;left:3px;right:3px;bottom:3px;height:196px;z-index:0;pointer-events:none;overflow:hidden;border-radius:0 0 19px 19px;opacity:0;transition:opacity .12s ease} /* full-width photo on top, copy below */
+.mh .tc .tc-stk{position:absolute;left:3px;right:3px;bottom:3px;height:196px;z-index:0;pointer-events:none;overflow:hidden;border-radius:0 0 19px 19px;opacity:0;transition:opacity .12s ease} /* fixed photo beneath the description */
 .mh:where(:not(.m)) .tc:hover .tc-stk,.mh .tc:focus-visible .tc-stk{opacity:1;transition:none}
 .go6 .s45 .tc .tc-stk,.go7 .s45 .tc .tc-stk,.go8 .s45 .tc .tc-stk,.lv .s45 .tc .tc-stk{opacity:0 !important;transition:opacity .2s ease 0s !important}
 .mh:where(:not(.m)) .tc:hover .tc-i,.mh .tc:focus-visible .tc-i{opacity:0 !important;transform:none !important;transition:none !important} /* no icon on hover */
@@ -408,17 +408,6 @@ body{margin:0;background:#272C3F}
 .mh:where(:not(.m)) .tc:hover,.mh .tc:focus-visible{z-index:1} /* photos may overlap the neighbouring cards */
 .mh .tc .tc-t,.mh .tc .tc-b,.mh .tc .tc-i{z-index:2}
 .mh .tc .tc-i{position:absolute}
-/* hover: section photos pop in one after another as a tilted stack (flip-book), copy stays on top */
-.mh .tc .stk{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
-.mh .tc .stk.pop{animation:stkIn 1.6s cubic-bezier(.2,.7,.2,1) both}
-.mh .tc .stk.out{animation:stkFade .45s ease .25s both}
-@keyframes stkIn{0%{opacity:0;transform:scale(1.08)}30%{opacity:1}100%{opacity:1;transform:scale(1)}}
-.mh .tc .stk.now{opacity:1;animation:stkZ 1.4s cubic-bezier(.2,.7,.2,1) both}
-@keyframes stkZ{from{transform:scale(1.06)}to{transform:scale(1)}}
-@keyframes stkFade{from{opacity:1;transform:scale(1.02)}to{opacity:0;transform:scale(1.02)}}
-.mh .tc .tc-stk::after{display:none;content:"";position:absolute;inset:0;z-index:100;background:linear-gradient(180deg,rgba(0,7,34,1) 0%,rgba(0,7,34,.96) 36%,rgba(0,7,34,.4) 56%,rgba(0,7,34,0) 72%,rgba(0,7,34,.15) 86%,rgba(0,7,34,.55) 100%);opacity:0;transition:opacity .3s ease}
-.mh:where(:not(.m)) .tc:hover .tc-stk::after,.mh .tc:focus-visible .tc-stk::after{opacity:1}
-.mh:where(:not(.m)) .tc:hover .tc-b,.mh .tc:focus-visible .tc-b{color:#FFFFFF}
 .mh .tc .tc-b{opacity:0;transform:translateY(16px);transition:opacity .12s ease,transform 0s .12s}
 .mh:where(:not(.m)) .tc:hover .tc-t,.mh .tc:focus-visible .tc-t{opacity:0;transform:translateY(-16px);transition:none !important}
 .mh:where(:not(.m)) .tc:hover .tc-b,.mh .tc:focus-visible .tc-b{opacity:1;transform:none;transition:opacity .15s ease,transform .35s cubic-bezier(.2,.7,.2,1)}
@@ -450,8 +439,7 @@ body{margin:0;background:#272C3F}
 
 /* Beyond the numbers (Figma 2116:2829): five cards at Figma size inside .tcw, which scales them to fit the screen */
 .mh:not(.m) .s45 .tcw .tc::before{border-radius:24px;padding:4px}
-.mh:not(.m) .s45 .tcw .tc .tc-stk{left:4px;right:4px;bottom:4px;height:180px;border-radius:0 0 20px 20px}
-.mh:not(.m) .s45 .tcw .tc.tc-x .tc-t{opacity:1 !important;transform:none !important} /* no copy to swap in: the title stays and turns to gradient on hover */
+.mh:not(.m) .s45 .tcw .tc .tc-stk{left:4px;right:4px;bottom:4px;height:208px;border-radius:0 0 16px 16px}
 .mh:not(.m):not(.go6):not(.go7):not(.go8):not(.goM):not(.lv) .s45 .tcw .tc:not(:hover) .tc-i{transition:none} /* icon is back the moment the mouse leaves the card */
 
 /* desktop: Membership (Rewarding privileges) is an L2 page opened from card 4, like the topic pages */
@@ -460,7 +448,6 @@ body{margin:0;background:#272C3F}
 .goM .s45{transform:translate(-34.63px,-42.18px) scale(1.06);opacity:0;transition:transform .6s cubic-bezier(.2,.7,.2,1) 0s,opacity .45s ease 0s} /* zoom about card 4 (centre 577.1,703) */
 .goM .s45 .tc{pointer-events:none}
 .goM .s45 .tc .tc-t,.goM .s45 .tc .tc-b,.goM .s45 .tc .tc-i,.goM .s45 .tc .tc-s{opacity:0;transition:opacity .3s ease 0s}
-.mh:not(.m):is(.go6,.go7,.go8,.goM) .s45 .tcw .tc.tc-x .tc-t{opacity:0 !important;transition:opacity .3s ease 0s !important}
 .goM .tc[aria-label^="Rewarding"]{background-color:#000722} /* the card stays navy while the camera zooms in */
 .goM .s45 .tc .tc-stk{opacity:0 !important}
 /* Top picks: card content scrolls inside the card when it is taller than the card (desktop) */
@@ -468,3 +455,8 @@ body{margin:0;background:#272C3F}
 .mh:not(.m) .s10 .mbc::-webkit-scrollbar{width:6px}
 .mh:not(.m) .s10 .mbc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35);border-radius:3px}
 .mh:not(.m) .s10 .mbc::-webkit-scrollbar-track{background:transparent}
+
+/* Figma 3961:108: description above a single still photo on desktop hover/focus. */
+.mh:not(.m) .s45 .tcw .tc .tc-b{position:absolute;left:28px;right:28px;top:28px !important;font-size:18px;font-weight:400;line-height:1.8;letter-spacing:0;color:#ccc}
+.mh:not(.m) .s45 .tcw .tc .tc-photo{position:absolute;max-width:none;object-fit:cover;pointer-events:none}
+.mh:not(.m) .s45 .tcw .tc:is(:hover,:focus-visible) .tc-b{color:#ccc}

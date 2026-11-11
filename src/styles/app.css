@@ -8,11 +8,3 @@ html, html body { margin: 0; height: 100%; background: var(--bg); color: var(--f
 /* mobile: the page is driven by swipes, so the browser shouldn't scroll or zoom it */
 .stage-m { touch-action: none; overscroll-behavior: none; cursor: auto; }
 /* mobile layout previewed on a wide screen: a phone-sized frame on the page background */
-.stage-preview .wrap { border-radius: 24px; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .08); }
-.stage-preview { touch-action: auto; cursor: auto; }
-/* Desktop / Mobile toggle */
-.layout-toggle { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 100; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(15, 18, 30, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 20px rgba(0, 0, 0, .3); font-family: 'Google Sans Flex', 'Google Sans', system-ui, sans-serif; }
-.layout-toggle button { appearance: none; border: 0; margin: 0; padding: 7px 14px; border-radius: 999px; background: transparent; color: #C9CEDA; font: 500 13px/1 inherit; font-family: inherit; letter-spacing: .02em; cursor: pointer; transition: background .2s ease, color .2s ease; }
-.layout-toggle button.on { background: linear-gradient(90deg, #6252A4 0%, #F14192 55%, #F6765D 100%); color: #FFFFFF; }
-.layout-toggle button:focus-visible { outline: 2px solid #F5765E; outline-offset: 2px; }
-.stage:has(.v-cur) .layout-toggle, .stage:has(.v-cur) .layout-toggle * { cursor: pointer !important; }

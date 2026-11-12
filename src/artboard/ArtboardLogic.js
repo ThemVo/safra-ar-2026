@@ -1,6 +1,7 @@
 // Behaviour for the artboard: the camera/view state machine, timers, measuring and every value the markup binds to.
 // Ported unchanged from the prototype; only the class header and module wiring are new.
 import { Logic } from './Logic.js';
+import { parseRoute, routeHash } from './routes.js';
 
 // Geometry. Desktop: the 1440 × 900 comp. Mobile: a 390 × 844 frame (16px margins) with the same structure,
 // type and spacing scaled down. applyGeo() picks one set when the artboard mounts.
@@ -119,11 +120,16 @@ export class ArtboardLogic extends Logic {
     this.played2 = sv !== 'top';
   }
   componentDidMount() {
+    this.urlMounted = true;
+    this.onUrlChange = () => this.restoreUrl();
+    window.addEventListener('popstate', this.onUrlChange);
+    window.addEventListener('hashchange', this.onUrlChange);
     if (this.state.view === 'tg' || this.state.view === 's3') this.b3T = setTimeout(() => this.setState({ b3ok: true }), 950);
     this.readyT = setTimeout(() => this.setState({ ready: true }), INTRO_DONE);
     this.curT = setTimeout(() => this.setState({ curOn: true }), INTRO_DONE + CURSOR_AFTER);
     this.tick = setInterval(() => this.setState({ now: Date.now() }), 1000);
     this.startTimers();
+    if (window.location.hash) this.restoreUrl(); else this.queueUrlSync();
     const go = () => requestAnimationFrame(() => this.measure());
     try {
       if (document.fonts && document.fonts.load) {
@@ -140,18 +146,65 @@ export class ArtboardLogic extends Logic {
     setTimeout(() => this.hvLayout(), 600); setTimeout(() => this.hvLayout(), 2500);
     setTimeout(go, 4000);
   }
+  queueUrlSync() {
+    if (!this.urlMounted || this.restoringUrl || this.urlQueued) return;
+    this.urlQueued = true;
+    queueMicrotask(() => {
+      this.urlQueued = false;
+      if (!this.urlMounted || this.restoringUrl) return;
+      const hash = routeHash({ ...this.state, ...(this.state.view === 'fc1' && this.state.link ? { fcY: CAM.fc1 - this.camNow() } : {}) });
+      if (!hash || hash === window.location.hash) return;
+      const old = parseRoute(window.location.hash, MOBILE);
+      const next = parseRoute(hash, MOBILE);
+      // Continuous motion and automatic intro transitions should not fill browser history.
+      const replace = !old || old.view === next.view || (old.view === 'tg' && next.view === 's3');
+      window.history[replace ? 'replaceState' : 'pushState'](window.history.state, '', hash);
+    });
+  }
+  restoreUrl() {
+    const route = parseRoute(window.location.hash, MOBILE);
+    this.restoringUrl = true;
+    try {
+      const to = route?.view || 'top';
+      this.jumpTo(to);
+      const patch = { lb: null, ready: true, s3: to !== 'top', s4: to !== 'top',
+        step: 0, fresh: false, hd: to === 'tg' || to === 's3', mbTab: MOBILE ? 0 : -1, mbOrd: [3, 2, 1, 0] };
+      if (to === 's3') patch.step = route.index ?? 0;
+      if (to === 'mb' && route.index != null) {
+        patch.mbTab = route.index;
+        const ord = [3, 2, 1, 0];
+        while (ord[3] !== route.index) ord.unshift(ord.pop());
+        patch.mbOrd = ord;
+      }
+      if (to === 'wc') patch.s12 = true;
+      if (to === 'end') patch.s14 = true;
+      if (to === 'fc1') { patch.fcY = Math.min(FC_RANGE, route.offset); patch.s16 = patch.fcY > 0; this.fcPos = patch.fcY; }
+      if (['s6', 's7', 's8'].includes(to)) {
+        const n = route.index ?? 0, topic = Number(to.slice(1));
+        this['play' + topic](n, 0);
+        const data = { s6: DC, s7: DC7, s8: DC8 }[to][n];
+        if (route.photo > 0 && route.photo <= data.gallery.length) patch.lb = { t: topic, s: n, i: route.photo - 1 };
+      }
+      this.setState(patch);
+    } finally { this.restoringUrl = false; }
+    this.queueUrlSync();
+  }
   // leaving section 6/7 for the cards: hold the entered card navy and quiet until the camera has pulled back out
   leaveTo5(from) { clearTimeout(this.lvT); this.setState({ lv: from }); this.lvT = setTimeout(() => this.setState({ lv: null }), 1500); }
-  // At a glance: once the camera has settled there, let the gradient connector reach up through the band above a
-  // letterboxed artboard (b3ok); never during the move, so the extension can't cross the masthead
+  // Only the long connector extension waits for the camera to settle (b3ok).
+  // The viewport clip opens immediately so the moving connector stays continuous.
   setState(update, cb) {
     const was = this.state.view; super.setState(update, cb); const now = this.state.view;
+    this.queueUrlSync();
     if (now !== was && now === 's5' && !this.played5) { this.played5 = true; super.setState({ i4: true }); clearTimeout(this.i4T); this.i4T = setTimeout(() => super.setState({ i4: false }), 4500); }
     if (now !== was) {
       const at = (v) => v === 'tg' || v === 's3';
+      // Returning from Topics: keep the connector fragments out of the moving
+      // viewport until At a glance has landed.
+      super.setState({ glanceReturn: was === 's5' && at(now) });
       clearTimeout(this.b3T);
       if (!(at(now) && at(was)) && this.state.b3ok) super.setState({ b3ok: false });
-      if (at(now) && !this.state.b3ok) this.b3T = setTimeout(() => { if (at(this.state.view)) super.setState({ b3ok: true }); }, 950);
+      if (at(now) && !this.state.b3ok) this.b3T = setTimeout(() => { if (at(this.state.view)) super.setState({ b3ok: true, glanceReturn: false }); }, 950);
     }
   }
   componentDidUpdate(prev, prevState) {
@@ -218,7 +271,7 @@ export class ArtboardLogic extends Logic {
       });
     });
   }
-  componentWillUnmount() { clearInterval(this.stkT); this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); }
+  componentWillUnmount() { this.urlMounted = false; window.removeEventListener('popstate', this.onUrlChange); window.removeEventListener('hashchange', this.onUrlChange); clearInterval(this.stkT); this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8); }
   // Section 6: play a story's entrance (photos rise into their frames, numbers count, description decodes, red bar fills)
   play6(n, delay, hold) {
     if (this.raf6) cancelAnimationFrame(this.raf6);
@@ -414,7 +467,7 @@ export class ArtboardLogic extends Logic {
     const view = this.state.view;
     return this.state.link ? +(LINKS[this.state.link].top - (this.state.linkY || 0)).toFixed(2) : view === 'fc1' ? +(CAM.fc1 - (this.state.fcY || 0)).toFixed(2) : (CAM[view] ?? 0);
   }
-  quiet(patch) { this.state = { ...this.state, ...patch }; }
+  quiet(patch) { this.state = { ...this.state, ...patch }; this.queueUrlSync(); }
   camToDom() {
     if (!this.camEl || !this.camEl.isConnected) { const r = this.findRoot(); this.camEl = r && r.querySelector('.cam'); }
     if (this.camEl) this.camEl.style.transform = `translateY(${this.camNow()}px)`;
@@ -1020,7 +1073,7 @@ export class ArtboardLogic extends Logic {
           dx: +((nx + nw / 2) - CUE_X).toFixed(2), k: +(nw / lw0).toFixed(4) }; })(),
       endClass: view === 'end' ? 'at-end' : view === 's5' ? 'at-topics' : view === 'wc' ? 'at-future' : '', // viewport-edge treatments for desktop sections
       i4Class: this.state.i4 ? 'i4' : '', // Our impact, first reveal: the statement lands first, then the cards rise one by one
-      b3Class: (view === 'tg' || view === 's3') && this.state.b3ok ? 'b3top' : '', // only once the camera has settled (b3ok), so the extension never crosses the masthead on the way down // At a glance: the gradient connector runs up past the artboard to the screen's top edge (tall screens letterbox above)
+      b3Class: (view === 'tg' || view === 's3') ? 'b3top' + (this.state.b3ok ? ' b3settled' : '') + (this.state.glanceReturn ? ' b3return' : '') : '', // open the viewport slot during the move; extend upward only after settling
       tgClass: view === 'tg' ? 'at-tg' : '', hdClass: (fin || this.state.hd) ? 'is-hd' : '',
       cd,
       next: () => this.go(1),

@@ -1,4 +1,6 @@
 body{margin:0;background:#272C3F}
+/* Let the masthead photos reach the viewport edges on taller desktop screens. */
+.mh:not(.m).v-top{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
 .mh img{user-select:none;-webkit-user-drag:none}
 .mh .px{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
 .mh .ph{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
@@ -396,6 +398,12 @@ body{margin:0;background:#272C3F}
 .mh:where(:not(.m)) .tc:hover .tc-tail,.mh .tc:focus-visible .tc-tail{animation:mhSnakeT 2.8s linear infinite}
 .mh .tc .tc-g,.mh .tc .ic{opacity:0;transition:opacity .35s ease}
 .mh .tc .tc-i{transition:transform .35s cubic-bezier(.34,1.5,.5,1)}
+/* Preserve hollow SVG shapes when the host page sets a fill directly on paths.
+   A fill on the SVG alone cannot override a fill applied to its children. */
+.mh svg[fill="none"],
+.mh svg [fill="none"],
+.mh svg[fill="none"] :is(path,polyline,polygon,circle,ellipse,rect)[stroke]:not([fill]){fill:none !important}
+
 /* Keep desktop Topics SVG paint independent of host-page link/SVG styles.
    Unfilled arrow and shield paths must stay transparent, including on visited links. */
 .mh:not(.m) .tc svg.tc-i,
@@ -467,6 +475,9 @@ body{margin:0;background:#272C3F}
 /* desktop: Membership (Rewarding privileges) is an L2 page opened from card 4, like the topic pages */
 .mh:not(.m) .s10{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .45s ease,visibility 0s .45s}
 .mh:not(.m).goM .s10{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .55s ease .12s,visibility 0s 0s}
+/* Membership: paint the gradient into the viewport bands without moving the content. */
+.mh:not(.m).goM{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
+.mh:not(.m) .s10{z-index:2;border-image-outset:var(--gy,0px) var(--gx,0px) !important} /* above Future (z-index:1), including its viewport gutter extension */
 .goM .s45{transform:translate(-34.63px,-42.18px) scale(1.06);opacity:0;transition:transform .6s cubic-bezier(.2,.7,.2,1) 0s,opacity .45s ease 0s} /* zoom about card 4 (centre 577.1,703) */
 .goM .s45 .tc{pointer-events:none}
 .goM .s45 .tc .tc-t,.goM .s45 .tc .tc-b,.goM .s45 .tc .tc-i,.goM .s45 .tc .tc-s{opacity:0;transition:opacity .3s ease 0s}
@@ -560,7 +571,9 @@ body{margin:0;background:#272C3F}
 /* + a full-width strip at the very bottom of the screen for At a glance's progress bar (.sweep sits at the screen's bottom edge, not the artboard's) */
 .mh.b3top{clip-path:polygon(calc(-1 * var(--gx,0px)) 0,calc(var(--b3x) - 1px) 0,calc(var(--b3x) - 1px) calc(-1 * var(--gy,0px) - 2px),calc(var(--b3x) + var(--b3w) + 1px) calc(-1 * var(--gy,0px) - 2px),calc(var(--b3x) + var(--b3w) + 1px) 0,calc(100% + var(--gx,0px)) 0,calc(100% + var(--gx,0px)) 100%,calc(100% + var(--gx,0px)) calc(100% + var(--gy,0px) + 1px),calc(-1 * var(--gx,0px)) calc(100% + var(--gy,0px) + 1px),calc(-1 * var(--gx,0px)) calc(100% + var(--gy,0px) - var(--swh)),calc(100% + var(--gx,0px)) calc(100% + var(--gy,0px) - var(--swh)),calc(100% + var(--gx,0px)) 100%,calc(-1 * var(--gx,0px)) 100%) !important}
 .mh .bar3::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:3000px;background:#DD4493;display:none}
-.mh.b3top .bar3::before{display:block}
+.mh.b3settled .bar3::before{display:block}
+/* Avoid a floating connector/letter fragment while scrolling back from Topics. */
+.mh.b3return .bar3w,.mh.b3return .gLf{visibility:hidden !important}
 
 /* Our impact, first reveal (.i4): the statement slides in first (lines at .55s / .8s, settled ≈1.6s), then the cards rise one at a time */
 .go5.i4 .tc{transition:opacity .5s ease calc(1.45s + var(--i) * .22s),transform .75s cubic-bezier(.16,.8,.24,1) calc(1.45s + var(--i) * .22s),background-color .35s ease}
@@ -575,6 +588,10 @@ body{margin:0;background:#272C3F}
    Allow Topics' progress line and the gallery to reach the viewport edges. */
 .mh:not(.m).at-topics,
 .mh:not(.m):has(.lb.open){clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
+/* Move the rule with the camera, including the viewport gutter correction.
+   Both transitions use the same timing so it cannot jump when Topics opens. */
+.mh:not(.m) .sweep{transition:top .75s cubic-bezier(.6,0,.3,1),transform .85s cubic-bezier(.65,0,.35,1) .1s}
+.mh:not(.m).fresh .sweep{transition-delay:0s,1.7s}
 /* s3c starts at 900 and Topics' camera settles at -1818. */
 .mh:not(.m).at-topics .sweep{top:calc(918px - var(--gy,0px)) !important;transform:scaleX(1) !important}
 .mh:not(.m) .lb{inset:calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px)) !important;border-image:none !important}
@@ -586,6 +603,10 @@ body{margin:0;background:#272C3F}
 /* Future statement: fill exactly one viewport, with its own bottom rule rather
    than the next section's gradient bleeding into the artboard gutter. */
 .mh:not(.m).at-future{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
-.mh:not(.m).at-future .s12{top:calc(2718px - var(--gy,0px)) !important;left:calc(-1 * var(--gx,0px)) !important;width:calc(1440px + 2 * var(--gx,0px)) !important;height:calc(900px + 2 * var(--gy,0px)) !important;clip-path:inset(0) !important;border-image:none !important;z-index:1}
-.mh:not(.m).at-future .s12 #wc-title{left:var(--gx,0px) !important;top:var(--gy,0px) !important}
-.mh:not(.m).at-future .s12::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;pointer-events:none;background:linear-gradient(90deg,#5D55A7 0%,#A3499F 17%,#E3439A 33%,#F04290 44%,#F35C79 62%,#F5765E 82%,#F68C45 100%)}
+/* Keep the section and its rule mounted while leaving Future. Changing all of
+   this geometry only in .at-future made the bottom rule disappear on scroll. */
+.mh:not(.m) .s12{top:calc(2718px - var(--gy,0px)) !important;left:calc(-1 * var(--gx,0px)) !important;width:calc(1440px + 2 * var(--gx,0px)) !important;height:calc(900px + 2 * var(--gy,0px)) !important;clip-path:inset(0) !important;border-image:none !important;z-index:1;transition:height .75s cubic-bezier(.6,0,.3,1)}
+/* Meet the closing section's top edge with the same easing as the camera. */
+.mh:not(.m).at-end .s12{height:900px !important}
+.mh:not(.m) .s12 #wc-title{left:var(--gx,0px) !important;top:var(--gy,0px) !important}
+.mh:not(.m) .s12::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;pointer-events:none;background:linear-gradient(90deg,#5D55A7 0%,#A3499F 17%,#E3439A 33%,#F04290 44%,#F35C79 62%,#F5765E 82%,#F68C45 100%)}

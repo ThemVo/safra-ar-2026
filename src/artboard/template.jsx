@@ -1,3 +1,4 @@
+import { SECTION_IDS, screenId } from './routes.js';
 // Markup for the artboard. Generated from the original prototype's template, then kept as plain JSX.
 // `v` is the object returned by ArtboardLogic.renderVals(); every {{binding}} of the original reads from it.
 import { Fragment } from 'react';
@@ -15,24 +16,24 @@ export default function render(v) {
     <>
     <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.goMClass)} ${s(v.goFClass)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.b3Class)} ${s(v.i4Class)} ${s(v.endClass)} ${s(v.hdClass)} ${s(v.fcFreeClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "1440px", height: "900px", "--b3x": `${s(v.bar3?.cx)}px`, "--b3w": `${s(v.bar3?.cw)}px`, clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", boxShadow: "0 0 0 var(--gx, 0px) #272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
       <div className="cam" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "5418px", transform: `translateY(${s(v.camY)}px)` }}>
-        <section className="layer1" aria-label="SAFRA masthead" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", overflow: "hidden", transformOrigin: "50% 80%" }}>
+        <section id={SECTION_IDS.top} className="layer1" aria-label="SAFRA masthead" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", overflow: "visible", clipPath: "inset(calc(-1 * var(--gy, 0px)) 0)", transformOrigin: "50% 80%" }}>
           <div className="layer" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", transformOrigin: "50% 46%" }}>
-            <div className="px" style={{ position: "absolute", left: "885px", top: "0px", width: "555px", height: "349px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pFamily)}` }}>
+            <div className="px" style={{ position: "absolute", left: "885px", top: "calc(-1 * var(--gy, 0px))", width: "555px", height: "349px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pFamily)}` }}>
               <img className="ph ph1" src="./assets/mh-tr.jpg" alt="A father and child crawl under camouflage netting on an obstacle course" style={{ display: "block", width: "555px", height: "349px" }} />
             </div>
             <div className="px" style={{ position: "absolute", left: "104px", top: "141px", width: "339px", height: "214px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pConcert)}` }}>
               <img className="ph ph2" src="./assets/mh-tl.jpg" alt="A family in red poses with the SAFRA mascot at a National Day picnic" style={{ display: "block", width: "339px", height: "214px" }} />
             </div>
-            <div className="px" style={{ position: "absolute", left: "0px", top: "652px", width: "394px", height: "248px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pKids)}` }}>
+            <div className="px" style={{ position: "absolute", left: "0px", top: "calc(652px + var(--gy, 0px))", width: "394px", height: "248px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pKids)}` }}>
               <img className="ph ph3" src="./assets/mh-bl.jpg" alt="Members on exercise bikes in a spin class" style={{ display: "block", width: "394px", height: "248px" }} />
             </div>
-            <div className="px" style={{ position: "absolute", left: "1196px", top: "746px", width: "244px", height: "154px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pTyres)}` }}>
+            <div className="px" style={{ position: "absolute", left: "1196px", top: "calc(746px + var(--gy, 0px))", width: "244px", height: "154px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pTyres)}` }}>
               <img className="ph ph4" src="./assets/mh-br.jpg" alt="A group of members holding bowling balls at a bowling alley" style={{ display: "block", width: "244px", height: "154px" }} />
             </div>
           </div>
-          <div className="dim" aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", background: "#272C3F", pointerEvents: "none" }} />
+          <div className="dim" aria-hidden="true" style={{ position: "absolute", left: "0", top: "calc(-1 * var(--gy, 0px))", width: "1440px", height: "calc(900px + 2 * var(--gy, 0px))", background: "#272C3F", pointerEvents: "none" }} />
           <img onLoad={v.hook} src="./assets/ff8847615d28660626f1034069988996.png" alt="" style={{ display: "none" }} />
-          <div className="logo" style={{ position: "absolute", left: "210px", top: "419px", width: "1021px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", textAlign: "center", pointerEvents: "none" }}>
+          <div id={SECTION_IDS.logo} className="logo" style={{ position: "absolute", left: "210px", top: "419px", width: "1021px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", textAlign: "center", pointerEvents: "none" }}>
             <p className="lgl lg1" style={{ margin: "0", fontSize: "56px", fontWeight: "500", lineHeight: "70px", color: "#FFFFFF", whiteSpace: "nowrap" }}>
               <span style={{ color: "#F34141" }}>
                 SAFRA
@@ -378,8 +379,8 @@ export default function render(v) {
             </svg>
           </button>
         </section>
-        <section className="s3c" aria-labelledby="glance-title" style={{ position: "absolute", left: "0", top: "900px", width: "1440px", height: "918px" }}>
-          <div className={`sl ${s(v.sl0)}`} aria-label="Membership">
+        <section id={SECTION_IDS.s3} className="s3c" aria-labelledby="glance-title" style={{ position: "absolute", left: "0", top: "900px", width: "1440px", height: "918px" }}>
+          <div id={screenId("s3", 0)} className={`sl ${s(v.sl0)}`} aria-label="Membership">
             <div className="sub" style={{ position: "absolute", left: "0", top: "206px", width: "1440px", textAlign: "center" }}>
               <h3 style={{ display: "inline-block", margin: "0", padding: "0 .04em .12em", fontSize: "40px", fontWeight: "500", lineHeight: "1.2", letterSpacing: "-0.005em", background: "linear-gradient(90deg, #6C51A2 0%, #B0489E 30%, #E8448F 58%, #F3606F 80%, #F68A49 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
                 Membership
@@ -411,7 +412,7 @@ export default function render(v) {
               </p>
             </div>
           </div>
-          <div className={`sl ${s(v.sl1)}`} aria-label="Outreach and Engagement">
+          <div id={screenId("s3", 1)} className={`sl ${s(v.sl1)}`} aria-label="Outreach and Engagement">
             <div className="sub" style={{ position: "absolute", left: "0", top: "206px", width: "1440px", textAlign: "center" }}>
               <h3 style={{ display: "inline-block", margin: "0", padding: "0 .04em .12em", fontSize: "40px", fontWeight: "500", lineHeight: "1.2", letterSpacing: "-0.005em", background: "linear-gradient(90deg, #6C51A2 0%, #B0489E 30%, #E8448F 58%, #F3606F 80%, #F68A49 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
                 {"Outreach & Engagement"}
@@ -484,7 +485,7 @@ export default function render(v) {
               <img className="pic" src="./assets/ag-group.jpg" alt="A group of NSmen in singlets cheering with snack packs" style={{ display: "block", width: "316px", height: "290px", objectFit: "cover" }} />
             </div>
           </div>
-          <div className={`sl ${s(v.sl2)}`} aria-label="Sustainability">
+          <div id={screenId("s3", 2)} className={`sl ${s(v.sl2)}`} aria-label="Sustainability">
             <div className="sub" style={{ position: "absolute", left: "0", top: "202px", width: "1440px", textAlign: "center" }}>
               <h3 style={{ display: "inline-block", margin: "0", padding: "0 .04em .12em", fontSize: "40px", fontWeight: "500", lineHeight: "1.4", letterSpacing: "0", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
                 Sustainability
@@ -553,7 +554,7 @@ export default function render(v) {
           </div>
           <div className="sweep" aria-hidden="true" style={{ position: "absolute", left: "calc(-1 * var(--gx, 0px))", top: "calc(910px + var(--gy, 0px))", width: "calc(1440px + 2 * var(--gx, 0px))", height: "8px", transform: `scaleX(${s(v.sweepS)})`, background: "linear-gradient(90deg, #74509F 0%, #F46074 55%, #F68F43 100%)" }} />
         </section>
-        <section className="s45" aria-labelledby="t1-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden" }}>
+        <section id={SECTION_IDS.s5} className="s45" aria-labelledby="t1-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden" }}>
           <div className="tx" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "280px" }}>
             <h2 id="t1-title" aria-label="Discover how our initiatives made a difference in the lives of national servicemen and their families." style={{ position: "absolute", left: "0", top: "82px", width: "1440px", margin: "0", textAlign: "center", fontWeight: "500", lineHeight: "1.1" }}>
               <span className="t4a" aria-hidden="true" style={{ display: "block", fontSize: "44.2px", letterSpacing: "0.02em", whiteSpace: "nowrap" }}>
@@ -589,7 +590,7 @@ export default function render(v) {
           </div>
           <nav aria-label="Topics">
             <div className="tcw" style={{ position: "absolute", left: "299.42px", top: "289.6px", width: "1237px", height: "800px", transform: "scale(0.68)", transformOrigin: "0 0" }}>
-              <a className={`tc ${s(v.lv1)}`} href="#dc-title" onClick={v.topic1} aria-label="Bringing defence closer to the community" style={{ "--i": "0", position: "absolute", left: "0px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv1)}`} href={`#${SECTION_IDS.s6}`} onClick={v.topic1} aria-label="Bringing defence closer to the community" style={{ "--i": "0", position: "absolute", left: "0px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs0" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -620,7 +621,7 @@ export default function render(v) {
                   <path d="M1.5 16H36M21 1.5 35.5 16 21 30.5" stroke="#AAAAAA" strokeWidth="3" />
                 </svg>
               </a>
-              <a className={`tc ${s(v.lv2)}`} href="#an-title" onClick={v.topic2} aria-label="Appreciating national servicemen" style={{ "--i": "1", position: "absolute", left: "420.33px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv2)}`} href={`#${SECTION_IDS.s7}`} onClick={v.topic2} aria-label="Appreciating national servicemen" style={{ "--i": "1", position: "absolute", left: "420.33px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs1" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -651,7 +652,7 @@ export default function render(v) {
                   <path d="M1.5 16H36M21 1.5 35.5 16 21 30.5" stroke="#AAAAAA" strokeWidth="3" />
                 </svg>
               </a>
-              <a className={`tc ${s(v.lv3)}`} href="#sb-title" onClick={v.topic3} aria-label="Strengthening bonds" style={{ "--i": "2", position: "absolute", left: "840.67px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv3)}`} href={`#${SECTION_IDS.s8}`} onClick={v.topic3} aria-label="Strengthening bonds" style={{ "--i": "2", position: "absolute", left: "840.67px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs2" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -682,7 +683,7 @@ export default function render(v) {
                   <path d="M1.5 16H36M21 1.5 35.5 16 21 30.5" stroke="#AAAAAA" strokeWidth="3" />
                 </svg>
               </a>
-              <a className={`tc ${s(v.lv4)}`} href="#mb-title" onClick={v.topic4} aria-label="Rewarding privileges" style={{ "--i": "3", position: "absolute", left: "210.17px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv4)}`} href={`#${SECTION_IDS.mb}`} onClick={v.topic4} aria-label="Rewarding privileges" style={{ "--i": "3", position: "absolute", left: "210.17px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs3" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -713,7 +714,7 @@ export default function render(v) {
                   <path d="M1.5 16H36M21 1.5 35.5 16 21 30.5" stroke="#AAAAAA" strokeWidth="3" />
                 </svg>
               </a>
-              <a className={`tc ${s(v.lv5)}`} href="#fc-title" onClick={v.topic5} aria-label="Enhancing SAFRA Clubs & Facilities" style={{ "--i": "4", position: "absolute", left: "630.5px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv5)}`} href={`#${SECTION_IDS.fc1}`} onClick={v.topic5} aria-label="Enhancing SAFRA Clubs & Facilities" style={{ "--i": "4", position: "absolute", left: "630.5px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs4" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -751,7 +752,7 @@ export default function render(v) {
             </div>
           </nav>
         </section>
-        <section className="s6" aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.s6} className="s6" aria-labelledby="dc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z6" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="dc-title" aria-label="Bringing defence closer to the community" style={{ position: "absolute", left: "160px", top: "32px", margin: "0", fontSize: "40px", fontWeight: "600", lineHeight: "48px", letterSpacing: "0.8px" }}>
@@ -802,7 +803,7 @@ export default function render(v) {
               <p className="nxb" style={{ position: "absolute", right: "64px", top: "104px", height: "24px", margin: "0", fontSize: "20px", fontWeight: "600", lineHeight: "1.2", textTransform: "uppercase", whiteSpace: "nowrap" }}>
                 Next: Appreciating NSmen
               </p>
-              <article className={`st6 ${s(v.d6?.on0)}`} aria-label="Making defence more accessible">
+              <article id={screenId("s6", 0)} className={`st6 ${s(v.d6?.on0)}`} aria-label="Making defence more accessible">
                 <button className="dcph" type="button" aria-label="View photo: Participants in life vests sit in an inflatable boat in a swimming pool" onClick={v.lb_0_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/dc4-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s0?.ph)}%)` }} />
                 </button>
@@ -860,7 +861,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d6?.s0?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d6?.on1)}`} aria-label="Commemorating SAF60 at SAFRA">
+              <article id={screenId("s6", 1)} className={`st6 ${s(v.d6?.on1)}`} aria-label="Commemorating SAF60 at SAFRA">
                 <button className="dcph" type="button" aria-label="View photo: Parents and children play a giant board game with large red dice on a turf court" onClick={v.lb_1_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/dc3-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s1?.ph)}%)` }} />
                 </button>
@@ -909,7 +910,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d6?.s1?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d6?.on2)}`} aria-label="Sharing lessons from the past">
+              <article id={screenId("s6", 2)} className={`st6 ${s(v.d6?.on2)}`} aria-label="Sharing lessons from the past">
                 <button className="dcph" type="button" aria-label="View photo: A speaker addresses pupils seated in a classroom" onClick={v.lb_2_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/dc1-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s2?.ph)}%)` }} />
                 </button>
@@ -955,7 +956,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d6?.s2?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d6?.on3)}`} aria-label="Building preparedness together">
+              <article id={screenId("s6", 3)} className={`st6 ${s(v.d6?.on3)}`} aria-label="Building preparedness together">
                 <button className="dcph" type="button" aria-label="View photo: Children practise CPR on training manikins with instructors" onClick={v.lb_3_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/dc2-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d6?.s3?.ph)}%)` }} />
                 </button>
@@ -1005,7 +1006,7 @@ export default function render(v) {
           </div>
           <div className="nv6" aria-hidden="true" />
         </section>
-        <section className="s7" aria-labelledby="an-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.s7} className="s7" aria-labelledby="an-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z7" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="an-title" aria-label="Appreciating NSmen" style={{ position: "absolute", left: "160px", top: "56px", margin: "0", fontSize: "40px", fontWeight: "600", lineHeight: "48px", letterSpacing: "0.8px" }}>
@@ -1031,7 +1032,7 @@ export default function render(v) {
               <p className="nxb" style={{ position: "absolute", right: "64px", top: "104px", height: "24px", margin: "0", fontSize: "20px", fontWeight: "600", lineHeight: "1.2", textTransform: "uppercase", whiteSpace: "nowrap" }}>
                 Next: Strengthening Bonds
               </p>
-              <article className={`st6 ${s(v.d7?.on0)}`} aria-label="Nurturing appreciation from young">
+              <article id={screenId("s7", 0)} className={`st6 ${s(v.d7?.on0)}`} aria-label="Nurturing appreciation from young">
                 <button className="dcph" type="button" aria-label="View photo: A preschool teacher shows the class photos of servicemen" onClick={v.lb7_0_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "817px", top: "202px", width: "623px", height: "648px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/an1-main3.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", transform: `translateY(${s(v.d7?.s0?.ph)}%)` }} />
                 </button>
@@ -1098,7 +1099,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d7?.s0?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d7?.on1)}`} aria-label="Expressing gratitude through storytelling">
+              <article id={screenId("s7", 1)} className={`st6 ${s(v.d7?.on1)}`} aria-label="Expressing gratitude through storytelling">
                 <svg aria-hidden="true" width="0" height="0" style={{ position: "absolute" }}>
                   <defs>
                     <linearGradient id="vplayG" x1="2" y1="24" x2="46" y2="24" gradientUnits="userSpaceOnUse">
@@ -1181,7 +1182,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d7?.s1?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d7?.on2)}`} aria-label="Turning business support into everyday benefits">
+              <article id={screenId("s7", 2)} className={`st6 ${s(v.d7?.on2)}`} aria-label="Turning business support into everyday benefits">
                 <button className="dcph" type="button" aria-label="View: Appreciating NSmen Deals: free Whopper at Burger King" onClick={v.lb7_2_0} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "64px", top: "242.57px", width: "280px", height: "280px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/an3-bk.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d7?.s2?.ph)}%)` }} />
                 </button>
@@ -1250,7 +1251,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d7?.s2?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d7?.on3)}`} aria-label="Fueling up our national servicemen">
+              <article id={screenId("s7", 3)} className={`st6 ${s(v.d7?.on3)}`} aria-label="Fueling up our national servicemen">
                 <button className="dcph" type="button" aria-label="View photo: National servicemen in PT kit hold up complimentary Old Chang Kee snacks" onClick={v.lb7_3_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px 0 0 0", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px 0 0 0)" }}>
                   <img src="./assets/an4-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", transform: `translateY(${s(v.d7?.s3?.ph)}%)` }} />
                 </button>
@@ -1315,7 +1316,7 @@ export default function render(v) {
           </div>
           <div className="nv7" aria-hidden="true" />
         </section>
-        <section className="s8" aria-labelledby="sb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.s8} className="s8" aria-labelledby="sb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <div className="z8" style={{ position: "absolute", inset: "0" }}>
             <div className="dcb" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px" }}>
               <h2 id="sb-title" aria-label="Strengthening bonds" style={{ position: "absolute", left: "160px", top: "56px", margin: "0", fontSize: "40px", fontWeight: "600", lineHeight: "48px", letterSpacing: "0.8px" }}>
@@ -1341,7 +1342,7 @@ export default function render(v) {
               <p className="nxb" style={{ position: "absolute", right: "64px", top: "104px", height: "24px", margin: "0", fontSize: "20px", fontWeight: "600", lineHeight: "1.2", textTransform: "uppercase", whiteSpace: "nowrap" }}>
                 Next: Rewarding Privileges
               </p>
-              <article className={`st6 ${s(v.d8?.on0)}`} aria-label="Celebrating the SG60 journey">
+              <article id={screenId("s8", 0)} className={`st6 ${s(v.d8?.on0)}`} aria-label="Celebrating the SG60 journey">
                 <button className="dcph" type="button" aria-label="View photo: A family smiles in front of red fireworks at a National Day celebration" onClick={v.lb8_0_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/sb1-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d8?.s0?.ph)}%)` }} />
                 </button>
@@ -1390,7 +1391,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d8?.s0?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d8?.on1)}`} aria-label="Creating cherished family memories">
+              <article id={screenId("s8", 1)} className={`st6 ${s(v.d8?.on1)}`} aria-label="Creating cherished family memories">
                 <button className="dcph" type="button" aria-label="View photo: Children pose with Pororo &amp; Friends characters at the SG60 SAFRA Family Fiesta" onClick={v.lb8_1_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/sb2-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d8?.s1?.ph)}%)` }} />
                 </button>
@@ -1454,7 +1455,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d8?.s1?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d8?.on2)}`} aria-label="Strengthening teamwork and camaraderie">
+              <article id={screenId("s8", 2)} className={`st6 ${s(v.d8?.on2)}`} aria-label="Strengthening teamwork and camaraderie">
                 <button className="dcph" type="button" aria-label="View photo: National servicemen play human foosball on an inflatable pitch" onClick={v.lb8_2_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/sb3-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d8?.s2?.ph)}%)` }} />
                 </button>
@@ -1520,7 +1521,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d8?.s2?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d8?.on3)}`} aria-label="Connecting youths through shared interests">
+              <article id={screenId("s8", 3)} className={`st6 ${s(v.d8?.on3)}`} aria-label="Connecting youths through shared interests">
                 <button className="dcph" type="button" aria-label="View photo: Youths compete in the Ultimate Frisbee Tournament at SAFRA Youth Fiesta" onClick={v.lb8_3_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/sb4-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d8?.s3?.ph)}%)` }} />
                 </button>
@@ -1574,7 +1575,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d8?.s3?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d8?.on4)}`} aria-label="Unwinding with buddies">
+              <article id={screenId("s8", 4)} className={`st6 ${s(v.d8?.on4)}`} aria-label="Unwinding with buddies">
                 <button className="dcph" type="button" aria-label="View photo: Guests dance with their arms raised at Soundbyte Beer Music Play" onClick={v.lb8_4_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "648px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/sb5-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d8?.s4?.ph)}%)` }} />
                 </button>
@@ -1623,7 +1624,7 @@ export default function render(v) {
                   <div aria-hidden="true" style={{ position: "absolute", left: "0", bottom: "0", height: "8px", width: `${s(v.d8?.s4?.bar)}px`, borderRadius: "0 4px 4px 0", background: "#F34141" }} />
                 </div>
               </article>
-              <article className={`st6 ${s(v.d8?.on5)}`} aria-label="Lending a helping hand">
+              <article id={screenId("s8", 5)} className={`st6 ${s(v.d8?.on5)}`} aria-label="Lending a helping hand">
                 <button className="dcph" type="button" aria-label="View photo: Organisers and partners present a S$290,000 cheque at SAFRA Swim for Hope" onClick={v.lb8_5_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "954px", top: "202px", width: "486px", height: "324px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/sb6-main.jpg" alt="" style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", transform: `translateY(${s(v.d8?.s5?.ph)}%)` }} />
                 </button>
@@ -1686,7 +1687,7 @@ export default function render(v) {
           <div className="nv8" aria-hidden="true" />
         </section>
                 {/* one gradient behind the band under section 9 and Clubs & Facilities, so it flows through both (Membership is an L2 page on desktop) */}
-        <section className="s10" aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%)", borderImage: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.mb} className="s10" aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%)", borderImage: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <button className="bkb mbbk" type="button" data-z="1" aria-label="Back to the topics" onClick={v.backMb} style={{ position: "absolute", left: "64px", top: "48px", width: "64px", height: "64px", padding: "0", border: "1.5px solid #FFFFFF", borderRadius: "80px", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box", zIndex: "3" }}>
             <svg width="38" height="32" viewBox="0 0 38 32" fill="none" aria-hidden="true">
               <path d="M36.5 16H2.5M16 2.5 2.5 16 16 29.5" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -1714,7 +1715,7 @@ export default function render(v) {
             </p>
             <div className="mbsc" style={{ position: "absolute", left: "564px", top: "0", width: "772px", height: "748px", boxSizing: "border-box", padding: "16px 0 24px", overflowX: "hidden", overflowY: "auto", overscrollBehavior: "contain" }}>
             <div className="mbk mk5" role="group" aria-label="Top picks by category" style={{ position: "relative", width: "772px", borderRadius: "16px" }}>
-              <div className={`mbs ${s(v.mbv?.dv0)}`} style={{ position: "relative", zIndex: "1", marginTop: "0", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#313851" }}>
+              <div id={screenId("mb", 0)} className={`mbs ${s(v.mbv?.dv0)}`} style={{ position: "relative", zIndex: "1", marginTop: "0", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#313851" }}>
                 <h3 style={{ margin: "0" }}>
                   <button className="mbh" type="button" aria-expanded={v.mbv?.de0} onClick={v.mbTab0} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
                     <img src="./assets/mb2-ic-food.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
@@ -1755,7 +1756,7 @@ export default function render(v) {
                   </div>
                 </div>
               </div>
-              <div className={`mbs ${s(v.mbv?.dv1)}`} style={{ position: "relative", zIndex: "2", marginTop: "-32px", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#272C3F" }}>
+              <div id={screenId("mb", 1)} className={`mbs ${s(v.mbv?.dv1)}`} style={{ position: "relative", zIndex: "2", marginTop: "-32px", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#272C3F" }}>
                 <h3 style={{ margin: "0" }}>
                   <button className="mbh" type="button" aria-expanded={v.mbv?.de1} onClick={v.mbTab1} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
                     <img src="./assets/mb2-ic-education.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
@@ -1795,7 +1796,7 @@ export default function render(v) {
                   </div>
                 </div>
               </div>
-              <div className={`mbs ${s(v.mbv?.dv2)}`} style={{ position: "relative", zIndex: "3", marginTop: "-32px", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#313851" }}>
+              <div id={screenId("mb", 2)} className={`mbs ${s(v.mbv?.dv2)}`} style={{ position: "relative", zIndex: "3", marginTop: "-32px", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#313851" }}>
                 <h3 style={{ margin: "0" }}>
                   <button className="mbh" type="button" aria-expanded={v.mbv?.de2} onClick={v.mbTab2} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
                     <img src="./assets/mb2-ic-movies.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
@@ -1853,7 +1854,7 @@ export default function render(v) {
                   </div>
                 </div>
               </div>
-              <div className={`mbs ${s(v.mbv?.dv3)}`} style={{ position: "relative", zIndex: "4", marginTop: "-32px", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#272C3F" }}>
+              <div id={screenId("mb", 3)} className={`mbs ${s(v.mbv?.dv3)}`} style={{ position: "relative", zIndex: "4", marginTop: "-32px", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#272C3F" }}>
                 <h3 style={{ margin: "0" }}>
                   <button className="mbh" type="button" aria-expanded={v.mbv?.de3} onClick={v.mbTab3} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
                     <img src="./assets/mb2-ic-travel.svg" alt="" width="48" height="48" style={{ display: "block", flex: "none", width: "48px", height: "48px" }} />
@@ -1948,7 +1949,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s15" aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "1613px", overflow: "hidden", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.fc1} className="s15" aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "1613px", overflow: "hidden", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           {/* Figma 2110:7585: L2 header (back + next), title left-aligned at 232, cards from 339 */}
           <button className="bkb fcbk" type="button" data-z="1" aria-label="Back to the topics" onClick={v.backFc} style={{ position: "absolute", left: "64px", top: "48px", width: "64px", height: "64px", padding: "0", border: "1.5px solid #FFFFFF", borderRadius: "80px", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box", zIndex: "3" }}>
             <svg width="38" height="32" viewBox="0 0 38 32" fill="none" aria-hidden="true">
@@ -2113,7 +2114,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s12" aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.wc} className="s12" aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="wc-title" aria-label="The year may be over. We’re building for the future." style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "684px", margin: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", fontWeight: "400", textAlign: "center" }}>
             <span className="t12 t12a" style={{ display: "block", fontSize: "64px", fontWeight: "400", lineHeight: "1.1", letterSpacing: "1.28px", color: "#6E778B" }}>
               <span className="hv" aria-hidden="true" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
@@ -2436,7 +2437,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section className="s14" aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.end} className="s14" aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)" }}>
           <h2 id="end-title" className="enk" style={{ "--d": ".55s", position: "absolute", left: "104px", top: "325px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "64px", letterSpacing: "0.01em", color: "#FFFFFF" }}>
             ONE YEAR.
             <br />
@@ -2471,7 +2472,7 @@ export default function render(v) {
             <span className="bar3" style={{ position: "absolute", inset: "0", display: "block", background: "linear-gradient(180deg, #DD4493 0%, #E2448F 55%, #E9468D 100%)" }} />
           </span>
         </span>
-        <div className="glance" style={{ position: "absolute", left: `${s(v.head?.x)}px`, top: `${s(v.head?.y)}px`, transformOrigin: `${s(v.head?.ox)}px ${s(v.head?.oy)}px`, transform: `translateY(${s(v.head?.ty)}px) scale(${s(v.head?.s)})`, pointerEvents: "none" }}>
+        <div id={SECTION_IDS.tg} className="glance" style={{ position: "absolute", left: `${s(v.head?.x)}px`, top: `${s(v.head?.y)}px`, transformOrigin: `${s(v.head?.ox)}px ${s(v.head?.oy)}px`, transform: `translateY(${s(v.head?.ty)}px) scale(${s(v.head?.s)})`, pointerEvents: "none" }}>
           <h2 id="glance-title" className="hd" style={{ "--wl": `${s(v.wipe?.l)}%`, "--wr": `${s(v.wipe?.r)}%`, margin: "0", whiteSpace: "nowrap", fontSize: "72px", fontWeight: "500", lineHeight: "1", letterSpacing: "0.005em", textTransform: "uppercase", background: "linear-gradient(90deg, #6C51A2 0%, #B0489E 32%, #E8448F 50%, #F3606F 74%, #F68A49 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
             At a g
             <span className="gL" style={{ position: "relative", visibility: "hidden" }}>

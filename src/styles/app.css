@@ -1,18 +1,15 @@
 :root { --bg: #272C3F; --fg: #C9CEDA; }
 html, html body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
-.stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-/* 1440 × 900 content column; the artboard paints its backgrounds out into the side gutters (--gx) */
+html { scroll-behavior: smooth; }
+html.lenis, html.lenis body { scroll-behavior: auto !important; }
+body { overflow-x: hidden; margin: 0; }
+body .container-fluid { margin: 0; padding: 0; }
+/* Clip without creating a scroll container: focusing a topic link must not shift the centred artboard. */
+.stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: clip; }
+/* Proportional content frame; viewport gutters are measured in artboard pixels. */
 .wrap { position: relative; width: 1440px; height: 900px; transform-origin: 50% 50%; flex: none; }
 .stage { cursor: url(../assets/cursors/pointer-cursor.svg) 3 3, auto; } /* side margins use the site's arrow cursor */
 .stage:has(.v-cur), .stage:has(.v-cur) * { cursor: none !important; } /* masthead once the red circle shows: no system cursor anywhere */
-/* mobile: the page is driven by swipes, so the browser shouldn't scroll or zoom it */
-.stage-m { touch-action: none; overscroll-behavior: none; cursor: auto; }
+/* Allow native vertical scrolling inside mobile sections; the artboard handles navigation swipes. */
+.stage-m { touch-action: pan-y; overscroll-behavior: none; cursor: auto; }
 /* mobile layout previewed on a wide screen: a phone-sized frame on the page background */
-.stage-preview .wrap { border-radius: 24px; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .08); }
-.stage-preview { touch-action: auto; cursor: auto; }
-/* Desktop / Mobile toggle */
-.layout-toggle { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 100; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(15, 18, 30, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 20px rgba(0, 0, 0, .3); font-family: 'Google Sans Flex', 'Google Sans', system-ui, sans-serif; }
-.layout-toggle button { appearance: none; border: 0; margin: 0; padding: 7px 14px; border-radius: 999px; background: transparent; color: #C9CEDA; font: 500 13px/1 inherit; font-family: inherit; letter-spacing: .02em; cursor: pointer; transition: background .2s ease, color .2s ease; }
-.layout-toggle button.on { background: linear-gradient(90deg, #6252A4 0%, #F14192 55%, #F6765D 100%); color: #FFFFFF; }
-.layout-toggle button:focus-visible { outline: 2px solid #F5765E; outline-offset: 2px; }
-.stage:has(.v-cur) .layout-toggle, .stage:has(.v-cur) .layout-toggle * { cursor: pointer !important; }

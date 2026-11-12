@@ -6,7 +6,7 @@ body { overflow-x: hidden; margin: 0; }
 body .container-fluid { margin: 0; padding: 0; }
 /* Clip without creating a scroll container: focusing a topic link must not shift the centred artboard. */
 .stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: clip; }
-/* 1440 × 900 content column; the artboard paints its backgrounds out into the side gutters (--gx) */
+/* Proportional content frame; viewport gutters are measured in artboard pixels. */
 .wrap { position: relative; width: 1440px; height: 900px; transform-origin: 50% 50%; flex: none; }
 .stage { cursor: url(../assets/cursors/pointer-cursor.svg) 3 3, auto; } /* side margins use the site's arrow cursor */
 .stage:has(.v-cur), .stage:has(.v-cur) * { cursor: none !important; } /* masthead once the red circle shows: no system cursor anywhere */

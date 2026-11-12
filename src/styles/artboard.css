@@ -495,6 +495,11 @@ body{margin:0;background:#272C3F}
 /* desktop: Enhancing SAFRA Clubs & Facilities (Figma 2110:7585) is the L2 page of card 5, laid over the cards; its own scroll stays scroll-linked */
 .mh:not(.m) .s15{z-index:3;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .45s ease,visibility 0s .45s}
 .mh:not(.m).goF .s15{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .55s ease .12s,visibility 0s 0s}
+/* The scrolling Facilities page reaches the viewport edges on tall screens too.
+   Keep its content visible below the original 900px composition instead of cutting
+   it off above the bottom of the browser. The stage remains the viewport clip. */
+.mh.goF{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
+.mh.goF .s15{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important;border-image-outset:var(--gy,0px) var(--gx,0px) !important}
 .goF .s45{transform:translate(-51.78px,-42.18px) scale(1.06);opacity:0;transition:transform .6s cubic-bezier(.2,.7,.2,1) 0s,opacity .45s ease 0s} /* zoom about card 5 (centre 862.9,703) */
 .goF .s45 .tc{pointer-events:none}
 .goF .s45 .tc .tc-t,.goF .s45 .tc .tc-b,.goF .s45 .tc .tc-i,.goF .s45 .tc .tc-s{opacity:0;transition:opacity .3s ease 0s}

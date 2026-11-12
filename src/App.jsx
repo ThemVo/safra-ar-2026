@@ -3,8 +3,8 @@ import Artboard from "./artboard/Artboard.jsx";
 import { initializeMarker } from "./utils/marker.ts";
 
 // Responsive: one artboard, layout chosen from the window width.
-// - desktop (window 768px and wider): the 1440 × 900 comp, scaled down to fit (never above 100%, so the content
-//   is at most 1440px wide); section backgrounds stretch out to fill the full window width.
+// - desktop (window 768px and wider): the 1440 × 900 comp scales up or down to fit.
+//   Section backgrounds and scrolling content extend into any remaining viewport gutters.
 // - mobile (phones narrower than 768px): a 390 × 844 portrait frame, scaled to fit the screen the same way.
 // Crossing the breakpoint (resize / rotate) switches layout automatically.
 const MOBILE_MAX = 767;
@@ -37,9 +37,7 @@ export default function App() {
       const [fw, fh] = mobile ? FRAME.m : FRAME.d;
       const vw = window.innerWidth,
         vh = window.innerHeight;
-      const k = mobile
-        ? Math.min(vw / fw, vh / fh)
-        : Math.min(1, vw / fw, vh / fh);
+      const k = Math.min(vw / fw, vh / fh);
       const g = Math.max(0, (vw / k - fw) / 2); // side gutter, in artboard pixels
       el.style.width = fw + "px";
       el.style.height = fh + "px";

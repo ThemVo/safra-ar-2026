@@ -27,7 +27,7 @@ export function parseRoute(hash, mobile = false) {
   let index = null;
   if (!view) {
     for (const v of ['s3', 's6', 's7', 's8', 'mb']) {
-      const max = { s3: 3, s6: 4, s7: mobile ? 1 : 4, s8: mobile ? 1 : 6, mb: 4 }[v];
+      const max = { s3: 3, s6: 4, s7: 4, s8: 6, mb: 4 }[v];
       // A desktop-only story falls back to the topic's first available mobile story.
       for (let i = 0; i < ({ s3: 3, s6: 4, s7: 4, s8: 6, mb: 4 }[v]); i++) {
         if (screenId(v, i) === id) { view = v; index = i < max ? i : 0; break; }

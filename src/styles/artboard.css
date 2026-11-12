@@ -97,7 +97,8 @@ body{margin:0;background:#272C3F}
 .is-run .ph2{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) .92s both}
 .is-run .ph3{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) 1.04s both}
 .is-run .ph4{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) 1.16s both}
-.is-run .dim{animation:mhDim .8s cubic-bezier(.4,0,.2,1) 2.1s both}
+/* Keep photos clear until the report title has finished fading out. */
+.is-run .dim{animation:mhDim .8s cubic-bezier(.4,0,.2,1) 2.6s both}
 /* headline at reading pace, in sentence order: Explore our efforts in → strengthening → commitment → to → defence → and supporting → NSmen's needs */
 .is-run .ln1{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 2.5s both}
 .is-run .ln2{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 3.45s both}
@@ -155,7 +156,7 @@ body{margin:0;background:#272C3F}
 .post .ln1{--lf:.6s;--lb:.3s} .post .ln2{--lf:1.55s;--lb:.25s} .post .ln3{--lf:2.15s;--lb:.2s} .post .ln4a{--lf:2.7s;--lb:.15s} .post .ln4b{--lf:2.95s;--lb:.1s} .post .ln4c{--lf:3.4s;--lb:.05s} .post .ln5{--lf:4.0s;--lb:0s}
 .post.lg .ln{opacity:0;transform:translateY(24px);filter:blur(6px);transition:opacity .45s cubic-bezier(.4,0,.2,1) var(--lb),transform .45s cubic-bezier(.4,0,.2,1) var(--lb),filter .45s cubic-bezier(.4,0,.2,1) var(--lb)}
 .post .dim{opacity:.92;transition:opacity .8s cubic-bezier(.4,0,.2,1) .2s}
-.post.lg .dim{opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1) .3s}
+.post.lg .dim{opacity:0;transition:opacity .5s cubic-bezier(.4,0,.2,1)}
 .post .layer{transform:none;transition:transform 1.1s cubic-bezier(.33,0,.2,1) .1s}
 .post.lg .layer{transform:none} /* logo screen: photos at their layout positions and sizes */
 .post .ph{opacity:1;transition:opacity .7s cubic-bezier(.2,.7,.2,1) var(--pf),transform .5s cubic-bezier(.2,.7,.2,1)}

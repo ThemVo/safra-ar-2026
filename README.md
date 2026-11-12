@@ -24,10 +24,15 @@ public/assets/                photos, cursors, logo art (served as /assets/…)
 src/main.jsx                  mounts <App />
 src/App.jsx                   selects and scales the layout to the viewport
 src/styles/app.css            page/stage styles
-src/styles/mobile.css         mobile sizing and animation geometry
+src/styles/mobile.css         mobile layout, native content scrollers and animation geometry
 src/artboard/Artboard.jsx     shared animation host
 src/artboard/template.jsx     desktop markup (1440×900)
-src/artboard/templateMobile.jsx mobile markup (390×844)
+src/artboard/templateMobile.jsx mobile masthead, shared gallery and menu
+src/artboard/MobileSections.jsx glance panels and the five topic cards
+src/artboard/MobileStories.jsx responsive collages for all fourteen stories
+src/artboard/MobileRewards.jsx membership categories using desktop content and icons
+src/artboard/MobileFacilities.jsx clubs and facilities
+src/artboard/MobileEnding.jsx transition and closing content
 src/artboard/ArtboardLogic.js navigation state machine, camera, story timelines,
                               hover effects, layout measuring; content data
                               (stories, galleries, tabs) is at the top of the file
@@ -56,8 +61,7 @@ Story photos open a gallery (VIEW ALL cursor).
 
 ## Still to supply
 
-- Content for Membership tabs other than Food & Groceries, and for What's Next tabs
-  "Creating better spaces" / "Making visits seamless" (placeholders shown).
+- Content for the hidden What's Next tabs "Creating better spaces" / "Making visits seamless".
 - Link for the "Download full 2025/26 annual report" button (`.dlb` in Artboard.jsx).
 - Higher-resolution originals for some photos.
 
@@ -71,7 +75,7 @@ Story photos open a gallery (VIEW ALL cursor).
   Googlebot can execute JavaScript. Metadata remains in the document head.
 - The build keeps the module entry at the end of the body, after the report content.
 - No `<React.StrictMode>`: its dev-only double mount would start the timers twice.
-- Responsive layouts: desktop at 768px and above (1440×900 artboard), mobile below 768px (390×844 artboard), scaled to fit the viewport.
+- Responsive layouts: desktop at 768px and above (1440×900 artboard), mobile below 768px, using the actual viewport width and height without scaling the whole page. Mobile screens reflow when the browser resizes; long content scrolls inside its screen before the next swipe advances.
 - Layout selection is automatic; saved preview choices and the former desktop-only flag are no longer used.
 - Both layouts share the navigation, animation timing, counters and story engine. Mobile uses shorter text reveals and swipe navigation; desktop supports wheel navigation and hover effects.
 
@@ -108,3 +112,16 @@ The default `./` prefixes
 support hosting the build in a subdirectory. For remote prefixes, upload each
 file to the corresponding configured location. Development continues to serve
 the source images at `/assets/…`.
+
+## Mobile handover (12 Nov 2026)
+
+The mobile layout follows the “Mobile - 12 Nov 2026” section of the handover.
+The five topic cards open their own pages; their back buttons return to the cards.
+The main scroll continues from the cards into the transition and closing content.
+All 4 defence, 4 NSmen and 6 Strengthening Bonds stories support deep links,
+animated counters, photo galleries and the supplied video clips. Short viewports
+scroll inside their screen before another gesture advances the story.
+
+Photos use original gallery files and per-slot Figma crop percentages rather than
+reusing desktop portrait crops. Icon artwork and membership category content
+are reused from desktop.

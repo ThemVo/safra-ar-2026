@@ -10,6 +10,6 @@ body .container-fluid { margin: 0; padding: 0; }
 .wrap { position: relative; width: 1440px; height: 900px; transform-origin: 50% 50%; flex: none; }
 .stage { cursor: url(../assets/cursors/pointer-cursor.svg) 3 3, auto; } /* side margins use the site's arrow cursor */
 .stage:has(.v-cur), .stage:has(.v-cur) * { cursor: none !important; } /* masthead once the red circle shows: no system cursor anywhere */
-/* mobile: the page is driven by swipes, so the browser shouldn't scroll or zoom it */
-.stage-m { touch-action: none; overscroll-behavior: none; cursor: auto; }
+/* Allow native vertical scrolling inside mobile sections; the artboard handles navigation swipes. */
+.stage-m { touch-action: pan-y; overscroll-behavior: none; cursor: auto; }
 /* mobile layout previewed on a wide screen: a phone-sized frame on the page background */

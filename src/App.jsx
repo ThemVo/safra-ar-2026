@@ -1,22 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Artboard from "./artboard/Artboard.jsx";
 import { initializeMarker } from "./utils/marker.ts";
 
-// Responsive: one artboard, layout chosen from the window width.
-// - desktop (window 768px and wider): the 1440 × 900 comp scales up or down to fit.
-//   Section backgrounds and scrolling content extend into any remaining viewport gutters.
-// - mobile (phones narrower than 768px): a 390 × 844 portrait frame, scaled to fit the screen the same way.
-// Crossing the breakpoint (resize / rotate) switches layout automatically.
+// Choose the composition from the viewport, including desktop mobile previews.
 const MOBILE_MAX = 767;
-// Desktop is the default: the mobile layout is used only on touch-first devices (phones) narrower than 768px.
-// A narrow desktop browser window (or a side panel preview) keeps the desktop layout, scaled down to fit.
-const isMobile = () =>
-  window.innerWidth <= MOBILE_MAX &&
-  !!(
-    window.matchMedia &&
-    window.matchMedia("(hover: none) and (pointer: coarse)").matches
-  );
-const FRAME = { d: [1440, 900], m: [390, 844] };
+const isMobile = () => window.innerWidth <= MOBILE_MAX;
+const DESKTOP_FRAME = [1440, 900];
 
 initializeMarker();
 
@@ -24,8 +13,11 @@ export default function App() {
   const wrap = useRef(null);
   const [mobile, setMobile] = useState(isMobile);
   const [gx, setGx] = useState(0);
+  const [mobileHeight, setMobileHeight] = useState(window.innerHeight);
+  const [mobileWidth, setMobileWidth] = useState(window.innerWidth);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    let resizeTimer;
     const fit = () => {
       const narrow = isMobile();
       if (narrow !== mobile) {
@@ -34,31 +26,46 @@ export default function App() {
       } // re-runs with the new layout
       const el = wrap.current;
       if (!el) return;
-      const [fw, fh] = mobile ? FRAME.m : FRAME.d;
+      // Browser chrome and rotation resize the viewport without replaying the camera transition.
+      if (mobile) {
+        el.style.setProperty('--camera-duration', '0s');
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => el.style.removeProperty('--camera-duration'), 120);
+      }
+      const [fw, fh] = DESKTOP_FRAME;
       const vw = window.innerWidth,
-        vh = window.innerHeight;
-      const k = Math.min(vw / fw, vh / fh);
-      const g = Math.max(0, (vw / k - fw) / 2); // side gutter, in artboard pixels
-      el.style.width = fw + "px";
-      el.style.height = fh + "px";
-      el.style.transform = `scale(${k})`;
+        vh = window.visualViewport?.height || window.innerHeight;
+      const k = mobile ? 1 : Math.min(vw / fw, vh / fh);
+      const height = mobile ? vh / k : fh;
+      const g = mobile ? 0 : Math.max(0, (vw / k - fw) / 2); // side gutter, in artboard pixels
+      el.style.width = (mobile ? vw : fw) + "px";
+      el.style.setProperty("--mobile-unit", `${vw / 390}px`);
+      el.style.height = height + "px";
+      el.style.setProperty("--mobile-height", `${height}px`);
+      if (mobile) { setMobileHeight(height); setMobileWidth(vw); }
+      el.style.transform = mobile ? "none" : `scale(${k})`;
       el.style.setProperty("--gx", `${g.toFixed(2)}px`);
       el.style.setProperty(
         "--gy",
-        `${Math.max(0, (vh / k - fh) / 2).toFixed(2)}px`,
+        `${mobile ? 0 : Math.max(0, (vh / k - fh) / 2).toFixed(2)}px`,
       ); // band above/below the artboard, in artboard pixels
       setGx(+g.toFixed(2));
     };
     fit();
     window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    window.visualViewport?.addEventListener("resize", fit);
+    return () => {
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", fit);
+      window.visualViewport?.removeEventListener("resize", fit);
+    };
   }, [mobile]);
 
   return (
     <div className={"stage" + (mobile ? " stage-m" : "")}>
       <div className="wrap" id="wrap" ref={wrap}>
         {/* crossing the breakpoint remounts the artboard so it starts fresh in the new geometry */}
-        <Artboard key={mobile ? "m" : "d"} mobile={mobile} gx={gx} />
+        <Artboard key={mobile ? "m" : "d"} mobile={mobile} mobileHeight={mobileHeight} mobileWidth={mobileWidth} gx={gx} />
       </div>
     </div>
   );

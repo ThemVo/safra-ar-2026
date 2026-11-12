@@ -1,10 +1,11 @@
 // Behaviour for the artboard: the camera/view state machine, timers, measuring and every value the markup binds to.
 // Ported unchanged from the prototype; only the class header and module wiring are new.
 import { Logic } from './Logic.js';
+import { MOBILE_INITIATIVES } from './mobileInitiatives.js';
 import { parseRoute, routeHash } from './routes.js';
 
-// Geometry. Desktop: the 1440 × 900 comp. Mobile: a 390 × 844 frame (16px margins) with the same structure,
-// type and spacing scaled down. applyGeo() picks one set when the artboard mounts.
+// Desktop uses its reference composition. Mobile uses the current viewport,
+// with the original 390px artwork as a coordinate reference for the illustrations.
 const FAM = '"Google Sans Flex", "Google Sans", system-ui, sans-serif';
 // Ink boxes measured from the original comp: each line is fitted so its ink spans x0..x1 and sits on `base`.
 const SPEC_D = {
@@ -20,9 +21,13 @@ const TO_D = { text: 'to', x0: 209, base: 558 };
 const HM = 358 / (1287 - 156), hmx = (x) => +(16 + (x - 156) * HM).toFixed(2), hmy = (y) => +(430 + (y - 477) * HM).toFixed(2);
 const SPEC_M = Object.fromEntries(Object.entries(SPEC_D).map(([k, v]) => [k, { ...v, x0: hmx(v.x0), x1: hmx(v.x1), base: hmy(v.base), fs: +(v.fs * HM).toFixed(2) }]));
 const TO_M = { ...TO_D, x0: hmx(TO_D.x0), base: hmy(TO_D.base) };
+// Mobile masthead text boxes from the handover, relative to the 393px reference width.
+const MOBILE_HEADLINE = {
+  t1: [29.88, 326.22, 32], t2: [50.08, 354.22, 48], t3: [159.97, 406.22, 32],
+  t4a: [18, 443.66, 22], t4b: [49.07, 431.18, 40], t4c: [214.46, 443.66, 22], t5: [43.49, 469.78, 44],
+};
 const CAM_D = { logo: 0, top: 0, s2: 0, tg: -918, s3: -918, s4: -1818, s5: -1818, s6: -1818, s7: -1818, s8: -1818, t2: -1818, mb: -1818, fc1: -1818, fc2: -2531, fy: -2718, wc: -2718, nx: -3618, end: -3618 }; // desktop: Clubs & Facilities (fc1) is the L2 page of card 5, scroll-linked from fc1 down to fc2 // '& beyond' (t2) removed: t2 now sits on fc1, the start of the Clubs & Facilities stretch // desktop: Membership (mb) is the L2 page of the Rewarding privileges card
-const FC_H_M = 1440; // mobile Clubs & Facilities is taller than a screen; the rest of the stretch scrolls
-const CAM_M = { logo: 0, top: 0, s2: 0, tg: -844, s3: -844, s4: -1688, s5: -1688, s6: -1688, s7: -1688, s8: -1688, t2: -2532, mb: -2532, fc1: -3376, fc2: -3376 - (FC_H_M - 844), fy: -3376 - FC_H_M, wc: -3376 - FC_H_M, nx: -4220 - FC_H_M, end: -4220 - FC_H_M }; // '& beyond' (t2) removed: t2 now sits on mb
+
 let MOBILE = false, W = 1440, SPEC = SPEC_D, TO = TO_D, CAM = CAM_D;
 let GLANCE_BASE = 1066;
 let GL_FS = 72; // AT A GLANCE type size (small state)
@@ -42,13 +47,23 @@ const MB_OPEN = 422; // Membership (desktop): open card height — 422 − 32 + 
 let MB_STEP = 107; // Membership: how much of each stacked card shows
 let NX_LEFT = [0, 0, 0]; // Looking forward: indicator offset per topic (mobile: the labels run across)
 let FC_RANGE, LINKS;
-function applyGeo(mobile) {
+let H = 844;
+function applyGeo(mobile, height = 844, width = 390) {
+  H = height;
   MOBILE = !!mobile;
   if (MOBILE) {
-    W = 390; SPEC = SPEC_M; TO = TO_M; CAM = CAM_M;
-    GL_FS = 32; GLANCE_BASE = 844 + 92; TG_SCALE = 52 / 32; TG_BASE = 844 + 440; BAR_END = 844; CUE_X = 195;
+    W = width;
+    const ratio = W / 390;
+    SPEC = Object.fromEntries(Object.entries(SPEC_M).map(([key, value]) => [key, { ...value, x0: value.x0 * ratio, x1: value.x1 * ratio, fs: value.fs * ratio, base: H / 2 + (value.base - 422) * ratio }]));
+    TO = { ...TO_M, x0: TO_M.x0 * ratio, base: H / 2 + (TO_M.base - 422) * ratio };
+    // Each stop occupies exactly one viewport; the facilities story keeps its longer scroll range.
+    CAM = { logo: 0, top: 0, s2: 0, tg: -H, s3: -H,
+      s4: -2 * H, s5: -2 * H, s6: -2 * H, s7: -2 * H, s8: -2 * H,
+      t2: -2 * H, mb: -2 * H, fc1: -2 * H, fc2: -2 * H,
+      fy: -3 * H, wc: -3 * H, nx: -3 * H, end: -3 * H };
+    GL_FS = 32; GLANCE_BASE = H + 70; TG_SCALE = 52 / 32; TG_BASE = H + H / 2; BAR_END = H; CUE_X = W / 2;
     S4_FS = { a: +(63 * 0.3105).toFixed(2), b: +(82 * 0.3105).toFixed(2) };
-    TABS_X = [16, 140, 264]; TABS_W = [110, 110, 110]; MB_STEP = 56; NX_LEFT = [0, 124, 248];
+    TABS_X = [16, 140, 264].map(x => x * W / 390); TABS_W = [110, 110, 110].map(x => x * W / 390); MB_STEP = 56; NX_LEFT = [0, 124, 248];
   } else {
     W = 1440; SPEC = SPEC_D; TO = TO_D; CAM = CAM_D;
     GL_FS = 72; GLANCE_BASE = 1066; TG_SCALE = 160 / 72; TG_BASE = 918 + 546; BAR_END = 900; CUE_X = 720;
@@ -70,7 +85,7 @@ const AGM_AT = Date.parse('2026-11-22T14:30:00+08:00'); // 53rd SAFRA AGM start,
 // section 6 stories, in the order given: values, description lines (as laid out), red bar width, photos
 const DC = [{"stats": ["500", "13"], "desc": ["Through NS Experience Camps, families got a", "taste of NS-inspired activities, gaining a deeper", "appreciation of their loved ones’ service."], "bar": 130, "photos": ["./assets/dc4-main.jpg", "./assets/dc4-a2.jpg", "./assets/dc4-b2.jpg"], "alts": ["Participants in life vests sit in an inflatable boat in a swimming pool", "Children and adults assemble a raft frame from white water containers and pipes on a turf court", "Families stretch a green tarp between trees to build a shelter"], "gallery": ["./assets/g1-0.jpg", "./assets/g1-1.jpg", "./assets/g1-2.jpg", "./assets/g1-3.jpg", "./assets/g1-4.jpg", "./assets/g1-5.jpg", "./assets/g1-6.jpg"], "gi": [0, 2, 1]}, {"stats": ["140K"], "desc": ["Be@SAFRA Open Houses brought families", "together to reflect on the SAF's role as they", "enjoyed interactive activities, flight simulators and", "military K9 encounters."], "bar": 260, "photos": ["./assets/dc3-main.jpg", "./assets/dc3-a.jpg", "./assets/dc3-b.jpg"], "alts": ["Parents and children play a giant board game with large red dice on a turf court", "Children play with toy blasters among camouflage tents on a green court", "An adult and child pose in flight suits and helmets against camouflage netting"], "gallery": ["./assets/g2b-0.jpg", "./assets/g2b-1.jpg", "./assets/g2b-2.jpg", "./assets/g2b-3.jpg", "./assets/g2b-4.jpg", "./assets/g2b-5.jpg"], "gi": [0, 2, 1]}, {"stats": ["20K"], "desc": ["Commitment to Defence (C2D)", "Ambassadors from the SAF Veterans’ League", "shared real-life experiences, reinforcing the", "importance of a strong defence."], "bar": 390, "photos": ["./assets/dc1-main.jpg", "./assets/dc1-a2.jpg"], "alts": ["A speaker addresses pupils seated in a classroom", "Service personnel seated outdoors listen to standing speakers"], "gallery": ["./assets/g3-0.jpg", "./assets/g3-1.jpg"], "gi": [0, 1]}, {"stats": ["40K"], "desc": ["Total Defence Day commemorative activities", "equipped participants with practical skills through", "hands-on demonstrations and interactive games."], "bar": 520, "photos": ["./assets/dc2-main.jpg", "./assets/dc2-a2.jpg", "./assets/dc2-b2.jpg"], "alts": ["Children practise CPR on training manikins with instructors", "Emergency responders demonstrate a rescue to an audience under a sheltered walkway", "Boys look into a camouflage field pack held open by an instructor"], "gallery": ["./assets/g4-0.jpg", "./assets/g4-1.jpg", "./assets/g4-2.jpg", "./assets/g4-3.jpg"], "gi": [0, 1, 2]}]; // red bar = story progress: 1/4 … 4/4 of the panel
 const DC_WORDS = ['BRINGING', 'DEFENCE', 'CLOSER', 'TO', 'THE', 'COMMUNITY'];
-// section 7: Appreciating national servicemen (one story so far; the red bar shows 1 of 4)
+// section 7: Appreciating national servicemen (four stories)
 const DC7 = [{"stats": ["35K", "460"], "desc": ["Through the Appreciating NSmen Art Jam", "initiative, preschoolers learnt about national", "servicemen's contributions and made", "personalised gifts to thank their fathers for", "defending Singapore."], "bar": 130, "photos": ["./assets/an1-main3.jpg", "./assets/an1-kids2.jpg", "./assets/an1-card2.jpg"], "alts": ["A preschool teacher shows the class photos of servicemen", "Preschoolers cut out and decorate thank-you cards at a table", "A preschooler writes a thank-you card with a family photo for an NSman father"], "gallery": ["./assets/an1g-0.jpg", "./assets/an1g-1.jpg", "./assets/an1g-2.jpg", "./assets/an1g-3.jpg"], "gi": [0, 1, 2]}, {"stats": ["145", "44"], "desc": ["The Appreciating NSmen Video Competition saw", "students using creative storytelling to highlight the", "contributions of national servicemen and show", "their support."], "bar": 260, "photos": ["./assets/an2-v1.jpg", "./assets/an2-v2.jpg", "./assets/an2-v3.jpg", "./assets/an2-v4.jpg"], "alts": ["Video still: an animated serviceman gives a thumbs-up at a hawker stall offering 30% off to all NSmen", "Video still: a young serviceman shares a home-cooked meal with his family", "Video still: paper-craft figures in different service uniforms stand in front of the Singapore skyline", "Video still: cartoon characters representing different services stand side by side"], "gallery": ["./assets/an2-v1.jpg", "./assets/an2-v2.jpg", "./assets/an2-v3.jpg", "./assets/an2-v4.jpg"], "videos": ["./assets/an2-v1-video.mp4", "./assets/an2-v2-video.mp4", "./assets/an2-v3-video.mp4", "./assets/an2-v4-video.mp4"], "gi": [0, 1, 2, 3]}, {"stats": ["180", "240"], "desc": ["A wide range of appreciation deals for national", "servicemen, ranging from daily essentials to", "recreation, were secured through collaborations", "with merchants islandwide."], "bar": 390, "photos": ["./assets/an3-bk.jpg", "./assets/an3-popeyes.jpg", "./assets/an3-klook.jpg", "./assets/an3-spa.jpg"], "alts": ["Appreciating NSmen Deals: free Whopper at Burger King", "Appreciating NSmen Deals: $6 Hormat SG60 bundle at Popeyes", "Appreciating NSmen Deals: $30 off hotel bookings on Klook", "Appreciating NSmen Deals: 50% off all services at The Jungle Spa and The Upsara Spa"], "gallery": ["./assets/an3g-0.jpg", "./assets/an3g-1.jpg", "./assets/an3g-2.jpg", "./assets/an3g-3.jpg", "./assets/an3g-4.jpg", "./assets/an3g-5.jpg", "./assets/an3g-6.jpg", "./assets/an3g-7.jpg", "./assets/an3g-8.jpg", "./assets/an3g-9.jpg", "./assets/an3g-10.jpg", "./assets/an3g-11.jpg"], "gi": [0, 3, 5, 7]}, {"stats": ["15K", "15"], "desc": ["SAFRA gave away complimentary snacks to", "national servicemen at various SAF camps, SAFRA", "clubs and events."], "bar": 520, "photos": ["./assets/an4-main.jpg", "./assets/an4-truck.jpg", "./assets/an4-group.jpg"], "alts": ["National servicemen in PT kit hold up complimentary Old Chang Kee snacks", "A serviceman picks up a snack at the Canadian 2 for 1 Pizza food truck", "National servicemen with snacks in front of a food truck and an Appreciating NSmen banner"], "gallery": ["./assets/an4s-0.jpg", "./assets/an4s-1.jpg", "./assets/an4s-2.jpg", "./assets/an4s-3.jpg", "./assets/an4s-4.jpg"], "gi": [2, 0, 4]}];
 const AN_WORDS = ['APPRECIATING', 'NATIONAL', 'SERVICEMEN'];
 // photos each topic card flips through on hover (from its own section)
@@ -79,8 +94,9 @@ const CARD_IMGS = {
   '#an-title': ['./assets/an1-main.jpg', './assets/an1-kids.jpg', './assets/an1-card.jpg'],
   '#sb-title': ['./assets/sb1-big.jpg', './assets/sb1-a.jpg', './assets/sb1-b.jpg']
 };
-// section 8: Strengthening bonds (one story so far)
+// section 8: Strengthening bonds (six stories)
 const DC8 = [{"stats": ["52K"], "desc": ["SAFRA’s National Day celebrations at Marina Bay", "and across all SAFRA clubs brought loved ones", "together for the live screening of the NDP, live", "performances and nostalgic games."], "bar": 86.67, "photos": ["./assets/sb1-main.jpg", "./assets/sb1-crowd.jpg", "./assets/sb1-mascot.jpg"], "alts": ["A family smiles in front of red fireworks at a National Day celebration", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["./assets/sb1g-0.jpg", "./assets/sb1g-1.jpg", "./assets/sb1g-2.jpg", "./assets/sb1g-3.jpg", "./assets/sb1g-4.jpg"], "gi": [3, 1, 4]}, {"stats": ["1.2K", "420"], "desc": ["SG60 SAFRA Family Fiesta brought families", "together for fun-filled activities, including the", "SAFRA Diaper Dash and sing-along sessions with", "their favourite Pororo & Friends characters."], "bar": 173.33, "photos": ["./assets/sb2-main.jpg", "./assets/sb2-race.jpg", "./assets/sb2-dash2.jpg"], "alts": ["Children pose with Pororo & Friends characters at the SG60 SAFRA Family Fiesta", "Babies and toddlers race across a colourful mat as families cheer at the SAFRA Diaper Dash", "Parents and toddlers holding Pororo plush toys wait at the start of the SAFRA Diaper Dash"], "gallery": ["./assets/sb2s-0.jpg", "./assets/sb2s-1.jpg", "./assets/sb2s-2.jpg"], "gi": [2, 1, 0]}, {"stats": ["637", "52K"], "desc": ["Cohesion events were organised for SAF NS units", "at various SAFRA clubs and SAF camps, featuring", "a wide range of activities such as archery tag,", "bowling, inflatable games, water telematches and", "various sports competitions."], "bar": 260, "photos": ["./assets/sb3-main.jpg", "./assets/sb3-archery.jpg", "./assets/sb3-team.jpg"], "alts": ["National servicemen play human foosball on an inflatable pitch", "National servicemen in face masks pose with archery tag bows", "An NS unit poses for a team photo after a football match"], "gallery": ["./assets/sb3g-0.jpg", "./assets/sb3g-1.jpg", "./assets/sb3g-2.jpg", "./assets/sb3g-3.jpg", "./assets/sb3g-4.jpg", "./assets/sb3g-5.jpg", "./assets/sb3g-6.jpg"], "gi": [2, 0, 5]}, {"stats": ["1.2K"], "desc": ["SAFRA Youth Fiesta brought youths together to", "compete in the Ultimate Frisbee Tournament", "and indulge in Japanese pop culture at the", "DoujinFes Fair and Hololive Official Card Game", "community workshops."], "bar": 346.67, "photos": ["./assets/sb4-main.jpg", "./assets/sb4-cosplay.jpg", "./assets/sb4-frisbee.jpg"], "alts": ["Youths compete in the Ultimate Frisbee Tournament at SAFRA Youth Fiesta", "Cosplayers at the DoujinFes Fair", "A player throws a frisbee past a defender during the Ultimate Frisbee Tournament"], "gallery": ["./assets/sb4g-0.jpg", "./assets/sb4g-1.jpg", "./assets/sb4g-2.jpg"], "gi": [1, 2, 0]}, {"stats": ["430"], "desc": ["Soundbyte Beer Music Play brought national", "servicemen and their friends together to enjoy live", "band performances, high-energy DJ sets, games", "and free flow of drinks."], "bar": 433.33, "photos": ["./assets/sb5-main.jpg", "./assets/sb5-hall.jpg", "./assets/sb5-game.jpg"], "alts": ["Guests dance with their arms raised at Soundbyte Beer Music Play", "A packed hall of guests raises their drinks at Soundbyte Beer Music Play", "Friends play an arcade button game at Soundbyte Beer Music Play"], "gallery": ["./assets/sb5g-0.jpg", "./assets/sb5g-1.jpg", "./assets/sb5g-2.jpg"], "gi": [0, 1, 2]}, {"stats": ["5.5K", "$290K"], "desc": ["SAFRA Swim for Hope rallied the community to", "swim for charity and raise funds for the less", "privileged and those in need."], "bar": 520, "photos": ["./assets/sb6-main.jpg", "./assets/sb6-pool.jpg"], "alts": ["Organisers and partners present a S$290,000 cheque at SAFRA Swim for Hope", "Participants swim for charity at SAFRA Swim for Hope"], "gallery": ["./assets/sb6g-0.jpg", "./assets/sb6g-1.jpg"], "gi": [0, 1]}];
+export const STORY_DATA = { 6: DC, 7: DC7, 8: DC8 };
 // section 10: membership categories
 const NX_TABS = ['Bringing defence closer', 'Creating better spaces', 'Making visits seamless'];
 const MB_TABS = ['FOOD & GROCERIES', 'EDUCATION', 'MOVIES & LIVE ENTERTAINMENT', 'TRAVEL, STAYCATIONS & LOCAL ATTRACTIONS'];
@@ -114,7 +130,7 @@ const REPLAY_DONE = 5100; // logo → masthead: the headline's last line lands (
 export class ArtboardLogic extends Logic {
   constructor(props) {
     super(props);
-    applyGeo(props.mobile);
+    applyGeo(props.mobile, props.mobileHeight, props.mobileWidth);
     const sv = viewOf(props.startView);
     this.state = { phase: 'run', mx: 0, my: 0, p: 0, lay: null, view: sv, s2: sv !== 'top', s3: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 2, s4: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 3, s6: sv === 's6', step6: 0, t6: null, s7: sv === 's7', step7: 0, t7: null, s8: sv === 's8', step8: 0, t8: null, s9: sv === 't2' || sv === 'mb', s10: sv === 'mb', mbTab: MOBILE ? 0 : -1, mbOrd: [3, 2, 1, 0], mbMv: null, lb: null, hx: null, hy: null, ready: false, now: Date.now(), step: 0, fresh: sv === 's3', cdP: sv === 'top' ? 0 : 1 };
     this.played2 = sv !== 'top';
@@ -209,6 +225,14 @@ export class ArtboardLogic extends Logic {
     }
   }
   componentDidUpdate(prev, prevState) {
+    if (this.props.mobile && (prev.mobileHeight !== this.props.mobileHeight || prev.mobileWidth !== this.props.mobileWidth)) {
+      const linked = this.state.link;
+      const progress = linked ? this.state.linkY / LINKS[linked].len : 0;
+      applyGeo(true, this.props.mobileHeight, this.props.mobileWidth);
+      if (linked) this.state.linkY = progress * LINKS[linked].len;
+      this.measure();
+      this.camToDom();
+    }
     if (this.stkCard && this.state.view !== 's5') this.cardStack(null);
     if (prevState && prevState.view !== this.state.view && this.state.view === 't2') { this.hvLayout(); setTimeout(() => this.hvLayout(), 400); }
     // leaving section 6/7 for the cards: hold the entered card navy until the camera has pulled back out
@@ -317,37 +341,23 @@ export class ArtboardLogic extends Logic {
     if (Math.abs(sc - (this.state.mbSc ?? 1)) > 0.002) this.setState({ mbSc: sc });
   }
   mbTo(t) {
-    if (!MOBILE) {
-      // accordion: tap a card to open it (the open one folds shut), tap the open card again to close it;
-      // the content height animates, and the stack scrolls back so it sits from the top
-      const cur = this.state.mbTab ?? -1, next = t === cur ? -1 : t;
-      const box = (i) => document.querySelector(`.s10 .mbs:nth-child(${i + 1}) .mbc`);
-      const a = cur >= 0 ? box(cur) : null, b = next >= 0 ? box(next) : null;
-      if (a) a.style.height = a.offsetHeight + 'px';
-      if (b) b.style.height = '0px';
-      if (a || b) void (a || b).offsetHeight;
-      clearTimeout(this.mbHT);
-      this.setState({ mbTab: next }, () => requestAnimationFrame(() => {
-        if (a) a.style.height = '0px';
-        if (b) b.style.height = b.scrollHeight + 'px';
-        this.mbHT = setTimeout(() => { if (a) a.style.height = ''; if (b) b.style.height = ''; }, 560);
-        const sc = document.querySelector('.s10 .mbsc'); if (sc && next >= 0) sc.scrollTo({ top: 0, behavior: 'smooth' });
-      }));
-      return;
-    }
-    const ord = this.state.mbOrd || [3, 2, 1, 0];
-    let steps = 3 - ord.indexOf(t);
-    if (steps <= 0 || this.mbBusy) return;
-    this.mbBusy = true;
-    const step = () => {
-      const o = this.state.mbOrd || [3, 2, 1, 0], n = [o[3], o[0], o[1], o[2]];
-      this.setState({ mbOrd: n, mbTab: n[3], mbMv: o[3] });
-      steps--;
-      clearTimeout(this.mbT);
-      this.mbT = setTimeout(() => { this.setState({ mbMv: null }); if (steps > 0) step(); else this.mbBusy = false; }, steps > 0 ? 300 : 560);
-    };
-    step();
+    // accordion: tap a card to open it (the open one folds shut), tap the open card again to close it;
+    // the content height animates, and the stack scrolls back so it sits from the top
+    const cur = this.state.mbTab ?? -1, next = t === cur ? -1 : t;
+    const box = (i) => document.querySelector(`.s10 .mbs:nth-child(${i + 1}) .mbc`);
+    const a = cur >= 0 ? box(cur) : null, b = next >= 0 ? box(next) : null;
+    if (a) a.style.height = a.offsetHeight + 'px';
+    if (b) b.style.height = '0px';
+    if (a || b) void (a || b).offsetHeight;
+    clearTimeout(this.mbHT);
+    this.setState({ mbTab: next }, () => requestAnimationFrame(() => {
+      if (a) a.style.height = '0px';
+      if (b) b.style.height = b.scrollHeight + 'px';
+      this.mbHT = setTimeout(() => { if (a) a.style.height = ''; if (b) b.style.height = ''; }, 560);
+      const sc = document.querySelector('.s10 .mbsc'); if (sc && next >= 0) sc.scrollTo({ top: 0, behavior: 'smooth' });
+    }));
   }
+
   // While AT A GLANCE scales down, the connector is trimmed so it never runs past the top of the L;
   // scaling back up lets it reach up to the masthead again.
   arriveFy() {
@@ -411,6 +421,7 @@ export class ArtboardLogic extends Logic {
     return v === L.at[0][0] ? 0 : CAM.t2 === L.top ? L.top - CAM[v] : L.len;
   }
   linkWheel(dy) {
+    if (MOBILE) return false;
     if (this.state.lb) return false;
     const now = Date.now(), streak = now - (this.lkLast || 0) < 160; this.lkLast = now;
     let key = this.state.link;
@@ -618,6 +629,29 @@ export class ArtboardLogic extends Logic {
     if (this.state.view === 'top' && dir < 0) { if (this.state.ready) { this.lockUntil = now + 1700; this.setState({ view: 'logo' }); } return; }
     if (this.state.view === 'logo') { if (dir > 0) { this.lockUntil = now + 1300; this.setState({ view: 'top', curOn: false }); clearTimeout(this.curT); this.curT = setTimeout(() => this.setState({ curOn: true }), REPLAY_DONE + CURSOR_AFTER); } return; }
     if (this.state.lb) return; // gallery open
+    if (MOBILE) {
+      const order = MOBILE_INITIATIVES.map(topic => topic[2]);
+      const view = this.state.view === 'fc2' ? 'fc1' : this.state.view;
+      const index = order.indexOf(view);
+      if (view === 's5' && dir > 0) { this.lockUntil = now + 1200; this.setState({ view: 'wc', s12: true, s14: true }); return; }
+      if (index >= 0) {
+        const stories = STORY_DATA[Number(view.slice(1))];
+        const step = this.state[{ s6: 'step6', s7: 'step7', s8: 'step8' }[view]] || 0;
+        // Read every story within a topic before moving to its neighbour in the list.
+        if (!stories || step + dir < 0 || step + dir >= stories.length) {
+          const to = order[index + dir];
+          if (to) this.l2To(to, dir);
+          else if (dir < 0) this.toCards();
+          else this.skipTo('wc');
+          return;
+        }
+      }
+    }
+    if (MOBILE && ['wc', 'end'].includes(this.state.view)) {
+      if (dir < 0) this.toCards();
+      else this.setState({ view: 'end', s14: true });
+      return;
+    }
     if (!MOBILE && this.state.view === 'mb') { this.l2To(dir > 0 ? 'fc1' : 's8', dir); return; } // Membership: on to Clubs & Facilities / back to Strengthening Bonds
     if (!MOBILE && this.state.view === 'fc1') { if (dir > 0) this.skipTo(AFTER()); else this.l2To('mb', -1); return; } // Clubs & Facilities page: once its own scroll ends, on below the cards / back up to the cards // Membership page: down to & beyond, up back to the cards
     { const TAIL = (MOBILE ? ['mb', 'fc1', 'wc', 'end'] : ['wc', 'end']) /* 'nx' (Looking forward) hidden for now — NX_OFF */ /* 'fy' (Our year in summary) removed */, ti = TAIL.indexOf(this.state.view);
@@ -638,13 +672,13 @@ export class ArtboardLogic extends Logic {
     }
     if (this.state.view === 's8') {
       const ns = (this.state.step8 || 0) + dir;
-      if (ns >= (MOBILE ? 1 : DC8.length)) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('mb', 1); return; } // mobile: story 2 not laid out yet
+      if (ns >= DC8.length) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('mb', 1); return; }
       if (ns < 0) { if (MOBILE) this.toCards(); else this.l2To('s7', -1); return; }
       this.lockUntil = now + 900; this.play8(ns, 0.2); return;
     }
     if (this.state.view === 's7') {
       const ns = (this.state.step7 || 0) + dir;
-      if (ns >= (MOBILE ? 1 : DC7.length)) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('s8', 1); return; } // mobile: story 2 not laid out yet
+      if (ns >= DC7.length) { if (MOBILE) this.skipTo('s8'); else this.l2To('s8', 1); return; }
       if (ns < 0) { if (MOBILE) this.toCards(); else this.l2To('s6', -1); return; }
       this.lockUntil = now + 900; this.play7(ns, 0.2); return;
     }
@@ -658,7 +692,7 @@ export class ArtboardLogic extends Logic {
       const ns = this.state.step + dir;
       if (ns >= 0 && ns <= 2) { this.lockUntil = now + 1150; this.setStep(ns); return; }
     }
-    if (this.state.view === 's5' && dir > 0) { this.lockUntil = now + 1200; if (MOBILE) { this.setState({ view: 'mb' }); this.arriveMb(); } else { this.setState({ view: 'wc', s12: true }); setTimeout(() => this.hvLayout(), 60); } return; }
+    if (this.state.view === 's5' && dir > 0) { this.lockUntil = now + 1200; if (MOBILE) { this.setState({ view: 'wc', s12: true, s14: true }); } else { this.setState({ view: 'wc', s12: true }); setTimeout(() => this.hvLayout(), 60); } return; }
     const j = ORDER.indexOf(this.state.view) + dir;
     if (j < 0 || j >= ORDER.length) return;
     const v = ORDER[j];
@@ -757,6 +791,11 @@ export class ArtboardLogic extends Logic {
         t[id] = place(m, (s.x1 - s.x0 + 1) / inkW, s.x0, s.base);
       }
       t.t4a = place(ctx.measureText(TO.text), t.t4c.fs / 100, TO.x0, TO.base);
+      if (MOBILE) {
+        const ratio = W / 393;
+        for (const [id, [x, y, fs]] of Object.entries(MOBILE_HEADLINE)) t[id] = { x: x * ratio, y: H / 2 + (y - 426) * ratio, fs: fs * ratio };
+        ctx.font = '500 100px ' + FAM;
+      }
       const TEXTS = { t1: SPEC.t1.text, t2: SPEC.t2.text, t3: SPEC.t3.text, t4a: TO.text, t4b: SPEC.t4b.text, t4c: SPEC.t4c.text, t5: SPEC.t5.text };
       for (const id in TEXTS) {
         const kk = t[id].fs / 100; let acc = 0; const offs = [], ws = [];
@@ -778,7 +817,7 @@ export class ArtboardLogic extends Logic {
       const st = nRuns[nRuns.length - 1];
       const barX = t.t5.x + adv + st[0];
       const barW = st[1] - st[0] + 1;
-      const barTop = SPEC.t5.base - Math.round(fs5 * 0.12);
+      const barTop = MOBILE ? t.t5.y + fs5 * .88 : SPEC.t5.base - Math.round(fs5 * 0.12);
 
       // The L of AT A GLANCE (72px, 500): its shape from the font, its place from the page.
       const gl = this.glyph('L', '500 ' + GL_FS + 'px ' + FAM, GL_FS);
@@ -879,7 +918,7 @@ export class ArtboardLogic extends Logic {
 
     const TEXTS = { t1: SPEC.t1.text, t2: SPEC.t2.text, t3: SPEC.t3.text, t4a: TO.text, t4b: SPEC.t4b.text, t4c: SPEC.t4c.text, t5: SPEC.t5.text };
     const hx = this.state.hx, hy = this.state.hy;
-    const active = hx != null && this.state.view === 'top' && this.state.phase === 'run';
+    const active = !MOBILE && hx != null && this.state.view === 'top' && this.state.phase === 'run';
     const R = 170;
     const letters = {};
     for (const id in TEXTS) {
@@ -931,6 +970,18 @@ export class ArtboardLogic extends Logic {
     const circle = masthead && (this.state.curOn || fin);
     return {
       stageClass,
+      mobileHeight: H,
+      mobileWidth: W,
+      mobileView: view,
+      mobileInitiativeNext: (() => {
+        const index = MOBILE_INITIATIVES.findIndex(topic => topic[2] === (view === 'fc2' ? 'fc1' : view));
+        const next = MOBILE_INITIATIVES[index + 1];
+        return { label: next?.[0] || 'Looking forward', click: (e) => {
+          e.stopPropagation();
+          if (next) this.jumpTo(next[2]); else this.skipTo('wc');
+        } };
+      })(),
+      mobileSteps: { 6: this.state.step6 || 0, 7: this.state.step7 || 0, 8: this.state.step8 || 0 },
       mClass: MOBILE ? 'm' : '',
       s2Class: (fin || this.state.s2) ? 'is-s2' : '',
       s3Class: (fin || this.state.s3) ? 'is-s3' : '',
@@ -965,7 +1016,7 @@ export class ArtboardLogic extends Logic {
       back8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.toCards(); },
       backFc: (e) => { e.stopPropagation(); if (this.state.view === 'fc1') this.toCards(); },
       backMb: (e) => { e.stopPropagation(); if (this.state.view === 'mb') this.toCards(); },
-      skip8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.skipTo(AFTER()); },
+      skip8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.skipTo(MOBILE ? 'fc1' : AFTER()); },
       topic3: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's8' }); this.arrive8(); } },
       dch8: (() => { const o = (this.state.lay && this.state.lay.dch8) || [0, -360]; const r = { W: (this.state.lay && this.state.lay.dcHW8) || 500 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       dcw8: { W: (this.state.lay && this.state.lay.dcW8) || 480 },
@@ -1015,7 +1066,7 @@ export class ArtboardLogic extends Logic {
         this.mbIn = false; this.mbEndAt = 0;
       },
       topic4: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'mb' }); this.arriveMb(); } }, // Rewarding privileges → Membership page
-      topic5: (e) => { e.preventDefault(); e.stopPropagation(); if (!MOBILE && this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'fc1', s15: true }); this.fcEnter(1); } }, // Enhancing SAFRA Clubs & Facilities → its page
+      topic5: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'fc1', s15: true }); this.fcEnter(1); } }, // Enhancing SAFRA Clubs & Facilities → its page
       topic2: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's7' }); this.arrive7(); } },
       dch7: (() => { const o = (this.state.lay && this.state.lay.dch7) || [0, -340]; const r = { W: (this.state.lay && this.state.lay.dcHW7) || 480 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       dcw7: (() => { const o = (this.state.lay && this.state.lay.dcw7) || [0, 0, -440]; const r = { W: (this.state.lay && this.state.lay.dcW7) || 846 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
@@ -1081,7 +1132,19 @@ export class ArtboardLogic extends Logic {
       noop: (e) => { e.preventDefault(); e.stopPropagation(); },
       cur: { x: ((hx ?? 720) - 60).toFixed(1), y: ((hy ?? 450) - 60).toFixed(1), o: (circle && hx != null && !mobile) ? 1 : 0, s: (circle && hx != null) ? 1 : 0.4 },
       wheel: (e) => {
-        if (Math.abs(e.deltaY) < 4) return;
+        if (Math.abs(e.deltaY) < 4 || this.state.lb) return;
+        const sc = e.target?.closest?.('[data-mobile-scroll]');
+        // Finish scrolling the list, then require a new gesture to leave either edge.
+        if (MOBILE && this.state.view === 's5' && sc?.classList?.contains('mobile-topics')) {
+          const now = Date.now(), dir = e.deltaY > 0 ? 1 : -1;
+          const edge = dir > 0 ? sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1 : sc.scrollTop <= 1;
+          const continuing = now - (this.topicWheelAt ?? -Infinity) < 220 && this.topicWheelDir === dir;
+          this.topicWheelAt = now; this.topicWheelDir = dir;
+          if (!continuing) this.topicWheelCanLeave = edge;
+          if (edge && this.topicWheelCanLeave) { this.topicWheelCanLeave = false; this.go(dir); }
+          return;
+        }
+        if (MOBILE && sc && (e.deltaY > 0 ? sc.scrollTop + sc.clientHeight < sc.scrollHeight - 1 : sc.scrollTop > 0)) return;
         // one wheel/trackpad gesture (events < 220ms apart, incl. momentum) can't carry on past the large AT A GLANCE heading
         const now = Date.now(), cont = now - (this.lastWheel || 0) < 220; this.lastWheel = now;
         if (this.holdTg && cont && this.state.view === 'tg') return;
@@ -1099,6 +1162,7 @@ export class ArtboardLogic extends Logic {
       nav_s3: (e) => { e.stopPropagation(); this.jumpTo('s3'); },
       nav_s5: (e) => { e.stopPropagation(); this.jumpTo('s5'); },
       nav_fy: (e) => { e.stopPropagation(); this.jumpTo('fy'); },
+      nav_wc: (e) => { e.stopPropagation(); this.jumpTo('wc'); },
       nav_nx: (e) => { e.stopPropagation(); this.jumpTo('nx'); },
       nav_s6: (e) => { e.stopPropagation(); this.jumpTo('s6'); },
       nav_s7: (e) => { e.stopPropagation(); this.jumpTo('s7'); },
@@ -1106,11 +1170,13 @@ export class ArtboardLogic extends Logic {
       nav_mb: (e) => { e.stopPropagation(); this.jumpTo('mb'); },
       nav_fc: (e) => { e.stopPropagation(); this.jumpTo('fc1'); },
       tap: () => { if (this.state.menu) { this.setState({ menu: false }); return; } if (this.state.view === 'top' || this.state.view === 'logo' || this.state.view === 't2') this.go(1); },
-      touchStart: (e) => { this.ty = e.touches && e.touches[0] ? e.touches[0].clientY : null; this.tyLast = this.ty; this.tMoved = false; },
+      touchStart: (e) => { this.touchScroller = e.target?.closest?.('[data-mobile-scroll]'); this.touchScrollTop = this.touchScroller?.scrollTop || 0; this.ty = e.touches && e.touches[0] ? e.touches[0].clientY : null; this.tyLast = this.ty; this.tMoved = false; },
       // mobile: inside the scroll-linked stretches (and Looking forward's column) the page follows the finger
       touchMove: (e) => {
         const y = e.touches && e.touches[0] ? e.touches[0].clientY : null;
-        if (!MOBILE || y == null || this.tyLast == null || this.state.menu) return;
+        if (!MOBILE || y == null || this.tyLast == null || this.state.menu || this.state.lb) return;
+        const sc = this.touchScroller;
+        if (sc && (Math.abs(sc.scrollTop - this.touchScrollTop) > 1 || (this.tyLast > y ? sc.scrollTop + sc.clientHeight < sc.scrollHeight - 1 : sc.scrollTop > 0))) { this.tMoved = true; this.tyLast = y; return; }
         const r = e.currentTarget && e.currentTarget.getBoundingClientRect ? e.currentTarget.getBoundingClientRect() : null;
         const k = r && r.width ? W / r.width : 1; // screen px → artboard px
         const dy = (this.tyLast - y) * k; this.tyLast = y;
@@ -1119,7 +1185,7 @@ export class ArtboardLogic extends Logic {
       },
       touchEnd: (e) => {
         const y = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null;
-        if (this.ty == null || y == null) return;
+        if (this.ty == null || y == null || this.state.menu || this.state.lb) return;
         if (this.tMoved) { this.tMoved = false; return; } // already followed the finger
         if (Math.abs(this.ty - y) > 30) { if (this.nxWheel((this.ty - y) * 1.5)) return; if (this.linkWheel((this.ty - y) * 1.5)) return; this.go(this.ty > y ? 1 : -1); }
       },

@@ -3,7 +3,7 @@ import Artboard from "./artboard/Artboard.jsx";
 import { initializeMarker } from "./utils/marker.ts";
 
 // Choose the composition from the viewport, including desktop mobile previews.
-const MOBILE_MAX = 767;
+const MOBILE_MAX = 899;
 const isMobile = () => window.innerWidth <= MOBILE_MAX;
 const DESKTOP_FRAME = [1440, 900];
 

@@ -601,6 +601,11 @@ body{margin:0;background:#272C3F}
 .mh:not(.m).fresh .sweep{transition-delay:0s,1.7s}
 /* s3c starts at 900 and Topics' camera settles at -1818. */
 .mh:not(.m).at-topics .sweep{top:calc(918px - var(--gy,0px)) !important;transform:scaleX(1) !important}
+/* Topics owns the full viewport, including the bands around the fitted frame.
+   Its backdrop must sit above Future's extended background and Glance's photos. */
+.mh:not(.m).at-topics .s45{z-index:2;overflow:visible !important}
+.mh:not(.m).at-topics .s45::before{content:"";position:absolute;inset:calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px));background:#272C3F;z-index:-1;pointer-events:none}
+.mh:not(.m).at-topics .s45::after{content:"";position:absolute;top:calc(-1 * var(--gy,0px));left:calc(-1 * var(--gx,0px));width:calc(1440px + 2 * var(--gx,0px));height:8px;background:linear-gradient(90deg,#74509F 0%,#F46074 55%,#F68F43 100%);pointer-events:none}
 .mh:not(.m) .lb{inset:calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px)) !important;border-image:none !important}
 /* Keep media centred in the original composition while the dialog fills the viewport. */
 .mh:not(.m) .lb .lb-media{left:calc(64px + var(--gx,0px)) !important;top:calc(142px + var(--gy,0px)) !important}

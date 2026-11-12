@@ -190,6 +190,14 @@
 .mobile-topic > div { flex: 1; min-width: 0; }
 .mobile-topic { border-image: linear-gradient(90deg,#6252A4,#F14192,#F69141) 1; }
 .mobile-topics nav { border-color: #B04A9B; }
+/* Keep the full card copy in the scrollable mobile overview. */
+.mh.m .mobile-topics { display: flex; flex-direction: column; padding: 72px 16px 64px; gap: 20px; }
+.mobile-topics > h2 { flex: none; margin: 0; font-size: clamp(20px,5.64vw,28px); line-height: 1.15; }
+.mobile-topics nav { flex: none; }
+.mobile-topic { align-items: flex-start; gap: 16px; padding: 24px 48px 24px 24px; box-sizing: border-box; }
+.mobile-topic h3 { margin: 0 0 8px; font-size: 22px; line-height: 1.2; }
+.mobile-topic p { font-size: 16px; }
+.mobile-topic > .tc-a { right: 24px; bottom: 24px; transform: scale(.625); transform-origin: bottom right; }
 .mh.m .mobile-stories, .mobile-facilities { position: absolute; left: 0; width: 100%; box-sizing: border-box; background: #272C3F; overflow-x: clip; overflow-y: auto; z-index: 2; }
 .mobile-story-header { display: flex; align-items: flex-start; gap: 12px; padding: 24px 16px; box-sizing: border-box; min-height: 117px; }
 .mobile-story-header h2 { font-size: clamp(16px,5.089vw,24px); line-height: 1.2; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; margin: 0 0 4px; background: linear-gradient(90deg,#6252A4,#F14192 55%,#F69141); background-clip: text; color: transparent; }

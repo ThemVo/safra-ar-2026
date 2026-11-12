@@ -1722,10 +1722,7 @@ export default function render(v) {
                     <span style={{ flex: "1 1 auto", minWidth: "0", fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
                       {"Food & Groceries"}
                     </span>
-                    <svg className="mbpl" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ display: "block", flex: "none" }}>
-                      <path d="M33.33 20H6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
-                      <path className="mbpv" d="M20 33.33V6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
-                    </svg>
+                    <img className="mbpl" src={v.mbv?.de0 ? "./assets/mb-minus.svg" : "./assets/mb-plus.svg"} alt="" aria-hidden="true" width="40" height="40" style={{ display: "block", flex: "none" }} />
                   </button>
                 </h3>
                 <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -1763,10 +1760,7 @@ export default function render(v) {
                     <span style={{ flex: "1 1 auto", minWidth: "0", fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
                       {"Education"}
                     </span>
-                    <svg className="mbpl" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ display: "block", flex: "none" }}>
-                      <path d="M33.33 20H6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
-                      <path className="mbpv" d="M20 33.33V6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
-                    </svg>
+                    <img className="mbpl" src={v.mbv?.de1 ? "./assets/mb-minus.svg" : "./assets/mb-plus.svg"} alt="" aria-hidden="true" width="40" height="40" style={{ display: "block", flex: "none" }} />
                   </button>
                 </h3>
                 <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -1803,10 +1797,7 @@ export default function render(v) {
                     <span style={{ flex: "1 1 auto", minWidth: "0", fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
                       {"Movies & Entertainment"}
                     </span>
-                    <svg className="mbpl" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ display: "block", flex: "none" }}>
-                      <path d="M33.33 20H6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
-                      <path className="mbpv" d="M20 33.33V6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
-                    </svg>
+                    <img className="mbpl" src={v.mbv?.de2 ? "./assets/mb-minus.svg" : "./assets/mb-plus.svg"} alt="" aria-hidden="true" width="40" height="40" style={{ display: "block", flex: "none" }} />
                   </button>
                 </h3>
                 <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -1861,10 +1852,7 @@ export default function render(v) {
                     <span style={{ flex: "1 1 auto", minWidth: "0", fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
                       {"Travel, Staycations & Local Attractions"}
                     </span>
-                    <svg className="mbpl" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ display: "block", flex: "none" }}>
-                      <path d="M33.33 20H6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
-                      <path className="mbpv" d="M20 33.33V6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
-                    </svg>
+                    <img className="mbpl" src={v.mbv?.de3 ? "./assets/mb-minus.svg" : "./assets/mb-plus.svg"} alt="" aria-hidden="true" width="40" height="40" style={{ display: "block", flex: "none" }} />
                   </button>
                 </h3>
                 <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -2593,17 +2581,7 @@ export default function render(v) {
           <svg className="sm-ic sm-ic-w" width="21" height="18" viewBox="0 0 21 18" aria-hidden="true">
             <path d="M1 1h19M1 9h19M1 17h19" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
           </svg>
-          <svg className="sm-ic sm-ic-g" width="23" height="20" viewBox="0 0 23 20" fill="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="smG" x1="1" y1="0" x2="22" y2="0" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6252A4" />
-                <stop offset="0.490385" stopColor="#F14192" />
-                <stop offset="0.927885" stopColor="#F6765D" />
-                <stop offset="0.9999" stopColor="#F69141" />
-              </linearGradient>
-            </defs>
-            <path d="M1 1H22M1 10H22M1 19H22" stroke="url(#smG)" strokeWidth="2" strokeLinecap="round" />
-          </svg>
+          <img className="sm-ic sm-ic-g" src="./assets/mobile-menu.svg" alt="" aria-hidden="true" />
         </button>
         <div className="sm-panel" onClick={v.menuStop}>
           <button className="sm-x" type="button" aria-label="Close menu" onClick={v.menuClose}>

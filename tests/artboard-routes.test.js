@@ -13,13 +13,13 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   const listeners = new Map(), writes = [];
   globalThis.document = {};
   globalThis.window = {
-    location: { hash: '' },
+    location: { hash: '', pathname: '/annual-report/', search: '?lang=en' },
     addEventListener: (event, fn) => listeners.set(event, fn),
     removeEventListener: (event) => listeners.delete(event),
     history: { state: { existing: true } },
   };
   for (const method of ['pushState', 'replaceState']) window.history[method] = (state, title, hash) => {
-    writes.push({ method, hash }); window.location.hash = hash;
+    writes.push({ method, hash }); window.location.hash = new URL(hash, 'https://example.com/annual-report/?lang=en').hash;
     assert.equal(state.existing, true);
   };
   const mount = (hash, mobile = false) => {
@@ -30,13 +30,27 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   };
   let logic = mount('');
   await Promise.resolve();
-  assert.equal(window.location.hash, '#masthead');
+  assert.equal(window.location.hash, '');
   logic.jumpTo('s6');
   await Promise.resolve();
   assert.deepEqual(writes.at(-1), { method: 'pushState', hash: '#bringing-defence-closer' });
   logic.play6(2, 0);
   await Promise.resolve();
   assert.equal(window.location.hash, '#bringing-defence-closer-story-3');
+  logic.jumpTo('top');
+  await Promise.resolve();
+  assert.equal(window.location.hash, '');
+  assert.deepEqual(writes.at(-1), { method: 'pushState', hash: '/annual-report/?lang=en' });
+  // Back to a section, then forward to the clean top URL restores both views.
+  window.location.hash = '#bringing-defence-closer-story-3';
+  listeners.get('popstate')();
+  assert.equal(logic.state.view, 's6');
+  window.location.hash = '';
+  listeners.get('popstate')();
+  assert.equal(logic.state.view, 'top');
+  logic.jumpTo('s6');
+  logic.play6(2, 0);
+  await Promise.resolve();
   logic.componentWillUnmount();
   logic = mount(window.location.hash);
   assert.equal(logic.state.view, 's6');
@@ -84,6 +98,8 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   assert.equal(listeners.size, 0);
   assert.equal(parseRoute('#%invalid'), null);
   assert.equal(parseRoute('#strengthening-bonds-story-6', true).index, 0);
+  assert.equal(routeHash({ view: 'top' }), '');
+  assert.equal(routeHash({ view: 'logo' }), '');
 });
 
 test('both templates expose stable section and screen IDs', () => {

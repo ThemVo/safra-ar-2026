@@ -2449,7 +2449,7 @@ export default function render(v) {
             <p className="enk" style={{ "--d": ".75s", width: "500px", margin: "0", fontSize: "22px", lineHeight: "37px", color: "#FFFFFF" }}>
               From supporting NSmen and their families to strengthening community ties and our collective commitment to defence, SAFRA continues to bring people together through National Service.
             </p>
-            <a className="enk dlb" href="#" onClick={v.noop} style={{ "--d": ".95s", width: "499px", height: "100px", boxSizing: "border-box", display: "flex", alignItems: "center", gap: "22px", padding: "0 30px", borderRadius: "16px", background: "#FFFFFF", textDecoration: "none" }}>
+            <a className="enk dlb" href={import.meta.env.URL_PDF} target="_blank" rel="noopener noreferrer" style={{ "--d": ".95s", width: "499px", height: "100px", boxSizing: "border-box", display: "flex", alignItems: "center", gap: "22px", padding: "0 30px", borderRadius: "16px", background: "#FFFFFF", textDecoration: "none" }}>
               <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" style={{ flex: "none" }}>
                 <defs>
                   <linearGradient id="dlg" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
@@ -2657,7 +2657,7 @@ export default function render(v) {
                 </button>
               </li>
             </ul>
-            <a className="sm-cta" href="#" onClick={v.menuStop}>
+            <a className="sm-cta" href={import.meta.env.URL_PDF} target="_blank" rel="noopener noreferrer">
               <svg className="sm-dlg" width="22" height="20" viewBox="0 0 22 20" aria-hidden="true" style={{ flex: "none", overflow: "visible" }}>
                 <defs>
                   <linearGradient id="smdl" x1="0" y1="0" x2="22" y2="20" gradientUnits="userSpaceOnUse">

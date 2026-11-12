@@ -8,6 +8,7 @@ export const SECTION_IDS = {
 const ALIASES = { 'glance-title': 's3', 't1-title': 's5', 'dc-title': 's6', 'an-title': 's7', 'sb-title': 's8', 'mb-title': 'mb', 'fc-title': 'fc1', 'wc-title': 'wc', 'end-title': 'end' };
 export const screenId = (view, index) => `${SECTION_IDS[view]}-${view === 's3' ? 'panel' : view === 'mb' ? 'card' : 'story'}-${index + 1}`;
 export function routeHash(state) {
+  if (state.view === 'top' || state.view === 'logo') return '';
   const view = state.view === 't2' ? 'fc1' : state.view === 's4' ? 's5' : state.view === 'fc2' ? 'fc1' : state.view;
   let id = SECTION_IDS[view];
   if (!id) return null;

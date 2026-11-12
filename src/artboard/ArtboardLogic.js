@@ -153,12 +153,13 @@ export class ArtboardLogic extends Logic {
       this.urlQueued = false;
       if (!this.urlMounted || this.restoringUrl) return;
       const hash = routeHash({ ...this.state, ...(this.state.view === 'fc1' && this.state.link ? { fcY: CAM.fc1 - this.camNow() } : {}) });
-      if (!hash || hash === window.location.hash) return;
-      const old = parseRoute(window.location.hash, MOBILE);
-      const next = parseRoute(hash, MOBILE);
+      if (hash === null || hash === window.location.hash) return;
+      const old = window.location.hash ? parseRoute(window.location.hash, MOBILE) : { view: 'top' };
+      const next = parseRoute(hash, MOBILE) || { view: 'top' };
       // Continuous motion and automatic intro transitions should not fill browser history.
       const replace = !old || old.view === next.view || (old.view === 'tg' && next.view === 's3');
-      window.history[replace ? 'replaceState' : 'pushState'](window.history.state, '', hash);
+      const url = hash || window.location.pathname + window.location.search;
+      window.history[replace ? 'replaceState' : 'pushState'](window.history.state, '', url);
     });
   }
   restoreUrl() {

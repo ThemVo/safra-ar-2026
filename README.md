@@ -63,6 +63,13 @@ Story photos open a gallery (VIEW ALL cursor).
 
 ## Notes
 
+- `index.html` includes an English report summary, semantic headings and SEO/social
+  descriptions before the entry script. Keep this summary aligned with published
+  page content when copy or figures change. The summary is a `<noscript>` fallback:
+  it appears only when JavaScript is disabled and never flashes during normal load.
+  It is not a substitute for indexable content in the JavaScript-rendered page;
+  Googlebot can execute JavaScript. Metadata remains in the document head.
+- The build keeps the module entry at the end of the body, after the report content.
 - No `<React.StrictMode>`: its dev-only double mount would start the timers twice.
 - Responsive layouts: desktop at 768px and above (1440×900 artboard), mobile below 768px (390×844 artboard), scaled to fit the viewport.
 - Layout selection is automatic; saved preview choices and the former desktop-only flag are no longer used.
@@ -70,17 +77,34 @@ Story photos open a gallery (VIEW ALL cursor).
 
 ## Build asset paths
 
-Set the content URL prefixes in `.env` before running `npm run build`:
+Set URL prefixes in `.env`, `.env.uat`, or `.env.prod` before running
+`npm run build`, `npm run build:u`, or `npm run build:p` respectively:
 
 ```dotenv
 URL_IMAGE="./"
+URL_SVG="./"
 URL_CSS="./"
 URL_JS="./"
+URL_PDF="https://example.com/annual-report.pdf"
 ```
 
-These prefixes apply to images (including story galleries and CSS cursors),
-stylesheets, and JavaScript respectively. The `assets/` folder and filenames
-are appended automatically, so the defaults produce `./assets/...` URLs
-and support hosting the build in a subdirectory. Upload all of `dist/`, keeping
-its folder structure. If you change a prefix, serve the corresponding files
-under that location; the build does not upload or relocate them.
+These prefixes apply to images/videos (including story galleries), SVGs
+(including CSS cursors), stylesheets, and JavaScript respectively. `URL_PDF`
+sets the full download link. Only the filename is appended to each prefix;
+no `assets/` folder is added. For example, `URL_IMAGE="/media/photos"` produces
+`/media/photos/mh-tr.jpg`. Any `assets` segment explicitly set in an env value
+is preserved.
+
+Build files are written into `dist/`, with `index.html` at the root:
+
+- `npm run build:u`: all images, videos, SVGs, CSS, and JS go into `assets/`.
+- `npm run build:p`: SVGs go into `icons/`, images/videos into `imags/`,
+  and CSS/JS into `assets/`.
+- `npm run build`: files stay at the root for the default local build.
+
+Files from `public/assets/` follow the same rules. URL prefixes in env are the
+final hosting directories; output folder names are not appended again.
+The default `./` prefixes
+support hosting the build in a subdirectory. For remote prefixes, upload each
+file to the corresponding configured location. Development continues to serve
+the source images at `/assets/…`.

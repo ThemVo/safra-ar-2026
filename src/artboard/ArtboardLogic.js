@@ -1,11 +1,10 @@
 // Behaviour for the artboard: the camera/view state machine, timers, measuring and every value the markup binds to.
 // Ported unchanged from the prototype; only the class header and module wiring are new.
 import { Logic } from './Logic.js';
-import { MOBILE_INITIATIVES } from './mobileInitiatives.js';
 import { parseRoute, routeHash } from './routes.js';
 
-// Desktop uses its reference composition. Mobile uses the current viewport,
-// with the original 390px artwork as a coordinate reference for the illustrations.
+// Geometry. Desktop: the 1440 × 900 comp. Mobile: a 390 × 844 frame (16px margins) with the same structure,
+// type and spacing scaled down. applyGeo() picks one set when the artboard mounts.
 const FAM = '"Google Sans Flex", "Google Sans", system-ui, sans-serif';
 // Ink boxes measured from the original comp: each line is fitted so its ink spans x0..x1 and sits on `base`.
 const SPEC_D = {
@@ -21,13 +20,9 @@ const TO_D = { text: 'to', x0: 209, base: 558 };
 const HM = 358 / (1287 - 156), hmx = (x) => +(16 + (x - 156) * HM).toFixed(2), hmy = (y) => +(430 + (y - 477) * HM).toFixed(2);
 const SPEC_M = Object.fromEntries(Object.entries(SPEC_D).map(([k, v]) => [k, { ...v, x0: hmx(v.x0), x1: hmx(v.x1), base: hmy(v.base), fs: +(v.fs * HM).toFixed(2) }]));
 const TO_M = { ...TO_D, x0: hmx(TO_D.x0), base: hmy(TO_D.base) };
-// Mobile masthead text boxes from the handover, relative to the 393px reference width.
-const MOBILE_HEADLINE = {
-  t1: [29.88, 326.22, 32], t2: [50.08, 354.22, 48], t3: [159.97, 406.22, 32],
-  t4a: [18, 443.66, 22], t4b: [49.07, 431.18, 40], t4c: [214.46, 443.66, 22], t5: [43.49, 469.78, 44],
-};
-const CAM_D = { logo: 0, top: 0, s2: 0, tg: -918, s3: -918, s4: -1818, s5: -1818, s6: -1818, s7: -1818, s8: -1818, t2: -1818, mb: -1818, fc1: -1818, fc2: -2531, fy: -2718, wc: -2718, nx: -3618, end: -3618 }; // desktop: Clubs & Facilities (fc1) is the L2 page of card 5, scroll-linked from fc1 down to fc2 // '& beyond' (t2) removed: t2 now sits on fc1, the start of the Clubs & Facilities stretch // desktop: Membership (mb) is the L2 page of the Rewarding privileges card
-
+const CAM_D = { logo: 0, top: 0, s2: 0, tg: -918, s3: -918, s4: -1818, s5: -1818, s6: -1818, s7: -1818, s8: -1818, t2: -1818, mb: -1818, fc1: -1818, fc2: -2347.8, fy: -2718, wc: -2718, nx: -3618, lf2: -4518, lf3: -5418, end: -6318 }; // desktop: Clubs & Facilities (fc1) is the L2 page of card 5, scroll-linked from fc1 down to fc2 // '& beyond' (t2) removed: t2 now sits on fc1, the start of the Clubs & Facilities stretch // desktop: Membership (mb) is the L2 page of the Rewarding privileges card
+const FC_H_M = 1440; // mobile Clubs & Facilities is taller than a screen; the rest of the stretch scrolls
+const CAM_M = { logo: 0, top: 0, s2: 0, tg: -844, s3: -844, s4: -1688, s5: -1688, s6: -1688, s7: -1688, s8: -1688, t2: -2532, mb: -2532, fc1: -3376, fc2: -3376 - (FC_H_M - 844), fy: -3376 - FC_H_M, wc: -3376 - FC_H_M, nx: -4220 - FC_H_M, lf2: -5064 - FC_H_M, lf3: -5908 - FC_H_M, end: -6752 - FC_H_M }; // '& beyond' (t2) removed: t2 now sits on mb
 let MOBILE = false, W = 1440, SPEC = SPEC_D, TO = TO_D, CAM = CAM_D;
 let GLANCE_BASE = 1066;
 let GL_FS = 72; // AT A GLANCE type size (small state)
@@ -47,23 +42,13 @@ const MB_OPEN = 422; // Membership (desktop): open card height — 422 − 32 + 
 let MB_STEP = 107; // Membership: how much of each stacked card shows
 let NX_LEFT = [0, 0, 0]; // Looking forward: indicator offset per topic (mobile: the labels run across)
 let FC_RANGE, LINKS;
-let H = 844;
-function applyGeo(mobile, height = 844, width = 390) {
-  H = height;
+function applyGeo(mobile) {
   MOBILE = !!mobile;
   if (MOBILE) {
-    W = width;
-    const ratio = W / 390;
-    SPEC = Object.fromEntries(Object.entries(SPEC_M).map(([key, value]) => [key, { ...value, x0: value.x0 * ratio, x1: value.x1 * ratio, fs: value.fs * ratio, base: H / 2 + (value.base - 422) * ratio }]));
-    TO = { ...TO_M, x0: TO_M.x0 * ratio, base: H / 2 + (TO_M.base - 422) * ratio };
-    // Each stop occupies exactly one viewport; the facilities story keeps its longer scroll range.
-    CAM = { logo: 0, top: 0, s2: 0, tg: -H, s3: -H,
-      s4: -2 * H, s5: -2 * H, s6: -2 * H, s7: -2 * H, s8: -2 * H,
-      t2: -2 * H, mb: -2 * H, fc1: -2 * H, fc2: -2 * H,
-      fy: -3 * H, wc: -3 * H, nx: -3 * H, end: -3 * H };
-    GL_FS = 32; GLANCE_BASE = H + 70; TG_SCALE = 52 / 32; TG_BASE = H + H / 2; BAR_END = H; CUE_X = W / 2;
+    W = 390; SPEC = SPEC_M; TO = TO_M; CAM = CAM_M;
+    GL_FS = 32; GLANCE_BASE = 844 + 92; TG_SCALE = 52 / 32; TG_BASE = 844 + 440; BAR_END = 844; CUE_X = 195;
     S4_FS = { a: +(63 * 0.3105).toFixed(2), b: +(82 * 0.3105).toFixed(2) };
-    TABS_X = [16, 140, 264].map(x => x * W / 390); TABS_W = [110, 110, 110].map(x => x * W / 390); MB_STEP = 56; NX_LEFT = [0, 124, 248];
+    TABS_X = [16, 140, 264]; TABS_W = [110, 110, 110]; MB_STEP = 56; NX_LEFT = [0, 124, 248];
   } else {
     W = 1440; SPEC = SPEC_D; TO = TO_D; CAM = CAM_D;
     GL_FS = 72; GLANCE_BASE = 1066; TG_SCALE = 160 / 72; TG_BASE = 918 + 546; BAR_END = 900; CUE_X = 720;
@@ -77,7 +62,7 @@ function applyGeo(mobile, height = 844, width = 390) {
     z1: MOBILE
       ? { top: CAM.t2, len: CAM.t2 - CAM.fc2, at: [['t2', 0], ['mb', a / 2], ['fc1', a + b / 2]], enter: { s10: 0.35 * a, s15: a + 0.35 * b, s16: a + b + 0.3 * FC_RANGE } }
       : { top: CAM.t2, len: CAM.t2 - CAM.fc2, at: [['t2', 0], ['fc1', a1 / 2]], enter: { s15: 0.35 * a1, s16: a1 + 0.3 * FC_RANGE } },
-    // z2 (wc → Looking forward, continuous) is off while Looking forward is hidden (NX_OFF)
+    z2: { top: CAM.wc, len: c, at: [['wc', 0], ['nx', c / 2]], enter: { s13: 0.35 * c } }
   };
 }
 applyGeo(false);
@@ -85,8 +70,8 @@ const AGM_AT = Date.parse('2026-11-22T14:30:00+08:00'); // 53rd SAFRA AGM start,
 // section 6 stories, in the order given: values, description lines (as laid out), red bar width, photos
 const DC = [{"stats": ["500", "13"], "desc": ["Through NS Experience Camps, families got a", "taste of NS-inspired activities, gaining a deeper", "appreciation of their loved ones’ service."], "bar": 130, "photos": ["./assets/dc4-main.jpg", "./assets/dc4-a2.jpg", "./assets/dc4-b2.jpg"], "alts": ["Participants in life vests sit in an inflatable boat in a swimming pool", "Children and adults assemble a raft frame from white water containers and pipes on a turf court", "Families stretch a green tarp between trees to build a shelter"], "gallery": ["./assets/g1-0.jpg", "./assets/g1-1.jpg", "./assets/g1-2.jpg", "./assets/g1-3.jpg", "./assets/g1-4.jpg", "./assets/g1-5.jpg", "./assets/g1-6.jpg"], "gi": [0, 2, 1]}, {"stats": ["140K"], "desc": ["Be@SAFRA Open Houses brought families", "together to reflect on the SAF's role as they", "enjoyed interactive activities, flight simulators and", "military K9 encounters."], "bar": 260, "photos": ["./assets/dc3-main.jpg", "./assets/dc3-a.jpg", "./assets/dc3-b.jpg"], "alts": ["Parents and children play a giant board game with large red dice on a turf court", "Children play with toy blasters among camouflage tents on a green court", "An adult and child pose in flight suits and helmets against camouflage netting"], "gallery": ["./assets/g2b-0.jpg", "./assets/g2b-1.jpg", "./assets/g2b-2.jpg", "./assets/g2b-3.jpg", "./assets/g2b-4.jpg", "./assets/g2b-5.jpg"], "gi": [0, 2, 1]}, {"stats": ["20K"], "desc": ["Commitment to Defence (C2D)", "Ambassadors from the SAF Veterans’ League", "shared real-life experiences, reinforcing the", "importance of a strong defence."], "bar": 390, "photos": ["./assets/dc1-main.jpg", "./assets/dc1-a2.jpg"], "alts": ["A speaker addresses pupils seated in a classroom", "Service personnel seated outdoors listen to standing speakers"], "gallery": ["./assets/g3-0.jpg", "./assets/g3-1.jpg"], "gi": [0, 1]}, {"stats": ["40K"], "desc": ["Total Defence Day commemorative activities", "equipped participants with practical skills through", "hands-on demonstrations and interactive games."], "bar": 520, "photos": ["./assets/dc2-main.jpg", "./assets/dc2-a2.jpg", "./assets/dc2-b2.jpg"], "alts": ["Children practise CPR on training manikins with instructors", "Emergency responders demonstrate a rescue to an audience under a sheltered walkway", "Boys look into a camouflage field pack held open by an instructor"], "gallery": ["./assets/g4-0.jpg", "./assets/g4-1.jpg", "./assets/g4-2.jpg", "./assets/g4-3.jpg"], "gi": [0, 1, 2]}]; // red bar = story progress: 1/4 … 4/4 of the panel
 const DC_WORDS = ['BRINGING', 'DEFENCE', 'CLOSER', 'TO', 'THE', 'COMMUNITY'];
-// section 7: Appreciating national servicemen (four stories)
-const DC7 = [{"stats": ["35K", "460"], "desc": ["Through the Appreciating NSmen Art Jam", "initiative, preschoolers learnt about national", "servicemen's contributions and made", "personalised gifts to thank their fathers for", "defending Singapore."], "bar": 130, "photos": ["./assets/an1-main3.jpg", "./assets/an1-kids2.jpg", "./assets/an1-card2.jpg"], "alts": ["A preschool teacher shows the class photos of servicemen", "Preschoolers cut out and decorate thank-you cards at a table", "A preschooler writes a thank-you card with a family photo for an NSman father"], "gallery": ["./assets/an1g-0.jpg", "./assets/an1g-1.jpg", "./assets/an1g-2.jpg", "./assets/an1g-3.jpg"], "gi": [0, 1, 2]}, {"stats": ["145", "44"], "desc": ["The Appreciating NSmen Video Competition saw", "students using creative storytelling to highlight the", "contributions of national servicemen and show", "their support."], "bar": 260, "photos": ["./assets/an2-v1.jpg", "./assets/an2-v2.jpg", "./assets/an2-v3.jpg", "./assets/an2-v4.jpg"], "alts": ["Video still: an animated serviceman gives a thumbs-up at a hawker stall offering 30% off to all NSmen", "Video still: a young serviceman shares a home-cooked meal with his family", "Video still: paper-craft figures in different service uniforms stand in front of the Singapore skyline", "Video still: cartoon characters representing different services stand side by side"], "gallery": ["./assets/an2-v1.jpg", "./assets/an2-v2.jpg", "./assets/an2-v3.jpg", "./assets/an2-v4.jpg"], "videos": ["./assets/an2-v1-video.mp4", "./assets/an2-v2-video.mp4", "./assets/an2-v3-video.mp4", "./assets/an2-v4-video.mp4"], "gi": [0, 1, 2, 3]}, {"stats": ["180", "240"], "desc": ["A wide range of appreciation deals for national", "servicemen, ranging from daily essentials to", "recreation, were secured through collaborations", "with merchants islandwide."], "bar": 390, "photos": ["./assets/an3-bk.jpg", "./assets/an3-popeyes.jpg", "./assets/an3-klook.jpg", "./assets/an3-spa.jpg"], "alts": ["Appreciating NSmen Deals: free Whopper at Burger King", "Appreciating NSmen Deals: $6 Hormat SG60 bundle at Popeyes", "Appreciating NSmen Deals: $30 off hotel bookings on Klook", "Appreciating NSmen Deals: 50% off all services at The Jungle Spa and The Upsara Spa"], "gallery": ["./assets/an3g-0.jpg", "./assets/an3g-1.jpg", "./assets/an3g-2.jpg", "./assets/an3g-3.jpg", "./assets/an3g-4.jpg", "./assets/an3g-5.jpg", "./assets/an3g-6.jpg", "./assets/an3g-7.jpg", "./assets/an3g-8.jpg", "./assets/an3g-9.jpg", "./assets/an3g-10.jpg", "./assets/an3g-11.jpg"], "gi": [0, 3, 5, 7]}, {"stats": ["15K", "15"], "desc": ["SAFRA gave away complimentary snacks to", "national servicemen at various SAF camps, SAFRA", "clubs and events."], "bar": 520, "photos": ["./assets/an4-main.jpg", "./assets/an4-truck.jpg", "./assets/an4-group.jpg"], "alts": ["National servicemen in PT kit hold up complimentary Old Chang Kee snacks", "A serviceman picks up a snack at the Canadian 2 for 1 Pizza food truck", "National servicemen with snacks in front of a food truck and an Appreciating NSmen banner"], "gallery": ["./assets/an4s-0.jpg", "./assets/an4s-1.jpg", "./assets/an4s-2.jpg", "./assets/an4s-3.jpg", "./assets/an4s-4.jpg"], "gi": [2, 0, 4]}];
+// section 7: Appreciating national servicemen (one story so far; the red bar shows 1 of 4)
+const DC7 = [{"stats": ["35K", "460"], "desc": ["Through the Appreciating NSmen Art Jam", "initiative, preschoolers learnt about national", "servicemen's contributions and made", "personalised gifts to thank their fathers for", "defending Singapore."], "bar": 130, "photos": ["./assets/an1-main3.jpg", "./assets/an1-kids2.jpg", "./assets/an1-card2.jpg"], "alts": ["A preschool teacher shows the class photos of servicemen", "Preschoolers cut out and decorate thank-you cards at a table", "A preschooler writes a thank-you card with a family photo for an NSman father"], "gallery": ["./assets/an1g-0.jpg", "./assets/an1g-1.jpg", "./assets/an1g-2.jpg", "./assets/an1g-3.jpg"], "gi": [0, 1, 2]}, {"stats": ["145", "44"], "desc": ["The Appreciating NSmen Video Competition saw", "students using creative storytelling to highlight the", "contributions of national servicemen and show", "their support."], "bar": 260, "photos": ["./assets/an2-v1.jpg", "./assets/an2-v2.jpg", "./assets/an2-v3.jpg", "./assets/an2-v4.jpg"], "alts": ["Video: Gratitude In Bloom (an animated serviceman gives a thumbs-up at a hawker stall offering 30% off to all NSmen)", "Video: Serving Together (a young serviceman shares a home-cooked meal with his family)", "Video: Once Upon a Time (paper-craft figures in different service uniforms stand in front of the Singapore skyline)", "Video: The Strength Within (cartoon characters representing different services stand side by side)"], "gallery": ["./assets/an2-v1.jpg", "./assets/an2-v2.jpg", "./assets/an2-v3.jpg", "./assets/an2-v4.jpg"], "videos": ["./assets/gratitude-in-bloom.mp4", "./assets/serving-together.mp4", "./assets/once-upon-a-time.mp4", "./assets/the-strength-within.mp4"], "gi": [0, 1, 2, 3]}, {"stats": ["180", "240"], "desc": ["A wide range of appreciation deals for national", "servicemen, ranging from daily essentials to", "recreation, were secured through collaborations", "with merchants islandwide."], "bar": 390, "photos": ["./assets/an3-bk.jpg", "./assets/an3-popeyes.jpg", "./assets/an3-klook.jpg", "./assets/an3-spa.jpg"], "alts": ["Appreciating NSmen Deals: free Whopper at Burger King", "Appreciating NSmen Deals: $6 Hormat SG60 bundle at Popeyes", "Appreciating NSmen Deals: $30 off hotel bookings on Klook", "Appreciating NSmen Deals: 50% off all services at The Jungle Spa and The Upsara Spa"], "gallery": ["./assets/an3g-0.jpg", "./assets/an3g-1.jpg", "./assets/an3g-2.jpg", "./assets/an3g-3.jpg", "./assets/an3g-4.jpg", "./assets/an3g-5.jpg", "./assets/an3g-6.jpg", "./assets/an3g-7.jpg", "./assets/an3g-8.jpg", "./assets/an3g-9.jpg", "./assets/an3g-10.jpg", "./assets/an3g-11.jpg"], "gi": [0, 3, 5, 7]}, {"stats": ["15K", "15"], "desc": ["SAFRA gave away complimentary snacks to", "national servicemen at various SAF camps, SAFRA", "clubs and events."], "bar": 520, "photos": ["./assets/an4-main.jpg", "./assets/an4-truck.jpg", "./assets/an4-group.jpg"], "alts": ["National servicemen in PT kit hold up complimentary Old Chang Kee snacks", "A serviceman picks up a snack at the Canadian 2 for 1 Pizza food truck", "National servicemen with snacks in front of a food truck and an Appreciating NSmen banner"], "gallery": ["./assets/an4s-0.jpg", "./assets/an4s-1.jpg", "./assets/an4s-2.jpg", "./assets/an4s-3.jpg", "./assets/an4s-4.jpg"], "gi": [2, 0, 4]}];
 const AN_WORDS = ['APPRECIATING', 'NATIONAL', 'SERVICEMEN'];
 // photos each topic card flips through on hover (from its own section)
 const CARD_IMGS = {
@@ -94,16 +79,15 @@ const CARD_IMGS = {
   '#an-title': ['./assets/an1-main.jpg', './assets/an1-kids.jpg', './assets/an1-card.jpg'],
   '#sb-title': ['./assets/sb1-big.jpg', './assets/sb1-a.jpg', './assets/sb1-b.jpg']
 };
-// section 8: Strengthening bonds (six stories)
+// section 8: Strengthening bonds (one story so far)
 const DC8 = [{"stats": ["52K"], "desc": ["SAFRA’s National Day celebrations at Marina Bay", "and across all SAFRA clubs brought loved ones", "together for the live screening of the NDP, live", "performances and nostalgic games."], "bar": 86.67, "photos": ["./assets/sb1-main.jpg", "./assets/sb1-crowd.jpg", "./assets/sb1-mascot.jpg"], "alts": ["A family smiles in front of red fireworks at a National Day celebration", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["./assets/sb1g-0.jpg", "./assets/sb1g-1.jpg", "./assets/sb1g-2.jpg", "./assets/sb1g-3.jpg", "./assets/sb1g-4.jpg"], "gi": [3, 1, 4]}, {"stats": ["1.2K", "420"], "desc": ["SG60 SAFRA Family Fiesta brought families", "together for fun-filled activities, including the", "SAFRA Diaper Dash and sing-along sessions with", "their favourite Pororo & Friends characters."], "bar": 173.33, "photos": ["./assets/sb2-main.jpg", "./assets/sb2-race.jpg", "./assets/sb2-dash2.jpg"], "alts": ["Children pose with Pororo & Friends characters at the SG60 SAFRA Family Fiesta", "Babies and toddlers race across a colourful mat as families cheer at the SAFRA Diaper Dash", "Parents and toddlers holding Pororo plush toys wait at the start of the SAFRA Diaper Dash"], "gallery": ["./assets/sb2s-0.jpg", "./assets/sb2s-1.jpg", "./assets/sb2s-2.jpg"], "gi": [2, 1, 0]}, {"stats": ["637", "52K"], "desc": ["Cohesion events were organised for SAF NS units", "at various SAFRA clubs and SAF camps, featuring", "a wide range of activities such as archery tag,", "bowling, inflatable games, water telematches and", "various sports competitions."], "bar": 260, "photos": ["./assets/sb3-main.jpg", "./assets/sb3-archery.jpg", "./assets/sb3-team.jpg"], "alts": ["National servicemen play human foosball on an inflatable pitch", "National servicemen in face masks pose with archery tag bows", "An NS unit poses for a team photo after a football match"], "gallery": ["./assets/sb3g-0.jpg", "./assets/sb3g-1.jpg", "./assets/sb3g-2.jpg", "./assets/sb3g-3.jpg", "./assets/sb3g-4.jpg", "./assets/sb3g-5.jpg", "./assets/sb3g-6.jpg"], "gi": [2, 0, 5]}, {"stats": ["1.2K"], "desc": ["SAFRA Youth Fiesta brought youths together to", "compete in the Ultimate Frisbee Tournament", "and indulge in Japanese pop culture at the", "DoujinFes Fair and Hololive Official Card Game", "community workshops."], "bar": 346.67, "photos": ["./assets/sb4-main.jpg", "./assets/sb4-cosplay.jpg", "./assets/sb4-frisbee.jpg"], "alts": ["Youths compete in the Ultimate Frisbee Tournament at SAFRA Youth Fiesta", "Cosplayers at the DoujinFes Fair", "A player throws a frisbee past a defender during the Ultimate Frisbee Tournament"], "gallery": ["./assets/sb4g-0.jpg", "./assets/sb4g-1.jpg", "./assets/sb4g-2.jpg"], "gi": [1, 2, 0]}, {"stats": ["430"], "desc": ["Soundbyte Beer Music Play brought national", "servicemen and their friends together to enjoy live", "band performances, high-energy DJ sets, games", "and free flow of drinks."], "bar": 433.33, "photos": ["./assets/sb5-main.jpg", "./assets/sb5-hall.jpg", "./assets/sb5-game.jpg"], "alts": ["Guests dance with their arms raised at Soundbyte Beer Music Play", "A packed hall of guests raises their drinks at Soundbyte Beer Music Play", "Friends play an arcade button game at Soundbyte Beer Music Play"], "gallery": ["./assets/sb5g-0.jpg", "./assets/sb5g-1.jpg", "./assets/sb5g-2.jpg"], "gi": [0, 1, 2]}, {"stats": ["5.5K", "$290K"], "desc": ["SAFRA Swim for Hope rallied the community to", "swim for charity and raise funds for the less", "privileged and those in need."], "bar": 520, "photos": ["./assets/sb6-main.jpg", "./assets/sb6-pool.jpg"], "alts": ["Organisers and partners present a S$290,000 cheque at SAFRA Swim for Hope", "Participants swim for charity at SAFRA Swim for Hope"], "gallery": ["./assets/sb6g-0.jpg", "./assets/sb6g-1.jpg"], "gi": [0, 1]}];
-export const STORY_DATA = { 6: DC, 7: DC7, 8: DC8 };
 // section 10: membership categories
 const NX_TABS = ['Bringing defence closer', 'Creating better spaces', 'Making visits seamless'];
 const MB_TABS = ['FOOD & GROCERIES', 'EDUCATION', 'MOVIES & LIVE ENTERTAINMENT', 'TRAVEL, STAYCATIONS & LOCAL ATTRACTIONS'];
 // how far along the page each view is (views off the main ORDER sit beside their neighbours)
 const rankOf = (v) => ((v === 'mb' || v === 'fc1' || v === 'fc2') && !MOBILE ? 4 : RANK[v]); // desktop: Membership and Clubs & Facilities are L2 pages like s6–s8
 const linkOf = (v) => Object.keys(LINKS).find((k) => LINKS[k].at.some(([x]) => x === v));
-const RANK = { logo: -1, top: 0, s2: 1, tg: 2, s3: 2, s5: 3, s6: 4, s7: 4, s8: 4, t2: 5, mb: 6, fc1: 6, fc2: 6, fy: 7, wc: 8, nx: 9, end: 10 };
+const RANK = { logo: -1, top: 0, s2: 1, tg: 2, s3: 2, s5: 3, s6: 4, s7: 4, s8: 4, t2: 5, mb: 6, fc1: 6, fc2: 6, fy: 7, wc: 8, nx: 9, lf2: 9.5, lf3: 9.7, end: 10 };
 const SCR = { cps: 60, settle: 0.3, set: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%#_' };
 const SLIDE = { dur: 0.7, stag: 0.08, dist: 24 }; // description lines: slide-in timing (s) and travel (px)
 const dcSeconds = (d) => Math.max(0.8, 1.25, (d.desc.length - 1) * SLIDE.stag + SLIDE.dur);
@@ -130,7 +114,7 @@ const REPLAY_DONE = 5100; // logo → masthead: the headline's last line lands (
 export class ArtboardLogic extends Logic {
   constructor(props) {
     super(props);
-    applyGeo(props.mobile, props.mobileHeight, props.mobileWidth);
+    applyGeo(props.mobile);
     const sv = viewOf(props.startView);
     this.state = { phase: 'run', mx: 0, my: 0, p: 0, lay: null, view: sv, s2: sv !== 'top', s3: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 2, s4: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 3, s6: sv === 's6', step6: 0, t6: null, s7: sv === 's7', step7: 0, t7: null, s8: sv === 's8', step8: 0, t8: null, s9: sv === 't2' || sv === 'mb', s10: sv === 'mb', mbTab: MOBILE ? 0 : -1, mbOrd: [3, 2, 1, 0], mbMv: null, lb: null, hx: null, hy: null, ready: false, now: Date.now(), step: 0, fresh: sv === 's3', cdP: sv === 'top' ? 0 : 1 };
     this.played2 = sv !== 'top';
@@ -171,9 +155,8 @@ export class ArtboardLogic extends Logic {
       const hash = routeHash({ ...this.state, ...(this.state.view === 'fc1' && this.state.link ? { fcY: CAM.fc1 - this.camNow() } : {}) });
       if (hash === null || hash === window.location.hash) return;
       const old = window.location.hash ? parseRoute(window.location.hash, MOBILE) : { view: 'top' };
-      const next = parseRoute(hash, MOBILE) || { view: 'top' };
       // Continuous motion and automatic intro transitions should not fill browser history.
-      const replace = !old || old.view === next.view || (old.view === 'tg' && next.view === 's3');
+      const replace = !old || window.location.hash.split('?')[0] === hash.split('?')[0] || (old.view === 'tg' && this.state.view === 's3');
       const url = hash || window.location.pathname + window.location.search;
       window.history[replace ? 'replaceState' : 'pushState'](window.history.state, '', url);
     });
@@ -184,7 +167,7 @@ export class ArtboardLogic extends Logic {
     try {
       const to = route?.view || 'top';
       this.jumpTo(to);
-      const patch = { lb: null, ready: true, s3: to !== 'top', s4: to !== 'top',
+      const patch = { link: null, linkY: 0, z2top: false, z2end: false, lb: null, ready: true, curOn: true, s3: to !== 'top', s4: to !== 'top',
         step: 0, fresh: false, hd: to === 'tg' || to === 's3', mbTab: MOBILE ? 0 : -1, mbOrd: [3, 2, 1, 0] };
       if (to === 's3') patch.step = route.index ?? 0;
       if (to === 'mb' && route.index != null) {
@@ -193,6 +176,10 @@ export class ArtboardLogic extends Logic {
         while (ord[3] !== route.index) ord.unshift(ord.pop());
         patch.mbOrd = ord;
       }
+      for (const timer of ['tgT', 'tgA']) clearTimeout(this[timer]);
+      if (to === 'lf2') { patch.s17 = true; patch.lf2s = route.index ?? 0; }
+      if (to === 'lf3') { patch.s18 = true; patch.lf3s = route.index ?? 0; }
+      if (to === 'nx') { patch.s13 = true; patch.lf1 = route.index != null; }
       if (to === 'wc') patch.s12 = true;
       if (to === 'end') patch.s14 = true;
       if (to === 'fc1') { patch.fcY = Math.min(FC_RANGE, route.offset); patch.s16 = patch.fcY > 0; this.fcPos = patch.fcY; }
@@ -208,31 +195,55 @@ export class ArtboardLogic extends Logic {
   }
   // leaving section 6/7 for the cards: hold the entered card navy and quiet until the camera has pulled back out
   leaveTo5(from) { clearTimeout(this.lvT); this.setState({ lv: from }); this.lvT = setTimeout(() => this.setState({ lv: null }), 1500); }
-  // Only the long connector extension waits for the camera to settle (b3ok).
-  // The viewport clip opens immediately so the moving connector stays continuous.
+  // At a glance: once the camera has settled there, let the gradient connector reach up through the band above a
+  // letterboxed artboard (b3ok); never during the move, so the extension can't cross the masthead
+  // Looking forward lists: one red indicator per list that glides to the open story (eases toward it every frame while the stories open/close)
+  barLoop() {
+    if (this.barRaf) return;
+    const tick = () => {
+      if (!['nx', 'lf2', 'lf3', 'end'].includes(this.state.view)) { this.barRaf = 0; return; }
+      const root = this.findRoot && this.findRoot();
+      if (root) for (const list of root.querySelectorAll('.lf2l, .lf3s')) {
+        const bar = list.querySelector(':scope > .lfbar'), on = list.querySelector(':scope > .lf2i.on'); if (!bar || !on) continue;
+        // the bar sits on the open story and grows from its top down to its bottom whenever the open story changes
+        const ty = on.offsetTop, th = on.offsetHeight;
+        if (bar._on !== on) { bar._t = bar._on ? performance.now() : -1e9; bar._on = on; }
+        const rs = this.barReset; // arriving at the section: its indicator grows in too, once the section has glided in
+        if (rs && list.closest(rs.sel)) { bar._t = rs.t; bar._on = on; this.barReset = null; }
+        const x = Math.max(0, Math.min(1, (performance.now() - bar._t) / 700)), q = 1 - Math.pow(1 - x, 3);
+        bar.style.transform = `translateY(${ty}px)`; bar.style.height = `${(th * q).toFixed(2)}px`;
+      }
+      this.barRaf = requestAnimationFrame(tick);
+    };
+    this.barRaf = requestAnimationFrame(tick);
+  }
   setState(update, cb) {
-    const was = this.state.view; super.setState(update, cb); const now = this.state.view;
+    const was = this.state.view, s13w = this.state.s13, lf1w = this.state.lf1, s15w = this.state.s15; super.setState(update, cb); const now = this.state.view;
     this.queueUrlSync();
+    // Clubs & Facilities: once the 1st item has fully come in (cards land by ~1.95s), the 2nd comes in by itself — no need to scroll to it
+    if (this.state.s15 && !s15w && !this.state.s16) { clearTimeout(this.fc2T); this.fc2T = setTimeout(() => { if (this.state.s15 && !this.state.s16) super.setState({ s16: true }); }, 1200); }
+    if (this.state.s13 && !s13w) this.nxReady = Date.now() + 1500; // Looking forward's text animates in (title .55s + body .7s delay, .75s each)
+    if (this.state.lf1 && !lf1w) this.nxReady = Date.now() + 2000; // the circle, then the 01 panel's three lines (from .85s, .12s apart, .8s each)
+    if (now !== was && (now === 'lf2' || now === 'lf3')) this.barReset = { sel: now === 'lf2' ? '.s17' : '.s18', t: performance.now() + 450 };
+    if (['nx', 'lf2', 'lf3', 'end'].includes(now)) this.barLoop();
+    requestAnimationFrame(() => this.xclipToDom());
     if (now !== was && now === 's5' && !this.played5) { this.played5 = true; super.setState({ i4: true }); clearTimeout(this.i4T); this.i4T = setTimeout(() => super.setState({ i4: false }), 4500); }
     if (now !== was) {
       const at = (v) => v === 'tg' || v === 's3';
-      // Returning from Topics: keep the connector fragments out of the moving
-      // viewport until At a glance has landed.
-      super.setState({ glanceReturn: was === 's5' && at(now) });
       clearTimeout(this.b3T);
       if (!(at(now) && at(was)) && this.state.b3ok) super.setState({ b3ok: false });
-      if (at(now) && !this.state.b3ok) this.b3T = setTimeout(() => { if (at(this.state.view)) super.setState({ b3ok: true, glanceReturn: false }); }, 950);
+      if (at(now) && !this.state.b3ok) this.b3T = setTimeout(() => { if (at(this.state.view)) super.setState({ b3ok: true }); }, 950);
+      // progress bar: keep its strip at the screen's bottom edge visible through the move away, so it rides off with the section
+      clearTimeout(this.swT);
+      if (at(now)) { if (!this.state.swk) super.setState({ swk: true }); }
+      else if (at(was)) this.swT = setTimeout(() => { if (!at(this.state.view)) super.setState({ swk: false }); }, 1000);
+      // back up from Our impact: a gentler camera move, and the cards travel up with the page instead of fading out first
+      clearTimeout(this.up5T);
+      if (was === 's5' && at(now)) { super.setState({ up5: true }); this.up5T = setTimeout(() => super.setState({ up5: false }), 1100); }
+      else if (this.state.up5) super.setState({ up5: false });
     }
   }
   componentDidUpdate(prev, prevState) {
-    if (this.props.mobile && (prev.mobileHeight !== this.props.mobileHeight || prev.mobileWidth !== this.props.mobileWidth)) {
-      const linked = this.state.link;
-      const progress = linked ? this.state.linkY / LINKS[linked].len : 0;
-      applyGeo(true, this.props.mobileHeight, this.props.mobileWidth);
-      if (linked) this.state.linkY = progress * LINKS[linked].len;
-      this.measure();
-      this.camToDom();
-    }
     if (this.stkCard && this.state.view !== 's5') this.cardStack(null);
     if (prevState && prevState.view !== this.state.view && this.state.view === 't2') { this.hvLayout(); setTimeout(() => this.hvLayout(), 400); }
     // leaving section 6/7 for the cards: hold the entered card navy until the camera has pulled back out
@@ -296,7 +307,7 @@ export class ArtboardLogic extends Logic {
       });
     });
   }
-  componentWillUnmount() { this.urlMounted = false; window.removeEventListener('popstate', this.onUrlChange); window.removeEventListener('hashchange', this.onUrlChange); clearInterval(this.stkT); this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8); }
+  componentWillUnmount() { this.urlMounted = false; window.removeEventListener('popstate', this.onUrlChange); window.removeEventListener('hashchange', this.onUrlChange); clearInterval(this.stkT); this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); }
   // Section 6: play a story's entrance (photos rise into their frames, numbers count, description decodes, red bar fills)
   play6(n, delay, hold) {
     if (this.raf6) cancelAnimationFrame(this.raf6);
@@ -341,23 +352,37 @@ export class ArtboardLogic extends Logic {
     if (Math.abs(sc - (this.state.mbSc ?? 1)) > 0.002) this.setState({ mbSc: sc });
   }
   mbTo(t) {
-    // accordion: tap a card to open it (the open one folds shut), tap the open card again to close it;
-    // the content height animates, and the stack scrolls back so it sits from the top
-    const cur = this.state.mbTab ?? -1, next = t === cur ? -1 : t;
-    const box = (i) => document.querySelector(`.s10 .mbs:nth-child(${i + 1}) .mbc`);
-    const a = cur >= 0 ? box(cur) : null, b = next >= 0 ? box(next) : null;
-    if (a) a.style.height = a.offsetHeight + 'px';
-    if (b) b.style.height = '0px';
-    if (a || b) void (a || b).offsetHeight;
-    clearTimeout(this.mbHT);
-    this.setState({ mbTab: next }, () => requestAnimationFrame(() => {
-      if (a) a.style.height = '0px';
-      if (b) b.style.height = b.scrollHeight + 'px';
-      this.mbHT = setTimeout(() => { if (a) a.style.height = ''; if (b) b.style.height = ''; }, 560);
-      const sc = document.querySelector('.s10 .mbsc'); if (sc && next >= 0) sc.scrollTo({ top: 0, behavior: 'smooth' });
-    }));
+    if (!MOBILE) {
+      // accordion: tap a card to open it (the open one folds shut), tap the open card again to close it;
+      // the content height animates, and the stack scrolls back so it sits from the top
+      const cur = this.state.mbTab ?? -1, next = t === cur ? -1 : t;
+      const box = (i) => document.querySelector(`.s10 .mbs:nth-child(${i + 1}) .mbc`);
+      const a = cur >= 0 ? box(cur) : null, b = next >= 0 ? box(next) : null;
+      if (a) a.style.height = a.offsetHeight + 'px';
+      if (b) b.style.height = '0px';
+      if (a || b) void (a || b).offsetHeight;
+      clearTimeout(this.mbHT);
+      this.setState({ mbTab: next }, () => requestAnimationFrame(() => {
+        if (a) a.style.height = '0px';
+        if (b) b.style.height = b.scrollHeight + 'px';
+        this.mbHT = setTimeout(() => { if (a) a.style.height = ''; if (b) b.style.height = ''; }, 560);
+        const sc = document.querySelector('.s10 .mbsc'); if (sc && next >= 0) sc.scrollTo({ top: 0, behavior: 'smooth' });
+      }));
+      return;
+    }
+    const ord = this.state.mbOrd || [3, 2, 1, 0];
+    let steps = 3 - ord.indexOf(t);
+    if (steps <= 0 || this.mbBusy) return;
+    this.mbBusy = true;
+    const step = () => {
+      const o = this.state.mbOrd || [3, 2, 1, 0], n = [o[3], o[0], o[1], o[2]];
+      this.setState({ mbOrd: n, mbTab: n[3], mbMv: o[3] });
+      steps--;
+      clearTimeout(this.mbT);
+      this.mbT = setTimeout(() => { this.setState({ mbMv: null }); if (steps > 0) step(); else this.mbBusy = false; }, steps > 0 ? 300 : 560);
+    };
+    step();
   }
-
   // While AT A GLANCE scales down, the connector is trimmed so it never runs past the top of the L;
   // scaling back up lets it reach up to the masthead again.
   arriveFy() {
@@ -369,7 +394,7 @@ export class ArtboardLogic extends Logic {
   }
   // Looking forward: the section holds still while the right column scrolls; at the end of a topic's
   // content the indicator moves to the next label (and back up at the top); past the last/first topic the page moves on.
-  nxEl() { try { return document.querySelector('.mh .nxs'); } catch (err) { return null; } }
+  nxEl() { try { return document.querySelector('.mh .lf3s'); } catch (err) { return null; } } // the scrolling column (03 Supporting NSmen's needs)
   nxMax(el) { return Math.max(0, el.scrollHeight - el.clientHeight); }
   nxPin() { return 0; }
   nxFade() {}
@@ -390,20 +415,77 @@ export class ArtboardLogic extends Logic {
     this.setState({ nxTab: k });
     requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; el.style.scrollBehavior = 'auto'; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = at === 'end' ? this.nxMax(el) : 0; this.nxPos = el.scrollTop; this.nxReveal(el); el.style.scrollBehavior = ''; });
   }
+  // "03 Supporting NSmen's needs": the left column scrolls (the photo stays put); at either end the page moves on.
+  lf3Enter(dir) {
+    this.nxPos = null; this.nxEdge = Date.now(); this.setState({ lf3s: dir > 0 ? 0 : 2 });
+    requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = dir > 0 ? 0 : this.nxMax(el); });
+  }
+  lf3Step(k, at) {
+    this.lockUntil = Date.now() + 950; this.nxEdge = Date.now(); this.nxPos = null; this.l3Busy = false;
+    if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; }
+    this.setState({ lf3s: k });
+    const el = this.nxEl(); if (!el) return;
+    // the newly opened story glides from where it is on screen to the top of the list while the others close —
+    // no jump: each frame the column is scrolled so the story's top follows one eased path to its final place (same 0.75s curve)
+    const items = el.querySelectorAll(':scope > .lf2i'), tgt = items[k]; if (!tgt) return;
+    const s0 = el.scrollTop, p0 = tgt.offsetTop - s0, t0 = performance.now(), D = 750;
+    // where the opened story will finally sit (scroll 0): its top minus the body of any open story above it, which is closing
+    // = the closed heights of the stories above it: top padding (none on the first) + title + bottom padding
+    let pf = 0;
+    for (const it of items) { if (it === tgt) break; const h = it.querySelector(':scope > .lf2t'); pf += (it === items[0] ? 0 : (MOBILE ? 12 : 16)) + (h ? h.offsetHeight : 0) + (MOBILE ? 0 : 16); }
+    // room below while it runs, so the shrinking column never forces its scroll (that forced shift was the jump)
+    if (el.dataset.pb0 === undefined) el.dataset.pb0 = el.style.paddingBottom; el.style.paddingBottom = `calc(${el.dataset.pb0 || '0px'} + 900px)`;
+    const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+    const pin = () => {
+      const e = this.nxEl(); if (!e) return;
+      const x = Math.min(1, (performance.now() - t0) / D), q = ease(x);
+      const o = tgt.offsetTop, oNext = o + (o - (pin.o ?? o)); pin.o = o; // the layout runs a frame ahead of this read: use where it will be
+      e.scrollTop = at === 'end' ? this.nxMax(e) : Math.min(s0, Math.max(0, oNext - (p0 + (pf - p0) * q))); // never scrolls past where it started (no lift when it was already at the top)
+      if (x < 1) requestAnimationFrame(pin); else { e.style.paddingBottom = e.dataset.pb0 || ''; delete e.dataset.pb0; if (at !== 'end') e.scrollTop = 0; }
+    };
+    requestAnimationFrame(pin);
+  }
+  lf3Wheel(dy, target) {
+    if (this.state.view !== 'lf3' || this.state.lb) return false;
+    const el = this.nxEl(); if (!el) return false;
+    const now = Date.now(), streak = now - (this.l3Last || 0) < 160; this.l3Last = now;
+    if (this.lockUntil && now < this.lockUntil) return true;
+    if (!streak) this.l3Busy = false; // a fresh gesture
+    // over the column itself the browser scrolls it natively (smooth, trackpad-precise) — only follow along; elsewhere scroll it ourselves
+    const native = !MOBILE && target && el.contains(target);
+    if (native && this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; }
+    const max = this.nxMax(el), pos = native ? el.scrollTop : (this.nxPos ?? el.scrollTop);
+    if (native) this.nxPos = null;
+    if (dy > 0 && pos < max - 1) { if (!native) this.nxGo(el, Math.min(max, pos + dy)); this.nxEdge = now; this.l3Busy = true; return true; }
+    if (dy < 0 && pos > 1) { if (!native) this.nxGo(el, Math.max(0, pos + dy)); this.nxEdge = now; this.l3Busy = true; return true; }
+    if (this.l3Busy || (streak && now - (this.nxEdge || 0) < 900)) return true; // the gesture that scrolled the column to its end never also moves the page: that takes a fresh one
+    this.nxPos = null;
+    const k = this.state.lf3s || 0; // then on to the next / previous story (Enhanced experiences ⇄ Upgrading of SAFRA Jurong ⇄ New SAFRA Bayshore)
+    if (dy > 0 && k < 2) { this.lf3Step(k + 1, 'top'); return true; }
+    if (dy < 0 && k > 0) { this.lf3Step(k - 1, 'top'); return true; } // back up: the previous story opens from its top
+    return false;
+  }
+  // "02 Strengthening commitment to defence": scroll steps between its two stories (NS Experience Camps → FitX Challenge → Commemorating NS60 → More volunteering opportunities), then moves on.
+  lf2Wheel(dy) {
+    if (this.state.view !== 'lf2' || this.state.lb) return false;
+    const now = Date.now(), streak = now - (this.l2Last || 0) < 160; this.l2Last = now;
+    if (this.lockUntil && now < this.lockUntil) return true;
+    if (streak && now - (this.l2Edge || 0) < 1400) return true;
+    const k = this.state.lf2s || 0;
+    if (dy > 0 && k < 3) { this.lockUntil = now + 900; this.l2Edge = now; this.setState({ lf2s: k + 1 }); return true; }
+    if (dy < 0 && k > 0) { this.lockUntil = now + 900; this.l2Edge = now; this.setState({ lf2s: k - 1 }); return true; }
+    return false;
+  }
+  // Looking forward has two steps on the spot: the intro, then the "01" panel the dark circle spreads out to reveal.
   nxWheel(dy) {
     if (this.state.view !== 'nx' || this.state.lb || this.state.link) return false;
-    const now = Date.now();
+    const now = Date.now(), streak = now - (this.nxLast || 0) < 160; this.nxLast = now;
     if (this.lockUntil && now < this.lockUntil) return true;
-    const el = this.nxEl(); if (!el) return false;
-    const max = this.nxMax(el), k = this.state.nxTab || 0, min = k > 0 ? this.nxPin(el) : 0;
-    const streak = now - (this.nxLast || 0) < 160; this.nxLast = now; // a continuing wheel/trackpad stream
-    const pos = this.nxPos ?? el.scrollTop;
-    if (dy > 0 && pos < max - 1) { this.nxGo(el, Math.min(max, pos + dy)); this.nxEdge = now; return true; }
-    if (dy < 0 && pos > min + 1) { this.nxGo(el, Math.max(min, pos + dy)); this.nxEdge = now; return true; }
-    if (streak && now - (this.nxEdge || 0) < 900) return true; // just hit the edge: let the scroll settle before moving on
-    if (dy > 0 && k < 2) { this.lockUntil = now + 650; this.nxSet(k + 1, 'pin'); this.nxEdge = now; return true; }
-    if (dy < 0 && k > 0) { this.lockUntil = now + 650; this.nxSet(k - 1, 'end'); this.nxEdge = now; return true; }
-    this.nxPos = null;
+    if (now < (this.nxReady || 0)) return true; // text / 01 panel still coming in: hold
+    if (streak && now - (this.nxEdge || 0) < 1600) return true; // the gesture that just switched steps: let it run out
+    const on = !!this.state.lf1;
+    if (dy > 0 && !on) { this.lockUntil = now + 1300; this.nxEdge = now; this.setState({ lf1: true }); return true; }
+    if (dy < 0 && on) { this.lockUntil = now + 1000; this.nxEdge = now; this.setState({ lf1: false }); return true; }
     return false;
   }
   // Arriving at Clubs & Facilities by a snap (from below): sit at its bottom so the stretch continues from there.
@@ -421,8 +503,8 @@ export class ArtboardLogic extends Logic {
     return v === L.at[0][0] ? 0 : CAM.t2 === L.top ? L.top - CAM[v] : L.len;
   }
   linkWheel(dy) {
-    if (MOBILE) return false;
     if (this.state.lb) return false;
+    if (this.state.view === 'nx' && Date.now() < (this.nxReady || 0) && (!this.state.link || this.state.z2end)) return true; // Looking forward's text still coming in: hold
     const now = Date.now(), streak = now - (this.lkLast || 0) < 160; this.lkLast = now;
     let key = this.state.link;
     if (!key) {
@@ -430,7 +512,7 @@ export class ArtboardLogic extends Logic {
       key = linkOf(this.state.view); if (!key) return false;
       const y0 = this.linkPosOf(key), L0 = LINKS[key];
       if ((dy < 0 && y0 <= 0) || (dy > 0 && y0 >= L0.len)) return false; // already at the end: let it snap on
-      this.lkPos = y0; this.lkEdge = 0; this.setState({ link: key, linkY: y0 });
+      this.lkPos = y0; this.lkEdge = 0; this.setState({ link: key, linkY: y0, z2top: key === 'z2' && y0 <= 0.5, z2end: key === 'z2' && y0 >= L0.len - 0.5 });
     }
     const L = LINKS[key], pos = this.lkPos ?? this.state.linkY ?? 0;
     const atEnd = (dy < 0 && pos <= 0.5) || (dy > 0 && pos >= L.len - 0.5);
@@ -454,6 +536,7 @@ export class ArtboardLogic extends Logic {
       const up = {};
       if (view !== this.state.view) up.view = view;
       for (const f in L.enter) if (y >= L.enter[f] && !this.state[f]) up[f] = true;
+      { const e2 = key === 'z2' && y <= 0.5, e3 = key === 'z2' && y >= L.len - 0.5; if (e2 !== !!this.state.z2top) up.z2top = e2; if (e3 !== !!this.state.z2end) up.z2end = e3; } // 'We're building for the future' fully in view: its bands go dark
       if (Object.keys(up).length) { this.setState({ linkY: y, ...up }); if (up.s10) this.arriveMb(); } else this.quiet({ linkY: y });
       this.camToDom();
       this.lkRaf = Math.abs(d) < 0.5 ? 0 : requestAnimationFrame(tick);
@@ -466,7 +549,7 @@ export class ArtboardLogic extends Logic {
     if (this.lkRaf) { cancelAnimationFrame(this.lkRaf); this.lkRaf = 0; }
     const L = LINKS[key], y = this.state.linkY || 0;
     let view = L.at[0][0]; for (const [v, from] of L.at) if (y >= from) view = v;
-    const patch = { link: null, linkY: 0, view };
+    const patch = { link: null, linkY: 0, view, z2top: false, z2end: false };
     if (view === 'fc1') { patch.fcY = Math.max(0, y - (CAM.t2 - CAM.fc1)); this.fcPos = patch.fcY; }
     this.setState(patch);
     if (view === 'nx') this.nxEnter(1);
@@ -483,8 +566,22 @@ export class ArtboardLogic extends Logic {
   camToDom() {
     if (!this.camEl || !this.camEl.isConnected) { const r = this.findRoot(); this.camEl = r && r.querySelector('.cam'); }
     if (this.camEl) this.camEl.style.transform = `translateY(${this.camNow()}px)`;
+    this.xclipToDom();
   }
-  nxEnter(dir) { this.nxPos = null; this.nxEdge = Date.now(); this.nxSet(dir > 0 ? 0 : 2, dir > 0 ? 'top' : 'end'); }
+  // Continuous stretches (Clubs & Facilities' own scroll, and 'We're building…' → Looking forward): on a screen taller than the
+  // artboard the content runs on into the bands above/below instead of being cut at the artboard's edge. How far it may run
+  // (--ct / --cb) is the distance to the stretch's own start / end, so nothing from an unrelated section ever shows there.
+  xclipToDom() {
+    const mh = this.mhEl && this.mhEl.isConnected ? this.mhEl : (this.mhEl = (() => { const r = this.findRoot(); return r && (r.classList && r.classList.contains('mh') ? r : r.querySelector('.mh')); })());
+    if (!mh) return;
+    const cam = this.camNow(), link = this.state.link, view = this.state.view;
+    let off = null, len = 0;
+    if (!MOBILE && (view === 'fc1' || link === 'z1')) { off = CAM.fc1 - cam; len = CAM.fc1 - CAM.fc2; }
+    else if (link === 'z2') { off = CAM.wc - cam; len = CAM.wc - CAM.nx; }
+    if (off == null) return;
+    mh.style.setProperty('--ct', `${Math.max(0, off).toFixed(1)}px`); mh.style.setProperty('--cb', `${Math.max(0, len - off).toFixed(1)}px`);
+  }
+  nxEnter(dir) { this.nxEdge = Date.now(); this.setState({ lf1: dir < 0 }); } // from below (the closing section): come back to the "01" panel
   arriveMb() {
     const first = !this.state.s10; this.setState({ s10: true });
     if (!first) return;
@@ -625,44 +722,25 @@ export class ArtboardLogic extends Logic {
     const now = Date.now();
     if (this.state.link) this.linkStop();
     if (this.lockUntil && now < this.lockUntil) return;
+    if (this.state.view === 'top' && !this.state.curOn) return; // masthead: no scrolling until the headline and the red cursor are in
+    if (this.state.view === 'nx' && now < (this.nxReady || 0)) return; // Looking forward: … until its text has come in
     // section 1 ⇄ the SAFRA logo it started from
     if (this.state.view === 'top' && dir < 0) { if (this.state.ready) { this.lockUntil = now + 1700; this.setState({ view: 'logo' }); } return; }
     if (this.state.view === 'logo') { if (dir > 0) { this.lockUntil = now + 1300; this.setState({ view: 'top', curOn: false }); clearTimeout(this.curT); this.curT = setTimeout(() => this.setState({ curOn: true }), REPLAY_DONE + CURSOR_AFTER); } return; }
     if (this.state.lb) return; // gallery open
-    if (MOBILE) {
-      const order = MOBILE_INITIATIVES.map(topic => topic[2]);
-      const view = this.state.view === 'fc2' ? 'fc1' : this.state.view;
-      const index = order.indexOf(view);
-      if (view === 's5' && dir > 0) { this.lockUntil = now + 1200; this.setState({ view: 'wc', s12: true, s14: true }); return; }
-      if (index >= 0) {
-        const stories = STORY_DATA[Number(view.slice(1))];
-        const step = this.state[{ s6: 'step6', s7: 'step7', s8: 'step8' }[view]] || 0;
-        // Read every story within a topic before moving to its neighbour in the list.
-        if (!stories || step + dir < 0 || step + dir >= stories.length) {
-          const to = order[index + dir];
-          if (to) this.l2To(to, dir);
-          else if (dir < 0) this.toCards();
-          else this.skipTo('wc');
-          return;
-        }
-      }
-    }
-    if (MOBILE && ['wc', 'end'].includes(this.state.view)) {
-      if (dir < 0) this.toCards();
-      else this.setState({ view: 'end', s14: true });
-      return;
-    }
     if (!MOBILE && this.state.view === 'mb') { this.l2To(dir > 0 ? 'fc1' : 's8', dir); return; } // Membership: on to Clubs & Facilities / back to Strengthening Bonds
     if (!MOBILE && this.state.view === 'fc1') { if (dir > 0) this.skipTo(AFTER()); else this.l2To('mb', -1); return; } // Clubs & Facilities page: once its own scroll ends, on below the cards / back up to the cards // Membership page: down to & beyond, up back to the cards
-    { const TAIL = (MOBILE ? ['mb', 'fc1', 'wc', 'end'] : ['wc', 'end']) /* 'nx' (Looking forward) hidden for now — NX_OFF */ /* 'fy' (Our year in summary) removed */, ti = TAIL.indexOf(this.state.view);
+    { const TAIL = (MOBILE ? ['mb', 'fc1', 'wc', 'nx', 'lf2', 'lf3', 'end'] : ['wc', 'nx', 'lf2', 'lf3', 'end']) /* 'fy' (Our year in summary) removed */, ti = TAIL.indexOf(this.state.view);
       if (ti >= 0) {
         if (ti === 0 && dir < 0) { this.toCards(); return; }
         const nv = TAIL[ti + dir]; if (!nv) return;
-        this.lockUntil = now + 1200; this.setState({ view: nv, [{ fc1: 's15', fc2: 's16', fy: 's11', wc: 's12', nx: 's13', end: 's14' }[nv] || 's10']: true });
+        this.lockUntil = now + 1200; this.setState({ view: nv, [{ fc1: 's15', fc2: 's16', fy: 's11', wc: 's12', nx: 's13', lf2: 's17', lf3: 's18', end: 's14' }[nv] || 's10']: true });
         if (nv === 'fc1') this.fcEnter(dir);
         if (nv === 'wc') setTimeout(() => this.hvLayout(), 60);
         if (nv === 'fy') this.arriveFy();
         if (nv === 'nx') this.nxEnter(dir);
+        if (nv === 'lf3') this.lf3Enter(dir);
+        if (nv === 'lf2') this.setState({ lf2s: dir > 0 ? 0 : 3 }); // Strengthening commitment: from above start at the first story, from below at the last
         return;
       } }
     if (this.state.view === 't2') {
@@ -672,13 +750,13 @@ export class ArtboardLogic extends Logic {
     }
     if (this.state.view === 's8') {
       const ns = (this.state.step8 || 0) + dir;
-      if (ns >= DC8.length) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('mb', 1); return; }
+      if (ns >= (MOBILE ? 1 : DC8.length)) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('mb', 1); return; } // mobile: story 2 not laid out yet
       if (ns < 0) { if (MOBILE) this.toCards(); else this.l2To('s7', -1); return; }
       this.lockUntil = now + 900; this.play8(ns, 0.2); return;
     }
     if (this.state.view === 's7') {
       const ns = (this.state.step7 || 0) + dir;
-      if (ns >= DC7.length) { if (MOBILE) this.skipTo('s8'); else this.l2To('s8', 1); return; }
+      if (ns >= (MOBILE ? 1 : DC7.length)) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('s8', 1); return; } // mobile: story 2 not laid out yet
       if (ns < 0) { if (MOBILE) this.toCards(); else this.l2To('s6', -1); return; }
       this.lockUntil = now + 900; this.play7(ns, 0.2); return;
     }
@@ -692,7 +770,7 @@ export class ArtboardLogic extends Logic {
       const ns = this.state.step + dir;
       if (ns >= 0 && ns <= 2) { this.lockUntil = now + 1150; this.setStep(ns); return; }
     }
-    if (this.state.view === 's5' && dir > 0) { this.lockUntil = now + 1200; if (MOBILE) { this.setState({ view: 'wc', s12: true, s14: true }); } else { this.setState({ view: 'wc', s12: true }); setTimeout(() => this.hvLayout(), 60); } return; }
+    if (this.state.view === 's5' && dir > 0) { this.lockUntil = now + 1200; if (MOBILE) { this.setState({ view: 'mb' }); this.arriveMb(); } else { this.setState({ view: 'wc', s12: true }); setTimeout(() => this.hvLayout(), 60); } return; }
     const j = ORDER.indexOf(this.state.view) + dir;
     if (j < 0 || j >= ORDER.length) return;
     const v = ORDER[j];
@@ -791,11 +869,6 @@ export class ArtboardLogic extends Logic {
         t[id] = place(m, (s.x1 - s.x0 + 1) / inkW, s.x0, s.base);
       }
       t.t4a = place(ctx.measureText(TO.text), t.t4c.fs / 100, TO.x0, TO.base);
-      if (MOBILE) {
-        const ratio = W / 393;
-        for (const [id, [x, y, fs]] of Object.entries(MOBILE_HEADLINE)) t[id] = { x: x * ratio, y: H / 2 + (y - 426) * ratio, fs: fs * ratio };
-        ctx.font = '500 100px ' + FAM;
-      }
       const TEXTS = { t1: SPEC.t1.text, t2: SPEC.t2.text, t3: SPEC.t3.text, t4a: TO.text, t4b: SPEC.t4b.text, t4c: SPEC.t4c.text, t5: SPEC.t5.text };
       for (const id in TEXTS) {
         const kk = t[id].fs / 100; let acc = 0; const offs = [], ws = [];
@@ -817,7 +890,7 @@ export class ArtboardLogic extends Logic {
       const st = nRuns[nRuns.length - 1];
       const barX = t.t5.x + adv + st[0];
       const barW = st[1] - st[0] + 1;
-      const barTop = MOBILE ? t.t5.y + fs5 * .88 : SPEC.t5.base - Math.round(fs5 * 0.12);
+      const barTop = SPEC.t5.base - Math.round(fs5 * 0.12);
 
       // The L of AT A GLANCE (72px, 500): its shape from the font, its place from the page.
       const gl = this.glyph('L', '500 ' + GL_FS + 'px ' + FAM, GL_FS);
@@ -918,7 +991,7 @@ export class ArtboardLogic extends Logic {
 
     const TEXTS = { t1: SPEC.t1.text, t2: SPEC.t2.text, t3: SPEC.t3.text, t4a: TO.text, t4b: SPEC.t4b.text, t4c: SPEC.t4c.text, t5: SPEC.t5.text };
     const hx = this.state.hx, hy = this.state.hy;
-    const active = !MOBILE && hx != null && this.state.view === 'top' && this.state.phase === 'run';
+    const active = hx != null && this.state.view === 'top' && this.state.phase === 'run';
     const R = 170;
     const letters = {};
     for (const id in TEXTS) {
@@ -967,25 +1040,13 @@ export class ArtboardLogic extends Logic {
     const view = this.state.view;
     const masthead = view === 'top' || view === 'logo';
     const mobile = MOBILE; // arrow cursor while the headline reveals, then the red circle replaces it
-    const circle = masthead && (this.state.curOn || fin);
+    const circle = (masthead && (this.state.curOn || fin)) || (view === 'nx' && !this.state.menu && (!this.state.link || this.state.z2end)); // Looking forward: the same red 'Scroll for more' cursor
     return {
       stageClass,
-      mobileHeight: H,
-      mobileWidth: W,
-      mobileView: view,
-      mobileInitiativeNext: (() => {
-        const index = MOBILE_INITIATIVES.findIndex(topic => topic[2] === (view === 'fc2' ? 'fc1' : view));
-        const next = MOBILE_INITIATIVES[index + 1];
-        return { label: next?.[0] || 'Looking forward', click: (e) => {
-          e.stopPropagation();
-          if (next) this.jumpTo(next[2]); else this.skipTo('wc');
-        } };
-      })(),
-      mobileSteps: { 6: this.state.step6 || 0, 7: this.state.step7 || 0, 8: this.state.step8 || 0 },
       mClass: MOBILE ? 'm' : '',
       s2Class: (fin || this.state.s2) ? 'is-s2' : '',
       s3Class: (fin || this.state.s3) ? 'is-s3' : '',
-      viewClass: masthead ? 'v-top' + (circle ? ' v-cur' : '') : ('v-in' + (view === 't2' ? ' v-t2' : '')),
+      viewClass: masthead ? 'v-top' + (circle ? ' v-cur' : '') : ('v-in' + (view === 't2' ? ' v-t2' : '') + (circle ? ' v-cur' : '')),
       camY: this.camNow(),
       fcFreeClass: this.state.link ? 'fcfree' : '',
       go2Class: (rankOf(view) ?? 0) >= 1 ? 'go2' : '',
@@ -1016,7 +1077,7 @@ export class ArtboardLogic extends Logic {
       back8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.toCards(); },
       backFc: (e) => { e.stopPropagation(); if (this.state.view === 'fc1') this.toCards(); },
       backMb: (e) => { e.stopPropagation(); if (this.state.view === 'mb') this.toCards(); },
-      skip8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.skipTo(MOBILE ? 'fc1' : AFTER()); },
+      skip8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.skipTo(AFTER()); },
       topic3: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's8' }); this.arrive8(); } },
       dch8: (() => { const o = (this.state.lay && this.state.lay.dch8) || [0, -360]; const r = { W: (this.state.lay && this.state.lay.dcHW8) || 500 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       dcw8: { W: (this.state.lay && this.state.lay.dcW8) || 480 },
@@ -1066,7 +1127,7 @@ export class ArtboardLogic extends Logic {
         this.mbIn = false; this.mbEndAt = 0;
       },
       topic4: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'mb' }); this.arriveMb(); } }, // Rewarding privileges → Membership page
-      topic5: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'fc1', s15: true }); this.fcEnter(1); } }, // Enhancing SAFRA Clubs & Facilities → its page
+      topic5: (e) => { e.preventDefault(); e.stopPropagation(); if (!MOBILE && this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'fc1', s15: true }); this.fcEnter(1); } }, // Enhancing SAFRA Clubs & Facilities → its page
       topic2: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's7' }); this.arrive7(); } },
       dch7: (() => { const o = (this.state.lay && this.state.lay.dch7) || [0, -340]; const r = { W: (this.state.lay && this.state.lay.dcHW7) || 480 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       dcw7: (() => { const o = (this.state.lay && this.state.lay.dcw7) || [0, 0, -440]; const r = { W: (this.state.lay && this.state.lay.dcW7) || 846 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
@@ -1123,37 +1184,25 @@ export class ArtboardLogic extends Logic {
         return { x: +(CUE_X - lw0 / 2).toFixed(2), y: +top.toFixed(2), w: lw0, h: +h0.toFixed(2), sx: +sx.toFixed(4), sy: +sy.toFixed(4), cx: +(CUE_X - lw0 * TG_SCALE / 2).toFixed(2), cw: +(lw0 * TG_SCALE).toFixed(2), // slot through the band above: always the large width, so the line is never trimmed while it narrows
           // while it leaves the masthead it is offset/narrowed to sit on the n's stem
           dx: +((nx + nw / 2) - CUE_X).toFixed(2), k: +(nw / lw0).toFixed(4) }; })(),
-      endClass: view === 'end' ? 'at-end' : view === 's5' ? 'at-topics' : view === 'wc' ? 'at-future' : '', // viewport-edge treatments for desktop sections
-      i4Class: this.state.i4 ? 'i4' : '', // Our impact, first reveal: the statement lands first, then the cards rise one by one
-      b3Class: (view === 'tg' || view === 's3') ? 'b3top' + (this.state.b3ok ? ' b3settled' : '') + (this.state.glanceReturn ? ' b3return' : '') : '', // open the viewport slot during the move; extend upward only after settling
+      endClass: view === 'end' ? 'at-end' : '', // closing section: its gradient fills the letterbox bands above/below the artboard too
+      i4Class: this.state.i4 ? 'i4' : '', lf1Hidden: this.state.lf1 ? 'false' : 'true', lf2v: (() => { const k = this.state.lf2s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', c3: k === 3 ? 'on' : '', a3: k === 3 ? 'true' : 'false', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false' }; })(), lf2To0: (e) => { e.stopPropagation(); this.setState({ lf2s: 0 }); }, noFocusScroll: (e) => { e.preventDefault(); }, /* a click on a story must not focus it — focusing scrolls the column to it (the jump) */ lf3v: (() => { const k = this.state.lf3s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false', ph: k === 2 ? 'short' : '' }; })(), lf3To0: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 0) this.lf3Step(0, 'top'); }, lf3To1: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 1) this.lf3Step(1, 'top'); }, lf3To2: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 2) this.lf3Step(2, 'top'); }, lf2To1: (e) => { e.stopPropagation(); this.setState({ lf2s: 1 }); }, lf2To2: (e) => { e.stopPropagation(); this.setState({ lf2s: 2 }); }, lf2To3: (e) => { e.stopPropagation(); this.setState({ lf2s: 3 }); }, swClass: `${(view === 'tg' || view === 's3') ? 'at3' : ''} ${this.state.swk ? 'swk' : ''} ${this.state.up5 ? 'up5' : ''} ${view === 'wc' && (!this.state.link || this.state.z2top) ? 'at-dk' : ''} ${this.state.link === 'z2' && !this.state.z2top && !this.state.z2end ? 'z2mid' : ''} ${this.state.lf1 && (view === 'nx' || view === 'lf2') ? 'lf1' : ''} ${view === 'lf2' ? 'at-lf2' : ''} ${view === 'nx' && !this.state.link ? 'at-nxv' : ''} ${view === 'lf3' ? 'at-lf3' : ''} ${(this.state.step6 || 0) === DC.length - 1 ? 'l6' : ''} ${(this.state.step7 || 0) === DC7.length - 1 ? 'l7' : ''} ${(this.state.step8 || 0) === DC8.length - 1 ? 'l8' : ''} ${(!MOBILE && (view === 'fc1' || this.state.link === 'z1')) || this.state.link === 'z2' ? 'xclip' : ''} ${view === 'lf2' ? 'lfs2' : (view === 'lf3' || view === 'end') ? 'lfs3' : ''}`, // Our impact, first reveal: the statement lands first, then the cards rise one by one
+      b3Class: (view === 'tg' || view === 's3') && this.state.b3ok ? 'b3top' : '', // only once the camera has settled (b3ok), so the extension never crosses the masthead on the way down // At a glance: the gradient connector runs up past the artboard to the screen's top edge (tall screens letterbox above)
       tgClass: view === 'tg' ? 'at-tg' : '', hdClass: (fin || this.state.hd) ? 'is-hd' : '',
       cd,
       next: () => this.go(1),
       noop: (e) => { e.preventDefault(); e.stopPropagation(); },
-      cur: { x: ((hx ?? 720) - 60).toFixed(1), y: ((hy ?? 450) - 60).toFixed(1), o: (circle && hx != null && !mobile) ? 1 : 0, s: (circle && hx != null) ? 1 : 0.4 },
+      cur: { x: ((this.state.curX ?? hx ?? 720) - 60).toFixed(1), y: ((this.state.curY ?? hy ?? 450) - 60).toFixed(1), o: (circle && hx != null && !mobile) ? 1 : 0, s: (circle && hx != null) ? 1 : 0.4 },
       wheel: (e) => {
-        if (Math.abs(e.deltaY) < 4 || this.state.lb) return;
-        const sc = e.target?.closest?.('[data-mobile-scroll]');
-        // Finish scrolling the list, then require a new gesture to leave either edge.
-        if (MOBILE && this.state.view === 's5' && sc?.classList?.contains('mobile-topics')) {
-          const now = Date.now(), dir = e.deltaY > 0 ? 1 : -1;
-          const edge = dir > 0 ? sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1 : sc.scrollTop <= 1;
-          const continuing = now - (this.topicWheelAt ?? -Infinity) < 220 && this.topicWheelDir === dir;
-          this.topicWheelAt = now; this.topicWheelDir = dir;
-          if (!continuing) this.topicWheelCanLeave = edge;
-          if (edge && this.topicWheelCanLeave) { this.topicWheelCanLeave = false; this.go(dir); }
-          return;
-        }
-        if (MOBILE && sc && (e.deltaY > 0 ? sc.scrollTop + sc.clientHeight < sc.scrollHeight - 1 : sc.scrollTop > 0)) return;
+        if (Math.abs(e.deltaY) < 4) return;
         // one wheel/trackpad gesture (events < 220ms apart, incl. momentum) can't carry on past the large AT A GLANCE heading
         const now = Date.now(), cont = now - (this.lastWheel || 0) < 220; this.lastWheel = now;
         if (this.holdTg && cont && this.state.view === 'tg') return;
         this.holdTg = false;
-        if (this.state.menu) { this.setState({ menu: false }); return; } if (this.nxWheel(e.deltaY)) return; if (this.linkWheel(e.deltaY)) return; this.go(e.deltaY > 0 ? 1 : -1);
+        if (this.state.menu) { this.setState({ menu: false }); return; } if (this.nxWheel(e.deltaY) || this.lf2Wheel(e.deltaY) || this.lf3Wheel(e.deltaY, e.target)) return; if (this.linkWheel(e.deltaY)) return; this.go(e.deltaY > 0 ? 1 : -1);
       },
       tabs: (() => { const k = { s6: 0, s7: 1, s8: 2 }[view], on = k != null && MOBILE /* desktop: each topic page has its own header (back · title · next), so the tabs only show on mobile */ && !this.state.lb; /* desktop topic 1 has its own header */ const i = k ?? (this.state.tabLast ?? 0); return { cls: on ? 'on' : '', x: TABS_X[i], w: TABS_W[i], s6: i === 0 ? 'on' : '', s7: i === 1 ? 'on' : '', s8: i === 2 ? 'on' : '', s6sel: String(i === 0), s7sel: String(i === 1), s8sel: String(i === 2) }; })(),
       tab_s6: (e) => { e.stopPropagation(); this.tabTo('s6'); }, tab_s7: (e) => { e.stopPropagation(); this.tabTo('s7'); }, tab_s8: (e) => { e.stopPropagation(); this.tabTo('s8'); },
-      menu: { cls: ((rankOf(view) ?? 0) >= 2 && !this.state.lb ? 'on' : '') + (this.state.menu ? ' open' : '') + ((MOBILE ? ['fy', 'end', 'mb', 'fc1', 'fc2'] : ['fy', 'end', 'mb']).includes(view) ? ' grad' : ''), exp: this.state.menu ? 'true' : 'false' },
+      menu: { cls: ((rankOf(view) ?? 0) >= 2 && !this.state.lb ? 'on' : '') + (this.state.menu ? ' open' : '') + ((MOBILE ? ['fy', 'end', 'mb', 'fc1', 'fc2'] : ['fy', 'end', 'mb']).includes(view) ? ' sm-grad' : ''), exp: this.state.menu ? 'true' : 'false' },
       menuOpen: (e) => { e.stopPropagation(); this.setState({ menu: true }); },
       menuClose: (e) => { e.stopPropagation(); this.setState({ menu: false }); },
       menuStop: (e) => { e.stopPropagation(); if (e.currentTarget.tagName === 'A') e.preventDefault(); },
@@ -1162,7 +1211,6 @@ export class ArtboardLogic extends Logic {
       nav_s3: (e) => { e.stopPropagation(); this.jumpTo('s3'); },
       nav_s5: (e) => { e.stopPropagation(); this.jumpTo('s5'); },
       nav_fy: (e) => { e.stopPropagation(); this.jumpTo('fy'); },
-      nav_wc: (e) => { e.stopPropagation(); this.jumpTo('wc'); },
       nav_nx: (e) => { e.stopPropagation(); this.jumpTo('nx'); },
       nav_s6: (e) => { e.stopPropagation(); this.jumpTo('s6'); },
       nav_s7: (e) => { e.stopPropagation(); this.jumpTo('s7'); },
@@ -1170,24 +1218,22 @@ export class ArtboardLogic extends Logic {
       nav_mb: (e) => { e.stopPropagation(); this.jumpTo('mb'); },
       nav_fc: (e) => { e.stopPropagation(); this.jumpTo('fc1'); },
       tap: () => { if (this.state.menu) { this.setState({ menu: false }); return; } if (this.state.view === 'top' || this.state.view === 'logo' || this.state.view === 't2') this.go(1); },
-      touchStart: (e) => { this.touchScroller = e.target?.closest?.('[data-mobile-scroll]'); this.touchScrollTop = this.touchScroller?.scrollTop || 0; this.ty = e.touches && e.touches[0] ? e.touches[0].clientY : null; this.tyLast = this.ty; this.tMoved = false; },
+      touchStart: (e) => { this.ty = e.touches && e.touches[0] ? e.touches[0].clientY : null; this.tyLast = this.ty; this.tMoved = false; },
       // mobile: inside the scroll-linked stretches (and Looking forward's column) the page follows the finger
       touchMove: (e) => {
         const y = e.touches && e.touches[0] ? e.touches[0].clientY : null;
-        if (!MOBILE || y == null || this.tyLast == null || this.state.menu || this.state.lb) return;
-        const sc = this.touchScroller;
-        if (sc && (Math.abs(sc.scrollTop - this.touchScrollTop) > 1 || (this.tyLast > y ? sc.scrollTop + sc.clientHeight < sc.scrollHeight - 1 : sc.scrollTop > 0))) { this.tMoved = true; this.tyLast = y; return; }
+        if (!MOBILE || y == null || this.tyLast == null || this.state.menu) return;
         const r = e.currentTarget && e.currentTarget.getBoundingClientRect ? e.currentTarget.getBoundingClientRect() : null;
         const k = r && r.width ? W / r.width : 1; // screen px → artboard px
         const dy = (this.tyLast - y) * k; this.tyLast = y;
         if (Math.abs(dy) < 0.5) return;
-        if (this.nxWheel(dy) || ((this.state.link || linkOf(this.state.view)) && this.linkWheel(dy))) this.tMoved = true;
+        if (this.nxWheel(dy) || this.lf2Wheel(dy) || this.lf3Wheel(dy) || ((this.state.link || linkOf(this.state.view)) && this.linkWheel(dy))) this.tMoved = true;
       },
       touchEnd: (e) => {
         const y = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null;
-        if (this.ty == null || y == null || this.state.menu || this.state.lb) return;
+        if (this.ty == null || y == null) return;
         if (this.tMoved) { this.tMoved = false; return; } // already followed the finger
-        if (Math.abs(this.ty - y) > 30) { if (this.nxWheel((this.ty - y) * 1.5)) return; if (this.linkWheel((this.ty - y) * 1.5)) return; this.go(this.ty > y ? 1 : -1); }
+        if (Math.abs(this.ty - y) > 30) { if (this.nxWheel((this.ty - y) * 1.5) || this.lf2Wheel((this.ty - y) * 1.5) || this.lf3Wheel((this.ty - y) * 1.5)) return; if (this.linkWheel((this.ty - y) * 1.5)) return; this.go(this.ty > y ? 1 : -1); }
       },
       t,
       ...letters,
@@ -1220,7 +1266,13 @@ export class ArtboardLogic extends Logic {
         if (!r.width) return;
         const s = 1440 / r.width;
         const cl = (x) => Math.max(-0.5, Math.min(0.5, x));
-        this.setState({ mx: cl((e.clientX - r.left) / r.width - 0.5), my: cl((e.clientY - r.top) / (r.width * 0.625) - 0.5), hx: (e.clientX - r.left) * s, hy: (e.clientY - r.top) * s });
+        // the red cursor (120px) is kept whole on screen: its centre stays 60px inside the window edges — and, outside the masthead
+        // (whose bands are open), inside the artboard's top/bottom too, where the page is clipped
+        const hx0 = (e.clientX - r.left) * s, hy0 = (e.clientY - r.top) * s, mast = this.state.view === 'top' || this.state.view === 'logo';
+        const vx0 = -r.left * s, vx1 = (window.innerWidth - r.left) * s, vy0 = -r.top * s, vy1 = (window.innerHeight - r.top) * s;
+        const y0 = mast ? vy0 : Math.max(vy0, 0), y1 = mast ? vy1 : Math.min(vy1, 900 * (r.width ? 1 : 1));
+        const curX = Math.max(vx0 + 60, Math.min(vx1 - 60, hx0)), curY = Math.max(y0 + 60, Math.min(y1 - 60, hy0));
+        this.setState({ mx: cl((e.clientX - r.left) / r.width - 0.5), my: cl((e.clientY - r.top) / (r.width * 0.625) - 0.5), hx: hx0, hy: hy0, curX, curY });
         this.hvMove((e.clientX - r.left) * s, (e.clientY - r.top) * s, s);
         const tc = e.target && e.target.closest ? e.target.closest('.tc') : null; this.cardStack(this.state.view === 's5' ? tc : null);
       },

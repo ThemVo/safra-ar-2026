@@ -1,7 +1,8 @@
 body{margin:0;background:#272C3F}
-/* Let the masthead photos reach the viewport edges on taller desktop screens. */
-.mh:not(.m).v-top{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
 .mh img{user-select:none;-webkit-user-drag:none}
+/* Keep SVG canvases transparent when embedded in a CMS with global media backgrounds.
+   SVG fills, gradients and intentionally styled button backgrounds remain intact. */
+.mh svg,.mh img[src*=".svg"]{background:transparent !important}
 .mh .px{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
 .mh .ph{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .mh:where(:not(.m)) .px:hover .ph{transform:scale(1.035)}
@@ -73,7 +74,7 @@ body{margin:0;background:#272C3F}
 @keyframes mhFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes mhWipeL{from{clip-path:inset(-25% var(--wr) -25% var(--wl))}to{clip-path:inset(-25% -2% -25% -2%)}}
 @keyframes mhSubIn{from{opacity:0;transform:translateY(16px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
-@keyframes mhSweepBand{0%{visibility:visible;clip-path:inset(100% 0 0)}46%,54%{clip-path:inset(0)}100%{visibility:hidden;clip-path:inset(0 0 100%)}}
+@keyframes mhSweepBand{0%{transform:translateY(101%)}46%,54%{transform:translateY(0)}100%{transform:translateY(-101%)}}
 @property --ta{syntax:'<angle>';inherits:false;initial-value:160deg}
 @keyframes mhSnake{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
 @keyframes mhSnakeT{from{stroke-dashoffset:22}to{stroke-dashoffset:-78}}
@@ -97,8 +98,7 @@ body{margin:0;background:#272C3F}
 .is-run .ph2{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) .92s both}
 .is-run .ph3{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) 1.04s both}
 .is-run .ph4{animation:mhPhIn .8s cubic-bezier(.2,.7,.2,1) 1.16s both}
-/* Keep photos clear until the report title has finished fading out. */
-.is-run .dim{animation:mhDim .8s cubic-bezier(.4,0,.2,1) 2.6s both}
+.is-run .dim{animation:mhDim .8s cubic-bezier(.4,0,.2,1) 2.1s both}
 /* headline at reading pace, in sentence order: Explore our efforts in → strengthening → commitment → to → defence → and supporting → NSmen's needs */
 .is-run .ln1{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 2.5s both}
 .is-run .ln2{animation:mhLine 1.1s cubic-bezier(.2,.7,.2,1) 3.45s both}
@@ -134,10 +134,9 @@ body{margin:0;background:#272C3F}
 .mh .sl.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .15s ease,visibility 0s 0s}
 .is-s3 .sl.on .sub{animation:mhSubIn .6s cubic-bezier(.2,.7,.2,1) calc(var(--b) - .12s) both}
 .is-s3 .sl.on .cd{animation:mhRise .85s cubic-bezier(.16,.8,.24,1) calc(var(--b) + var(--i) * .07s) both}
-/* Reveal the gradient within the photo instead of translating a painted layer
-   outside it. Off-frame gradient layers can leave GPU streaks under the last card. */
-.mh .sl .frame{isolation:isolate;contain:paint;overflow:hidden;-webkit-mask-image:none;mask-image:none}
-.mh .sl .frame::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;visibility:hidden;clip-path:inset(100% 0 0);background:linear-gradient(0deg,#6C51A2 0%,#B0489E 30%,#E8448F 55%,#F3606F 78%,#F68A49 100%)}
+/* photos: a gradient band sweeps across each frame; the new image is revealed behind it */
+.mh .sl .frame{clip-path:inset(0 round 14px);isolation:isolate}
+.mh .sl .frame::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(0deg,#6C51A2 0%,#B0489E 30%,#E8448F 55%,#F3606F 78%,#F68A49 100%);transform:translateY(101%)}
 .is-s3 .sl.on .frame::after{animation:mhSweepBand 1.05s cubic-bezier(.7,0,.3,1) calc(var(--b) + var(--i) * .07s + .05s) both}
 .is-s3 .sl.on .frame .pic{animation:mhPicIn 1.05s linear calc(var(--b) + var(--i) * .07s + .05s) both}
 .mh .sweep{transform-origin:0 50%;transition:transform .85s cubic-bezier(.65,0,.35,1) .1s}
@@ -157,7 +156,7 @@ body{margin:0;background:#272C3F}
 .post .ln1{--lf:.6s;--lb:.3s} .post .ln2{--lf:1.55s;--lb:.25s} .post .ln3{--lf:2.15s;--lb:.2s} .post .ln4a{--lf:2.7s;--lb:.15s} .post .ln4b{--lf:2.95s;--lb:.1s} .post .ln4c{--lf:3.4s;--lb:.05s} .post .ln5{--lf:4.0s;--lb:0s}
 .post.lg .ln{opacity:0;transform:translateY(24px);filter:blur(6px);transition:opacity .45s cubic-bezier(.4,0,.2,1) var(--lb),transform .45s cubic-bezier(.4,0,.2,1) var(--lb),filter .45s cubic-bezier(.4,0,.2,1) var(--lb)}
 .post .dim{opacity:.92;transition:opacity .8s cubic-bezier(.4,0,.2,1) .2s}
-.post.lg .dim{opacity:0;transition:opacity .5s cubic-bezier(.4,0,.2,1)}
+.post.lg .dim{opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1) .3s}
 .post .layer{transform:none;transition:transform 1.1s cubic-bezier(.33,0,.2,1) .1s}
 .post.lg .layer{transform:none} /* logo screen: photos at their layout positions and sizes */
 .post .ph{opacity:1;transition:opacity .7s cubic-bezier(.2,.7,.2,1) var(--pf),transform .5s cubic-bezier(.2,.7,.2,1)}
@@ -287,9 +286,9 @@ body{margin:0;background:#272C3F}
 .mh .sm-btn::before{content:"";position:absolute;inset:0;border-radius:16px;background:#FFFFFF;opacity:0;transition:opacity .4s ease}
 .mh .sm-ic{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);transition:opacity .4s ease}
 .mh .sm-ic-g{opacity:0}
-.mh .smenu.grad .sm-btn{box-shadow:none}
-.mh .smenu.grad .sm-btn::before,.mh .smenu.grad .sm-ic-g{opacity:1}
-.mh .smenu.grad .sm-ic-w{opacity:0}
+.mh .smenu.sm-grad .sm-btn{box-shadow:none}
+.mh .smenu.sm-grad .sm-btn::before,.mh .smenu.sm-grad .sm-ic-g{opacity:1}
+.mh .smenu.sm-grad .sm-ic-w{opacity:0}
 .mh .sm-panel{position:absolute;right:0;top:0;display:flex;flex-direction:column;align-items:flex-end;gap:24px;padding:24px 24px 48px 32px;border-radius:16px;background:linear-gradient(170.17deg,#F69141 0%,#F6765D 14%,#F14192 51.15%,#6252A4 96.1%);box-shadow:0 18px 50px rgba(10,12,30,.35);transform-origin:calc(100% - 32px) 32px;transform:scale(.2);opacity:0;visibility:hidden;clip-path:inset(0 0 calc(100% - 64px) calc(100% - 64px) round 16px);transition:clip-path .45s cubic-bezier(.65,0,.35,1),transform .45s cubic-bezier(.65,0,.35,1),opacity .2s ease .25s,visibility 0s .45s}
 .mh .smenu.open .sm-panel{transform:none;opacity:1;visibility:visible;clip-path:inset(0 0 0 0 round 16px);transition:clip-path .5s cubic-bezier(.65,0,.35,1),transform .5s cubic-bezier(.65,0,.35,1),opacity .15s ease,visibility 0s 0s}
 .mh .smenu.open .sm-btn{opacity:0;pointer-events:none}
@@ -304,15 +303,15 @@ body{margin:0;background:#272C3F}
 .mh:where(:not(.m)) .sm-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(40,10,60,.25)}
 .mh .sm-btn:focus-visible,.mh .sm-x:focus-visible,.mh .nvi:focus-visible,.mh .sm-cta:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
 .mh .sm-xg,.mh .sm-dlw{display:none}
-.mh .smenu.grad .sm-panel{background:#FFFFFF;box-shadow:-2px 0 40px rgba(0,0,0,.12)}
-.mh .smenu.grad .sm-x{width:19px;height:19px}
-.mh .smenu.grad .sm-xw,.mh .smenu.grad .sm-dlg{display:none}
-.mh .smenu.grad .sm-xg,.mh .smenu.grad .sm-dlw{display:block}
-.mh .smenu.grad .nvi{width:fit-content;background:linear-gradient(90deg,#6252A4 0%,#F14192 49.038%,#F6765D 92.788%,#F69141 99.99%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.mh .smenu.grad .sm-cta{background:linear-gradient(90deg,#6252A4 0%,#F14192 49.038%,#F6765D 92.788%,#F69141 99.99%)}
-.mh:where(:not(.m)) .smenu.grad .sm-cta:hover{box-shadow:0 10px 24px rgba(98,82,164,.3)}
-.mh .smenu.grad .sm-ctat{background:none !important;-webkit-text-fill-color:#FFFFFF;color:#FFFFFF !important}
-.mh .smenu.grad .sm-x:focus-visible,.mh .smenu.grad .nvi:focus-visible,.mh .smenu.grad .sm-cta:focus-visible{outline-color:#F5765E}
+.mh .smenu.sm-grad .sm-panel{background:#FFFFFF;box-shadow:-2px 0 40px rgba(0,0,0,.12)}
+.mh .smenu.sm-grad .sm-x{width:19px;height:19px}
+.mh .smenu.sm-grad .sm-xw,.mh .smenu.sm-grad .sm-dlg{display:none}
+.mh .smenu.sm-grad .sm-xg,.mh .smenu.sm-grad .sm-dlw{display:block}
+.mh .smenu.sm-grad .nvi{width:fit-content;background:linear-gradient(90deg,#6252A4 0%,#F14192 49.038%,#F6765D 92.788%,#F69141 99.99%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mh .smenu.sm-grad .sm-cta{background:linear-gradient(90deg,#6252A4 0%,#F14192 49.038%,#F6765D 92.788%,#F69141 99.99%)}
+.mh:where(:not(.m)) .smenu.sm-grad .sm-cta:hover{box-shadow:0 10px 24px rgba(98,82,164,.3)}
+.mh .smenu.sm-grad .sm-ctat{background:none !important;-webkit-text-fill-color:#FFFFFF;color:#FFFFFF !important}
+.mh .smenu.sm-grad .sm-x:focus-visible,.mh .smenu.sm-grad .nvi:focus-visible,.mh .smenu.sm-grad .sm-cta:focus-visible{outline-color:#F5765E}
 .mh .smenu,.mh .smenu *,.v-in .smenu,.v-in .smenu *,.v-in.v-t2 .smenu,.v-in.v-t2 .smenu *{cursor:url(../assets/cursors/hover-cursor.svg) 10 8,pointer !important}
 /* topic tabs (stories): all three titles, the active one in gradient */
 .mh .tabs{position:absolute;left:0;top:0;width:1440px;height:112px;z-index:12;font-family:'Google Sans Flex','Google Sans',system-ui,sans-serif;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s}
@@ -400,19 +399,6 @@ body{margin:0;background:#272C3F}
 .mh:where(:not(.m)) .tc:hover .tc-tail,.mh .tc:focus-visible .tc-tail{animation:mhSnakeT 2.8s linear infinite}
 .mh .tc .tc-g,.mh .tc .ic{opacity:0;transition:opacity .35s ease}
 .mh .tc .tc-i{transition:transform .35s cubic-bezier(.34,1.5,.5,1)}
-/* Preserve hollow SVG shapes when the host page sets a fill directly on paths.
-   A fill on the SVG alone cannot override a fill applied to its children. */
-.mh svg[fill="none"],
-.mh svg [fill="none"],
-.mh svg[fill="none"] :is(path,polyline,polygon,circle,ellipse,rect)[stroke]:not([fill]){fill:none !important}
-
-/* Keep desktop Topics SVG paint independent of host-page link/SVG styles.
-   Unfilled arrow and shield paths must stay transparent, including on visited links. */
-.mh:not(.m) .tc svg.tc-i,
-.mh:not(.m) .tc svg.tc-i :is(g,path){fill:none !important;stroke:none !important}
-.mh:not(.m) .tc svg.tc-i path[fill="#AAAAAA"]{fill:#AAAAAA !important}
-.mh:not(.m) .tc svg.tc-i path[stroke="#AAAAAA"]{stroke:#AAAAAA !important}
-.mh:not(.m) .tc svg.tc-i path[stroke="#272C3F"]{stroke:#272C3F !important}
 .mh:where(:not(.m)) .tc:hover .tc-g,.mh:where(:not(.m)) .tc:hover .ic,.mh .tc:focus-visible .tc-g,.mh .tc:focus-visible .ic{opacity:1}
 .mh:where(:not(.m)) .tc:hover .tc-i,.mh .tc:focus-visible .tc-i{transform:scale(1.08)}
 .mh .tc:focus-visible{outline:2px solid #F5765E;outline-offset:4px}
@@ -477,9 +463,6 @@ body{margin:0;background:#272C3F}
 /* desktop: Membership (Rewarding privileges) is an L2 page opened from card 4, like the topic pages */
 .mh:not(.m) .s10{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .45s ease,visibility 0s .45s}
 .mh:not(.m).goM .s10{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .55s ease .12s,visibility 0s 0s}
-/* Membership: paint the gradient into the viewport bands without moving the content. */
-.mh:not(.m).goM{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
-.mh:not(.m) .s10{z-index:2;border-image-outset:var(--gy,0px) var(--gx,0px) !important} /* above Future (z-index:1), including its viewport gutter extension */
 .goM .s45{transform:translate(-34.63px,-42.18px) scale(1.06);opacity:0;transition:transform .6s cubic-bezier(.2,.7,.2,1) 0s,opacity .45s ease 0s} /* zoom about card 4 (centre 577.1,703) */
 .goM .s45 .tc{pointer-events:none}
 .goM .s45 .tc .tc-t,.goM .s45 .tc .tc-b,.goM .s45 .tc .tc-i,.goM .s45 .tc .tc-s{opacity:0;transition:opacity .3s ease 0s}
@@ -497,11 +480,6 @@ body{margin:0;background:#272C3F}
 /* desktop: Enhancing SAFRA Clubs & Facilities (Figma 2110:7585) is the L2 page of card 5, laid over the cards; its own scroll stays scroll-linked */
 .mh:not(.m) .s15{z-index:3;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .45s ease,visibility 0s .45s}
 .mh:not(.m).goF .s15{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .55s ease .12s,visibility 0s 0s}
-/* The scrolling Facilities page reaches the viewport edges on tall screens too.
-   Keep its content visible below the original 900px composition instead of cutting
-   it off above the bottom of the browser. The stage remains the viewport clip. */
-.mh.goF{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
-.mh.goF .s15{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important;border-image-outset:var(--gy,0px) var(--gx,0px) !important}
 .goF .s45{transform:translate(-51.78px,-42.18px) scale(1.06);opacity:0;transition:transform .6s cubic-bezier(.2,.7,.2,1) 0s,opacity .45s ease 0s} /* zoom about card 5 (centre 862.9,703) */
 .goF .s45 .tc{pointer-events:none}
 .goF .s45 .tc .tc-t,.goF .s45 .tc .tc-b,.goF .s45 .tc .tc-i,.goF .s45 .tc .tc-s{opacity:0;transition:opacity .3s ease 0s}
@@ -569,8 +547,6 @@ body{margin:0;background:#272C3F}
 .mh:not(.is-s15) .s15 .fcbk,.mh:not(.is-s15) .s15 .fcnx{opacity:0}
 .mh.m .s15 :is(.fcbk,.fcnx){display:none}
 
-/* NX_OFF: Looking forward and the wc tongue ("What's next for SAFRA") are hidden for now */
-.mh .tg2[hidden],.mh .cue2[hidden],.mh .s13[hidden],.mh .sm-list li[hidden]{display:none !important}
 
 /* At a glance: on screens taller than the artboard, let only the gradient connector through the band above it
    (a slot in the artboard's clip at the connector), and extend the connector up so it always meets the top edge */
@@ -578,9 +554,7 @@ body{margin:0;background:#272C3F}
 /* + a full-width strip at the very bottom of the screen for At a glance's progress bar (.sweep sits at the screen's bottom edge, not the artboard's) */
 .mh.b3top{clip-path:polygon(calc(-1 * var(--gx,0px)) 0,calc(var(--b3x) - 1px) 0,calc(var(--b3x) - 1px) calc(-1 * var(--gy,0px) - 2px),calc(var(--b3x) + var(--b3w) + 1px) calc(-1 * var(--gy,0px) - 2px),calc(var(--b3x) + var(--b3w) + 1px) 0,calc(100% + var(--gx,0px)) 0,calc(100% + var(--gx,0px)) 100%,calc(100% + var(--gx,0px)) calc(100% + var(--gy,0px) + 1px),calc(-1 * var(--gx,0px)) calc(100% + var(--gy,0px) + 1px),calc(-1 * var(--gx,0px)) calc(100% + var(--gy,0px) - var(--swh)),calc(100% + var(--gx,0px)) calc(100% + var(--gy,0px) - var(--swh)),calc(100% + var(--gx,0px)) 100%,calc(-1 * var(--gx,0px)) 100%) !important}
 .mh .bar3::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:3000px;background:#DD4493;display:none}
-.mh.b3settled .bar3::before{display:block}
-/* Avoid a floating connector/letter fragment while scrolling back from Topics. */
-.mh.b3return .bar3w,.mh.b3return .gLf{visibility:hidden !important}
+.mh.b3top .bar3::before{display:block}
 
 /* Our impact, first reveal (.i4): the statement slides in first (lines at .55s / .8s, settled ≈1.6s), then the cards rise one at a time */
 .go5.i4 .tc{transition:opacity .5s ease calc(1.45s + var(--i) * .22s),transform .75s cubic-bezier(.16,.8,.24,1) calc(1.45s + var(--i) * .22s),background-color .35s ease}
@@ -590,35 +564,160 @@ body{margin:0;background:#272C3F}
 
 /* closing section: on screens taller than the artboard, open the clip so its gradient (extended by --gy) fills the bands above and below */
 .mh.at-end{clip-path:inset(calc(-1 * var(--gy, 0px)) calc(-1 * var(--gx, 0px))) !important}
-
-/* Desktop: the scaled, centred artboard can leave gutters on all four sides.
-   Allow Topics' progress line and the gallery to reach the viewport edges. */
-.mh:not(.m).at-topics,
-.mh:not(.m):has(.lb.open){clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
-/* Move the rule with the camera, including the viewport gutter correction.
-   Both transitions use the same timing so it cannot jump when Topics opens. */
-.mh:not(.m) .sweep{transition:top .75s cubic-bezier(.6,0,.3,1),transform .85s cubic-bezier(.65,0,.35,1) .1s}
-.mh:not(.m).fresh .sweep{transition-delay:0s,1.7s}
-/* s3c starts at 900 and Topics' camera settles at -1818. */
-.mh:not(.m).at-topics .sweep{top:calc(918px - var(--gy,0px)) !important;transform:scaleX(1) !important}
-/* Topics owns the full viewport, including the bands around the fitted frame.
-   Its backdrop must sit above Future's extended background and Glance's photos. */
-.mh:not(.m).at-topics .s45{z-index:2;overflow:visible !important}
-.mh:not(.m).at-topics .s45::before{content:"";position:absolute;inset:calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px));background:#272C3F;z-index:-1;pointer-events:none}
-.mh:not(.m).at-topics .s45::after{content:"";position:absolute;top:calc(-1 * var(--gy,0px));left:calc(-1 * var(--gx,0px));width:calc(1440px + 2 * var(--gx,0px));height:8px;background:linear-gradient(90deg,#74509F 0%,#F46074 55%,#F68F43 100%);pointer-events:none}
-.mh:not(.m) .lb{inset:calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px)) !important;border-image:none !important}
-/* Keep media centred in the original composition while the dialog fills the viewport. */
-.mh:not(.m) .lb .lb-media{left:calc(64px + var(--gx,0px)) !important;top:calc(142px + var(--gy,0px)) !important}
-.mh:not(.m) .lb .lb-row{left:var(--gx,0px) !important;top:calc(772px + var(--gy,0px)) !important}
-.mh:not(.m) .lb .lb-x{left:auto !important;right:22px;top:22px !important}
-
-/* Future statement: fill exactly one viewport, with its own bottom rule rather
-   than the next section's gradient bleeding into the artboard gutter. */
-.mh:not(.m).at-future{clip-path:inset(calc(-1 * var(--gy,0px)) calc(-1 * var(--gx,0px))) !important}
-/* Keep the section and its rule mounted while leaving Future. Changing all of
-   this geometry only in .at-future made the bottom rule disappear on scroll. */
-.mh:not(.m) .s12{top:calc(2718px - var(--gy,0px)) !important;left:calc(-1 * var(--gx,0px)) !important;width:calc(1440px + 2 * var(--gx,0px)) !important;height:calc(900px + 2 * var(--gy,0px)) !important;clip-path:inset(0) !important;border-image:none !important;z-index:1;transition:height .75s cubic-bezier(.6,0,.3,1)}
-/* Meet the closing section's top edge with the same easing as the camera. */
-.mh:not(.m).at-end .s12{height:900px !important}
-.mh:not(.m) .s12 #wc-title{left:var(--gx,0px) !important;top:var(--gy,0px) !important}
-.mh:not(.m) .s12::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;pointer-events:none;background:linear-gradient(90deg,#5D55A7 0%,#A3499F 17%,#E3439A 33%,#F04290 44%,#F35C79 62%,#F5765E 82%,#F68C45 100%)}
+/* At a glance progress bar: on a letterboxed screen it sits on the screen's bottom edge while At a glance is in view; when the page moves
+   away it eases back onto the section's own bottom edge (translate), so it travels with the section and never lands inside Our impact */
+.mh .sweep{translate:0 calc(-1 * var(--gy, 0px));transition:transform .85s cubic-bezier(.65,0,.35,1) .1s,translate .8s cubic-bezier(.6,0,.3,1)}
+.fresh .sweep{transition-delay:1.7s,0s}
+.mh.at3 .sweep{translate:0 0}
+.mh.swk:not(.b3top){clip-path:polygon(calc(-1 * var(--gx,0px)) 0,calc(100% + var(--gx,0px)) 0,calc(100% + var(--gx,0px)) 100%,calc(100% + var(--gx,0px)) calc(100% + var(--gy,0px) + 1px),calc(-1 * var(--gx,0px)) calc(100% + var(--gy,0px) + 1px),calc(-1 * var(--gx,0px)) calc(100% + var(--gy,0px) - var(--swh)),calc(100% + var(--gx,0px)) calc(100% + var(--gy,0px) - var(--swh)),calc(100% + var(--gx,0px)) 100%,calc(-1 * var(--gx,0px)) 100%) !important}
+/* back up from Our impact: one smooth, symmetric camera move; the cards stay put and ride up with the page, then reset once out of view */
+.mh.up5 .cam{transition:transform .95s cubic-bezier(.65,0,.35,1)}
+.mh.up5 .tc{transition:opacity .2s ease .9s,transform 0s 1.1s !important}
+.mh .swc{transition:transform .75s cubic-bezier(.6,0,.3,1);will-change:transform}
+.mh.up5 .swc{transition:transform .95s cubic-bezier(.65,0,.35,1)}
+.mh.fcfree .swc{transition:none}
+.mh .sweep{z-index:3}
+@media (prefers-reduced-motion:reduce){.mh .swc{transition-duration:.01s}.mh .sweep{transition-duration:.01s}}
+/* closing section: its gradient reaches up into the band above only once it is in view — otherwise that outset would paint over the bottom of the section above it */
+.mh:not(.at-end) .s14{border-image-outset:0 var(--gx, 0px) var(--gy, 0px) !important}
+/* Looking forward → "01" (on the spot): the intro dims and goes as a dark circle grows from the centre past every edge; then the panel comes in */
+.mh .lfc{transform:scale(0);transition:transform .8s cubic-bezier(.65,0,.35,1);will-change:transform}
+.mh.lf1 .lfc{transform:scale(var(--lfs,6));transition:transform 1.15s cubic-bezier(.6,0,.3,1)}
+@keyframes lfDim{0%{opacity:1}25%{opacity:.5}55%{opacity:.5}100%{opacity:0}}
+@keyframes lfUn{0%,45%{opacity:0}100%{opacity:1}}
+.mh .lf1c{pointer-events:none}
+.mh.lf1 .lf1c{pointer-events:auto}
+.mh .lf1k{opacity:0;transform:translateY(24px);transition:opacity .25s ease,transform .25s ease}
+.mh.lf1 .lf1k{opacity:1;transform:none;transition:opacity .6s ease calc(.85s + var(--k) * .12s),transform .8s cubic-bezier(.2,.7,.2,1) calc(.85s + var(--k) * .12s)}
+@media (prefers-reduced-motion:reduce){.mh .lfc,.mh .lf1k,.mh .lfh{transition-duration:.01s !important;transition-delay:0s !important;animation:none !important}}
+/* 02 Strengthening commitment to defence */
+.mh .lf2i{border-left:1px solid #DDDDDD} /* every story hugs its content, the last one too: the line ends with the list */
+.mh .lf2i{position:relative;padding:16px 0 0 40px;cursor:default}
+.mh .lf2i[role=tab]{cursor:url(../assets/cursors/hover-cursor.svg) 10 8,pointer}
+.mh .lf2i.on{padding-bottom:24px}
+.mh .lf2i{transition:padding .5s cubic-bezier(.65,0,.35,1)}
+.mh .lf2t{margin:0;font-size:24px;font-weight:600;line-height:1.6;letter-spacing:.48px;color:#6E778B;transition:color .4s ease}
+.mh .lf2i.on .lf2t{color:#F34141}
+.mh .lf2b{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.65,0,.35,1)}
+.mh .lf2i.on .lf2b{grid-template-rows:1fr}
+.mh .lf2b>p{overflow:hidden;min-height:0;margin:0;font-size:18px;line-height:1.6;letter-spacing:.36px;color:#DDDDDD;opacity:0;transition:opacity .25s ease}
+.mh .lf2i.on .lf2b>p{padding-top:16px;opacity:1;transition:opacity .4s ease .2s}
+.mh .lf2c{padding:12px;font-size:14px;font-weight:500;line-height:1.6;letter-spacing:.28px;color:#CCCCCC}
+.mh.m .lf2t{font-size:16px;letter-spacing:.32px}
+.mh.m .lf2b>p{font-size:13px;letter-spacing:.26px}
+.mh.m .lf2i{padding:12px 0 0 20px}
+.mh.m .lf2i.on{padding-bottom:16px}
+.mh.m .lf2i.on .lf2b>p{padding-top:8px}
+.mh.m .lf2c{padding:8px;font-size:11px}
+/* parallax: layers sit lower by --py until the section is in view, then glide into place at different speeds than the camera; the 01 panel above leaves faster */
+.mh .lfp{transform:translateY(var(--py,0px));transition:transform 1.05s cubic-bezier(.6,0,.3,1)}
+.mh.at-lf2 .lfp{transform:none}
+.mh.at-lf2 .lf1c{transform:translateY(-160px);transition:transform .9s cubic-bezier(.6,0,.3,1)}
+.mh .lf1c{transition:transform .9s cubic-bezier(.6,0,.3,1)}
+@media (prefers-reduced-motion:reduce){.mh .lfp,.mh .lf1c{transition:none !important}}
+/* 03 Supporting NSmen's needs */
+.mh .lf3s{scrollbar-width:none;overscroll-behavior:contain}
+.mh .lf3s::-webkit-scrollbar{display:none}
+.mh .lf3b{padding-top:16px;color:#DDDDDD}
+.mh .lf3b h4{margin:0;font-size:20px;font-weight:700;line-height:1.6;letter-spacing:.4px}
+.mh .lf3b p{margin:0 0 32px;font-size:18px;line-height:1.6;letter-spacing:.4px}
+.mh .lf3b p:last-child{margin-bottom:0}
+.mh.m .lf3b h4{font-size:15px;letter-spacing:.3px}
+.mh.m .lf3b p{font-size:13px;letter-spacing:.26px;margin-bottom:16px}
+.mh.m .lf3b{padding-top:8px}
+.mh .lfp3{transform:translateY(var(--py,0px));transition:transform 1.05s cubic-bezier(.6,0,.3,1)}
+.mh.at-lf3 .lfp3{transform:none}
+@media (prefers-reduced-motion:reduce){.mh .lfp3{transition:none !important}}
+.mh .lf3s .lf2i:first-of-type{padding-top:0}
+/* 03: stories open / close; the photo and caption cross-fade with the open story */
+.mh .lf3c{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.65,0,.35,1)}
+.mh .lf2i.on>.lf3c{grid-template-rows:1fr}
+.mh .lf3c>.lf3b{overflow:hidden;min-height:0;opacity:0;transition:opacity .25s ease}
+.mh .lf2i.on>.lf3c>.lf3b{opacity:1;transition:opacity .4s ease .2s}
+.mh .lf3s .lf2i[role=tab]:not(.on){cursor:url(../assets/cursors/hover-cursor.svg) 10 8,pointer}
+.mh .lf3s .lf2i.on:not(:first-of-type){padding-top:24px}
+.mh.m .lf3s .lf2i.on:not(:first-of-type){padding-top:16px}
+.mh .lf3im{opacity:0;transition:opacity .6s ease}
+.mh .lf3im.on{opacity:1}
+.mh .lf3cap{display:grid;justify-items:end}
+.mh .lf3cap>.lf3k{grid-area:1/1;opacity:0;transition:opacity .4s ease}
+.mh .lf3cap>.lf3k.on{opacity:1;transition:opacity .5s ease .15s}
+/* the photo box: 496px tall, 452px for the Bayshore map (Figma) — eases between, the caption follows */
+.mh .lf3ph{height:496px;transition:height .5s cubic-bezier(.65,0,.35,1)}
+.mh .lf3ph.short{height:452px}
+.mh.m .lf3ph{height:203px}
+.mh.m .lf3ph.short{height:185px}
+.mh .lf3ph>.lf3im{height:100% !important}
+/* closing marquee: two identical sets side by side; the track slides one set's width and loops — seamless and endless */
+.mh .entrack{display:flex;width:max-content;height:100%;align-items:center;animation:enMq 61s linear infinite;will-change:transform}
+.mh .enset{display:flex;align-items:center;flex:none}
+.mh .encta{display:flex;align-items:center;gap:24px;flex:none;margin-right:48px;padding:24px 28px 24px 32px;border-radius:16px;background:#FFFFFF;font-size:48px;font-weight:700;line-height:1.2;text-transform:uppercase;white-space:nowrap}
+.mh .enar{flex:none;margin-right:48px;font-size:64px;font-weight:700;line-height:1.2;color:#FFFFFF;text-transform:uppercase;white-space:nowrap}
+.mh .enic{flex:none;display:block;margin:-3px -3px}
+.mh.m .encta{gap:12px;margin-right:24px;padding:12px 14px 12px 16px;border-radius:10px;font-size:24px}
+.mh.m .enar{margin-right:24px;font-size:32px}
+.mh.m .entrack{animation-duration:30s}
+@keyframes enMq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mh:where(:not(.m)) .enmq:hover .entrack{animation-play-state:paused}
+.mh .enmq,.mh .enmq *,.v-in .enmq,.v-in .enmq *{cursor:url(../assets/cursors/hover-cursor.svg) 10 8,pointer !important}
+.mh .enmq:focus-visible{outline:2px solid #FFFFFF;outline-offset:-4px}
+@media (prefers-reduced-motion:reduce){.mh .entrack{animation:none}}
+/* nothing in the marquee is clipped: the band only clips at the screen edges (the page's own clip); gradient words get room for their glyph edges */
+.mh .encta>span{padding:.08em .06em;margin:-.08em -.06em}
+.mh .encta,.mh .enar{overflow:visible}
+.mh:not(.swk) .swc{visibility:hidden} /* the screen-bottom curtain only matters around At a glance; elsewhere (e.g. the closing section, whose bands are open) it must not show */
+/* Looking forward lists — smoother story switching: one gliding red indicator, a single easing for every height/padding, text fades in once its space has opened */
+.mh .lfbar{position:absolute;left:0;top:0;width:4px;height:0;background:#F34141;border-radius:0;z-index:1;pointer-events:none;will-change:transform,height}
+.mh .lf2i{transition:padding .75s cubic-bezier(.65,0,.35,1)}
+.mh .lf2t{transition:color .55s ease}
+.mh .lf2b,.mh .lf3c{transition:grid-template-rows .75s cubic-bezier(.65,0,.35,1)}
+.mh .lf2b>p,.mh .lf3c>.lf3b{transition:opacity .65s cubic-bezier(.65,0,.35,1)} /* closing: the text folds away with its space instead of vanishing first (no empty gap) */
+.mh .lf2i.on .lf2b>p,.mh .lf2i.on>.lf3c>.lf3b{transition:opacity .35s ease .05s} /* the text shows as its space opens (revealed from the top), so no empty gap opens up */
+.mh .lf3ph{overflow:hidden;border-radius:15.373px}
+.mh.m .lf3ph{border-radius:12px}
+.mh .lf3im{transform:scale(1.04);transition:opacity .8s ease,transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.mh .lf3im.on{transform:none}
+@media (prefers-reduced-motion:reduce){.mh .lf2i,.mh .lf2b,.mh .lf3c,.mh .lf3im{transition-duration:.01s !important}}
+/* Rewarding privileges (desktop L2 page): the card column runs to the bottom of the window — the page opens into the band below
+   the artboard once it has faded in, and sits above whatever lies there */
+.mh:not(.m).goM .s10{z-index:5}
+.mh:not(.m).goM{clip-path:inset(0 calc(-1 * var(--gx, 0px)) calc(-1 * var(--gy, 0px))) !important;transition:clip-path 0s .6s}
+/* Looking forward 01 → 02 → 03 as a stack: the section you leave stays put (it rides along with the camera) and dims, the next one slides up over it.
+   Replaces the layered parallax (no more layers arriving at different speeds) */
+.mh .lfp,.mh .lfp3{transform:none !important;transition:none !important}
+.mh.at-lf2 .lf1c{transform:none}
+.mh .s13,.mh .s17{transition:transform .75s cubic-bezier(.6,0,.3,1)}
+.mh.lfs2 .s13{transform:translateY(900px)}
+.mh.lfs3 .s13{transform:translateY(1800px)}
+.mh.lfs3 .s17{transform:translateY(900px)}
+.mh.m.lfs2 .s13{transform:translateY(844px)}
+.mh.m.lfs3 .s13{transform:translateY(1688px)}
+.mh.m.lfs3 .s17{transform:translateY(844px)}
+.mh .s13::after,.mh .s17::after{content:"";position:absolute;top:0;bottom:0;left:calc(-1 * var(--gx, 0px));right:calc(-1 * var(--gx, 0px));background:#0B0F14;opacity:0;pointer-events:none;z-index:20;transition:opacity .75s cubic-bezier(.6,0,.3,1)}
+.mh.lfs2 .s13::after,.mh.lfs3 .s13::after,.mh.lfs3 .s17::after{opacity:.55}
+@media (prefers-reduced-motion:reduce){.mh .s13,.mh .s17{transition:none}}
+/* topic pages: "Next: …" only shows on the last story */
+.mh :is(.s6,.s7,.s8) .nxb{transition:color .45s ease}
+.mh:not(.l6) .s6 .nxb,.mh:not(.l7) .s7 .nxb,.mh:not(.l8) .s8 .nxb{color:transparent}
+.mh.xclip{clip-path:inset(calc(-1 * min(var(--gy, 0px), var(--ct, 0px))) calc(-1 * var(--gx, 0px)) calc(-1 * min(var(--gy, 0px), var(--cb, 0px)))) !important}
+/* masthead on a taller screen: the edge photos continue up/down into the bands (same widths), so nothing is cut flat mid-screen */
+.mh.v-top{clip-path:inset(calc(-1 * var(--gy, 0px)) calc(-1 * var(--gx, 0px))) !important}
+/* Looking forward → 01: the intro text dims where the circle has reached it (a second, half-strength circle above the text);
+   it zooms in as the circle opens, then fades out as the panel comes in */
+.mh .lfc2{opacity:.5;pointer-events:none}
+.mh .lfh{transition:opacity .35s ease}
+.mh.lf1 .lfh{opacity:0;transition:opacity .5s ease .6s}
+/* … and the intro text zooms in as the circle opens (inner wrapper, so the circle-following mask is not scaled with it).
+   Circle, mask and zoom share one curve and duration; the text then fades out as the panel comes in */
+.mh .lfz{transform:none;transition:transform .8s cubic-bezier(.65,0,.35,1);will-change:transform}
+.mh.lf1 .lfz{transform:scale(1.3);transition:transform 1.15s cubic-bezier(.6,0,.3,1)}
+@media (prefers-reduced-motion:reduce){.mh .lfz{transition:none !important}}
+/* 03 Supporting NSmen's needs: the text column runs to the bottom of the window (no cut at the caption line); on a taller screen
+   the page opens into the band below, which the section itself fills, sitting above the closing section */
+.mh.at-lf3:not(.m){clip-path:inset(0 calc(-1 * var(--gx, 0px)) calc(-1 * var(--gy, 0px))) !important}
+.mh.at-lf3:not(.m) .s18{z-index:2}
+.mh.at-lf3:not(.m) .s18::before{content:"";position:absolute;left:calc(-1 * var(--gx, 0px));right:calc(-1 * var(--gx, 0px));top:100%;height:var(--gy, 0px);background:#18212A;pointer-events:none}
+/* Looking forward (intro + 01): the section paints the bands above/below itself — navy for the intro, and the dark circle
+   spreads right across them — instead of leaving them to a delayed page-level fill (that left a navy strip on 01) */
+.mh.at-nxv{clip-path:inset(calc(-1 * var(--gy, 0px)) calc(-1 * var(--gx, 0px))) !important}
+.mh.at-nxv .s13{z-index:3}

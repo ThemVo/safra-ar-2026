@@ -37,10 +37,28 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   logic.play6(2, 0);
   await Promise.resolve();
   assert.equal(window.location.hash, '#bringing-defence-closer-story-3');
+  assert.equal(writes.at(-1).method, 'pushState', 'each story is a browser history entry');
   logic.jumpTo('top');
   await Promise.resolve();
   assert.equal(window.location.hash, '');
   assert.deepEqual(writes.at(-1), { method: 'pushState', hash: '/annual-report/?lang=en' });
+  // Scrolling up through the glance intro must also clear the fragment.
+  logic.jumpTo('tg');
+  await Promise.resolve();
+  logic.lockUntil = 0;
+  logic.go(-1);
+  await Promise.resolve();
+  assert.equal(logic.state.view, 'top');
+  assert.equal(window.location.hash, '');
+  assert.equal(writes.at(-1).hash, '/annual-report/?lang=en');
+  // The automatic intro-to-statistics transition keeps a single history entry.
+  logic.jumpTo('tg');
+  await Promise.resolve();
+  logic.lockUntil = 0;
+  logic.go(1);
+  await Promise.resolve();
+  assert.equal(window.location.hash, '#at-a-glance');
+  assert.equal(writes.at(-1).method, 'replaceState');
   // Back to a section, then forward to the clean top URL restores both views.
   window.location.hash = '#bringing-defence-closer-story-3';
   listeners.get('popstate')();
@@ -66,11 +84,11 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
       if (view === 'end') assert.equal(logic.state.s14, true);
       logic.componentWillUnmount();
     }
-    for (const [view, max] of Object.entries({ s3: 3, s6: 4, s7: mobile ? 1 : 4, s8: mobile ? 1 : 6, mb: 4 })) {
+    for (const [view, max] of Object.entries({ s3: 3, s6: 4, s7: mobile ? 1 : 4, s8: mobile ? 1 : 6, mb: 4, lf2: 4, lf3: 3 })) {
       for (let i = 0; i < max; i++) {
         const hash = '#' + screenId(view, i);
         logic = mount(hash, mobile);
-        const key = { s3: 'step', s6: 'step6', s7: 'step7', s8: 'step8', mb: 'mbTab' }[view];
+        const key = { s3: 'step', s6: 'step6', s7: 'step7', s8: 'step8', mb: 'mbTab', lf2: 'lf2s', lf3: 'lf3s' }[view];
         assert.equal(logic.state[key], i, hash);
         assert.equal(parseRoute(routeHash(logic.state), mobile).view, view);
         if (mobile && view === 'mb') assert.equal(logic.state.mbOrd[3], i);
@@ -92,6 +110,17 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   logic = mount('#clubs-and-facilities?offset=420');
   assert.equal(logic.state.fcY, 420);
   logic.componentWillUnmount();
+  logic = mount('#looking-forward-story-1');
+  assert.equal(logic.state.lf1, true);
+  logic.componentWillUnmount();
+  logic = mount('#looking-forward');
+  assert.equal(logic.state.lf1, false);
+  logic.componentWillUnmount();
+  logic = mount('#masthead');
+  await Promise.resolve();
+  assert.equal(window.location.hash, '', 'masthead has no URL fragment');
+  assert.equal(logic.state.curOn, true);
+  logic.componentWillUnmount();
   logic = mount('#unknown');
   assert.equal(logic.state.view, 'top');
   logic.componentWillUnmount();
@@ -105,7 +134,7 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
 test('both templates expose stable section and screen IDs', () => {
   for (const file of ['template.jsx', 'templateMobile.jsx']) {
     const markup = readFileSync(new URL('../src/artboard/' + file, import.meta.url), 'utf8');
-    for (const view of ['top', 'tg', 's3', 's5', 's6', 's7', 's8', 'mb', 'fc1', 'wc', 'end']) {
+    for (const view of ['top', 'tg', 's3', 's5', 's6', 's7', 's8', 'mb', 'fc1', 'wc', 'nx', 'lf2', 'lf3', 'end']) {
       assert.ok(markup.includes(`id={SECTION_IDS.${view}}`), `${file}: ${view}`);
     }
     for (let i = 0; i < 3; i++) assert.ok(markup.includes(`id={screenId("s3", ${i})}`));

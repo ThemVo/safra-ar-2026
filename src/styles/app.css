@@ -1,15 +1,25 @@
 :root { --bg: #272C3F; --fg: #C9CEDA; }
 html, html body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
-html { scroll-behavior: smooth; }
-html.lenis, html.lenis body { scroll-behavior: auto !important; }
-body { overflow-x: hidden; margin: 0; }
-body .container-fluid { margin: 0; padding: 0; }
-/* Clip without creating a scroll container: focusing a topic link must not shift the centred artboard. */
 .stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: clip; }
-/* Proportional content frame; viewport gutters are measured in artboard pixels. */
+/* The animation camera handles section navigation. Unlike hidden, clip prevents fragment links
+   and focus changes from scrolling the stage and shifting the full-height frame off screen. */
+/* 1440 × 900 content column; the artboard paints its backgrounds out into the side gutters (--gx) */
 .wrap { position: relative; width: 1440px; height: 900px; transform-origin: 50% 50%; flex: none; }
 .stage { cursor: url(../assets/cursors/pointer-cursor.svg) 3 3, auto; } /* side margins use the site's arrow cursor */
 .stage:has(.v-cur), .stage:has(.v-cur) * { cursor: none !important; } /* masthead once the red circle shows: no system cursor anywhere */
-/* Allow native vertical scrolling inside mobile sections; the artboard handles navigation swipes. */
-.stage-m { touch-action: pan-y; overscroll-behavior: none; cursor: auto; }
+/* mobile: the page is driven by swipes, so the browser shouldn't scroll or zoom it */
+.stage-m { touch-action: none; overscroll-behavior: none; cursor: auto; }
 /* mobile layout previewed on a wide screen: a phone-sized frame on the page background */
+/* Membership (desktop L2 page): its gradient also fills the letterbox bands above/below the artboard, fading in and out with the page.
+   Same gradient over the same box as the section's border-image outset (the full window), so the two meet seamlessly. */
+.stage::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .45s ease;
+  background: linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%); }
+.stage:has(.mh.goM)::before { opacity: 1; transition: opacity .55s ease .12s; }
+/* 'We're building for the future': its dark background (#18212A) also fills the letterbox band above it (the band below meets the navy tongue / Looking forward), while it is in view or being scrolled through */
+.stage::after { content: ''; position: absolute; inset: 0 0 50%; z-index: -1; pointer-events: none; background: #18212A; opacity: 0; transition: opacity .45s ease; }
+.stage:has(.mh.at-dk)::after { opacity: 1; }
+.stage:has(.mh.z2mid)::after { opacity: 1; }
+/* … and the same dark fills the letterbox bands once the circle reaches them */
+.stage:has(.mh.lf1)::after { opacity: 1; bottom: 0; transition: opacity .45s ease .5s; }
+.stage:has(.mh.at-lf2)::after { opacity: 1; bottom: 0; }
+.stage:has(.mh.at-lf3)::after { opacity: 1; bottom: 0; }

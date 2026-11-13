@@ -1,0 +1,27 @@
+# Lịch sử thay đổi
+
+## 2026-11-13 — Hoàn tác chỉnh artwork, chỉ chặn nền từ CMS
+
+- Theo yêu cầu làm rõ: khôi phục nguyên bản cả 8 SVG `mb-ic-*` và `mb2-ic-*`, bao gồm nền xám trong thiết kế. Thao tác bỏ nền SVG ở mục lịch sử trước đã được hoàn tác.
+- Chỉ giữ quy tắc CSS `.mh svg, .mh img[src*=".svg"] { background: transparent !important; }` để chặn nền CSS do trang nhúng/CMS áp lên phần tử icon. Không đổi artwork, fill, gradient hoặc nền của nút.
+- Xác minh: 8 SVG khớp hoàn toàn với bản trước khi sửa; `npm run build:p` thành công. Chưa có trang Sitefinity để kiểm tra quy tắc CSS thực tế trên CMS.
+- Khi triển khai: cập nhật CSS mới. Nếu đã tải các SVG bị bỏ nền lên CMS, tải lại 8 SVG nguyên bản từ bản build này và làm mới cache tương ứng.
+
+## 2026-11-13 — Icon nền trong suốt khi tích hợp Sitefinity
+
+- Bỏ hình chữ nhật nền xám `#DDDDDD` trong 8 icon SVG nhóm food, education, movies và travel, gồm cả bộ `mb-ic-*` và `mb2-ic-*`. Giữ nguyên kích thước, hình vẽ, gradient và clip-path.
+- Thêm `background: transparent !important` cho SVG và ảnh SVG bên trong `.mh`, hạn chế nền do CSS toàn cục của CMS áp vào. Không thay đổi màu fill của hình vẽ hoặc nền thiết kế của các nút.
+- Tệp thay đổi: `public/assets/mb-ic-{food,education,movies,travel}.svg`, `public/assets/mb2-ic-{food,education,movies,travel}.svg`, `src/styles/artboard.css`.
+- Kiểm tra: `npm run build:p` thành công; xác minh cả 8 SVG hợp lệ, chỉ loại bỏ đúng hình nền, bản xuất trong `dist/icons/` khớp nguồn và CSS nền trong suốt có trong bản build. Vite vẫn cảnh báo gói JavaScript lớn hơn 500 kB.
+- Chưa xác minh trực tiếp trên CMS Sitefinity. Khi triển khai, tải lại 8 SVG và CSS mới; làm mới cache của CMS/CDN nếu còn hiển thị bản cũ.
+
+## 2026-11-13 — Khung hiển thị toàn chiều cao
+
+- Bỏ giới hạn phóng to tối đa 100% của giao diện desktop. Khung 1440 × 900 được co giãn theo không gian trình duyệt, giữ nguyên tỷ lệ chữ và ảnh, loại bỏ dải hở trên/dưới trên màn hình lớn.
+- Đổi vùng bao ngoài từ `overflow: hidden` sang `overflow: clip`, ngăn trình duyệt tự cuộn khung khi mở liên kết tới từng mục hoặc chuyển focus. Camera của trang tiếp tục điều khiển chuyển màn hình.
+- Tệp thay đổi: `src/App.jsx`, `src/styles/app.css`.
+- Kiểm tra bằng Computer Use trên Chrome: Masthead, At a glance, Initiatives, Bringing defence closer, Appreciating NSmen, Strengthening bonds, Rewarding privileges, Clubs & Facilities, With commitment, Looking forward (intro và 01), Strengthening commitment (02), Supporting NSmen (03), Annual report.
+- Kiểm tra kích thước desktop 1920 × 934, 1920 × 1080, 1366 × 768; khung chạm mép trên/dưới. Kiểm tra thêm nền tối và trang kết thúc ở 1280 × 1000; nền tiếp tục phủ các vùng ngoài khung khi chiều rộng giới hạn tỷ lệ phóng.
+- `npm run build`: thành công.
+- Bộ kiểm tra có sẵn: 2 bài kiểm tra điều hướng đạt; 4 bài trong `tests/initiatives-scroll.test.js` lỗi ở logic vuốt/chuyển mục mobile và môi trường `requestAnimationFrame`. Bộ kiểm tra này không sử dụng hai tệp được chỉnh trong lần thay đổi này.
+- Phạm vi xác minh trực quan lần này: desktop; chưa giả lập thiết bị cảm ứng mobile.

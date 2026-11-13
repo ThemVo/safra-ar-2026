@@ -14,24 +14,26 @@ const TONGUE = 'M719.999 0C762.331 0 799.274 23.3611 818.941 58.046C835.286 86.8
 export default function render(v) {
   return (
     <>
-    <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.goMClass)} ${s(v.goFClass)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.b3Class)} ${s(v.i4Class)} ${s(v.endClass)} ${s(v.hdClass)} ${s(v.fcFreeClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "1440px", height: "900px", "--b3x": `${s(v.bar3?.cx)}px`, "--b3w": `${s(v.bar3?.cw)}px`, clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", boxShadow: "0 0 0 var(--gx, 0px) #272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
+    <div className={`mh ${s(v.lvClass)} ${s(v.dirClass)} ${s(v.freshClass)} ${s(v.stageClass)} ${s(v.s2Class)} ${s(v.s3Class)} ${s(v.viewClass)} ${s(v.go2Class)} ${s(v.go3Class)} ${s(v.s4Class)} ${s(v.go5Class)} ${s(v.postClass)} ${s(v.lgClass)} ${s(v.s6Class)} ${s(v.go6Class)} ${s(v.s7Class)} ${s(v.go7Class)} ${s(v.s8Class)} ${s(v.go8Class)} ${s(v.goMClass)} ${s(v.goFClass)} ${s(v.s9Class)} ${s(v.s10Class)} ${s(v.s11Class)} ${s(v.s12Class)} ${s(v.s13Class)} ${s(v.s14Class)} ${s(v.s15Class)} ${s(v.s16Class)} ${s(v.tgClass)} ${s(v.b3Class)} ${s(v.i4Class)} ${s(v.swClass)} ${s(v.endClass)} ${s(v.hdClass)} ${s(v.fcFreeClass)}`} onMouseMove={v.move} onMouseLeave={v.leave} onWheel={v.wheel} onClick={v.tap} onTouchStart={v.touchStart} onTouchEnd={v.touchEnd} style={{ position: "relative", width: "1440px", height: "900px", "--b3x": `${s(v.bar3?.cx)}px`, "--b3w": `${s(v.bar3?.cw)}px`, clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", boxShadow: "0 0 0 var(--gx, 0px) #272C3F", fontFamily: "'Google Sans Flex', 'Google Sans', system-ui, sans-serif", fontWeight: "400", color: "#F3F4F7" }}>
       <div className="cam" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "5418px", transform: `translateY(${s(v.camY)}px)` }}>
-        <section id={SECTION_IDS.top} className="layer1" aria-label="SAFRA masthead" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", overflow: "visible", clipPath: "inset(calc(-1 * var(--gy, 0px)) 0)", transformOrigin: "50% 80%" }}>
+        {/* At a glance progress bar: a screen-fixed navy strip under the bar in the bottom letterbox band, so that strip only ever shows the bar (counter-moves the camera) */}
+        <div className="swc" aria-hidden="true" style={{ position: "absolute", left: "calc(-1 * var(--gx, 0px))", top: "calc(900px + var(--gy, 0px) - min(var(--swh), var(--gy, 0px)))", width: "calc(1440px + 2 * var(--gx, 0px))", height: "min(var(--swh), var(--gy, 0px))", background: "#272C3F", zIndex: 2, pointerEvents: "none", transform: `translateY(${-(+s(v.camY) || 0)}px)` }} />
+        <section id={SECTION_IDS.top} className="layer1" aria-label="SAFRA masthead" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", clipPath: "inset(calc(-1 * var(--gy, 0px)) 0)", transformOrigin: "50% 80%" }}>
           <div className="layer" style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "900px", transformOrigin: "50% 46%" }}>
-            <div className="px" style={{ position: "absolute", left: "885px", top: "calc(-1 * var(--gy, 0px))", width: "555px", height: "349px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pFamily)}` }}>
-              <img className="ph ph1" src="./assets/mh-tr.jpg" alt="A father and child crawl under camouflage netting on an obstacle course" style={{ display: "block", width: "555px", height: "349px" }} />
+            <div className="px" style={{ position: "absolute", left: "885px", top: "calc(-1 * (var(--gy, 0px) + 24px))", width: "555px", height: "calc(349px + var(--gy, 0px) + 24px)", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pFamily)}` }}>
+              <img className="ph ph1" src="./assets/mh-tr.jpg" alt="A father and child crawl under camouflage netting on an obstacle course" style={{ display: "block", width: "555px", height: "100%", objectFit: "cover", objectPosition: "center bottom" }} />
             </div>
             <div className="px" style={{ position: "absolute", left: "104px", top: "141px", width: "339px", height: "214px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pConcert)}` }}>
               <img className="ph ph2" src="./assets/mh-tl.jpg" alt="A family in red poses with the SAFRA mascot at a National Day picnic" style={{ display: "block", width: "339px", height: "214px" }} />
             </div>
-            <div className="px" style={{ position: "absolute", left: "0px", top: "calc(652px + var(--gy, 0px))", width: "394px", height: "248px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pKids)}` }}>
-              <img className="ph ph3" src="./assets/mh-bl.jpg" alt="Members on exercise bikes in a spin class" style={{ display: "block", width: "394px", height: "248px" }} />
+            <div className="px" style={{ position: "absolute", left: "0px", top: "652px", width: "394px", height: "calc(248px + var(--gy, 0px) + 24px)", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pKids)}` }}>
+              <img className="ph ph3" src="./assets/mh-bl.jpg" alt="Members on exercise bikes in a spin class" style={{ display: "block", width: "394px", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
             </div>
-            <div className="px" style={{ position: "absolute", left: "1196px", top: "calc(746px + var(--gy, 0px))", width: "244px", height: "154px", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pTyres)}` }}>
-              <img className="ph ph4" src="./assets/mh-br.jpg" alt="A group of members holding bowling balls at a bowling alley" style={{ display: "block", width: "244px", height: "154px" }} />
+            <div className="px" style={{ position: "absolute", left: "1196px", top: "746px", width: "244px", height: "calc(154px + var(--gy, 0px) + 24px)", borderRadius: "16px", overflow: "hidden", transform: `${s(v.pTyres)}` }}>
+              <img className="ph ph4" src="./assets/mh-br.jpg" alt="A group of members holding bowling balls at a bowling alley" style={{ display: "block", width: "244px", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
             </div>
           </div>
-          <div className="dim" aria-hidden="true" style={{ position: "absolute", left: "0", top: "calc(-1 * var(--gy, 0px))", width: "1440px", height: "calc(900px + 2 * var(--gy, 0px))", background: "#272C3F", pointerEvents: "none" }} />
+          <div className="dim" aria-hidden="true" style={{ position: "absolute", left: "0", width: "1440px", top: "calc(-1 * (var(--gy, 0px) + 30px))", bottom: "calc(-1 * (var(--gy, 0px) + 30px))", background: "#272C3F", pointerEvents: "none" }} />
           <img onLoad={v.hook} src="./assets/ff8847615d28660626f1034069988996.png" alt="" style={{ display: "none" }} />
           <div id={SECTION_IDS.logo} className="logo" style={{ position: "absolute", left: "210px", top: "419px", width: "1021px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", textAlign: "center", pointerEvents: "none" }}>
             <p className="lgl lg1" style={{ margin: "0", fontSize: "56px", fontWeight: "500", lineHeight: "70px", color: "#FFFFFF", whiteSpace: "nowrap" }}>
@@ -590,7 +592,7 @@ export default function render(v) {
           </div>
           <nav aria-label="Topics">
             <div className="tcw" style={{ position: "absolute", left: "299.42px", top: "289.6px", width: "1237px", height: "800px", transform: "scale(0.68)", transformOrigin: "0 0" }}>
-              <a className={`tc ${s(v.lv1)}`} href={`#${SECTION_IDS.s6}`} onClick={v.topic1} aria-label="Bringing defence closer to the community" style={{ "--i": "0", position: "absolute", left: "0px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv1)}`} href="#dc-title" onClick={v.topic1} aria-label="Bringing defence closer to the community" style={{ "--i": "0", position: "absolute", left: "0px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs0" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -621,7 +623,7 @@ export default function render(v) {
                   <path d="M1.5 16H36M21 1.5 35.5 16 21 30.5" stroke="#AAAAAA" strokeWidth="3" />
                 </svg>
               </a>
-              <a className={`tc ${s(v.lv2)}`} href={`#${SECTION_IDS.s7}`} onClick={v.topic2} aria-label="Appreciating national servicemen" style={{ "--i": "1", position: "absolute", left: "420.33px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv2)}`} href="#an-title" onClick={v.topic2} aria-label="Appreciating national servicemen" style={{ "--i": "1", position: "absolute", left: "420.33px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs1" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -652,7 +654,7 @@ export default function render(v) {
                   <path d="M1.5 16H36M21 1.5 35.5 16 21 30.5" stroke="#AAAAAA" strokeWidth="3" />
                 </svg>
               </a>
-              <a className={`tc ${s(v.lv3)}`} href={`#${SECTION_IDS.s8}`} onClick={v.topic3} aria-label="Strengthening bonds" style={{ "--i": "2", position: "absolute", left: "840.67px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv3)}`} href="#sb-title" onClick={v.topic3} aria-label="Strengthening bonds" style={{ "--i": "2", position: "absolute", left: "840.67px", top: "0px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs2" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -683,7 +685,7 @@ export default function render(v) {
                   <path d="M1.5 16H36M21 1.5 35.5 16 21 30.5" stroke="#AAAAAA" strokeWidth="3" />
                 </svg>
               </a>
-              <a className={`tc ${s(v.lv4)}`} href={`#${SECTION_IDS.mb}`} onClick={v.topic4} aria-label="Rewarding privileges" style={{ "--i": "3", position: "absolute", left: "210.17px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv4)}`} href="#mb-title" onClick={v.topic4} aria-label="Rewarding privileges" style={{ "--i": "3", position: "absolute", left: "210.17px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs3" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -714,7 +716,7 @@ export default function render(v) {
                   <path d="M1.5 16H36M21 1.5 35.5 16 21 30.5" stroke="#AAAAAA" strokeWidth="3" />
                 </svg>
               </a>
-              <a className={`tc ${s(v.lv5)}`} href={`#${SECTION_IDS.fc1}`} onClick={v.topic5} aria-label="Enhancing SAFRA Clubs & Facilities" style={{ "--i": "4", position: "absolute", left: "630.5px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
+              <a className={`tc ${s(v.lv5)}`} href="#fc-title" onClick={v.topic5} aria-label="Enhancing SAFRA Clubs & Facilities" style={{ "--i": "4", position: "absolute", left: "630.5px", top: "416px", width: "396.33px", height: "384px", boxSizing: "border-box", padding: "36px", borderRadius: "24px", textDecoration: "none" }}>
                 <svg className="tc-s" aria-hidden="true" width="396.33" height="384" viewBox="0 0 396.33 384" style={{ position: "absolute", left: "0", top: "0", overflow: "visible", pointerEvents: "none" }}>
                   <defs>
                     <linearGradient id="tcs4" x1="0" y1="0" x2="396.33" y2="384" gradientUnits="userSpaceOnUse">
@@ -1110,28 +1112,28 @@ export default function render(v) {
                     </linearGradient>
                   </defs>
                 </svg>
-                <button className="dcph" type="button" aria-label="View: Video still: an animated serviceman gives a thumbs-up at a hawker stall offering 30% off to all NSmen" onClick={v.lb7_1_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "320px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
+                <button className="dcph" type="button" aria-label="View: Video: Gratitude In Bloom (an animated serviceman gives a thumbs-up at a hawker stall offering 30% off to all NSmen)" onClick={v.lb7_1_0} style={{ translate: `${s(v.pp?.d0)}`, position: "absolute", left: "815px", top: "202px", width: "625px", height: "320px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/an2-v1.jpg" alt="" style={{ position: "absolute", left: "0px", top: "-31.88px", width: "625px", height: "384.35px", maxWidth: "none", objectFit: "cover", filter: "brightness(0.8)", transform: `translateY(${s(v.d7?.s1?.ph)}%)` }} />
                   <svg aria-hidden="true" width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ position: "absolute", left: "calc(50% - 24px)", top: "calc(50% - 24px)", pointerEvents: "none", transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 3.8435px))` }}>
                     <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
                     <path fillRule="evenodd" clipRule="evenodd" d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z" fill="#FFFFFF" />
                   </svg>
                 </button>
-                <button className="dcph" type="button" aria-label="View: Video still: a young serviceman shares a home-cooked meal with his family" onClick={v.lb7_1_1} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "112px", top: "202px", width: "380px", height: "250px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
+                <button className="dcph" type="button" aria-label="View: Video: Serving Together (a young serviceman shares a home-cooked meal with his family)" onClick={v.lb7_1_1} style={{ translate: `${s(v.pp?.d1)}`, position: "absolute", left: "112px", top: "202px", width: "380px", height: "250px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/an2-v2.jpg" alt="" style={{ position: "absolute", left: "-51.37px", top: "0px", width: "521.85px", height: "250px", maxWidth: "none", objectFit: "cover", filter: "brightness(0.8)", transform: `translateY(${s(v.d7?.s1?.ph)}%)` }} />
                   <svg aria-hidden="true" width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ position: "absolute", left: "calc(50% - 24px)", top: "calc(50% - 24px)", pointerEvents: "none", transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.5000px))` }}>
                     <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
                     <path fillRule="evenodd" clipRule="evenodd" d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z" fill="#FFFFFF" />
                   </svg>
                 </button>
-                <button className="dcph" type="button" aria-label="View: Video still: paper-craft figures in different service uniforms stand in front of the Singapore skyline" onClick={v.lb7_1_2} style={{ translate: `${s(v.pp?.d2)}`, position: "absolute", left: "64px", top: "547.66px", width: "340px", height: "210px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
+                <button className="dcph" type="button" aria-label="View: Video: Once Upon a Time (paper-craft figures in different service uniforms stand in front of the Singapore skyline)" onClick={v.lb7_1_2} style={{ translate: `${s(v.pp?.d2)}`, position: "absolute", left: "64px", top: "547.66px", width: "340px", height: "210px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/an2-v3.jpg" alt="" style={{ position: "absolute", left: "-28.17px", top: "-4.51px", width: "414.31px", height: "219.02px", maxWidth: "none", objectFit: "cover", filter: "brightness(0.7)", transform: `translateY(${s(v.d7?.s1?.ph)}%)` }} />
                   <svg aria-hidden="true" width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ position: "absolute", left: "calc(50% - 24px)", top: "calc(50% - 24px)", pointerEvents: "none", transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.1902px))` }}>
                     <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
                     <path fillRule="evenodd" clipRule="evenodd" d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z" fill="#FFFFFF" />
                   </svg>
                 </button>
-                <button className="dcph" type="button" aria-label="View: Video still: cartoon characters representing different services stand side by side" onClick={v.lb7_1_3} style={{ translate: `${s(v.pp?.d3)}`, position: "absolute", left: "1037px", top: "606px", width: "334px", height: "200px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
+                <button className="dcph" type="button" aria-label="View: Video: The Strength Within (cartoon characters representing different services stand side by side)" onClick={v.lb7_1_3} style={{ translate: `${s(v.pp?.d3)}`, position: "absolute", left: "1037px", top: "606px", width: "334px", height: "200px", padding: "0", border: "0", borderRadius: "16px", overflow: "hidden", background: "transparent", clipPath: "inset(0 round 16px)" }}>
                   <img src="./assets/an2-v4.jpg" alt="" style={{ position: "absolute", left: "-19.93px", top: "-1.47px", width: "379.73px", height: "211.28px", maxWidth: "none", objectFit: "cover", filter: "brightness(0.8)", transform: `translateY(${s(v.d7?.s1?.ph)}%)` }} />
                   <svg aria-hidden="true" width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ position: "absolute", left: "calc(50% - 24px)", top: "calc(50% - 24px)", pointerEvents: "none", transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.1128px))` }}>
                     <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
@@ -1687,7 +1689,7 @@ export default function render(v) {
           <div className="nv8" aria-hidden="true" />
         </section>
                 {/* one gradient behind the band under section 9 and Clubs & Facilities, so it flows through both (Membership is an L2 page on desktop) */}
-        <section id={SECTION_IDS.mb} className="s10" aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%)", borderImage: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.mb} className="s10" aria-labelledby="mb-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)) calc(-1 * var(--gy, 0px)))", background: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%)", borderImage: "linear-gradient(120.35deg, #6252A4 0.57%, #F14192 47.17%, #F6765D 88.75%, #F69141 95.59%) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)" }}>
           <button className="bkb mbbk" type="button" data-z="1" aria-label="Back to the topics" onClick={v.backMb} style={{ position: "absolute", left: "64px", top: "48px", width: "64px", height: "64px", padding: "0", border: "1.5px solid #FFFFFF", borderRadius: "80px", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box", zIndex: "3" }}>
             <svg width="38" height="32" viewBox="0 0 38 32" fill="none" aria-hidden="true">
               <path d="M36.5 16H2.5M16 2.5 2.5 16 16 29.5" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -1699,22 +1701,23 @@ export default function render(v) {
           {/* Figma 2110:7454: below the 152px header the copy on the left stays fixed; only the card stack scrolls, and only when an open card makes it taller than the space (wheel anywhere here drives it) */}
           <div onWheel={v.mbScroll} style={{ position: "absolute", left: "0", top: "152px", width: "1440px", height: "748px" }}>
             <div style={{ position: "absolute", left: "104px", top: "16px", width: "396px", display: "flex", flexDirection: "column", gap: "24px" }}>
-              <h2 id="mb-title" className="mbk mk2" aria-label="Our top rewarding privileges" style={{ margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase", color: "#FFFFFF" }}>
-                Our top
-                <br />
+              <h2 id="mb-title" className="mbk mk2" aria-label="Rewarding privileges" style={{ margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase", color: "#FFFFFF" }}>
                 Rewarding
                 <br />
                 privileges
               </h2>
               <p className="mbk mk4" style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.6", letterSpacing: "0.48px", color: "#DDDDDD" }}>
-                Preferential rates and exclusive privileges enabled SAFRA members to stretch every dollar and reap greater cost savings on a wide variety of product and services throughout the year.
+                SAFRA members enjoyed a world of benefits whole year round, ranging from exclusive privileges to preferential rates at SAFRA clubs and partner merchants islandwide.
               </p>
             </div>
             <p className="mbk mk5" style={{ display: "none", position: "absolute", left: "564px", top: "104px", width: "772px", margin: "0", textAlign: "center", fontSize: "32px", fontWeight: "700", lineHeight: "1.6", letterSpacing: "0.64px", color: "#FFFFFF" }}>
               TOP PICKS
             </p>
-            <div className="mbsc" style={{ position: "absolute", left: "564px", top: "0", width: "772px", height: "748px", boxSizing: "border-box", padding: "16px 0 24px", overflowX: "hidden", overflowY: "auto", overscrollBehavior: "contain" }}>
-            <div className="mbk mk5" role="group" aria-label="Top picks by category" style={{ position: "relative", width: "772px", borderRadius: "16px" }}>
+            <div className="mbsc" style={{ position: "absolute", left: "564px", top: "0", width: "772px", height: "calc(748px + var(--gy, 0px))", boxSizing: "border-box", padding: "24px 0 24px", overflowX: "hidden", overflowY: "auto", overscrollBehavior: "contain" }}>
+            <p className="mbk mk5" id="mb-picks" style={{ margin: "0 0 24px", padding: "0 24px", fontSize: "32px", fontWeight: "700", lineHeight: "1.6", letterSpacing: "0.64px", textTransform: "uppercase", color: "#EEEEEE" }}>
+              Top picks
+            </p>
+            <div className="mbk mk5" role="group" aria-labelledby="mb-picks" style={{ position: "relative", width: "772px", borderRadius: "16px" }}>
               <div id={screenId("mb", 0)} className={`mbs ${s(v.mbv?.dv0)}`} style={{ position: "relative", zIndex: "1", marginTop: "0", width: "772px", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", gap: "40px", borderRadius: "16px", background: "#313851" }}>
                 <h3 style={{ margin: "0" }}>
                   <button className="mbh" type="button" aria-expanded={v.mbv?.de0} onClick={v.mbTab0} style={{ display: "flex", alignItems: "center", gap: "24px", width: "100%", padding: "0", margin: "0", border: "0", background: "transparent", textAlign: "left", fontFamily: "inherit", cursor: "pointer" }}>
@@ -1722,7 +1725,10 @@ export default function render(v) {
                     <span style={{ flex: "1 1 auto", minWidth: "0", fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
                       {"Food & Groceries"}
                     </span>
-                    <img className="mbpl" src={v.mbv?.de0 ? "./assets/mb-minus.svg" : "./assets/mb-plus.svg"} alt="" aria-hidden="true" width="40" height="40" style={{ display: "block", flex: "none" }} />
+                    <svg className="mbpl" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ display: "block", flex: "none" }}>
+                      <path d="M33.33 20H6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
+                      <path className="mbpv" d="M20 33.33V6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
+                    </svg>
                   </button>
                 </h3>
                 <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -1760,7 +1766,10 @@ export default function render(v) {
                     <span style={{ flex: "1 1 auto", minWidth: "0", fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
                       {"Education"}
                     </span>
-                    <img className="mbpl" src={v.mbv?.de1 ? "./assets/mb-minus.svg" : "./assets/mb-plus.svg"} alt="" aria-hidden="true" width="40" height="40" style={{ display: "block", flex: "none" }} />
+                    <svg className="mbpl" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ display: "block", flex: "none" }}>
+                      <path d="M33.33 20H6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
+                      <path className="mbpv" d="M20 33.33V6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
+                    </svg>
                   </button>
                 </h3>
                 <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -1797,7 +1806,10 @@ export default function render(v) {
                     <span style={{ flex: "1 1 auto", minWidth: "0", fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
                       {"Movies & Entertainment"}
                     </span>
-                    <img className="mbpl" src={v.mbv?.de2 ? "./assets/mb-minus.svg" : "./assets/mb-plus.svg"} alt="" aria-hidden="true" width="40" height="40" style={{ display: "block", flex: "none" }} />
+                    <svg className="mbpl" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ display: "block", flex: "none" }}>
+                      <path d="M33.33 20H6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
+                      <path className="mbpv" d="M20 33.33V6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
+                    </svg>
                   </button>
                 </h3>
                 <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -1852,7 +1864,10 @@ export default function render(v) {
                     <span style={{ flex: "1 1 auto", minWidth: "0", fontSize: "24px", fontWeight: "600", lineHeight: "1.2", color: "#F34141", whiteSpace: "nowrap" }}>
                       {"Travel, Staycations & Local Attractions"}
                     </span>
-                    <img className="mbpl" src={v.mbv?.de3 ? "./assets/mb-minus.svg" : "./assets/mb-plus.svg"} alt="" aria-hidden="true" width="40" height="40" style={{ display: "block", flex: "none" }} />
+                    <svg className="mbpl" aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ display: "block", flex: "none" }}>
+                      <path d="M33.33 20H6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
+                      <path className="mbpv" d="M20 33.33V6.67" stroke="#AAAAAA" strokeWidth="3.33333" strokeLinecap="round" />
+                    </svg>
                   </button>
                 </h3>
                 <div className="mbc" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -1937,27 +1952,26 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section id={SECTION_IDS.fc1} className="s15" aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "1613px", overflow: "hidden", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
-          {/* Figma 2110:7585: L2 header (back + next), title left-aligned at 232, cards from 339 */}
+        <section id={SECTION_IDS.fc1} className="s15" aria-labelledby="fc-title" style={{ position: "absolute", left: "0", top: "1818px", width: "1440px", height: "1429.8px", overflow: "hidden", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+          {/* Figma 2110:7585 / 2290:2829: L2 header — back, 40px gradient title beside it, next on the right; cards from 176 */}
           <button className="bkb fcbk" type="button" data-z="1" aria-label="Back to the topics" onClick={v.backFc} style={{ position: "absolute", left: "64px", top: "48px", width: "64px", height: "64px", padding: "0", border: "1.5px solid #FFFFFF", borderRadius: "80px", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box", zIndex: "3" }}>
             <svg width="38" height="32" viewBox="0 0 38 32" fill="none" aria-hidden="true">
               <path d="M36.5 16H2.5M16 2.5 2.5 16 16 29.5" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
+          <h2 id="fc-title" className="fck fc1k" style={{ "--d": ".35s", position: "absolute", left: "160px", top: "56px", margin: "0", fontSize: "40px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "0.8px", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+            <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+              {"Enhancing SAFRA Clubs & Facilities"}
+            </span>
+          </h2>
           <p className="nxb fcnx" style={{ position: "absolute", right: "64px", top: "88px", height: "24px", margin: "0", fontSize: "20px", fontWeight: "600", lineHeight: "1.2", textTransform: "uppercase", whiteSpace: "nowrap", color: "#6E778B", pointerEvents: "none" }}>
             Next: Looking forward
           </p>
-          <div style={{ position: "absolute", left: "104px", top: "232px", width: "1232px", textAlign: "left" }}>
-            <h2 id="fc-title" className="fck fc1k" style={{ "--d": ".45s", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
-              <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.04%, #F6765D 92.79%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", WebkitBoxDecorationBreak: "clone", boxDecorationBreak: "clone" }}>
-                {"Enhancing SAFRA Clubs & Facilities"}
-              </span>
-            </h2>
-          </div>
-          <div className="fci fcin fc1k" style={{ "--d": ".75s", "--r": "-3deg", "--fx": "-180px", "--fr": "-12deg", position: "absolute", left: "104px", top: "359.2px", width: "788px", height: "525.4px" }}>
+          
+          <div className="fci fcin fc1k" style={{ "--d": ".75s", "--r": "-3deg", "--fx": "-180px", "--fr": "-12deg", position: "absolute", left: "104px", top: "176px", width: "788px", height: "525.4px" }}>
             <img className="fcp" src="./assets/fc-gym.jpg" alt="EnergyOne Gym at SAFRA Toa Payoh with its illuminated ceiling sign, free weights and training zones" style={{ display: "block", width: "788px", height: "525.4px", borderRadius: "24px", objectFit: "cover" }} />
           </div>
-          <article className="fcin fc1k" style={{ "--d": ".95s", "--r": "0deg", "--fx": "180px", "--fr": "6deg", position: "absolute", left: "812px", top: "418.5px", width: "524px", height: "366px", boxSizing: "border-box", padding: "48px", display: "flex", flexDirection: "column", justifyContent: "center", gap: "32px", borderRadius: "16px", background: "#000722" }}>
+          <article className="fcin fc1k" style={{ "--d": ".95s", "--r": "0deg", "--fx": "180px", "--fr": "6deg", position: "absolute", left: "812px", top: "235.3px", width: "524px", height: "366px", boxSizing: "border-box", padding: "48px", display: "flex", flexDirection: "column", justifyContent: "center", gap: "32px", borderRadius: "16px", background: "#000722" }}>
             <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "500", lineHeight: "1.2", letterSpacing: "0.48px", color: "#F34141" }}>
               Elevated experience
               <br />
@@ -1967,13 +1981,13 @@ export default function render(v) {
               The gym at SAFRA Toa Payoh was enhanced with redesigned workout zones, new functional training equipment, Booty Builder machines and refreshed amenities to improve members’ fitness experience.
             </p>
           </article>
-          <div className="fci fcin fc2k" style={{ "--d": ".35s", "--r": "2deg", "--fx": "180px", "--fr": "10deg", position: "absolute", left: "548px", top: "917.6px", width: "788px", height: "518.3px" }}>
+          <div className="fci fcin fc2k" style={{ "--d": ".35s", "--r": "2deg", "--fx": "180px", "--fr": "10deg", position: "absolute", left: "548px", top: "734.4px", width: "788px", height: "518.3px" }}>
             <img className="fcp" src="./assets/fc-cmpb-cafe.jpg" alt="Diners at the new SAFRA café lounge at Central Manpower Base" style={{ display: "block", width: "788px", height: "518.3px", borderRadius: "24px", objectFit: "cover" }} />
           </div>
-          <div className="fci fcin fc2k" style={{ "--d": ".6s", "--r": "-4deg", "--fx": "140px", "--fr": "-14deg", position: "absolute", left: "1064px", top: "1296px", width: "320px", height: "213px" }}>
+          <div className="fci fcin fc2k" style={{ "--d": ".6s", "--r": "-4deg", "--fx": "140px", "--fr": "-14deg", position: "absolute", left: "1064px", top: "1112.8px", width: "320px", height: "213px" }}>
             <img className="fcp" src="./assets/fc-cmpb-lounge.jpg" alt="The SAFRA@CMPB lounge with sofas and a membership promotion screen" style={{ display: "block", width: "320px", height: "213px", borderRadius: "16px", objectFit: "cover" }} />
           </div>
-          <article className="fcin fc2k" style={{ "--d": ".5s", "--r": "0deg", "--fx": "-180px", "--fr": "-6deg", position: "absolute", left: "104px", top: "983.5px", width: "524px", height: "366px", boxSizing: "border-box", padding: "48px", display: "flex", flexDirection: "column", justifyContent: "center", gap: "32px", borderRadius: "16px", background: "#000722" }}>
+          <article className="fcin fc2k" style={{ "--d": ".5s", "--r": "0deg", "--fx": "-180px", "--fr": "-6deg", position: "absolute", left: "104px", top: "800.3px", width: "524px", height: "366px", boxSizing: "border-box", padding: "48px", display: "flex", flexDirection: "column", justifyContent: "center", gap: "32px", borderRadius: "16px", background: "#000722" }}>
             <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "500", lineHeight: "1.2", letterSpacing: "0.48px", color: "#F34141" }}>
               Launch of SAFRA@CMPB
             </h3>
@@ -2102,7 +2116,7 @@ export default function render(v) {
             </div>
           </div>
         </section>
-        <section id={SECTION_IDS.wc} className="s12" aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+        <section id={SECTION_IDS.wc} className="s12" aria-labelledby="wc-title" style={{ position: "absolute", left: "0", top: "2718px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
           <h2 id="wc-title" aria-label="The year may be over. We’re building for the future." style={{ position: "absolute", left: "0", top: "0", width: "1440px", height: "684px", margin: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", fontWeight: "400", textAlign: "center" }}>
             <span className="t12 t12a" style={{ display: "block", fontSize: "64px", fontWeight: "400", lineHeight: "1.1", letterSpacing: "1.28px", color: "#6E778B" }}>
               <span className="hv" aria-hidden="true" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
@@ -2266,10 +2280,10 @@ export default function render(v) {
               </span>
             </span>
           </h2>
-          <svg className="tg2" hidden aria-hidden="true" style={{ position: "absolute", left: `${-(v.gx || 0)}px`, top: "684px", width: `${1440 + 2 * (v.gx || 0)}px`, height: "217px", display: "block" }} viewBox={`${-(v.gx || 0)} 0 ${1440 + 2 * (v.gx || 0)} 217`} preserveAspectRatio="none">
-            <path fill="#18212A" d={bleedPath(TONGUE, v.gx)} />
+          <svg className="tg2" aria-hidden="true" style={{ position: "absolute", left: `${-(v.gx || 0)}px`, top: "684px", width: `${1440 + 2 * (v.gx || 0)}px`, height: "217px", display: "block" }} viewBox={`${-(v.gx || 0)} 0 ${1440 + 2 * (v.gx || 0)} 217`} preserveAspectRatio="none">
+            <path fill="#272C3F" d={bleedPath(TONGUE, v.gx)} />
           </svg>
-          <button className="cue2" hidden type="button" aria-label="Scroll down to see what's next for SAFRA" onClick={v.next} style={{ position: "absolute", left: "642px", top: "712px", width: "160px", height: "160px", padding: "0", border: "0", borderRadius: "50%", background: "transparent", cursor: "pointer" }}>
+          <button className="cue2" type="button" aria-label="Scroll down to see what's next for SAFRA" onClick={v.next} style={{ position: "absolute", left: "642px", top: "712px", width: "160px", height: "160px", padding: "0", border: "0", borderRadius: "50%", background: "transparent", cursor: "pointer" }}>
             <svg width="160" height="160" viewBox="0 0 160 160" style={{ display: "block", overflow: "visible" }}>
               <defs>
                 <linearGradient id="cue2G" x1="10" y1="80" x2="150" y2="80" gradientUnits="userSpaceOnUse">
@@ -2298,161 +2312,326 @@ export default function render(v) {
             </svg>
           </button>
         </section>
-        <section className="s13" hidden aria-labelledby="nx-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
-          <div style={{ position: "absolute", left: "104px", top: "120px", width: "1232px", display: "flex", flexDirection: "column", gap: "16px", textAlign: "center" }}>
-            <h2 id="nx-title" className="nxk" style={{ "--d": ".55s", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
-              <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                Looking forward
+        <section id={SECTION_IDS.nx} className="s13" aria-labelledby="nx-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", clipPath: "inset(calc(-1 * var(--gy, 0px)) calc(-1 * var(--gx, 0px)))", background: "#272C3F", borderImage: "linear-gradient(#272C3F, #272C3F) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)" }}>
+          {/* Looking forward → "01": a dark circle grows from the centre and spreads past every edge, revealing the next panel */}
+          <div className="lfc" aria-hidden="true" style={{ position: "absolute", left: "538.5px", top: "268.0px", width: "364px", height: "364px", borderRadius: "50%", background: "#18212A", "--lfs": (2 * Math.hypot(720.5 + (v.gx || 0), 450.0 + (v.gy || 0)) / 364 + 0.02).toFixed(3) }} />
+          <div className="lfh" style={{ "--lfR": `${(Math.hypot(720.5 + (v.gx || 0), 450.0 + (v.gy || 0)) + 3.64).toFixed(1)}px`, position: "absolute", inset: "0", padding: "0 104px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "16px", textAlign: "center" }}>
+            <div className="lfz" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+              <h2 id="nx-title" className="nxk" style={{ "--d": ".55s", margin: "0", fontSize: "64px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.28px", textTransform: "uppercase" }}>
+                <span style={{ display: "inline-block", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                  3 key highlights
+                  <br />
+                  to look forward to
+                </span>
+              </h2>
+              <p className="nxk" style={{ "--d": ".7s", margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.6", letterSpacing: "0.48px", color: "#DDDDDD" }}>
+                In the coming years, SAFRA will do more to strengthen the collective will of
+                <br />
+                Singaporeans to defend Singapore and support the lifestyle needs of
+                <br />
+                national servicemen and their families.
+              </p>
+            </div>
+          </div>
+          {/* the same circle again, above the intro text at half strength: where it has spread, the text is dimmed — compositor-only, follows the circle exactly */}
+          <div className="lfc lfc2" aria-hidden="true" style={{ position: "absolute", left: "538.5px", top: "268.0px", width: "364px", height: "364px", borderRadius: "50%", background: "#18212A", "--lfs": (2 * Math.hypot(720.5 + (v.gx || 0), 450.0 + (v.gy || 0)) / 364 + 0.02).toFixed(3) }} />
+          <div className="lf1c" aria-hidden={v.lf1Hidden} style={{ position: "absolute", left: "64px", top: "80px", right: "64px", display: "flex", flexDirection: "column", gap: "64px" }}>
+            <div style={{ display: "flex", gap: "32px", alignItems: "flex-start" }}>
+              <span className="lf1k" style={{ "--k": "0", flex: "none", fontSize: "40px", fontWeight: "500", lineHeight: "1.4", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                01
+              </span>
+              <h3 className="lf1k" style={{ "--k": "1", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
+                <span style={{ display: "inline-block", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                  Celebrating defence heritage
+                <br />
+                at SAFRA clubs
+                </span>
+              </h3>
+            </div>
+            <div className="lf1k" style={{ "--k": "2", padding: "0 240px 0 80px", display: "flex", flexDirection: "column", gap: "1.6em", fontSize: "24px", fontWeight: "400", lineHeight: "1.6", letterSpacing: "0.48px", color: "#FFFFFF" }}>
+              <p style={{ margin: "0" }}>
+                SAFRA clubs will house defence heritage galleries that feature Singapore’s defence transformation and compelling stories about the vital role of the SAF in defending our nation against evolving threats.
+              </p>
+              <p style={{ margin: "0" }}>
+                These galleries will honour our nation’s defenders and inspire the wider community to embrace defence as an important shared responsibility among all Singaporeans.
+              </p>
+            </div>
+          </div>
+        </section>
+        <section id={SECTION_IDS.lf2} className="s17" aria-labelledby="lf2-title" style={{ position: "absolute", left: "0", top: "4518px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)))", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
+          {/* 02 Strengthening commitment to defence — parallax: each layer arrives at its own pace (--py) */}
+          <div className="lfp" style={{ "--py": "70px", position: "absolute", left: "64px", top: "80px", display: "flex", gap: "32px", alignItems: "flex-start" }}>
+            <span aria-hidden="true" style={{ flex: "none", fontSize: "40px", fontWeight: "500", lineHeight: "1.4", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+              02
+            </span>
+            <h2 id="lf2-title" style={{ margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
+              <span style={{ display: "inline-block", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                Strengthening
+                <br />
+                commitment to defence
               </span>
             </h2>
-            <p className="nxk" style={{ "--d": ".7s", margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.6", letterSpacing: "0.48px", color: "#DDDDDD" }}>
-              Continuing to strengthen support for NSmen and their families,
-              <br />
-              while creating more ways for the wider community to understand and contribute to National Service.
-            </p>
           </div>
-          <nav className="nxk" role="tablist" aria-label="Looking forward" style={{ "--d": ".85s", position: "absolute", left: "104px", top: "328px", width: "393px" }}>
-            <span aria-hidden="true" style={{ position: "absolute", left: "0", top: "0", width: "1px", height: "192px", background: "#AAAAAA" }} />
-            <span className="nxi" aria-hidden="true" style={{ top: `${s(v.nxv?.top)}px` }} />
-            <button className={`nxt ${s(v.nxv?.t0)}`} type="button" role="tab" aria-selected={v.nxv?.a0} onClick={v.nxTab0}>
-              <span className="nxl">
-                Bringing defence closer
+          <div className="lfp lf2l" role="tablist" aria-label="Strengthening commitment to defence" style={{ "--py": "150px", position: "absolute", left: "144px", top: "278.4px", width: "489px", height: "542px", display: "flex", flexDirection: "column" }}>
+            <span className="lfbar" aria-hidden="true" />
+            <div id={screenId("lf2", 0)} className={`lf2i ${s(v.lf2v?.c0)}`} onMouseDown={v.noFocusScroll} role="tab" aria-selected={v.lf2v?.a0} tabIndex={0} onClick={v.lf2To0} style={{ paddingTop: "0" }}>
+              <h3 className="lf2t">
+                Expanded range of
+                    <br />
+                    NS Experience Camps
+              </h3>
+              <div className="lf2b">
+                <p>
+                  Double the number of camps, including two new variants, will be organised to enable family members of national servicemen to get a taste of National Service. This includes new 1-day NS For Everyone camps and 2D1N women’s camps. All participants will also get to make personalised appreciation gifts for national servicemen.
+                </p>
+              </div>
+            </div>
+            <div id={screenId("lf2", 1)} className={`lf2i ${s(v.lf2v?.c1)}`} onMouseDown={v.noFocusScroll} role="tab" aria-selected={v.lf2v?.a1} tabIndex={0} onClick={v.lf2To1}>
+              <h3 className="lf2t">
+                A new FitX Challenge
+              </h3>
+              <div className="lf2b">
+                <p>
+                  The obstacle race promotes fitness, teamwork and enables the public to experience the rigorous fitness training of National Service through several NS-inspired elements such as the Apex Climb, Low Wall and Leopard Crawl, alongside other functional fitness stations.
+                </p>
+              </div>
+            </div>
+            <div id={screenId("lf2", 2)} className={`lf2i ${s(v.lf2v?.c2)}`} onMouseDown={v.noFocusScroll} role="tab" aria-selected={v.lf2v?.a2} tabIndex={0} onClick={v.lf2To2}>
+              <h3 className="lf2t">
+                Commemorating NS60
+              </h3>
+              <div className="lf2b">
+                <p>
+                  New initiatives will be introduced to celebrate Singapore's defence journey and appreciate national servicemen, including a new series of defence-themed carnivals held across the island to enable the community to learn about the SAF’s defence capabilities and how every individual can play a part in securing our nation’s future.
+                </p>
+              </div>
+            </div>
+            <div className={`lf2i lf2last ${s(v.lf2v?.c3)}`} onMouseDown={v.noFocusScroll} role="tab" aria-selected={v.lf2v?.a3} tabIndex={0} onClick={v.lf2To3}>
+              <h3 className="lf2t">
+                More volunteering opportunities
+              </h3>
+              <div className="lf2b">
+                <p>
+                  More opportunities will be made available for community volunteers to be actively involved in SAFRA initiatives through the SG Defence Volunteer Network.
+                </p>
+              </div>
+            </div>
+          </div>
+          <figure className="lfp" style={{ "--py": "260px", position: "absolute", left: "697px", top: "278.4px", width: "567.45px", margin: "0" }}>
+            <img src="./assets/lf2-camp.jpg" alt="Children with camouflage face paint racing through a tyre obstacle course at an NS Experience Camp" style={{ display: "block", width: "567.45px", height: "358.39px", objectFit: "cover", borderRadius: "16px" }} />
+            <figcaption className="lf2c">
+              NS Experience Camp
+            </figcaption>
+          </figure>
+          <figure className="lfp" style={{ "--py": "380px", position: "absolute", left: "1053.45px", top: "537.95px", width: "323.55px", margin: "0" }}>
+            <img src="./assets/lf2-fitx.jpg" alt="Two participants doing a leopard crawl under camouflage netting at the FitX Challenge" style={{ display: "block", width: "323.55px", height: "209.06px", objectFit: "cover", borderRadius: "16px" }} />
+            <figcaption className="lf2c">
+              FitX Challenge
+            </figcaption>
+          </figure>
+        </section>
+        <section id={SECTION_IDS.lf3} className="s18" aria-labelledby="lf3-title" style={{ position: "absolute", left: "0", top: "5418px", width: "1440px", height: "900px", clipPath: "inset(0 calc(-1 * var(--gx, 0px)) calc(-1 * var(--gy, 0px)))", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px) var(--gy, 0px)" }}>
+          {/* 03 Supporting NSmen's needs — the photo stays put while the left column scrolls */}
+          <div className="lfp3" style={{ "--py": "70px", position: "absolute", left: "64px", top: "80px", display: "flex", gap: "32px", alignItems: "flex-start" }}>
+            <span aria-hidden="true" style={{ flex: "none", fontSize: "40px", fontWeight: "500", lineHeight: "1.4", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+              03
+            </span>
+            <h2 id="lf3-title" style={{ margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "1.2", letterSpacing: "1.12px", textTransform: "uppercase" }}>
+              <span style={{ display: "inline-block", background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                Supporting
+                <br />
+                NSmen’s needs
               </span>
-            </button>
-            <button className={`nxt ${s(v.nxv?.t1)}`} type="button" role="tab" aria-selected={v.nxv?.a1} onClick={v.nxTab1}>
-              <span className="nxl">
-                Creating better spaces
-              </span>
-            </button>
-            <button className={`nxt ${s(v.nxv?.t2)}`} type="button" role="tab" aria-selected={v.nxv?.a2} onClick={v.nxTab2}>
-              <span className="nxl">
-                Making visits seamless
-              </span>
-            </button>
-          </nav>
-          <div className="nxk" style={{ "--d": "1s", position: "absolute", left: "545px", top: "328px", width: "791px", bottom: "0" }}>
-            <div className="nxs" style={{ position: "absolute", inset: "0", overflow: "hidden" }}>
-              <div style={{ position: "relative", paddingBottom: "72px" }}>
-                <div className={`nxp ${s(v.nxv?.p0)}`} style={{ display: "flex", flexDirection: "column", gap: "16px", paddingBottom: "8px" }}>
-                  <article style={{ boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", borderRadius: "16px", background: "#272C3F", gap: "24px" }}>
-                    <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.2", color: "#F34141" }}>
-                      Expanding NS Experience Camps
-                    </h3>
-                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                      <div style={{ flex: "1 0 0", minWidth: "0", paddingBottom: "16px", display: "flex", flexDirection: "column", gap: "2px" }}>
-                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", lineHeight: "1.4", color: "#EEEEEE" }}>
-                          3,000
-                        </p>
-                        <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
-                          participants targeted
-                        </p>
-                      </div>
-                      <p style={{ flex: "1 0 0", minWidth: "0", margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#EEEEEE", opacity: ".8" }}>
-                        More families, children and women can experience National Service through hands-on, NS-inspired activities.
-                      </p>
-                    </div>
-                  </article>
-                  <article style={{ boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", borderRadius: "16px", background: "#272C3F", gap: "24px" }}>
-                    <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.2", color: "#F34141" }}>
-                      Taking NS-inspired fitness further
-                    </h3>
-                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                      <div style={{ flex: "1 0 0", minWidth: "0", paddingBottom: "16px", display: "flex", flexDirection: "column", gap: "2px" }}>
-                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", lineHeight: "1.4", color: "#EEEEEE" }}>
-                          1,300+
-                        </p>
-                        <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
-                          participants expected
-                        </p>
-                      </div>
-                      <p style={{ flex: "1 0 0", minWidth: "0", margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#EEEEEE", opacity: ".8" }}>
-                        The inaugural FitX Challenge brings people together through
-                        <br />
-                        NS-inspired obstacles and functional fitness.
-                      </p>
-                    </div>
-                  </article>
-                  <article style={{ boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", borderRadius: "16px", background: "#272C3F", gap: "16px" }}>
-                    <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.2", color: "#F34141" }}>
-                      Bringing defence into community
-                    </h3>
-                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                      <div style={{ flex: "1 0 0", minWidth: "0", paddingBottom: "16px", display: "flex", flexDirection: "column", gap: "2px" }}>
-                        <p style={{ margin: "0", fontSize: "56px", fontWeight: "400", letterSpacing: "0", lineHeight: "1.4", color: "#EEEEEE" }}>
-                          2027
-                        </p>
-                        <p style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.4", color: "#EEEEEE" }}>
-                          community activities
-                        </p>
-                      </div>
-                      <p style={{ flex: "1 0 0", minWidth: "0", margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#EEEEEE", opacity: ".8" }}>
-                        Family-friendly activities and hands-on experiences will bring defence closer to the community.
-                        <br />
-                        <br />
-                      </p>
-                    </div>
-                  </article>
-                  <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-                    <article style={{ flex: "1 0 0", minWidth: "0", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", borderRadius: "16px", background: "#272C3F", gap: "24px" }}>
-                      <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.2", color: "#F34141" }}>
-                        Creating more ways to contribute
-                      </h3>
-                      <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#EEEEEE", opacity: ".8" }}>
-                        The SG Defence Volunteer Network gives volunteers more ways to contribute their skills towards defence and support NSmen and families.
-                      </p>
-                    </article>
-                    <article style={{ flex: "1 0 0", minWidth: "0", boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", borderRadius: "16px", background: "#272C3F", gap: "24px" }}>
-                      <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.2", color: "#F34141" }}>
-                        Making defence part of everyday spaces
-                      </h3>
-                      <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#EEEEEE", opacity: ".8" }}>
-                        The upcoming Defence Engagement Gallery brings Singapore’s defence story to life through immersive and interactive experiences.
-                      </p>
-                    </article>
-                  </div>
+            </h2>
+          </div>
+          <div className="lf3s lfp3" style={{ "--py": "150px", position: "absolute", left: "144px", top: "278.4px", width: "472px", height: "calc(621.6px + var(--gy, 0px))", overflowY: "auto", paddingBottom: "80px", boxSizing: "border-box" }}>
+            <span className="lfbar" aria-hidden="true" />
+            <div id={screenId("lf3", 0)} className={`lf2i ${s(v.lf3v?.c0)}`} onMouseDown={v.noFocusScroll} role="tab" aria-selected={v.lf3v?.a0} tabIndex={0} onClick={v.lf3To0}>
+              <h3 className="lf2t">
+                Enhanced experiences at
+                  <br />
+                  SAFRA clubs
+              </h3>
+              <div className="lf3c">
+              <div className="lf3b">
+                <h4>
+                  SAFRA Yishun: New adventures await
+                </h4>
+                <p>
+                  Climbing enthusiasts can enjoy a refreshed bouldering gym and a new auto-belay system at the 18m climbing wall. New glamping facilities will be introduced in the coming months. The Indoor Air Weapons Range is also being upgraded to feature additional shooting lanes and a new simulated shooting facility by early 2027.
+                </p>
+                <h4>
+                  SAFRA Tampines: Swinging into action
+                </h4>
+                <p>
+                  Visitors now have access to the first and only rooftop batting cage in Singapore, featuring automated pitching lanes for baseball and softball, managed by iBat.
+                </p>
+                <h4>
+                  SAFRA Toa Payoh: More family fun
+                </h4>
+                <p>
+                  Families can look forward to an enhanced wading pool with new water play features by end-2026.
+                </p>
+              </div>
+              </div>
+            </div>
+            <div id={screenId("lf3", 1)} className={`lf2i ${s(v.lf3v?.c1)}`} onMouseDown={v.noFocusScroll} role="tab" aria-selected={v.lf3v?.a1} tabIndex={0} onClick={v.lf3To1}>
+              <h3 className="lf2t">
+                Upgrading of SAFRA Jurong
+              </h3>
+              <div className="lf3c">
+                <div className="lf3b">
+                  <p>
+                    SAFRA Jurong will be rethemed as an Urban Oasis by 2028, featuring several new facilities such as resort-style villas for staycations, an F&amp;B avenue and a 5-a-side futsal court. Its swimming pools, EnergyOne gym and Kidz Amaze indoor playground will also be enhanced, along with the club facade and atrium to feature a more modern look and spacious configuration.
+                  </p>
                 </div>
-                <div className={`nxp ${s(v.nxv?.px)}`}>
-                  <article style={{ boxSizing: "border-box", padding: "32px", display: "flex", flexDirection: "column", borderRadius: "16px", background: "#272C3F", gap: "24px" }}>
-                    <h3 style={{ margin: "0", fontSize: "24px", fontWeight: "400", lineHeight: "1.2", color: "#F34141" }}>
-                      <T v={v.nxv?.name} />
-                    </h3>
-                    <p style={{ margin: "0", fontSize: "20px", fontWeight: "400", lineHeight: "1.6", color: "#EEEEEE", opacity: ".8" }}>
-                      Content for this topic is still to come.
-                    </p>
-                  </article>
+              </div>
+            </div>
+            <div id={screenId("lf3", 2)} className={`lf2i ${s(v.lf3v?.c2)}`} onMouseDown={v.noFocusScroll} role="tab" aria-selected={v.lf3v?.a2} tabIndex={0} onClick={v.lf3To2}>
+              <h3 className="lf2t">
+                New SAFRA Bayshore
+              </h3>
+              <div className="lf3c">
+                <div className="lf3b">
+                  <p>
+                    A new clubhouse will serve national servicemen and their families in the East by 2030. Double the size of the current SAFRA Tampines which it will replace, SAFRA Bayshore will offer a wider range of modern and affordable facilities. Located next to an Integrated Transport Hub comprising Bedok South MRT station and a bus interchange, it will be easily accessible via public transport.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-        <section id={SECTION_IDS.end} className="s14" aria-labelledby="end-title" style={{ position: "absolute", left: "0", top: "3618px", width: "1440px", height: "900px", overflow: "hidden", background: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%)", borderImage: "linear-gradient(90deg, #5D55A7 0%, #A3499F 17%, #E3439A 33%, #F04290 44%, #F35C79 62%, #F5765E 82%, #F68C45 100%) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)" }}>
-          <h2 id="end-title" className="enk" style={{ "--d": ".55s", position: "absolute", left: "104px", top: "325px", margin: "0", fontSize: "56px", fontWeight: "600", lineHeight: "64px", letterSpacing: "0.01em", color: "#FFFFFF" }}>
-            ONE YEAR.
-            <br />
-            MANY CONNECTIONS.
-            <br />
-            ONE SHARED PURPOSE.
-          </h2>
-          <div style={{ position: "absolute", left: "838px", top: "285px", width: "500px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "48px" }}>
-            <p className="enk" style={{ "--d": ".75s", width: "500px", margin: "0", fontSize: "22px", lineHeight: "37px", color: "#FFFFFF" }}>
-              From supporting NSmen and their families to strengthening community ties and our collective commitment to defence, SAFRA continues to bring people together through National Service.
-            </p>
-            <a className="enk dlb" href={import.meta.env.URL_PDF} target="_blank" rel="noopener noreferrer" style={{ "--d": ".95s", width: "499px", height: "100px", boxSizing: "border-box", display: "flex", alignItems: "center", gap: "22px", padding: "0 30px", borderRadius: "16px", background: "#FFFFFF", textDecoration: "none" }}>
-              <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" style={{ flex: "none" }}>
-                <defs>
-                  <linearGradient id="dlg" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#C0469A" />
-                    <stop offset="1" stopColor="#F3606F" />
-                  </linearGradient>
-                </defs>
-                <path d="M14 3v13M8.5 11l5.5 5.5 5.5-5.5M3.5 19v4.5h21V19" fill="none" stroke="url(#dlg)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span style={{ fontSize: "26px", fontWeight: "600", lineHeight: "34px", background: "linear-gradient(90deg, #6452A4 0%, #A2489F 22%, #E3449A 42%, #F04290 55%, #F3606F 78%, #F68C45 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                DOWNLOAD FULL
-                <br />
-                2025/26 ANNUAL REPORT
+          <figure className="lfp3" style={{ "--py": "260px", position: "absolute", left: "696px", top: "278.4px", width: "680px", margin: "0" }}>
+            <div className={`lf3ph ${s(v.lf3v?.ph)}`} style={{ position: "relative" }}>
+              <img className={`lf3im ${s(v.lf3v?.c0)}`} src="./assets/lf3-ibat.jpg" alt="A man at bat in the rooftop batting cage at SAFRA Tampines, with automated pitching lanes ahead" style={{ display: "block", width: "680px", height: "496px", objectFit: "cover", borderRadius: "15.373px" }} />
+              <img className={`lf3im ${s(v.lf3v?.c1)}`} src="./assets/lf3-jurong.jpg" alt="Artist’s impression of the new resort-style villas at SAFRA Jurong" style={{ display: "block", width: "680px", height: "496px", objectFit: "cover", borderRadius: "15.373px", position: "absolute", left: "0", top: "0" }} />
+              <img className={`lf3im ${s(v.lf3v?.c2)}`} src="./assets/lf3-bayshore.jpg" alt="Map of the future SAFRA Bayshore next to the Bedok South MRT station and Integrated Transport Hub, serving NSmen and families in the East" style={{ display: "block", width: "680px", height: "496px", objectFit: "cover", borderRadius: "15.373px", position: "absolute", left: "0", top: "0" }} />
+            </div>
+            <figcaption className="lf2c lf3cap" style={{ textAlign: "right" }}>
+              <span className={`lf3k ${s(v.lf3v?.c0)}`}>
+                iBat at SAFRA Tampines
               </span>
-            </a>
+              <span className={`lf3k ${s(v.lf3v?.c1)}`}>
+                Artist’s impression of the new resort-style villas
+              </span>
+              <span className={`lf3k ${s(v.lf3v?.c2)}`}>
+                Future location of SAFRA Bayshore
+              </span>
+            </figcaption>
+          </figure>
+        </section>
+        <section id={SECTION_IDS.end} className="s14" aria-label="Download the annual report" style={{ position: "absolute", left: "0", top: "6318px", width: "1440px", height: "900px", clipPath: "inset(calc(-1 * var(--gy, 0px)) calc(-1 * var(--gx, 0px)))", background: "linear-gradient(116.64deg, #6252A4 0%, #F14192 50.967%, #F6765D 96.438%, #F69141 103.92%)", borderImage: "linear-gradient(116.64deg, #6252A4 0%, #F14192 50.967%, #F6765D 96.438%, #F69141 103.92%) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)" }}>
+          <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
+            <defs>
+              <linearGradient id="enG" x1="3" y1="21" x2="43" y2="21" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#6252A4" />
+                <stop offset="0.490385" stopColor="#F14192" />
+                <stop offset="0.927885" stopColor="#F6765D" />
+                <stop offset="0.9999" stopColor="#F69141" />
+              </linearGradient>
+            </defs>
+          </svg>
+          {/* closing: an endless marquee — DOWNLOAD [icon] · ANNUAL REPORT — the whole band is the download link */}
+          <a className="enk enmq" href="#" onClick={v.noop} aria-label="Download the full 2025/26 annual report" style={{ "--d": ".45s", position: "absolute", left: "calc(-1 * var(--gx, 0px))", right: "calc(-1 * var(--gx, 0px))", top: "315.5px", height: "106px", display: "block", textDecoration: "none" }}>
+            <span className="entrack" aria-hidden="true">
+                <span className="enset">
+                  <span className="encta">
+                    <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                      Download annual report
+                    </span>
+                    <svg className="enic" width="46" height="42" viewBox="0 0 46 42" fill="none" aria-hidden="true">
+                      <path d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31" stroke="url(#enG)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="enar">
+                    SAFRA FY 2025/26
+                  </span>
+                  <span className="encta">
+                    <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                      Download annual report
+                    </span>
+                    <svg className="enic" width="46" height="42" viewBox="0 0 46 42" fill="none" aria-hidden="true">
+                      <path d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31" stroke="url(#enG)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="enar">
+                    SAFRA FY 2025/26
+                  </span>
+                  <span className="encta">
+                    <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                      Download annual report
+                    </span>
+                    <svg className="enic" width="46" height="42" viewBox="0 0 46 42" fill="none" aria-hidden="true">
+                      <path d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31" stroke="url(#enG)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="enar">
+                    SAFRA FY 2025/26
+                  </span>
+                  <span className="encta">
+                    <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                      Download annual report
+                    </span>
+                    <svg className="enic" width="46" height="42" viewBox="0 0 46 42" fill="none" aria-hidden="true">
+                      <path d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31" stroke="url(#enG)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="enar">
+                    SAFRA FY 2025/26
+                  </span>
+                </span>
+                <span className="enset">
+                  <span className="encta">
+                    <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                      Download annual report
+                    </span>
+                    <svg className="enic" width="46" height="42" viewBox="0 0 46 42" fill="none" aria-hidden="true">
+                      <path d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31" stroke="url(#enG)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="enar">
+                    SAFRA FY 2025/26
+                  </span>
+                  <span className="encta">
+                    <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                      Download annual report
+                    </span>
+                    <svg className="enic" width="46" height="42" viewBox="0 0 46 42" fill="none" aria-hidden="true">
+                      <path d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31" stroke="url(#enG)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="enar">
+                    SAFRA FY 2025/26
+                  </span>
+                  <span className="encta">
+                    <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                      Download annual report
+                    </span>
+                    <svg className="enic" width="46" height="42" viewBox="0 0 46 42" fill="none" aria-hidden="true">
+                      <path d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31" stroke="url(#enG)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="enar">
+                    SAFRA FY 2025/26
+                  </span>
+                  <span className="encta">
+                    <span style={{ background: "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                      Download annual report
+                    </span>
+                    <svg className="enic" width="46" height="42" viewBox="0 0 46 42" fill="none" aria-hidden="true">
+                      <path d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31" stroke="url(#enG)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="enar">
+                    SAFRA FY 2025/26
+                  </span>
+                </span>
+            </span>
+          </a>
+          <div className="enk" style={{ "--d": ".7s", position: "absolute", left: "64px", right: "64px", top: "calc(737px + var(--gy, 0px))", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "64px" }}>
+            <span aria-hidden="true" style={{ display: "block", width: "100%", height: "1px", background: "#EEEEEE" }} />
+            <p style={{ margin: "0", fontSize: "16px", fontWeight: "500", lineHeight: "1.2", color: "#FFFFFF" }}>
+              Copyright © 2026 SAFRA. All Rights Reserved.
+            </p>
           </div>
         </section>
         <span className="bar3w" aria-hidden="true" style={{ "--dx": `${s(v.bar3?.dx)}px`, "--k": `${s(v.bar3?.k)}`, position: "absolute", left: `${s(v.bar3?.x)}px`, top: `${s(v.bar3?.y)}px`, display: "block", width: `${s(v.bar3?.w)}px`, height: `${s(v.bar3?.h)}px`, pointerEvents: "none" }}>
@@ -2474,7 +2653,7 @@ export default function render(v) {
         </div>
       </div>
       <div className={`lb ${s(v.lbv?.cls)}`} role="dialog" aria-modal="true" aria-label="Photo gallery" style={{ position: "absolute", inset: "0", zIndex: "20", background: "#18212A", borderImage: "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)" }}>
-        <div className="lb-media" style={{ position: "absolute", left: "64px", top: "142px", width: "1312px", height: "590px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ position: "absolute", left: "64px", top: "142px", width: "1312px", height: "590px", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img className={`lb-img ${s(v.lbv?.imgCls)}`} key={v.lbv?.gk} src={v.lbv?.src} alt={v.lbv?.alt} style={{ height: "590px", width: "auto", maxWidth: "1312px", objectFit: "contain", display: "block" }} />
           {v.lbv?.vid ? <video className="lb-vid" key={v.lbv?.vid} src={v.lbv?.vid} poster={v.lbv?.poster} aria-label={v.lbv?.vidT} controls autoPlay playsInline preload="auto" style={{ position: "absolute", left: "131.5px", top: "0", width: "1049px", height: "590px", border: "0", borderRadius: "0", background: "#000" , objectFit: "contain" }} /> : null}
         </div>
@@ -2581,7 +2760,17 @@ export default function render(v) {
           <svg className="sm-ic sm-ic-w" width="21" height="18" viewBox="0 0 21 18" aria-hidden="true">
             <path d="M1 1h19M1 9h19M1 17h19" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
           </svg>
-          <img className="sm-ic sm-ic-g" src="./assets/mobile-menu.svg" alt="" aria-hidden="true" />
+          <svg className="sm-ic sm-ic-g" width="23" height="20" viewBox="0 0 23 20" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="smG" x1="1" y1="0" x2="22" y2="0" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#6252A4" />
+                <stop offset="0.490385" stopColor="#F14192" />
+                <stop offset="0.927885" stopColor="#F6765D" />
+                <stop offset="0.9999" stopColor="#F69141" />
+              </linearGradient>
+            </defs>
+            <path d="M1 1H22M1 10H22M1 19H22" stroke="url(#smG)" strokeWidth="2" strokeLinecap="round" />
+          </svg>
         </button>
         <div className="sm-panel" onClick={v.menuStop}>
           <button className="sm-x" type="button" aria-label="Close menu" onClick={v.menuClose}>
@@ -2629,13 +2818,13 @@ export default function render(v) {
                   clubs + facilities
                 </button>
               </li>
-              <li hidden>
+              <li>
                 <button className="nvi" type="button" onClick={v.nav_nx}>
-                  Looking forwards
+                  Looking forward
                 </button>
               </li>
             </ul>
-            <a className="sm-cta" href={import.meta.env.URL_PDF} target="_blank" rel="noopener noreferrer">
+            <a className="sm-cta" href="#" onClick={v.menuStop}>
               <svg className="sm-dlg" width="22" height="20" viewBox="0 0 22 20" aria-hidden="true" style={{ flex: "none", overflow: "visible" }}>
                 <defs>
                   <linearGradient id="smdl" x1="0" y1="0" x2="22" y2="20" gradientUnits="userSpaceOnUse">

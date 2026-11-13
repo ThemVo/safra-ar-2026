@@ -2394,7 +2394,7 @@ export default function render(v) {
                     }}
                   >
                     {
-                      "Preschools, educational institutions and businesses showed appreciation to national servicemen in meaningful ways."
+                      "Preschools, educational institutions and businesses showed appreciation to national\u00a0servicemen in meaningful ways."
                     }
                   </span>
                   <svg
@@ -2582,7 +2582,7 @@ export default function render(v) {
                     }}
                   >
                     {
-                      "National servicemen had more opportunities to spend quality time with their buddies and loved ones."
+                      "National\u00a0servicemen had more opportunities to spend quality time with their buddies and loved ones."
                     }
                   </span>
                   <svg
@@ -2962,7 +2962,7 @@ export default function render(v) {
                     }}
                   >
                     {
-                      "National servicemen and their families benefitted from new and improved facilities to keep fit, connect and unwind."
+                      "National\u00a0servicemen and their families benefitted from new and improved facilities to keep fit, connect and unwind."
                     }
                   </span>
                   <svg
@@ -6210,7 +6210,7 @@ export default function render(v) {
                           opacity: `${s(v.d7?.s3?.at)}`,
                         }}
                       >
-                        Fueling up our national servicemen
+                        Fueling up our national&nbsp;servicemen
                       </span>
                     </h3>
                     <div
@@ -7601,7 +7601,7 @@ export default function render(v) {
                                 opacity: `${s(v.d8?.s2?.ab2)}`,
                               }}
                             >
-                              national servicemen engaged
+                              national&nbsp;servicemen engaged
                             </span>
                           </p>
                         </div>
@@ -10371,8 +10371,7 @@ export default function render(v) {
                 }}
               >
                 A new café lounge was opened at the new Central Manpower Base
-                (CMPB) to provide a cosy place where pre-enlistees, national
-                servicemen and MINDEF staff can recharge, socialise and get to
+                (CMPB) to provide a cosy place where pre-enlistees, national&nbsp;servicemen and MINDEF staff can recharge, socialise and get to
                 know more about SAFRA.
               </p>
             </article>
@@ -11325,7 +11324,7 @@ export default function render(v) {
                   Singaporeans to defend Singapore and support the lifestyle
                   needs of
                   <br />
-                  national servicemen and their families.
+                  national&nbsp;servicemen and their families.
                 </p>
               </div>
             </div>
@@ -11548,11 +11547,11 @@ export default function render(v) {
                 <div className="lf2b">
                   <p>
                     Double the number of camps, including two new variants, will
-                    be organised to enable family members of national servicemen
+                    be organised to enable family members of national&nbsp;servicemen
                     to get a taste of National Service. This includes new 1-day
                     NS For Everyone camps and 2D1N women’s camps. All
                     participants will also get to make personalised appreciation
-                    gifts for national servicemen.
+                    gifts for national&nbsp;servicemen.
                   </p>
                 </div>
               </div>
@@ -11589,7 +11588,7 @@ export default function render(v) {
                 <div className="lf2b">
                   <p>
                     New initiatives will be introduced to celebrate Singapore's
-                    defence journey and appreciate national servicemen,
+                    defence journey and appreciate national&nbsp;servicemen,
                     including a new series of defence-themed carnivals held
                     across the island to enable the community to learn about the
                     SAF’s defence capabilities and how every individual can play
@@ -11842,7 +11841,7 @@ export default function render(v) {
                 <div className="lf3c">
                   <div className="lf3b">
                     <p>
-                      A new clubhouse will serve national servicemen and their
+                      A new clubhouse will serve national&nbsp;servicemen and their
                       families in the East by 2030. Double the size of the
                       current SAFRA Tampines which it will replace, SAFRA
                       Bayshore will offer a wider range of modern and affordable
@@ -11866,7 +11865,7 @@ export default function render(v) {
               }}
             >
               <button
-                className={`lf-photo lf3ph ${s(v.lf3v?.ph)}`}
+                className={`lf-photo lf-photo-single lf3ph ${s(v.lf3v?.ph)}`}
                 type="button"
                 aria-label={v.lf3PhotoLabel}
                 onClick={v.lf3Photo}

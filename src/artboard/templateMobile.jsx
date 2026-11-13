@@ -2318,7 +2318,7 @@ export default function render(v) {
                   Appreciating
                   <br />
                   <span style={{ whiteSpace: "nowrap" }}>
-                    national servicemen
+                    national&nbsp;servicemen
                   </span>
                   <span
                     className="tc-g"
@@ -2338,7 +2338,7 @@ export default function render(v) {
                     Appreciating
                     <br />
                     <span style={{ whiteSpace: "nowrap" }}>
-                      national servicemen
+                      national&nbsp;servicemen
                     </span>
                   </span>
                 </span>
@@ -2393,7 +2393,7 @@ export default function render(v) {
                   <br />
                   the ongoing dedication of our
                   <br />
-                  national servicemen.
+                  national&nbsp;servicemen.
                 </span>
                 <svg
                   className="tc-i"
@@ -2595,7 +2595,7 @@ export default function render(v) {
                     display: "none",
                   }}
                 >
-                  Forging closer bonds among national servicemen and creating
+                  Forging closer bonds among national&nbsp;servicemen and creating
                   opportunity for quality time with their loved ones.
                 </span>
                 <svg
@@ -5671,7 +5671,7 @@ export default function render(v) {
                 }}
               >
                 We continued to enhance our SAFRA clubs and facilities to better
-                serve as vibrant community spaces where national servicemen and
+                serve as vibrant community spaces where national&nbsp;servicemen and
                 their families can bond, stay active, unwind and feel a sense of
                 belonging.
               </p>
@@ -5852,8 +5852,7 @@ export default function render(v) {
                 }}
               >
                 We opened the new café lounge at the new Central Manpower Base
-                (CMPB) to provide a cosy place where pre-enlistees, national
-                servicemen and MINDEF staff can recharge, socialise and get to
+                (CMPB) to provide a cosy place where pre-enlistees, national&nbsp;servicemen and MINDEF staff can recharge, socialise and get to
                 know more about SAFRA.
               </p>
             </article>
@@ -6802,7 +6801,7 @@ export default function render(v) {
                 >
                   In the coming years, SAFRA will do more to strengthen the
                   collective will of Singaporeans to defend Singapore and
-                  support the lifestyle needs of national servicemen and their
+                  support the lifestyle needs of national&nbsp;servicemen and their
                   families.
                 </p>
               </div>
@@ -7018,11 +7017,11 @@ export default function render(v) {
                 <div className="lf2b">
                   <p>
                     Double the number of camps, including two new variants, will
-                    be organised to enable family members of national servicemen
+                    be organised to enable family members of national&nbsp;servicemen
                     to get a taste of National Service. This includes new 1-day
                     NS For Everyone camps and 2D1N women’s camps. All
                     participants will also get to make personalised appreciation
-                    gifts for national servicemen.
+                    gifts for national&nbsp;servicemen.
                   </p>
                 </div>
               </div>
@@ -7059,7 +7058,7 @@ export default function render(v) {
                 <div className="lf2b">
                   <p>
                     New initiatives will be introduced to celebrate Singapore's
-                    defence journey and appreciate national servicemen,
+                    defence journey and appreciate national&nbsp;servicemen,
                     including a new series of defence-themed carnivals held
                     across the island to enable the community to learn about the
                     SAF’s defence capabilities and how every individual can play
@@ -7305,7 +7304,7 @@ export default function render(v) {
                 <div className="lf3c">
                   <div className="lf3b">
                     <p>
-                      A new clubhouse will serve national servicemen and their
+                      A new clubhouse will serve national&nbsp;servicemen and their
                       families in the East by 2030. Double the size of the
                       current SAFRA Tampines which it will replace, SAFRA
                       Bayshore will offer a wider range of modern and affordable
@@ -7329,7 +7328,7 @@ export default function render(v) {
               }}
             >
               <button
-                className={`lf-photo lf3ph ${s(v.lf3v?.ph)}`}
+                className={`lf-photo lf-photo-single lf3ph ${s(v.lf3v?.ph)}`}
                 type="button"
                 aria-label={v.lf3PhotoLabel}
                 onClick={v.lf3Photo}

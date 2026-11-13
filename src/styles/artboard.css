@@ -722,3 +722,5 @@ body{margin:0;background:#272C3F}
 .mh .lf-photo,.mh .lf-photo *{cursor:url(../assets/cursors/viewall-cursor.svg) 46 46,pointer !important}
 .mh .lf-photo:focus-visible{outline:2px solid #F5765E;outline-offset:4px}
 .mh .lb.lb-single .lb-row{display:none !important}
+
+.mh .lf-photo-single,.mh .lf-photo-single *{cursor:url(../assets/cursors/view-cursor.svg) 46 46,pointer !important}

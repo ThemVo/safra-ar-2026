@@ -20,9 +20,9 @@ const TO_D = { text: 'to', x0: 209, base: 558 };
 const HM = 358 / (1287 - 156), hmx = (x) => +(16 + (x - 156) * HM).toFixed(2), hmy = (y) => +(430 + (y - 477) * HM).toFixed(2);
 const SPEC_M = Object.fromEntries(Object.entries(SPEC_D).map(([k, v]) => [k, { ...v, x0: hmx(v.x0), x1: hmx(v.x1), base: hmy(v.base), fs: +(v.fs * HM).toFixed(2) }]));
 const TO_M = { ...TO_D, x0: hmx(TO_D.x0), base: hmy(TO_D.base) };
-const CAM_D = { logo: 0, top: 0, s2: 0, tg: -918, s3: -918, s4: -1818, s5: -1818, s6: -1818, s7: -1818, s8: -1818, t2: -1818, mb: -1818, fc1: -1818, fc2: -2347.8, fy: -2718, wc: -2718, nx: -3618, lf2: -4518, lf3: -5418, end: -6318 }; // desktop: Clubs & Facilities (fc1) is the L2 page of card 5, scroll-linked from fc1 down to fc2 // '& beyond' (t2) removed: t2 now sits on fc1, the start of the Clubs & Facilities stretch // desktop: Membership (mb) is the L2 page of the Rewarding privileges card
+const CAM_D = { logo: 0, top: 0, s2: 0, tg: -918, s3: -918, s4: -1818, s5: -1818, s6: -1818, s7: -1818, s8: -1818, t2: -1818, mb: -1818, fc1: -1818, fc2: -2347.8, fy: -2718, wc: -2718, nx: -3618, lf2: -4518, lf3: -5418, end: -5655 }; // desktop: Clubs & Facilities (fc1) is the L2 page of card 5, scroll-linked from fc1 down to fc2 // '& beyond' (t2) removed: t2 now sits on fc1, the start of the Clubs & Facilities stretch // desktop: Membership (mb) is the L2 page of the Rewarding privileges card
 const FC_H_M = 1440; // mobile Clubs & Facilities is taller than a screen; the rest of the stretch scrolls
-const CAM_M = { logo: 0, top: 0, s2: 0, tg: -844, s3: -844, s4: -1688, s5: -1688, s6: -1688, s7: -1688, s8: -1688, t2: -2532, mb: -2532, fc1: -3376, fc2: -3376 - (FC_H_M - 844), fy: -3376 - FC_H_M, wc: -3376 - FC_H_M, nx: -4220 - FC_H_M, lf2: -5064 - FC_H_M, lf3: -5908 - FC_H_M, end: -6752 - FC_H_M }; // '& beyond' (t2) removed: t2 now sits on mb
+const CAM_M = { logo: 0, top: 0, s2: 0, tg: -844, s3: -844, s4: -1688, s5: -1688, s6: -1688, s7: -1688, s8: -1688, t2: -2532, mb: -2532, fc1: -3376, fc2: -3376 - (FC_H_M - 844), fy: -3376 - FC_H_M, wc: -3376 - FC_H_M, nx: -4220 - FC_H_M, lf2: -5064 - FC_H_M, lf3: -5908 - FC_H_M, end: -5908 - FC_H_M - 237 }; // '& beyond' (t2) removed: t2 now sits on mb
 let MOBILE = false, W = 1440, SPEC = SPEC_D, TO = TO_D, CAM = CAM_D;
 let GLANCE_BASE = 1066;
 let GL_FS = 72; // AT A GLANCE type size (small state)
@@ -62,7 +62,9 @@ function applyGeo(mobile) {
     z1: MOBILE
       ? { top: CAM.t2, len: CAM.t2 - CAM.fc2, at: [['t2', 0], ['mb', a / 2], ['fc1', a + b / 2]], enter: { s10: 0.35 * a, s15: a + 0.35 * b, s16: a + b + 0.3 * FC_RANGE } }
       : { top: CAM.t2, len: CAM.t2 - CAM.fc2, at: [['t2', 0], ['fc1', a1 / 2]], enter: { s15: 0.35 * a1, s16: a1 + 0.3 * FC_RANGE } },
-    z2: { top: CAM.wc, len: c, at: [['wc', 0], ['nx', c / 2]], enter: { s13: 0.35 * c } }
+    z2: { top: CAM.wc, len: c, at: [['wc', 0], ['nx', c / 2]], enter: { s13: 0.35 * c } },
+    // The closing CTA is a 237px footer after the last story, revealed by scrolling.
+    z3: { top: CAM.lf3, len: 237, at: [['lf3', 0], ['end', 237]], enter: { s14: 0 } }
   };
 }
 applyGeo(false);
@@ -191,7 +193,7 @@ export class ArtboardLogic extends Logic {
       if (to === 'lf3') { patch.s18 = true; patch.lf3s = route.index ?? 0; }
       if (to === 'nx') { patch.s13 = true; patch.lf1 = route.index != null; }
       if (to === 'wc') patch.s12 = true;
-      if (to === 'end') patch.s14 = true;
+      if (to === 'end') { patch.s14 = true; patch.s18 = true; patch.lf3s = 2; }
       if (to === 'fc1') { patch.fcY = Math.min(FC_RANGE, route.offset); patch.s16 = patch.fcY > 0; this.fcPos = patch.fcY; }
       if (['s6', 's7', 's8'].includes(to)) {
         const n = route.index ?? 0, topic = Number(to.slice(1));
@@ -460,6 +462,10 @@ export class ArtboardLogic extends Logic {
     requestAnimationFrame(pin);
   }
   lf3Wheel(dy, target) {
+    if (this.state.link === 'z3') {
+      if (dy < 0 && this.lkPos <= 0 && this.state.linkY <= 0.5) this.linkStop();
+      else return false; // Hide the footer before changing the active story.
+    }
     if (this.state.view !== 'lf3' || this.state.lb) return false;
     const el = this.nxEl(); if (!el) return false;
     const now = Date.now(), streak = now - (this.l3Last || 0) < 160; this.l3Last = now;
@@ -621,7 +627,7 @@ export class ArtboardLogic extends Logic {
     clearTimeout(this.hopT); clearTimeout(this.lvT);
     this.lockUntil = Date.now() + 1300;
     const flag = { fy: 's11', nx: 's13' }[to];
-    this.linkStop(); this.setState({ menu: false, lv: null, hopping: false, view: to, ...(flag ? { [flag]: true } : {}), ...(to === 's5' ? { s4: true } : {}) });
+    this.linkStop(); if (to === 'end') this.setState({ s14: true, s18: true, lf3s: 2 }); this.setState({ menu: false, lv: null, hopping: false, view: to, ...(flag ? { [flag]: true } : {}), ...(to === 's5' ? { s4: true } : {}) });
     if (to === 's2') this.arrive2();
     if (to === 'fy') this.arriveFy();
     if (to === 'nx') this.nxEnter(1);
@@ -1203,7 +1209,7 @@ export class ArtboardLogic extends Logic {
           // while it leaves the masthead it is offset/narrowed to sit on the n's stem
           dx: +((nx + nw / 2) - CUE_X).toFixed(2), k: +(nw / lw0).toFixed(4) }; })(),
       endClass: view === 'end' ? 'at-end' : '', // closing section: its gradient fills the letterbox bands above/below the artboard too
-      i4Class: this.state.i4 ? 'i4' : '', lf1Hidden: this.state.lf1 ? 'false' : 'true', lf2v: (() => { const k = this.state.lf2s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', c3: k === 3 ? 'on' : '', a3: k === 3 ? 'true' : 'false', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false' }; })(), lf2To0: (e) => { e.stopPropagation(); this.setState({ lf2s: 0 }); }, noFocusScroll: (e) => { e.preventDefault(); }, /* a click on a story must not focus it — focusing scrolls the column to it (the jump) */ lf3v: (() => { const k = this.state.lf3s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false', ph: k === 2 ? 'short' : '' }; })(), lf3To0: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 0) this.lf3Step(0, 'top'); }, lf3To1: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 1) this.lf3Step(1, 'top'); }, lf3To2: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 2) this.lf3Step(2, 'top'); }, lf2To1: (e) => { e.stopPropagation(); this.setState({ lf2s: 1 }); }, lf2To2: (e) => { e.stopPropagation(); this.setState({ lf2s: 2 }); }, lf2To3: (e) => { e.stopPropagation(); this.setState({ lf2s: 3 }); }, swClass: `${(view === 'tg' || view === 's3') ? 'at3' : ''} ${this.state.swk ? 'swk' : ''} ${this.state.up5 ? 'up5' : ''} ${view === 'wc' && (!this.state.link || this.state.z2top) ? 'at-dk' : ''} ${this.state.link === 'z2' && !this.state.z2top && !this.state.z2end ? 'z2mid' : ''} ${this.state.lf1 && (view === 'nx' || view === 'lf2') ? 'lf1' : ''} ${view === 'lf2' ? 'at-lf2' : ''} ${view === 'nx' && !this.state.link ? 'at-nxv' : ''} ${view === 'lf3' ? 'at-lf3' : ''} ${(this.state.step6 || 0) === DC.length - 1 ? 'l6' : ''} ${(this.state.step7 || 0) === DC7.length - 1 ? 'l7' : ''} ${(this.state.step8 || 0) === DC8.length - 1 ? 'l8' : ''} ${(!MOBILE && (view === 'fc1' || this.state.link === 'z1')) || this.state.link === 'z2' ? 'xclip' : ''} ${view === 'lf2' ? 'lfs2' : (view === 'lf3' || view === 'end') ? 'lfs3' : ''}`, // Our impact, first reveal: the statement lands first, then the cards rise one by one
+      i4Class: this.state.i4 ? 'i4' : '', lf1Hidden: this.state.lf1 ? 'false' : 'true', lf2v: (() => { const k = this.state.lf2s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', c3: k === 3 ? 'on' : '', a3: k === 3 ? 'true' : 'false', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false' }; })(), lf2To0: (e) => { e.stopPropagation(); this.setState({ lf2s: 0 }); }, noFocusScroll: (e) => { e.preventDefault(); }, /* a click on a story must not focus it — focusing scrolls the column to it (the jump) */ lf3v: (() => { const k = this.state.lf3s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false', ph: k === 2 ? 'short' : '' }; })(), lf3To0: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 0) this.lf3Step(0, 'top'); }, lf3To1: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 1) this.lf3Step(1, 'top'); }, lf3To2: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 2) this.lf3Step(2, 'top'); }, lf2To1: (e) => { e.stopPropagation(); this.setState({ lf2s: 1 }); }, lf2To2: (e) => { e.stopPropagation(); this.setState({ lf2s: 2 }); }, lf2To3: (e) => { e.stopPropagation(); this.setState({ lf2s: 3 }); }, swClass: `${(view === 'tg' || view === 's3') ? 'at3' : ''} ${this.state.swk ? 'swk' : ''} ${this.state.up5 ? 'up5' : ''} ${view === 'wc' && (!this.state.link || this.state.z2top) ? 'at-dk' : ''} ${this.state.link === 'z2' && !this.state.z2top && !this.state.z2end ? 'z2mid' : ''} ${this.state.lf1 && (view === 'nx' || view === 'lf2') ? 'lf1' : ''} ${view === 'lf2' ? 'at-lf2' : ''} ${view === 'nx' && !this.state.link ? 'at-nxv' : ''} ${view === 'lf3' || view === 'end' ? 'at-lf3' : ''} ${(this.state.step6 || 0) === DC.length - 1 ? 'l6' : ''} ${(this.state.step7 || 0) === DC7.length - 1 ? 'l7' : ''} ${(this.state.step8 || 0) === DC8.length - 1 ? 'l8' : ''} ${(!MOBILE && (view === 'fc1' || this.state.link === 'z1')) || this.state.link === 'z2' ? 'xclip' : ''} ${view === 'lf2' ? 'lfs2' : (view === 'lf3' || view === 'end') ? 'lfs3' : ''}`, // Our impact, first reveal: the statement lands first, then the cards rise one by one
       b3Class: (view === 'tg' || view === 's3') && this.state.b3ok ? 'b3top' : '', // only once the camera has settled (b3ok), so the extension never crosses the masthead on the way down // At a glance: the gradient connector runs up past the artboard to the screen's top edge (tall screens letterbox above)
       tgClass: view === 'tg' ? 'at-tg' : '', hdClass: (fin || this.state.hd) ? 'is-hd' : '',
       cd,

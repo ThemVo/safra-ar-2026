@@ -6804,6 +6804,21 @@ export default function render(v) {
                   support the lifestyle needs of national&nbsp;servicemen and their
                   families.
                 </p>
+                <p
+                  className="nxk"
+                  style={{
+                    "--d": ".7s",
+                    margin: "24px 0 0",
+                    fontSize: "20px",
+                    fontWeight: "700",
+                    lineHeight: "1.2",
+                    letterSpacing: "0.4px",
+                    textTransform: "uppercase",
+                    color: "#F34141",
+                  }}
+                >
+                  Check out the 3 highlights
+                </p>
               </div>
             </div>
             {/* the same circle again, above the intro text at half strength: where it has spread, the text is dimmed — compositor-only, follows the circle exactly */}
@@ -7402,13 +7417,13 @@ export default function render(v) {
               left: "0",
               top: "8192px",
               width: "390px",
-              height: "844px",
+              height: "237px",
               clipPath:
-                "inset(calc(-1 * var(--gy, 0px)) calc(-1 * var(--gx, 0px)))",
+                "inset(0 calc(-1 * var(--gx, 0px)))",
               background:
-                "linear-gradient(116.64deg, #6252A4 0%, #F14192 50.967%, #F6765D 96.438%, #F69141 103.92%)",
+                "linear-gradient(152.2828deg, #6252A4 0%, #F14192 50.967%, #F6765D 96.438%, #F69141 103.92%)",
               borderImage:
-                "linear-gradient(116.64deg, #6252A4 0%, #F14192 50.967%, #F6765D 96.438%, #F69141 103.92%) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)",
+                "linear-gradient(152.2828deg, #6252A4 0%, #F14192 50.967%, #F6765D 96.438%, #F69141 103.92%) 0 fill / 0 / 0 var(--gx, 0px)",
             }}
           >
             <AnnualReportDownload />

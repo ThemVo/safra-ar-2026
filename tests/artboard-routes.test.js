@@ -148,6 +148,20 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   logic = mount('#looking-forward');
   assert.equal(logic.state.lf1, false);
   logic.componentWillUnmount();
+  for (const mobile of [false, true]) {
+    logic = mount('#supporting-nsmen-story-3', mobile);
+    const storyCamera = logic.camNow();
+    logic.componentWillUnmount();
+    logic = mount('#annual-report', mobile);
+    assert.equal(logic.state.lf3s, 2, 'the footer keeps the Bayshore story open');
+    assert.equal(logic.state.s18, true, 'the preceding content remains visible');
+    assert.equal(logic.camNow(), storyCamera - 237, 'reveal only the footer height');
+    logic.lockUntil = 0;
+    assert.equal(logic.linkWheel(-80), true);
+    assert.equal(logic.state.link, 'z3', 'scroll back through the footer before changing stories');
+    assert.equal(logic.lkPos, 157);
+    logic.componentWillUnmount();
+  }
   logic = mount('#masthead');
   await Promise.resolve();
   assert.equal(window.location.hash, '', 'masthead has no URL fragment');

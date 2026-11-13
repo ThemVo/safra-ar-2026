@@ -82,6 +82,16 @@ const CARD_IMGS = {
 // section 8: Strengthening bonds (one story so far)
 const DC8 = [{"stats": ["52K"], "desc": ["SAFRA’s National Day celebrations at Marina Bay", "and across all SAFRA clubs brought loved ones", "together for the live screening of the NDP, live", "performances and nostalgic games."], "bar": 86.67, "photos": ["./assets/sb1-main.jpg", "./assets/sb1-crowd.jpg", "./assets/sb1-mascot.jpg"], "alts": ["A family smiles in front of red fireworks at a National Day celebration", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["./assets/sb1g-0.jpg", "./assets/sb1g-1.jpg", "./assets/sb1g-2.jpg", "./assets/sb1g-3.jpg", "./assets/sb1g-4.jpg"], "gi": [3, 1, 4]}, {"stats": ["1.2K", "420"], "desc": ["SG60 SAFRA Family Fiesta brought families", "together for fun-filled activities, including the", "SAFRA Diaper Dash and sing-along sessions with", "their favourite Pororo & Friends characters."], "bar": 173.33, "photos": ["./assets/sb2-main.jpg", "./assets/sb2-race.jpg", "./assets/sb2-dash2.jpg"], "alts": ["Children pose with Pororo & Friends characters at the SG60 SAFRA Family Fiesta", "Babies and toddlers race across a colourful mat as families cheer at the SAFRA Diaper Dash", "Parents and toddlers holding Pororo plush toys wait at the start of the SAFRA Diaper Dash"], "gallery": ["./assets/sb2s-0.jpg", "./assets/sb2s-1.jpg", "./assets/sb2s-2.jpg"], "gi": [2, 1, 0]}, {"stats": ["637", "52K"], "desc": ["Cohesion events were organised for SAF NS units", "at various SAFRA clubs and SAF camps, featuring", "a wide range of activities such as archery tag,", "bowling, inflatable games, water telematches and", "various sports competitions."], "bar": 260, "photos": ["./assets/sb3-main.jpg", "./assets/sb3-archery.jpg", "./assets/sb3-team.jpg"], "alts": ["National servicemen play human foosball on an inflatable pitch", "National servicemen in face masks pose with archery tag bows", "An NS unit poses for a team photo after a football match"], "gallery": ["./assets/sb3g-0.jpg", "./assets/sb3g-1.jpg", "./assets/sb3g-2.jpg", "./assets/sb3g-3.jpg", "./assets/sb3g-4.jpg", "./assets/sb3g-5.jpg", "./assets/sb3g-6.jpg"], "gi": [2, 0, 5]}, {"stats": ["1.2K"], "desc": ["SAFRA Youth Fiesta brought youths together to", "compete in the Ultimate Frisbee Tournament", "and indulge in Japanese pop culture at the", "DoujinFes Fair and Hololive Official Card Game", "community workshops."], "bar": 346.67, "photos": ["./assets/sb4-main.jpg", "./assets/sb4-cosplay.jpg", "./assets/sb4-frisbee.jpg"], "alts": ["Youths compete in the Ultimate Frisbee Tournament at SAFRA Youth Fiesta", "Cosplayers at the DoujinFes Fair", "A player throws a frisbee past a defender during the Ultimate Frisbee Tournament"], "gallery": ["./assets/sb4g-0.jpg", "./assets/sb4g-1.jpg", "./assets/sb4g-2.jpg"], "gi": [1, 2, 0]}, {"stats": ["430"], "desc": ["Soundbyte Beer Music Play brought national", "servicemen and their friends together to enjoy live", "band performances, high-energy DJ sets, games", "and free flow of drinks."], "bar": 433.33, "photos": ["./assets/sb5-main.jpg", "./assets/sb5-hall.jpg", "./assets/sb5-game.jpg"], "alts": ["Guests dance with their arms raised at Soundbyte Beer Music Play", "A packed hall of guests raises their drinks at Soundbyte Beer Music Play", "Friends play an arcade button game at Soundbyte Beer Music Play"], "gallery": ["./assets/sb5g-0.jpg", "./assets/sb5g-1.jpg", "./assets/sb5g-2.jpg"], "gi": [0, 1, 2]}, {"stats": ["5.5K", "$290K"], "desc": ["SAFRA Swim for Hope rallied the community to", "swim for charity and raise funds for the less", "privileged and those in need."], "bar": 520, "photos": ["./assets/sb6-main.jpg", "./assets/sb6-pool.jpg"], "alts": ["Organisers and partners present a S$290,000 cheque at SAFRA Swim for Hope", "Participants swim for charity at SAFRA Swim for Hope"], "gallery": ["./assets/sb6g-0.jpg", "./assets/sb6g-1.jpg"], "gi": [0, 1]}];
 // section 10: membership categories
+// Looking-forward galleries share the existing photo viewer.
+const LF_GALLERIES = {
+  lf2: { gallery: ['./assets/lf2-camp.jpg', './assets/lf2-fitx.jpg'], alts: ['NS Experience Camp', 'FitX Challenge'] },
+  lf3: [
+    { gallery: ['./assets/lf3-ibat.jpg'], alts: ['iBat at SAFRA Tampines'] },
+    { gallery: ['./assets/lf3-jurong.jpg'], alts: ['Artist’s impression of the new resort-style villas at SAFRA Jurong'] },
+    { gallery: ['./assets/lf3-bayshore.jpg'], alts: ['Future location of SAFRA Bayshore'] },
+  ],
+};
+const lfGallery = (view, story = 0) => view === 'lf2' ? LF_GALLERIES.lf2 : LF_GALLERIES.lf3[story];
 const NX_TABS = ['Bringing defence closer', 'Creating better spaces', 'Making visits seamless'];
 const MB_TABS = ['FOOD & GROCERIES', 'EDUCATION', 'MOVIES & LIVE ENTERTAINMENT', 'TRAVEL, STAYCATIONS & LOCAL ATTRACTIONS'];
 // how far along the page each view is (views off the main ORDER sit beside their neighbours)
@@ -188,6 +198,10 @@ export class ArtboardLogic extends Logic {
         this['play' + topic](n, 0);
         const data = { s6: DC, s7: DC7, s8: DC8 }[to][n];
         if (route.photo > 0 && route.photo <= data.gallery.length) patch.lb = { t: topic, s: n, i: route.photo - 1 };
+      }
+      if (['lf2', 'lf3'].includes(to)) {
+        const n = route.index ?? 0, data = lfGallery(to, n);
+        if (route.photo > 0 && route.photo <= data.gallery.length) patch.lb = { t: to, s: n, i: route.photo - 1 };
       }
       this.setState(patch);
     } finally { this.restoringUrl = false; }
@@ -1167,11 +1181,15 @@ export class ArtboardLogic extends Logic {
         return r;
       })(),
       lbv: (() => {
-        const lbOpen = this.state.lb; if (lbOpen) this.lbLast = lbOpen; const lb = lbOpen || this.lbLast; /* while the viewer fades out, keep showing the story it was opened from */ const d = (lb && lb.t === 8 ? DC8 : lb && lb.t === 7 ? DC7 : DC)[lb ? lb.s : 0], g = d.gallery, k = lb ? lb.i : 0, r = { cls: lbOpen ? 'open' : '', gk: lb ? (lb.t || 6) + '-' + lb.s : '0', src: g[k], alt: 'Photo ' + (k + 1) + ' of ' + g.length };
+        const lbOpen = this.state.lb; if (lbOpen) this.lbLast = lbOpen; const lb = lbOpen || this.lbLast; /* while the viewer fades out, keep showing the story it was opened from */ const d = lb && ['lf2', 'lf3'].includes(lb.t) ? lfGallery(lb.t, lb.s) : (lb && lb.t === 8 ? DC8 : lb && lb.t === 7 ? DC7 : DC)[lb ? lb.s : 0], g = d.gallery, k = lb ? lb.i : 0, r = { cls: (lbOpen ? 'open' : '') + (g.length === 1 ? ' lb-single' : ''), gk: lb ? (lb.t || 6) + '-' + lb.s : '0', src: g[k], alt: lb && ['lf2', 'lf3'].includes(lb.t) ? d.alts[k] : 'Photo ' + (k + 1) + ' of ' + g.length };
         const yt = lbOpen && d.videos && d.videos[k]; /* video stories: play the clip (mp4) in the viewer; only while open, so closing stops it */ r.vid = yt || ''; r.poster = yt ? g[k] : ''; r.vidT = yt ? 'Video ' + (k + 1) + ' of ' + g.length : ''; r.imgCls = d.videos ? 'lb-hide' : ''; r.tv = d.videos ? 'lb-tv' : '';
         for (let i = 0; i < 12; i++) { r['t' + i] = g[i] || g[0]; r['c' + i] = i >= g.length ? 'none' : (i === k ? 'sel' : ''); }
         return r;
       })(),
+      lf2Photo0: (e) => { e.stopPropagation(); this.setState({ lb: { t: 'lf2', s: this.state.lf2s || 0, i: 0 } }); },
+      lf2Photo1: (e) => { e.stopPropagation(); this.setState({ lb: { t: 'lf2', s: this.state.lf2s || 0, i: 1 } }); },
+      lf3Photo: (e) => { e.stopPropagation(); this.setState({ lb: { t: 'lf3', s: this.state.lf3s || 0, i: 0 } }); },
+      lf3PhotoLabel: 'View photo: ' + lfGallery('lf3', this.state.lf3s || 0).alts[0],
       lbClose: (e) => { e.stopPropagation(); this.setState({ lb: null }); },
       ...(() => { const r = {}; for (let i = 0; i < 12; i++) r['lbT' + i] = (e) => { e.stopPropagation(); if (this.state.lb) this.setState({ lb: { ...this.state.lb, i } }); }; return r; })(),
       ...(() => { const r = {}; DC7.forEach((d, si) => d.photos.forEach((_, pi) => { r['lb7_' + si + '_' + pi] = (e) => { e.stopPropagation(); this.setState({ lb: { t: 7, s: si, i: d.gi[pi] } }); }; })); return r; })(),

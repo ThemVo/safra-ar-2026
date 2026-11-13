@@ -16,7 +16,7 @@ export function routeHash(state) {
   if (key && (view === 'mb' ? state[key] >= 0 : state[key] > 0)) id = screenId(view, state[key]);
   if (view === 'nx' && state.lf1) id = screenId(view, 0);
   const params = new URLSearchParams();
-  if (state.lb && ['s6', 's7', 's8'].includes(view)) params.set('photo', state.lb.i + 1);
+  if (state.lb && ['s6', 's7', 's8', 'lf2', 'lf3'].includes(view)) params.set('photo', state.lb.i + 1);
   if (view === 'fc1' && state.fcY > 0) params.set('offset', Math.round(state.fcY));
   return `#${id}${params.size ? '?' + params : ''}`;
 }

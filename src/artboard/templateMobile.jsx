@@ -1,3 +1,4 @@
+import AnnualReportDownload from "./AnnualReportDownload.jsx";
 import { SECTION_IDS, screenId } from "./routes.js";
 // Markup for the artboard. Generated from the original prototype's template, then kept as plain JSX.
 // `v` is the object returned by ArtboardLogic.renderVals(); every {{binding}} of the original reads from it.
@@ -2316,9 +2317,9 @@ export default function render(v) {
                 >
                   Appreciating
                   <br />
-                  national
-                  <br />
-                  servicemen
+                  <span style={{ whiteSpace: "nowrap" }}>
+                    national servicemen
+                  </span>
                   <span
                     className="tc-g"
                     aria-hidden="true"
@@ -2336,9 +2337,9 @@ export default function render(v) {
                   >
                     Appreciating
                     <br />
-                    national
-                    <br />
-                    servicemen
+                    <span style={{ whiteSpace: "nowrap" }}>
+                      national servicemen
+                    </span>
                   </span>
                 </span>
                 <span
@@ -6784,9 +6785,7 @@ export default function render(v) {
                       color: "transparent",
                     }}
                   >
-                    3 key highlights
-                    <br />
-                    to look forward to
+                    LOOKING FORWARD
                   </span>
                 </h2>
                 <p
@@ -7041,7 +7040,7 @@ export default function render(v) {
                   <p>
                     The obstacle race promotes fitness, teamwork and enables the
                     public to experience the rigorous fitness training of
-                    National Service through several NS-inspired elements such
+                    National Service through several <span style={{ whiteSpace: "nowrap" }}>NS-inspired</span> elements such
                     as the Apex Climb, Low Wall and Leopard Crawl, alongside
                     other functional fitness stations.
                   </p>
@@ -7097,17 +7096,24 @@ export default function render(v) {
                 margin: "0",
               }}
             >
-              <img
-                src="./assets/lf2-camp.jpg"
-                alt="Children with camouflage face paint racing through a tyre obstacle course at an NS Experience Camp"
-                style={{
-                  display: "block",
-                  width: "272px",
-                  height: "172px",
-                  objectFit: "cover",
-                  borderRadius: "12px",
-                }}
-              />
+              <button
+                className="lf-photo"
+                type="button"
+                aria-label="View photo: NS Experience Camp"
+                onClick={v.lf2Photo0}
+              >
+                <img
+                  src="./assets/lf2-camp.jpg"
+                  alt="Children with camouflage face paint racing through a tyre obstacle course at an NS Experience Camp"
+                  style={{
+                    display: "block",
+                    width: "272px",
+                    height: "172px",
+                    objectFit: "cover",
+                    borderRadius: "12px",
+                  }}
+                />
+              </button>
               <figcaption className="lf2c">NS Experience Camp</figcaption>
             </figure>
             <figure
@@ -7121,17 +7127,24 @@ export default function render(v) {
                 margin: "0",
               }}
             >
-              <img
-                src="./assets/lf2-fitx.jpg"
-                alt="Two participants doing a leopard crawl under camouflage netting at the FitX Challenge"
-                style={{
-                  display: "block",
-                  width: "160px",
-                  height: "103px",
-                  objectFit: "cover",
-                  borderRadius: "12px",
-                }}
-              />
+              <button
+                className="lf-photo"
+                type="button"
+                aria-label="View photo: FitX Challenge"
+                onClick={v.lf2Photo1}
+              >
+                <img
+                  src="./assets/lf2-fitx.jpg"
+                  alt="Two participants doing a leopard crawl under camouflage netting at the FitX Challenge"
+                  style={{
+                    display: "block",
+                    width: "160px",
+                    height: "103px",
+                    objectFit: "cover",
+                    borderRadius: "12px",
+                  }}
+                />
+              </button>
               <figcaption className="lf2c">FitX Challenge</figcaption>
             </figure>
           </section>
@@ -7315,9 +7328,12 @@ export default function render(v) {
                 margin: "0",
               }}
             >
-              <div
-                className={`lf3ph ${s(v.lf3v?.ph)}`}
-                style={{ position: "relative" }}
+              <button
+                className={`lf-photo lf3ph ${s(v.lf3v?.ph)}`}
+                type="button"
+                aria-label={v.lf3PhotoLabel}
+                onClick={v.lf3Photo}
+                style={{ position: "relative", width: "100%" }}
               >
                 <img
                   className={`lf3im ${s(v.lf3v?.c0)}`}
@@ -7361,7 +7377,7 @@ export default function render(v) {
                     top: "0",
                   }}
                 />
-              </div>
+              </button>
               <figcaption
                 className="lf2c lf3cap"
                 style={{ textAlign: "right" }}
@@ -7396,327 +7412,7 @@ export default function render(v) {
                 "linear-gradient(116.64deg, #6252A4 0%, #F14192 50.967%, #F6765D 96.438%, #F69141 103.92%) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)",
             }}
           >
-            <svg
-              width="0"
-              height="0"
-              aria-hidden="true"
-              style={{ position: "absolute" }}
-            >
-              <defs>
-                <linearGradient
-                  id="enGm"
-                  x1="3"
-                  y1="21"
-                  x2="43"
-                  y2="21"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor="#6252A4" />
-                  <stop offset="0.490385" stopColor="#F14192" />
-                  <stop offset="0.927885" stopColor="#F6765D" />
-                  <stop offset="0.9999" stopColor="#F69141" />
-                </linearGradient>
-              </defs>
-            </svg>
-            {/* closing: an endless marquee — DOWNLOAD [icon] · ANNUAL REPORT — the whole band is the download link */}
-            <a
-              className="enk enmq"
-              href={import.meta.env.URL_PDF}
-              onClick={(e) => e.stopPropagation()}
-              aria-label="Download the full 2025/26 annual report"
-              style={{
-                "--d": ".45s",
-                position: "absolute",
-                left: "calc(-1 * var(--gx, 0px))",
-                right: "calc(-1 * var(--gx, 0px))",
-                top: "380px",
-                height: "56px",
-                display: "block",
-                textDecoration: "none",
-              }}
-            >
-              <span className="entrack" aria-hidden="true">
-                <span className="enset">
-                  <span className="encta">
-                    <span
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      Download annual report
-                    </span>
-                    <svg
-                      className="enic"
-                      width="23"
-                      height="21"
-                      viewBox="0 0 46 42"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31"
-                        stroke="url(#enGm)"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="enar">SAFRA FY 2025/26</span>
-                  <span className="encta">
-                    <span
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      Download annual report
-                    </span>
-                    <svg
-                      className="enic"
-                      width="23"
-                      height="21"
-                      viewBox="0 0 46 42"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31"
-                        stroke="url(#enGm)"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="enar">SAFRA FY 2025/26</span>
-                  <span className="encta">
-                    <span
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      Download annual report
-                    </span>
-                    <svg
-                      className="enic"
-                      width="23"
-                      height="21"
-                      viewBox="0 0 46 42"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31"
-                        stroke="url(#enGm)"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="enar">SAFRA FY 2025/26</span>
-                  <span className="encta">
-                    <span
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      Download annual report
-                    </span>
-                    <svg
-                      className="enic"
-                      width="23"
-                      height="21"
-                      viewBox="0 0 46 42"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31"
-                        stroke="url(#enGm)"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="enar">SAFRA FY 2025/26</span>
-                </span>
-                <span className="enset">
-                  <span className="encta">
-                    <span
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      Download annual report
-                    </span>
-                    <svg
-                      className="enic"
-                      width="23"
-                      height="21"
-                      viewBox="0 0 46 42"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31"
-                        stroke="url(#enGm)"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="enar">SAFRA FY 2025/26</span>
-                  <span className="encta">
-                    <span
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      Download annual report
-                    </span>
-                    <svg
-                      className="enic"
-                      width="23"
-                      height="21"
-                      viewBox="0 0 46 42"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31"
-                        stroke="url(#enGm)"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="enar">SAFRA FY 2025/26</span>
-                  <span className="encta">
-                    <span
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      Download annual report
-                    </span>
-                    <svg
-                      className="enic"
-                      width="23"
-                      height="21"
-                      viewBox="0 0 46 42"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31"
-                        stroke="url(#enGm)"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="enar">SAFRA FY 2025/26</span>
-                  <span className="encta">
-                    <span
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #6252A4 0%, #F14192 49.038%, #F6765D 92.788%, #F69141 99.99%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                    >
-                      Download annual report
-                    </span>
-                    <svg
-                      className="enic"
-                      width="23"
-                      height="21"
-                      viewBox="0 0 46 42"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M23 27V3M31 19L23 27L15 19M3 31L4.242 35.97C4.45831 36.8354 4.95765 37.6036 5.66066 38.1526C6.36367 38.7016 7.23002 38.9999 8.122 39H37.876C38.768 38.9999 39.6343 38.7016 40.3373 38.1526C41.0404 37.6036 41.5397 36.8354 41.756 35.97L43 31"
-                        stroke="url(#enGm)"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="enar">SAFRA FY 2025/26</span>
-                </span>
-              </span>
-            </a>
-            <div
-              className="enk"
-              style={{
-                "--d": ".7s",
-                position: "absolute",
-                left: "16px",
-                right: "16px",
-                top: "calc(700px + var(--gy, 0px))",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-end",
-                gap: "32px",
-              }}
-            >
-              <span
-                aria-hidden="true"
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: "1px",
-                  background: "#EEEEEE",
-                }}
-              />
-              <p
-                style={{
-                  margin: "0",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  lineHeight: "1.2",
-                  color: "#FFFFFF",
-                }}
-              >
-                Copyright © 2026 SAFRA. All Rights Reserved.
-              </p>
-            </div>
+            <AnnualReportDownload />
           </section>
           <span
             className="bar3w"

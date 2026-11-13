@@ -107,6 +107,38 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   listeners.get('hashchange')();
   assert.equal(logic.state.mbTab, 3);
   logic.componentWillUnmount();
+  // Looking-forward photos restore the correct gallery on desktop and mobile.
+  const event = { stopPropagation() {} };
+  for (const mobile of [false, true]) {
+    for (const [fragment, t, story, photo, asset, single] of [
+      ['strengthening-commitment', 'lf2', 0, 2, 'lf2-fitx.jpg', false],
+      ['supporting-nsmen', 'lf3', 0, 1, 'lf3-ibat.jpg', true],
+      ['supporting-nsmen-story-2', 'lf3', 1, 1, 'lf3-jurong.jpg', true],
+      ['supporting-nsmen-story-3', 'lf3', 2, 1, 'lf3-bayshore.jpg', true],
+    ]) {
+      logic = mount('#' + fragment + '?photo=' + photo, mobile);
+      assert.deepEqual(logic.state.lb, { t, s: story, i: photo - 1 });
+      assert.equal(routeHash(logic.state), '#' + fragment + '?photo=' + photo);
+      let vals = logic.renderVals();
+      assert.equal(vals.lbv.src, './assets/' + asset);
+      assert.equal(vals.lbv.cls.includes('lb-single'), single);
+      assert.equal(vals.lbv.c2, 'none');
+      if (!single) {
+        vals.lbT0(event);
+        assert.equal(logic.renderVals().lbv.src, './assets/lf2-camp.jpg');
+      }
+      vals.lbClose(event);
+      assert.equal(logic.state.lb, null);
+      assert.equal(routeHash(logic.state), '#' + fragment);
+      vals = logic.renderVals();
+      (single ? vals.lf3Photo : vals.lf2Photo1)(event);
+      assert.deepEqual(logic.state.lb, { t, s: story, i: photo - 1 });
+      logic.componentWillUnmount();
+      logic = mount('#' + fragment + '?photo=99', mobile);
+      assert.equal(logic.state.lb, null, 'invalid photo must not open a gallery');
+      logic.componentWillUnmount();
+    }
+  }
   logic = mount('#clubs-and-facilities?offset=420');
   assert.equal(logic.state.fcY, 420);
   logic.componentWillUnmount();

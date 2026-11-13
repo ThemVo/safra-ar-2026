@@ -648,23 +648,18 @@ body{margin:0;background:#272C3F}
 .mh.m .lf3ph{height:203px}
 .mh.m .lf3ph.short{height:185px}
 .mh .lf3ph>.lf3im{height:100% !important}
-/* closing marquee: two identical sets side by side; the track slides one set's width and loops — seamless and endless */
-.mh .entrack{display:flex;width:max-content;height:100%;align-items:center;animation:enMq 61s linear infinite;will-change:transform}
-.mh .enset{display:flex;align-items:center;flex:none}
-.mh .encta{display:flex;align-items:center;gap:24px;flex:none;margin-right:48px;padding:24px 28px 24px 32px;border-radius:16px;background:#FFFFFF;font-size:48px;font-weight:700;line-height:1.2;text-transform:uppercase;white-space:nowrap}
-.mh .enar{flex:none;margin-right:48px;font-size:64px;font-weight:700;line-height:1.2;color:#FFFFFF;text-transform:uppercase;white-space:nowrap}
-.mh .enic{flex:none;display:block;margin:-3px -3px}
-.mh.m .encta{gap:12px;margin-right:24px;padding:12px 14px 12px 16px;border-radius:10px;font-size:24px}
-.mh.m .enar{margin-right:24px;font-size:32px}
-.mh.m .entrack{animation-duration:30s}
-@keyframes enMq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.mh:where(:not(.m)) .enmq:hover .entrack{animation-play-state:paused}
-.mh .enmq,.mh .enmq *,.v-in .enmq,.v-in .enmq *{cursor:url(../assets/cursors/hover-cursor.svg) 10 8,pointer !important}
-.mh .enmq:focus-visible{outline:2px solid #FFFFFF;outline-offset:-4px}
-@media (prefers-reduced-motion:reduce){.mh .entrack{animation:none}}
-/* nothing in the marquee is clipped: the band only clips at the screen edges (the page's own clip); gradient words get room for their glyph edges */
-.mh .encta>span{padding:.08em .06em;margin:-.08em -.06em}
-.mh .encta,.mh .enar{overflow:visible}
+/* Closing download: one centered CTA, matching the Figma closing screen. */
+.mh .annual-report-actions{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 104px}
+.mh .annual-report-download{--d:.45s;display:flex;align-items:center;gap:24px;padding:24px 28px 24px 32px;border-radius:16px;background:#FFFFFF;text-decoration:none;font-size:56px;font-weight:700;line-height:1.2;text-transform:uppercase;white-space:nowrap;font-variation-settings:"GRAD" 0,"ROND" 0,"wdth" 100}
+.mh .annual-report-download-label{background:linear-gradient(90deg,#6252A4 0%,#F14192 49.038%,#F6765D 92.788%,#F69141 99.99%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mh .annual-report-download-icon{position:relative;flex:none;width:48px;height:43.2px}
+.mh .annual-report-download-icon img{position:absolute;left:-3.6px;top:-3.6px;max-width:none}
+.mh .annual-report-download,.mh .annual-report-download *{cursor:url(../assets/cursors/hover-cursor.svg) 10 8,pointer !important}
+.mh .annual-report-download:focus-visible{outline:3px solid #FFFFFF;outline-offset:8px}
+.mh.m .annual-report-actions{padding:0 16px}
+.mh.m .annual-report-download{gap:12px;padding:16px 14px 16px 16px;border-radius:10px;font-size:20px}
+.mh.m .annual-report-download-icon{width:24px;height:21.6px}
+.mh.m .annual-report-download-icon img{left:-1.8px;top:-1.8px;transform:scale(.5);transform-origin:0 0}
 .mh:not(.swk) .swc{visibility:hidden} /* the screen-bottom curtain only matters around At a glance; elsewhere (e.g. the closing section, whose bands are open) it must not show */
 /* Looking forward lists — smoother story switching: one gliding red indicator, a single easing for every height/padding, text fades in once its space has opened */
 .mh .lfbar{position:absolute;left:0;top:0;width:4px;height:0;background:#F34141;border-radius:0;z-index:1;pointer-events:none;will-change:transform,height}
@@ -721,3 +716,9 @@ body{margin:0;background:#272C3F}
    spreads right across them — instead of leaving them to a delayed page-level fill (that left a navy strip on 01) */
 .mh.at-nxv{clip-path:inset(calc(-1 * var(--gy, 0px)) calc(-1 * var(--gx, 0px))) !important}
 .mh.at-nxv .s13{z-index:3}
+
+/* Looking-forward photos open the shared gallery. */
+.mh .lf-photo{display:block;padding:0;border:0;background:transparent;text-align:inherit}
+.mh .lf-photo,.mh .lf-photo *{cursor:url(../assets/cursors/viewall-cursor.svg) 46 46,pointer !important}
+.mh .lf-photo:focus-visible{outline:2px solid #F5765E;outline-offset:4px}
+.mh .lb.lb-single .lb-row{display:none !important}

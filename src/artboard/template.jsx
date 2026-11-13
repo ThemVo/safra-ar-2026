@@ -2531,7 +2531,7 @@ export default function render(v) {
             </defs>
           </svg>
           {/* closing: an endless marquee — DOWNLOAD [icon] · ANNUAL REPORT — the whole band is the download link */}
-          <a className="enk enmq" href="#" onClick={v.noop} aria-label="Download the full 2025/26 annual report" style={{ "--d": ".45s", position: "absolute", left: "calc(-1 * var(--gx, 0px))", right: "calc(-1 * var(--gx, 0px))", top: "315.5px", height: "106px", display: "block", textDecoration: "none" }}>
+          <a className="enk enmq" href={import.meta.env.URL_PDF} onClick={(e) => e.stopPropagation()} aria-label="Download the full 2025/26 annual report" style={{ "--d": ".45s", position: "absolute", left: "calc(-1 * var(--gx, 0px))", right: "calc(-1 * var(--gx, 0px))", top: "315.5px", height: "106px", display: "block", textDecoration: "none" }}>
             <span className="entrack" aria-hidden="true">
                 <span className="enset">
                   <span className="encta">
@@ -2824,7 +2824,7 @@ export default function render(v) {
                 </button>
               </li>
             </ul>
-            <a className="sm-cta" href="#" onClick={v.menuStop}>
+            <a className="sm-cta" href={import.meta.env.URL_PDF} onClick={(e) => e.stopPropagation()}>
               <svg className="sm-dlg" width="22" height="20" viewBox="0 0 22 20" aria-hidden="true" style={{ flex: "none", overflow: "visible" }}>
                 <defs>
                   <linearGradient id="smdl" x1="0" y1="0" x2="22" y2="20" gradientUnits="userSpaceOnUse">

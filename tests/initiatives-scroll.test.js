@@ -484,3 +484,29 @@ test('desktop Annual Report reverse gestures finish the footer movement before c
     assert.equal(logic.lkPos, 117, `${region}: touch also moves the footer camera`);
   }
 });
+
+test('desktop initiatives cursor waits for all five cards and resets on departure', t => {
+  const timers = [];
+  t.mock.method(globalThis, 'setTimeout', (callback, delay) => {
+    timers.push({ callback, delay });
+    return timers.length;
+  });
+  const logic = new ArtboardLogic({});
+  logic.queueUrlSync = () => {};
+  logic.state.view = 's3';
+  logic.setState({ view: 's5' });
+  assert.equal(logic.state.cardsCursorReady, false);
+  const firstReveal = timers.find(timer => timer.delay === 3080);
+  assert.ok(firstReveal, 'first entrance waits for the last staggered card');
+  firstReveal.callback();
+  assert.equal(logic.state.cardsCursorReady, true);
+  logic.setState({ view: 's3' });
+  assert.equal(logic.state.cardsCursorReady, false);
+  logic.state.i4 = false;
+  logic.setState({ view: 's5' });
+  const returnReveal = timers.find(timer => timer.delay === 1620);
+  assert.ok(returnReveal, 'subsequent entrances use the shorter reveal');
+  logic.setState({ view: 's3' });
+  returnReveal.callback();
+  assert.equal(logic.state.cardsCursorReady, false, 'a stale reveal cannot enable the cursor elsewhere');
+});

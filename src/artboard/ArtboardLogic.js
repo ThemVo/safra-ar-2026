@@ -838,6 +838,7 @@ export class ArtboardLogic extends Logic {
     );
     this.tick = setInterval(() => this.setState({ now: Date.now() }), 1000);
     this.startTimers();
+    if (this.state.view === "s5") this.revealCardsCursor();
     if (window.location.hash) this.restoreUrl();
     else this.queueUrlSync();
     const go = () => requestAnimationFrame(() => this.measure());
@@ -1049,6 +1050,9 @@ export class ArtboardLogic extends Logic {
       this.i4T = setTimeout(() => super.setState({ i4: false }), 4500);
     }
     if (now !== was) {
+      clearTimeout(this.cardsCursorT);
+      if (now === "s5") this.revealCardsCursor();
+      else if (this.state.cardsCursorReady) super.setState({ cardsCursorReady: false });
       const at = (v) => v === "tg" || v === "s3";
       clearTimeout(this.b3T);
       if (!(at(now) && at(was)) && this.state.b3ok)
@@ -1092,6 +1096,15 @@ export class ArtboardLogic extends Logic {
       if (v === "s3") this.arrive3();
       if (v === "s4" || v === "s5") this.setState({ s3: true, s4: true });
     }
+  }
+  revealCardsCursor() {
+    clearTimeout(this.cardsCursorT);
+    super.setState({ cardsCursorReady: false });
+    // Match the final card's transform: delay + four stagger steps + duration.
+    const delay = this.state.i4 ? 3080 : 1620;
+    this.cardsCursorT = setTimeout(() => {
+      if (this.state.view === "s5") super.setState({ cardsCursorReady: true });
+    }, delay);
   }
   // generic letter hover for statement text (.hv): same push/tilt as the masthead headline
   // topic-card hover: cycle the card's section photos as a popping, tilted stack
@@ -1208,6 +1221,7 @@ export class ArtboardLogic extends Logic {
       "landT",
       "mbHT",
       "i4T",
+      "cardsCursorT",
     ].forEach((k) => clearTimeout(this[k]));
     if (this.barRaf) cancelAnimationFrame(this.barRaf);
     if (this.raf8) cancelAnimationFrame(this.raf8);
@@ -2806,7 +2820,7 @@ export class ArtboardLogic extends Logic {
       lgClass: view === "logo" ? "lg" : "",
       go3Class: (rankOf(view) ?? 0) >= 2 ? "go3" : "",
       s4Class: fin || this.state.s4 ? "is-s4" : "",
-      go5Class: (rankOf(view) ?? 0) >= 3 ? "go5" : "", // cards stay put while the camera zooms into a card
+      go5Class: `${(rankOf(view) ?? 0) >= 3 ? "go5" : ""} ${view === "s5" && this.state.cardsCursorReady ? "cards-cursor-ready" : ""}`, // cards stay put while the camera zooms into a card
       s6Class: fin || this.state.s6 ? "is-s6" : "",
       go6Class:
         (view === "s6" ? "go6" : "") + (this.state.landing ? " landing" : ""),

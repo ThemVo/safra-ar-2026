@@ -1,6 +1,5 @@
 import { screenId, SECTION_IDS } from "./routes.js";
 import { assetUrl } from "../utils/assetUrl.js";
-import MobileBackIcon from "./MobileBackIcon.jsx";
 
 // Reuse desktop/gallery source photos; only the slots and crops vary by viewport.
 // Figma slots and source-image crops, measured on its 393 × 853 frame.
@@ -526,7 +525,6 @@ export default function MobileTopicStory({ v, photos }) {
     transform: `translateY(${y || 0}px)`,
     opacity: a ?? 1,
   });
-  const defence = v.mobileView === "s6";
   const header = data.header || 117;
   const lines = copyLines[`${v.mobileView}-${v.mobileStory}`];
   return (
@@ -535,28 +533,7 @@ export default function MobileTopicStory({ v, photos }) {
       className={`mobile-figma-story${v.mobileView === "s8" ? " mobile-bonds-story" : ""}`}
       style={{ "--story-header": `${header}px` }}
     >
-      <header className="mobile-topic-header">
-        <button
-          type="button"
-          onClick={v[{ s6: "back6", s7: "back7", s8: "back8" }[v.mobileView]]}
-          aria-label="Back to the topics"
-        >
-          <MobileBackIcon />
-        </button>
-        <h2 className="mobile-gradient">
-          {defence ? (
-            <>
-              Bringing Defence Closer
-              <br />
-              to The Community
-            </>
-          ) : v.mobileView === "s8" ? (
-            "Strengthening bonds"
-          ) : (
-            "Appreciating NSmen"
-          )}
-        </h2>
-      </header>
+      <div className="mobile-topic-header" aria-hidden="true" />
       <article
         id={screenId(v.mobileView, v.mobileStory)}
         aria-label={data.title}

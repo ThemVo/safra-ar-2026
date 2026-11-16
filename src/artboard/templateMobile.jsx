@@ -93,7 +93,6 @@ function Header({ v, title, gradient = true, backIcon }) {
   </header>;
 }
 function Story({ v, desktop }) {
-  const topic = topics.find(([id]) => id === v.mobileView);
   const section = find(desktop, n => n.props.id === SECTION_IDS[v.mobileView]);
   const story = find(section, n => n.props.id === screenId(v.mobileView, v.mobileStory));
   const panel = find(story, n => has(n, 'dcpn'));
@@ -101,7 +100,7 @@ function Story({ v, desktop }) {
   if (hasMobileTopicStory(v.mobileView, v.mobileStory)) return <MobileTopicStory v={v} photos={photos} />;
   const veterans = v.mobileView === 's6' && v.mobileStory === 2;
   return <section id={SECTION_IDS[v.mobileView]} className={`mobile-story-section${veterans ? ' mobile-veterans-story' : ''}`}>
-    <Header v={v} title={topic[1]} />
+    <div className="mobile-topic-header" aria-hidden="true" />
     <article id={screenId(v.mobileView, v.mobileStory)} key={v.mobileStory} aria-label={story?.props['aria-label']} className="mobile-collage">
       {photos.map((photo, i) => cloneElement(photo, { key: i, style: {}, className: `mobile-story-photo photo-${i}` }, veterans ? <img style={{transform:`translateY(${v.d6?.s2?.ph || 0}%)`}} src={assetUrl(i === 0 ? 'defence-veterans-gallery-01.jpg' : 'defence-veterans-gallery-02.jpg')} alt="" /> : photo.props.children))}
       <div className="mobile-story-panel">{flow(panel?.props.children, veterans ? ['Commitment to Defence (C2D)', 'Ambassadors from the SAF', 'Veterans’ League shared real-', 'life experiences, reinforcing', 'the importance of a', 'strong defence.'] : undefined, v.mobileStoryLine)}<div className="mobile-story-progress" aria-hidden="true" style={{width:`${veterans ? 148.92 : (v[`d${v.mobileView.slice(1)}`]?.[`s${v.mobileStory}`]?.bar || 0) / 520 * 100}${veterans ? 'px' : '%'}`}} /></div>
@@ -378,7 +377,8 @@ function MobileExperience({ v }) {
   else if (['s6','s7','s8'].includes(view)) content = <Story v={v} desktop={desktop} />;
   else if (view === 'mb' || view === 't2') content = <Membership v={v} desktop={desktop} />;
   return <div className={classes} data-view={view} onWheel={v.wheel} onTouchStart={v.touchStart} onTouchMove={v.touchMove} onTouchEnd={v.touchEnd}>
-    <main ref={mainScroller} key={screenKey} className={`mobile-screen ${view === 's5' ? 'mobile-topics' : ''} screen-${priorityPage ? 'nx' : view} ${priority || closingPriority ? 'priority-locked' : ''} ${futureGated ? 'future-gated' : ''}`} data-mobile-scroll={scrollable && !priorityPage ? true : undefined} onScroll={priorityPage ? undefined : onScroll} tabIndex={0} onKeyDown={e => { if (e.target !== e.currentTarget || scrollable) return; if (['ArrowDown', 'PageDown', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); v.mobileAdvance(['ArrowDown', 'PageDown'].includes(e.key) ? 1 : -1); } }} aria-hidden={priorityPage || undefined} inert={priorityPage || v.mobileGallery || v.mobileMenu ? '' : undefined}>
+    <main ref={mainScroller} key={['s6','s7','s8'].includes(view) ? view : screenKey} className={`mobile-screen ${view === 's5' ? 'mobile-topics' : ''} screen-${priorityPage ? 'nx' : view} ${priority || closingPriority ? 'priority-locked' : ''} ${futureGated ? 'future-gated' : ''}`} data-mobile-scroll={scrollable && !priorityPage ? true : undefined} onScroll={priorityPage ? undefined : onScroll} tabIndex={0} onKeyDown={e => { if (e.target !== e.currentTarget || scrollable) return; if (['ArrowDown', 'PageDown', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); v.mobileAdvance(['ArrowDown', 'PageDown'].includes(e.key) ? 1 : -1); } }} aria-hidden={priorityPage || undefined} inert={priorityPage || v.mobileGallery || v.mobileMenu ? '' : undefined}>
+      {['s6','s7','s8'].includes(view) && <div className="mobile-topic-fixed-header"><Header v={v} title={view === 's6' ? <>Bringing Defence Closer<br />to The Community</> : topics.find(([id]) => id === view)[1]} /></div>}
       <div ref={mainFrame} className="mobile-content" key={screenKey}>{content}</div>
     </main>
     {(view === 'nx' || priorityPage) && <>

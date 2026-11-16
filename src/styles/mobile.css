@@ -150,6 +150,12 @@
 .mobile-topic-header>button:focus-visible { outline:2px solid #f5765e; outline-offset:3px; }
 .mobile-membership .mobile-topic-header>button:focus-visible,.mobile-facilities .mobile-topic-header>button:focus-visible { outline-color:#fff; }
 .mobile-topic-header h2 { font-size:14px; line-height:1.2; letter-spacing:.02em; text-transform:uppercase; margin:0; font-weight:600; padding-right:40px; }
+/* Keep the topic heading outside the story's changing scale and vertical offset. */
+.mobile-screen.screen-s6,.mobile-screen.screen-s7,.mobile-screen.screen-s8 { position:relative; }
+.mobile-topic-fixed-header { position:absolute; top:0; left:0; right:0; z-index:5; width:100%; max-width:393px; margin-inline:auto; }
+.mobile-topic-fixed-header .mobile-topic-header { height:117px; padding:24px 16px; margin:0; }
+.mobile-topic-fixed-header h2 { font-size:clamp(16px,5.09vw,20px); line-height:1.2; letter-spacing:.4px; padding:0; white-space:nowrap; }
+.mobile-topic-header h2 { animation:mhUp .65s cubic-bezier(.2,.7,.2,1) .2s both; }
 .mobile-story-section { padding:0 16px 40px; }
 .mobile-collage { display:grid; position:relative; grid-template-columns:repeat(12,minmax(0,1fr)); gap:24px 0; padding-top:20px; isolation:isolate; }
 .mobile-story-photo { position:relative; padding:0; border:0; background:none; overflow:hidden; border-radius:8px; min-width:0; animation:none; }
@@ -179,7 +185,6 @@
 .mobile-membership-card .mbh>span:not(.mobile-travel-header-icon) { font-size:18px !important; font-weight:600; }
 .mobile-membership-card .mbh>img { width:40px; height:40px; flex:none; }
 .mh.mobile-layout .mobile-membership-card .mbpl { display:block; width:40px; height:40px; margin-left:auto; flex:none; }
-.mobile-membership-card .mbpl path { transform:scale(.675); transform-origin:20px 20px; }
 .mobile-membership-fold { display:grid; grid-template-rows:0fr; transition:grid-template-rows .55s cubic-bezier(.4,0,.2,1); }
 .mobile-membership-card.on .mobile-membership-fold { grid-template-rows:1fr; }
 .mobile-membership-fold>div { overflow:hidden; min-height:0; }
@@ -434,7 +439,6 @@
 .mobile-priorities.supporting .mobile-priority-photos>div:first-child { width:100%; }
 .mobile-priorities.supporting .mobile-priority-photos .lf-photo { max-height:210px; }
 
-.mobile-topic-header h2 { animation:mhUp .65s cubic-bezier(.2,.7,.2,1) .2s both; }
 .mobile-priorities>h2,.mobile-priority-photos { animation:mhUp .75s cubic-bezier(.2,.7,.2,1) .15s both; }
 @media (max-width:360px) and (max-height:700px) {
   .mobile-initiatives { padding-top:40px; }

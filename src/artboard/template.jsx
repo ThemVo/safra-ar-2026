@@ -7505,55 +7505,6 @@ export default function render(v) {
                             }}
                           >
                             <p
-                              aria-label="637"
-                              style={{
-                                margin: "0",
-                                fontSize: "56px",
-                                fontWeight: "400",
-                                lineHeight: "1.2",
-                                letterSpacing: "0",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              <T v={v.d8?.s2?.c0} />
-                            </p>
-                          </div>
-                          <p
-                            style={{
-                              margin: "0",
-                              fontSize: "20px",
-                              lineHeight: "1.5",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            <span
-                              className="dcb"
-                              style={{
-                                display: "inline-block",
-                                transform: `translateY(${s(v.d8?.s2?.yb0)}px)`,
-                                opacity: `${s(v.d8?.s2?.ab0)}`,
-                              }}
-                            >
-                              cohesion events
-                            </span>
-                          </p>
-                        </div>
-                        <div
-                          style={{
-                            flex: "none",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "2px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "4px",
-                            }}
-                          >
-                            <p
                               style={{
                                 margin: "0",
                                 fontSize: "18px",
@@ -7602,6 +7553,55 @@ export default function render(v) {
                               }}
                             >
                               national&nbsp;servicemen engaged
+                            </span>
+                          </p>
+                        </div>
+                        <div
+                          style={{
+                            flex: "none",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "2px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "4px",
+                            }}
+                          >
+                            <p
+                              aria-label="637"
+                              style={{
+                                margin: "0",
+                                fontSize: "56px",
+                                fontWeight: "400",
+                                lineHeight: "1.2",
+                                letterSpacing: "0",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              <T v={v.d8?.s2?.c0} />
+                            </p>
+                          </div>
+                          <p
+                            style={{
+                              margin: "0",
+                              fontSize: "20px",
+                              lineHeight: "1.5",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            <span
+                              className="dcb"
+                              style={{
+                                display: "inline-block",
+                                transform: `translateY(${s(v.d8?.s2?.yb0)}px)`,
+                                opacity: `${s(v.d8?.s2?.ab0)}`,
+                              }}
+                            >
+                              cohesion events
                             </span>
                           </p>
                         </div>
@@ -10371,8 +10371,9 @@ export default function render(v) {
                 }}
               >
                 A new café lounge was opened at the new Central Manpower Base
-                (CMPB) to provide a cosy place where pre-enlistees, national&nbsp;servicemen and MINDEF staff can recharge, socialise and get to
-                know more about SAFRA.
+                (CMPB) to provide a cosy place where pre-enlistees,
+                national&nbsp;servicemen and MINDEF staff can recharge,
+                socialise and get to know more about SAFRA.
               </p>
             </article>
           </section>
@@ -11339,7 +11340,7 @@ export default function render(v) {
                     color: "#F34141",
                   }}
                 >
-                  Check out the 3 highlights
+                  Check out the highlights of our 3 key priorities
                 </p>
               </div>
             </div>
@@ -11507,7 +11508,7 @@ export default function render(v) {
                   margin: "0",
                   fontSize: "56px",
                   fontWeight: "600",
-                  lineHeight: "1.2",
+                  lineHeight: "1.1",
                   letterSpacing: "1.12px",
                   textTransform: "uppercase",
                 }}
@@ -11562,11 +11563,12 @@ export default function render(v) {
                 <div className="lf2b">
                   <p>
                     Double the number of camps, including two new variants, will
-                    be organised to enable family members of national&nbsp;servicemen
-                    to get a taste of National Service. This includes new 1-day
-                    NS For Everyone camps and 2D1N women’s camps. All
-                    participants will also get to make personalised appreciation
-                    gifts for national&nbsp;servicemen.
+                    be organised to enable family members of
+                    national&nbsp;servicemen to get a taste of National Service.
+                    This includes new 1-day NS For Everyone camps and 2D1N
+                    women’s camps. All participants will also get to make
+                    personalised appreciation gifts for
+                    national&nbsp;servicemen.
                   </p>
                 </div>
               </div>
@@ -11584,9 +11586,10 @@ export default function render(v) {
                   <p>
                     The obstacle race promotes fitness, teamwork and enables the
                     public to experience the rigorous fitness training of
-                    National Service through several <span style={{ whiteSpace: "nowrap" }}>NS-inspired</span> elements such
-                    as the Apex Climb, Low Wall and Leopard Crawl, alongside
-                    other functional fitness stations.
+                    National Service through several{" "}
+                    <span style={{ whiteSpace: "nowrap" }}>NS-inspired</span>{" "}
+                    elements such as the Apex Climb, Low Wall and Leopard Crawl,
+                    alongside other functional fitness stations.
                   </p>
                 </div>
               </div>
@@ -11796,7 +11799,7 @@ export default function render(v) {
                 </h3>
                 <div className="lf3c">
                   <div className="lf3b">
-                    <h4>SAFRA Yishun: New adventures await</h4>
+                    <h4>New adventures await at SAFRA Yishun</h4>
                     <p>
                       Climbing enthusiasts can enjoy a refreshed bouldering gym
                       and a new auto-belay system at the 18m climbing wall. New
@@ -11805,13 +11808,13 @@ export default function render(v) {
                       upgraded to feature additional shooting lanes and a new
                       simulated shooting facility by early 2027.
                     </p>
-                    <h4>SAFRA Tampines: Swinging into action</h4>
+                    <h4>Swinging into action at SAFRA Tampines</h4>
                     <p>
                       Visitors now have access to the first and only rooftop
                       batting cage in Singapore, featuring automated pitching
                       lanes for baseball and softball, managed by iBat.
                     </p>
-                    <h4>SAFRA Toa Payoh: More family fun</h4>
+                    <h4>More family fun at SAFRA Toa Payoh</h4>
                     <p>
                       Families can look forward to an enhanced wading pool with
                       new water play features by end-2026.
@@ -11856,8 +11859,8 @@ export default function render(v) {
                 <div className="lf3c">
                   <div className="lf3b">
                     <p>
-                      A new clubhouse will serve national&nbsp;servicemen and their
-                      families in the East by 2030. Double the size of the
+                      A new clubhouse will serve national&nbsp;servicemen and
+                      their families in the East by 2030. Double the size of the
                       current SAFRA Tampines which it will replace, SAFRA
                       Bayshore will offer a wider range of modern and affordable
                       facilities. Located next to an Integrated Transport Hub
@@ -11955,8 +11958,7 @@ export default function render(v) {
               top: "6318px",
               width: "1440px",
               height: "237px",
-              clipPath:
-                "inset(0 calc(-1 * var(--gx, 0px)))",
+              clipPath: "inset(0 calc(-1 * var(--gx, 0px)))",
               background:
                 "linear-gradient(152.2828deg, #6252A4 0%, #F14192 50.967%, #F6765D 96.438%, #F69141 103.92%)",
               borderImage:
@@ -12083,7 +12085,7 @@ export default function render(v) {
             zIndex: "20",
             background: "#18212A",
             borderImage:
-              "linear-gradient(#18212A, #18212A) 0 fill / 0 / 0 var(--gx, 0px)",
+              "linear-gradient(#18212A, #18212A) 0 fill / 0 / var(--gy, 0px) var(--gx, 0px)",
           }}
         >
           <div

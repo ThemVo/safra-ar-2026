@@ -516,3 +516,11 @@
 .mobile-priority-stack>.mobile-supporting-layer { position:absolute; inset:0; z-index:5; background:#18212a; transform:translateY(100%); transition:transform .75s cubic-bezier(.6,0,.3,1); pointer-events:none; }
 .mobile-priority-stack.priority-stack-supporting>.mobile-supporting-layer { transform:translateY(0); pointer-events:auto; }
 .priority-stack-supporting>.mobile-supporting-stack-dim { opacity:.55; }
+
+/* Topic pages cover the preceding screen with the priority stack's motion. */
+.mobile-topic-transition>.mobile-screen:first-child { position:relative; z-index:3; background:#272c3f; animation:mobileTopicCover .75s cubic-bezier(.6,0,.3,1) both; }
+.mobile-topic-outgoing { position:absolute; inset:0; z-index:1; background:#272c3f; pointer-events:none; }
+.mobile-topic-outgoing>.mobile-screen { overflow:hidden; }
+.mobile-topic-transition-dim { position:absolute; inset:0; background:#0b0f14; animation:mobileTopicDim .75s cubic-bezier(.6,0,.3,1) both; }
+@keyframes mobileTopicCover { from { transform:translateY(100%); } to { transform:translateY(0); } }
+@keyframes mobileTopicDim { from { opacity:0; } to { opacity:.55; } }

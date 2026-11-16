@@ -399,11 +399,38 @@ function MobileExperience({ v }) {
     </section></>;
   else if (['s6','s7','s8'].includes(view)) content = <Story v={v} desktop={desktop} />;
   else if (view === 'mb' || view === 't2') content = <Membership v={v} desktop={desktop} />;
-  return <div className={classes} data-view={view} onWheel={v.wheel} onTouchStart={v.touchStart} onTouchMove={v.touchMove} onTouchEnd={v.touchEnd}>
+  // Retain the outgoing topic at its current scroll position while the next
+  // screen covers it, using the same timing as the priority stack.
+  const previousTopicScreen = useRef(null);
+  const [topicTransition, setTopicTransition] = useState(null);
+  useLayoutEffect(() => {
+    const previous = previousTopicScreen.current;
+    if (previous && ((previous.view === 's8' && previous.story === 5 && view === 'mb') || (previous.view === 'mb' && view === 'fc1'))) {
+      setTopicTransition({ view: previous.view, screen: previous.screen, scrollTop: previous.node?.scrollTop || 0 });
+    } else if (previous?.view !== view) {
+      setTopicTransition(null);
+    }
+    previousTopicScreen.current = { view, story: v.mobileStory, screen: topicScreen, node: mainScroller.current };
+  });
+  useEffect(() => {
+    if (!topicTransition) return;
+    const timer = setTimeout(() => setTopicTransition(null), 750);
+    return () => clearTimeout(timer);
+  }, [topicTransition]);
+  const topicScreen = <>
+    {['s6','s7','s8'].includes(view) && <div className="mobile-topic-fixed-header"><Header v={v} title={view === 's6' ? <>Bringing Defence Closer<br />to The Community</> : topics.find(([id]) => id === view)[1]} /></div>}
+    <div ref={mainFrame} className="mobile-content" key={screenKey}>{content}</div>
+  </>;
+  return <div className={`${classes}${topicTransition ? ' mobile-topic-transition' : ''}`} data-view={view} onWheel={v.wheel} onTouchStart={v.touchStart} onTouchMove={v.touchMove} onTouchEnd={v.touchEnd}>
     <main ref={mainScroller} key={['s6','s7','s8'].includes(view) ? view : screenKey} className={`mobile-screen ${view === 's5' ? 'mobile-topics' : ''} screen-${priorityPage ? 'nx' : view} ${priority || closingPriority ? 'priority-locked' : ''} ${futureGated ? 'future-gated' : ''}`} data-mobile-scroll={scrollable && !priorityPage ? true : undefined} onScroll={priorityPage ? undefined : onScroll} tabIndex={0} onKeyDown={e => { if (e.target !== e.currentTarget || scrollable) return; if (['ArrowDown', 'PageDown', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); v.mobileAdvance(['ArrowDown', 'PageDown'].includes(e.key) ? 1 : -1); } }} aria-hidden={priorityPage || undefined} inert={priorityPage || v.mobileGallery || v.mobileMenu ? '' : undefined}>
-      {['s6','s7','s8'].includes(view) && <div className="mobile-topic-fixed-header"><Header v={v} title={view === 's6' ? <>Bringing Defence Closer<br />to The Community</> : topics.find(([id]) => id === view)[1]} /></div>}
-      <div ref={mainFrame} className="mobile-content" key={screenKey}>{content}</div>
+      {topicScreen}
     </main>
+    {topicTransition && <div className="mobile-topic-outgoing" data-view={topicTransition.view} aria-hidden="true" inert="">
+      <div className={`mobile-screen screen-${topicTransition.view}`} ref={node => { if (node) node.scrollTop = topicTransition.scrollTop; }}>
+        {cloneElement(topicTransition.screen, {}, ...Children.toArray(topicTransition.screen.props.children).map(child => isValidElement(child) ? cloneElement(child, { ref: null }) : child))}
+      </div>
+      <div className="mobile-topic-transition-dim" />
+    </div>}
     {(view === 'nx' || priorityPage) && <>
       <div className="mobile-priority-stack-dim" aria-hidden="true" />
       <main ref={commitmentScroller} className="mobile-screen screen-lf2 mobile-commitment-layer" data-mobile-scroll={commitment ? true : undefined} onScroll={commitment ? onScroll : undefined} tabIndex={commitment ? 0 : -1} aria-hidden={!commitment || undefined} inert={!commitment || v.mobileGallery || v.mobileMenu ? '' : undefined}>

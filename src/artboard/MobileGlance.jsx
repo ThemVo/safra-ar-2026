@@ -206,11 +206,13 @@ export default function MobileGlance(v) {
           <h3 className="mobile-gradient">Outreach &amp; Engagement</h3>
         </div>
         {photo(
+          0,
           "outreach-bikes",
           "./assets/outreach-balance-bike-race-mobile.jpg",
           "Children participating in a SAFRA cycling activity",
         )}
         {stat(
+          1,
           "outreach-activities",
           "Participation in SAFRA Activities",
           "Over 1.72M",
@@ -218,6 +220,7 @@ export default function MobileGlance(v) {
           true,
         )}
         {stat(
+          5,
           "outreach-appreciation",
           "People Engaged Through Appreciating NSmen Initiatives",
           "Over 75K",
@@ -225,16 +228,19 @@ export default function MobileGlance(v) {
           true,
         )}
         {photo(
+          4,
           "outreach-card",
           "./assets/nsmen-art-jam-thank-you-card.jpg",
           "A handmade card showing appreciation for NSmen",
         )}
         {photo(
+          3,
           "outreach-defence-photo",
           "./assets/ns-experience-camp-gallery-06.jpg",
           "Participants taking part in a defence activity",
         )}
         {stat(
+          2,
           "outreach-defence",
           "Participation in Defence Initiatives",
           "Over 211K",
@@ -242,6 +248,7 @@ export default function MobileGlance(v) {
           true,
         )}
         {stat(
+          6,
           "outreach-cohesion",
           "Participation in Cohesion Activities for NS Units",
           "Over 52K",
@@ -249,6 +256,7 @@ export default function MobileGlance(v) {
           true,
         )}
         {photo(
+          7,
           "outreach-group",
           "./assets/nsmen-food-truck-gallery-03.jpg",
           "NSmen posing together at a cohesion activity",
@@ -263,17 +271,20 @@ export default function MobileGlance(v) {
           <h3 className="mobile-gradient">Sustainability</h3>
         </div>
         {photo(
+          0,
           "sustainability-solar",
           "./assets/sustainability-solar-panels-mobile.jpg",
           "Solar panels under a blue sky",
         )}
         {stat(
+          3,
           "sustainability-panels",
           "Number of Solar Panels Across SAFRA Clubs Inclusive of 870 New Panels Installed at SAFRA Yishun",
           "6,850",
           v.v?.s3,
         )}
         {stat(
+          1,
           "sustainability-energy",
           "Solar Energy Generated",
           "1074 MWh",
@@ -282,6 +293,7 @@ export default function MobileGlance(v) {
           "Equivalent to the electricity usage of over 320 4-room HDB flats for a year",
         )}
         {stat(
+          2,
           "sustainability-carbon",
           <>
             Reduction in Carbon Dioxide (CO<sub>2</sub>) Emissions
@@ -294,6 +306,7 @@ export default function MobileGlance(v) {
           </>,
         )}
         {photo(
+          4,
           "sustainability-trees",
           "./assets/sustainability-tree-canopy-mobile.jpg",
           "Sunlight shining through a green tree canopy",
@@ -303,17 +316,17 @@ export default function MobileGlance(v) {
   );
 }
 
-function photo(slot, src, alt) {
+function photo(index, slot, src, alt) {
   return (
-    <div className={`cd frame ${slot}`} key={slot}>
+    <div className={`cd frame ${slot}`} key={slot} style={{ "--i": index }}>
       <img className="pic" src={src} alt={alt} />
     </div>
   );
 }
 
-function stat(slot, label, accessibleValue, value, over = false, note) {
+function stat(index, slot, label, accessibleValue, value, over = false, note) {
   return (
-    <div className={`cd mobile-glance-stat ${slot}`} key={slot}>
+    <div className={`cd mobile-glance-stat ${slot}`} key={slot} style={{ "--i": index }}>
       <p className="mobile-glance-label">{label}</p>
       <p className="mobile-glance-value" aria-label={accessibleValue}>
         {over && <span>Over</span>}

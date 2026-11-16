@@ -3,6 +3,9 @@ body{margin:0;background:#272C3F}
 /* Keep SVG canvases transparent when embedded in a CMS with global media backgrounds.
    SVG fills, gradients and intentionally styled button backgrounds remain intact. */
 .mh svg,.mh img[src*=".svg"]{background:transparent !important}
+/* Sitefinity's svg { fill:currentcolor } overrides SVG presentation attributes.
+   Restore unfilled canvases so stroke-only arrows and icon cutouts stay transparent. */
+.mh svg[fill="none"]{fill:none}
 .mh .px{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
 .mh .ph{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .mh:where(:not(.m)) .px:hover .ph{transform:scale(1.035)}

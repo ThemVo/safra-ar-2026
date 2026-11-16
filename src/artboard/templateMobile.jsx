@@ -144,7 +144,7 @@ function Membership({ v, desktop }) {
     <Header v={v} title="Rewarding privileges" gradient={false} />
     <p>SAFRA members enjoyed a world of benefits whole year round, ranging from exclusive privileges to preferential rates at SAFRA clubs and partner merchants islandwide.</p>
     <h3 className="mobile-top-picks">TOP PICKS</h3>
-    <div className="mobile-membership-cards" data-mobile-scroll onScroll={v.mobileMembershipScroll}>
+    <div className="mobile-membership-cards">
       {cards.map((card, i) => {
         let header = find(card, n => has(n, 'mbh'));
         let content = find(card, n => has(n, 'mbc'));
@@ -271,7 +271,7 @@ function MobileExperience({ v }) {
     return () => clearTimeout(timer);
   }, [closingPriority]);
   const scrollSection = useRef(null);
-  const scrollable = (continuous && !priority && !closingPriority) || ['s5', 'fc1', 'fc2', 'lf2', 'lf3', 'end'].includes(view);
+  const scrollable = (continuous && !priority && !closingPriority) || ['mb', 's5', 'fc1', 'fc2', 'lf2', 'lf3', 'end'].includes(view);
   const previousScrollView = useRef(view);
   const enteringFuture = useRef(false);
   const screenKey = opening ? 'opening' : continuous ? `${futureOrigin.current}-future` : `${view}-${view === 's3' ? v.mobileStep : v.mobileStory}`;
@@ -297,7 +297,7 @@ function MobileExperience({ v }) {
       if (view === 'end') {
         main.dataset.mobileScrollMin = boundary;
         if (from === 'lf3') {
-          main.scrollTo(0, boundary);
+          // Continue from the current position without snapping back to the story edge.
           const reveal = requestAnimationFrame(() => main.scrollTo({ top: main.scrollHeight, behavior: 'smooth' }));
           return () => cancelAnimationFrame(reveal);
         }
@@ -311,6 +311,18 @@ function MobileExperience({ v }) {
     const top = ['wc', 'nx'].includes(view) ? document.getElementById(SECTION_IDS[view])?.offsetTop || 0 : view === 'fc1' ? v.mobileScrollOffset : 0;
     scroller.current?.scrollTo(0, top);
   }, [screenKey, continuous && view, view === 'end']);
+  const finalSupportingStory = supporting && v.mobilePriorityStory === 2;
+  useEffect(() => {
+    if (!finalSupportingStory || view === 'end' || v.mobileScrollDirection < 0) return;
+    // Wait for the final story and footer to lay out, then reveal the following
+    // content with native easing. Keep this independent of the URL/view change
+    // so crossing into the footer does not restart the motion.
+    const main = supportingScroller.current;
+    const reveal = requestAnimationFrame(() => {
+      main?.scrollTo({ top: main.scrollHeight, behavior: 'smooth' });
+    });
+    return () => cancelAnimationFrame(reveal);
+  }, [finalSupportingStory]);
   const onScroll = continuous && !priorityPage ? e => {
     if (priority || closingPriority) return;
     const main = e.currentTarget;
@@ -331,7 +343,12 @@ function MobileExperience({ v }) {
     if (nextView !== view) { scrollSection.current = nextView; v.mobileScrollSection(nextView); }
   } : ['lf2', 'lf3', 'end'].includes(view) ? e => {
     const main = e.currentTarget;
-    const minimum = Number(main.dataset.mobileScrollMin || 0);
+    const minimum = Math.max(0, main.querySelector('.mobile-priorities').offsetHeight - main.clientHeight);
+    if (view === 'lf3' && v.mobilePriorityStory === 2 && main.scrollTop > minimum + 2) {
+      main.dataset.mobileScrollMin = minimum;
+      scrollSection.current = 'end';
+      v.mobileScrollSection('end');
+    }
     // Return to the preceding story in the same native scroll gesture.
     // Clamping here forced users to stop and swipe again to leave the footer.
     if (view === 'end' && main.scrollTop < minimum - 2) {
@@ -340,7 +357,7 @@ function MobileExperience({ v }) {
       v.mobileScrollSection('lf3');
     }
     v.mobileContentScroll(e);
-  } : view === 'fc1' ? v.mobileScroll : undefined;
+  } : view === 'mb' ? v.mobileContentScroll : view === 'fc1' ? v.mobileScroll : undefined;
   useLayoutEffect(() => {
     const outer = scroller.current, inner = frame.current;
     if (!outer || !inner) return;
@@ -394,7 +411,7 @@ function MobileExperience({ v }) {
       </main>
       <div className="mobile-supporting-stack-dim" aria-hidden="true" />
       <main ref={supportingScroller} className={`mobile-screen screen-${view === 'end' ? 'end' : 'lf3'} mobile-supporting-layer`} data-mobile-scroll={supporting ? true : undefined} onScroll={supporting ? onScroll : undefined} tabIndex={supporting ? 0 : -1} aria-hidden={!supporting || undefined} inert={!supporting || v.mobileGallery || v.mobileMenu ? '' : undefined}>
-        <div ref={supportingFrame} className="mobile-content"><Priorities v={v} desktop={desktop} supporting />{view === 'end' && <footer id={SECTION_IDS.end} className="mobile-footer"><AnnualReportDownload /></footer>}</div>
+        <div ref={supportingFrame} className="mobile-content"><Priorities v={v} desktop={desktop} supporting />{(view === 'end' || v.mobilePriorityStory === 2) && <footer id={SECTION_IDS.end} className="mobile-footer"><AnnualReportDownload /></footer>}</div>
       </main>
     </>}
     {!['top','logo','tg'].includes(view) && <StickyMenu v={v} mobile />}

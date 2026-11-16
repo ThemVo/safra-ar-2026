@@ -5,6 +5,9 @@ import { initializeMarker } from "./utils/marker.ts";
 // Layout follows the viewport width, including tablets and narrow desktop windows.
 const isMobile = () => window.innerWidth < 970;
 const FRAME = { d: [1440, 900] };
+const persistRoute = ![import.meta.env.NODE_ENV, import.meta.env.MODE].some(
+  (environment) => ["uat", "prod"].includes(environment),
+);
 
 if (import.meta.env.NODE_ENV !== "prod" && import.meta.env.MODE !== "prod") {
   initializeMarker();
@@ -55,8 +58,7 @@ export default function App() {
   return (
     <div className={"stage" + (mobile ? " stage-m" : "")}>
       <div className="wrap" id="wrap" ref={wrap}>
-        {/* crossing the breakpoint remounts the artboard and restores the current section/story from its URL */}
-        <Artboard key={mobile ? "m" : "d"} mobile={mobile} gx={gx} gy={gy} />
+        <Artboard key={mobile ? "m" : "d"} mobile={mobile} gx={gx} gy={gy} persistRoute={persistRoute} />
       </div>
     </div>
   );

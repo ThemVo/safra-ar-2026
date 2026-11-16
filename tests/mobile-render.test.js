@@ -66,9 +66,9 @@ test('main screens retain content and long sections expose native scrolling', ()
     assert.match(html, /mobile-content/);
     verifyAssets(html);
     assert.doesNotMatch(html, /mobile-continue|mobile-next-topic/);
-    if (['s5','fc1','wc','nx','lf2','lf3','end'].includes(view)) assert.match(html, /<main[^>]+data-mobile-scroll="true"/);
+    if (['mb','s5','fc1','wc','nx','lf2','lf3','end'].includes(view)) assert.match(html, /<main[^>]+data-mobile-scroll="true"/);
     else assert.doesNotMatch(html, /<main[^>]+data-mobile-scroll/);
-    if (view === 'mb') assert.match(html, /class="mobile-membership-cards" data-mobile-scroll="true"/);
+    if (view === 'mb') assert.doesNotMatch(html, /class="mobile-membership-cards" data-mobile-scroll/);
   }
   const opened = markup('mb', 0, {mbTab:0});
   assert.match(opened, /mobile-offer-grid/);
@@ -147,7 +147,7 @@ test('Annual Report follows Supporting NSmen inside one native scroll container'
     assert.ok(list, `${view} contains its story list`);
     assert.doesNotMatch(list, /(?:^|[;"\s])overflow(?:-y|-x)?:/, `${view} must let the main screen own scrolling over copy`);
   }
-  assert.doesNotMatch(markup('lf3', 0, {lf3s:2}), /class="mobile-footer"/);
+  assert.match(markup('lf3', 0, {lf3s:2}), /class="mobile-footer"/);
 });
 
 

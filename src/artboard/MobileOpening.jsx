@@ -40,6 +40,9 @@ export default function MobileOpening({ view, masthead, panel }) {
       const height = root.clientHeight;
       // Update the camera's section height before reading the title's new position.
       root.style.setProperty('--opening-height', `${height}px`);
+      // Layout height excludes the intro animation's transforms and blur.
+      const logo = root.querySelector('.mobile-logo');
+      root.style.setProperty('--masthead-text-height', `${logo.offsetHeight}px`);
       const n = root.querySelector('.mobile-n-stem');
       const title = root.querySelector('.mobile-linked-title');
       const l = root.querySelector('.mobile-l-glyph');
@@ -78,6 +81,7 @@ export default function MobileOpening({ view, masthead, panel }) {
     };
     const observer = new ResizeObserver(measure);
     observer.observe(root);
+    observer.observe(root.querySelector('.mobile-logo'));
     measure();
     document.fonts.ready.then(measure);
     return () => { disposed = true; observer.disconnect(); };

@@ -6,7 +6,20 @@ import { readdirSync, readFileSync } from 'node:fs';
 const withSlash = (value) => `${value.replace(/\/+$/, '')}/`;
 
 export default defineConfig(({ mode, command }) => {
-  const env = { ...loadEnv(mode, process.cwd(), ['URL_', 'NODE_ENV']), ...process.env };
+  // Vite sets NODE_ENV itself before loading this config. Read the deployment
+  // value from .env without letting that development/production default mask it.
+  const viteNodeEnv = process.env.NODE_ENV;
+  let fileEnv;
+  try {
+    delete process.env.NODE_ENV;
+    fileEnv = loadEnv(mode, process.cwd(), ['URL_', 'NODE_ENV']);
+  } finally {
+    if (viteNodeEnv !== undefined) process.env.NODE_ENV = viteNodeEnv;
+  }
+  const env = { ...fileEnv, ...process.env };
+  const deploymentEnv = ['uat', 'prod'].includes(viteNodeEnv)
+    ? viteNodeEnv
+    : fileEnv.NODE_ENV || viteNodeEnv || mode;
   const paths = {
     image: withSlash(env.URL_IMAGE || './'),
     svg: withSlash(env.URL_SVG || env.URL_IMAGE || './'),
@@ -43,7 +56,7 @@ export default defineConfig(({ mode, command }) => {
       },
     },
     define: {
-      'import.meta.env.NODE_ENV': JSON.stringify(env.NODE_ENV || mode),
+      'import.meta.env.NODE_ENV': JSON.stringify(deploymentEnv),
       'import.meta.env.URL_PDF': JSON.stringify(env.URL_PDF || '#'),
       'import.meta.env.URL_IMAGE': JSON.stringify(command === 'build' ? paths.image : './assets/'),
       'import.meta.env.URL_SVG': JSON.stringify(command === 'build' ? paths.svg : './assets/'),

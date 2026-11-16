@@ -22,12 +22,24 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
     writes.push({ method, hash }); window.location.hash = new URL(hash, 'https://example.com/annual-report/?lang=en').hash;
     assert.equal(state.existing, true);
   };
-  const mount = (hash, mobile = false) => {
+  const mount = (hash, mobile = false, persistRoute = true) => {
     window.location.hash = hash;
-    const logic = new ArtboardLogic({ mobile });
+    const logic = new ArtboardLogic({ mobile, persistRoute });
     logic.componentDidMount();
     return logic;
   };
+  for (const mobile of [false, true]) {
+    const disabled = mount('#bringing-defence-closer-story-3', mobile, false);
+    assert.equal(disabled.state.view, 'top', 'disabled persistence ignores the saved section');
+    assert.equal(listeners.has('popstate'), false);
+    assert.equal(listeners.has('hashchange'), false);
+    disabled.jumpTo('s6');
+    await Promise.resolve();
+    assert.equal(writes.length, 0, 'disabled persistence never saves the section');
+    disabled.restoreUrl();
+    assert.equal(disabled.state.view, 's6', 'disabled persistence ignores URL restoration');
+    disabled.componentWillUnmount();
+  }
   let logic = mount('');
   await Promise.resolve();
   assert.equal(window.location.hash, '');

@@ -825,8 +825,10 @@ export class ArtboardLogic extends Logic {
   componentDidMount() {
     this.urlMounted = true;
     this.onUrlChange = () => this.restoreUrl();
-    window.addEventListener("popstate", this.onUrlChange);
-    window.addEventListener("hashchange", this.onUrlChange);
+    if (this.props.persistRoute !== false) {
+      window.addEventListener("popstate", this.onUrlChange);
+      window.addEventListener("hashchange", this.onUrlChange);
+    }
     if (this.state.view === "tg" || this.state.view === "s3")
       this.b3T = setTimeout(() => this.setState({ b3ok: true }), 950);
     this.readyT = setTimeout(() => this.setState({ ready: true }), INTRO_DONE);
@@ -860,6 +862,7 @@ export class ArtboardLogic extends Logic {
     setTimeout(go, 4000);
   }
   queueUrlSync() {
+    if (this.props.persistRoute === false) return;
     if (!this.urlMounted || this.restoringUrl || this.urlQueued) return;
     this.urlQueued = true;
     queueMicrotask(() => {
@@ -889,6 +892,7 @@ export class ArtboardLogic extends Logic {
     });
   }
   restoreUrl() {
+    if (this.props.persistRoute === false) return;
     const route = parseRoute(window.location.hash, MOBILE);
     this.restoringUrl = true;
     try {
@@ -2754,6 +2758,10 @@ export class ArtboardLogic extends Logic {
       mobileMembershipScroll: (e) => this.mobileScrolled(e.currentTarget),
       // The originating section and future content share native scroll flow.
       mobileScrollSection: (view) => {
+        if (MOBILE && this.state.view === "lf3" && this.state.lf3s === 2 && view === "end") {
+          this.setState({ view: "end" });
+          return;
+        }
         if (MOBILE && this.state.view === "end" && view === "lf3") {
           this.setState({ view: "lf3" });
           return;

@@ -547,7 +547,7 @@ export default function MobileTopicStory({ v, photos }) {
             onClick={photos[p.gallery]?.props.onClick}
             aria-label={photos[p.gallery]?.props["aria-label"]}
             style={{
-              left: p.slot[0],
+              left: Math.min(p.slot[0], 393 - 16 - p.slot[2]),
               top: p.slot[1],
               width: p.slot[2],
               height: p.slot[3],
@@ -608,10 +608,9 @@ export default function MobileTopicStory({ v, photos }) {
                 </div>
               ))}
             </div>
-            <img
+            <div
               className="figma-story-divider"
-              src={assetUrl("story-divider.svg")}
-              alt=""
+              aria-hidden="true"
             />
             <p aria-label={data.copy}>
               {lines

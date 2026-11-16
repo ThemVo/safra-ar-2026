@@ -12,13 +12,14 @@
 .mobile-screen { height:100%; width:100%; overflow-x:hidden; overflow-y:auto; overscroll-behavior-y:contain; touch-action:pan-y pinch-zoom; scrollbar-width:thin; scrollbar-color:#6e778b transparent; }
 .mobile-content { width:100%; max-width:600px; min-height:100%; margin-inline:auto; }
 .mobile-content>section { min-height:100svh; }
-.mobile-masthead { position:relative; height:100svh; min-height:600px; overflow:hidden; }
+.mobile-masthead { position:relative; height:100%; min-height:0; overflow:hidden; --masthead-text-top:calc(var(--opening-height,100svh)*.5 + 20.8px - var(--masthead-text-height,132px)/2); --masthead-text-bottom:calc(var(--opening-height,100svh)*.5 + 20.8px + var(--masthead-text-height,132px)/2); }
 .mobile-masthead-photos { position:absolute; inset:0; }
 .mobile-masthead-photos img { position:absolute; object-fit:cover; border-radius:10px; opacity:.1; }
-.mobile-masthead-photos .TR { top:0; right:0; width:61%; aspect-ratio:240/151; }
-.mobile-masthead-photos .TL { top:26%; left:0; width:51%; aspect-ratio:200/127; }
-.mobile-masthead-photos .BL { bottom:0; left:0; width:56%; aspect-ratio:220/139; }
-.mobile-masthead-photos .BR { top:62%; right:0; width:41%; aspect-ratio:160/101; }
+/* Keep each photo's aspect ratio while reserving 24px around the measured title. */
+.mobile-masthead-photos .TR { top:0; right:0; width:min(61%,max(0px,calc((var(--masthead-text-top) - 24px)*240/151))); aspect-ratio:240/151; }
+.mobile-masthead-photos .TL { top:26%; left:0; width:min(51%,max(0px,calc((var(--masthead-text-top) - var(--opening-height,100svh)*.26 - 24px)*200/127))); aspect-ratio:200/127; }
+.mobile-masthead-photos .BL { bottom:0; left:0; width:min(56%,max(0px,calc((var(--opening-height,100svh) - var(--masthead-text-bottom) - 24px)*220/139))); aspect-ratio:220/139; }
+.mobile-masthead-photos .BR { top:max(62%,calc(var(--masthead-text-bottom) + 24px)); right:0; width:min(41%,max(0px,calc((var(--opening-height,100svh) - max(calc(var(--opening-height,100svh)*.62),calc(var(--masthead-text-bottom) + 24px)))*160/101))); aspect-ratio:160/101; }
 .mobile-layout .mobile-logo { position:absolute; top:calc(50% + 20.8px); left:0; width:100%; padding-inline:16px; translate:0 -50%; text-align:center; font-size:32px; font-weight:500; line-height:normal; font-variation-settings:"GRAD" 0,"ROND" 0,"wdth" 100; color:#fff; }
 .mobile-logo-brand { color:#f34141; }
 .mobile-logo .lg2 { display:inline-block; font-size:32px; font-weight:600; margin-top:8px; white-space:nowrap; }
@@ -143,8 +144,9 @@
 .mobile-layout .mobile-topic-arrow { position:relative; display:block; align-self:flex-end; width:23.75px; height:20px; }
 .mobile-topic-arrow img { position:absolute; width:21.9969px; height:25.7515px; max-width:none; left:50%; top:50%; transform:translate(-50%,-50%) rotate(-90deg); }
 .mobile-topic:active { background:linear-gradient(#000722,#000722) padding-box,var(--mobile-gradient) border-box; }
-.mobile-topic-header { display:flex; gap:12px; align-items:center; padding:24px 0 0; margin-bottom:32px; }
+.mobile-topic-header { display:flex; gap:12px; align-items:center; padding:24px 0 0; margin-bottom:45px; }
 .mobile-topic-header>button { display:flex; align-items:center; justify-content:center; width:40px; height:40px; padding:0; flex:none; border:0; border-radius:80px; background:#313851; }
+.mobile-topic-header[aria-hidden="true"]::before { content:""; display:block; padding-block:20px; }
 .mobile-topic-header>button svg { display:block; flex:none; }
 .mobile-membership .mobile-topic-header>button { border:1.5px solid #fff; background:transparent; }
 .mobile-topic-header>button:focus-visible { outline:2px solid #f5765e; outline-offset:3px; }
@@ -153,7 +155,7 @@
 /* Keep the topic heading outside the story's changing scale and vertical offset. */
 .mobile-screen.screen-s6,.mobile-screen.screen-s7,.mobile-screen.screen-s8 { position:relative; }
 .mobile-topic-fixed-header { position:absolute; top:0; left:0; right:0; z-index:5; width:100%; max-width:393px; margin-inline:auto; }
-.mobile-topic-fixed-header .mobile-topic-header { height:117px; padding:24px 16px; margin:0; }
+.mobile-topic-fixed-header .mobile-topic-header { padding:24px 16px; margin:0; }
 .mobile-topic-fixed-header h2 { font-size:clamp(16px,5.09vw,20px); line-height:1.2; letter-spacing:.4px; padding:0; white-space:nowrap; }
 .mobile-topic-header h2 { animation:mhUp .65s cubic-bezier(.2,.7,.2,1) .2s both; }
 .mobile-story-section { padding:0 16px 40px; }
@@ -180,7 +182,7 @@
 .mobile-membership-card { position:relative; padding:12px 16px 24px; border-radius:12px 12px 0 0; background:#272c3f; }
 .mobile-membership-card+.mobile-membership-card { margin-top:-12px; }
 .mobile-membership-card:last-of-type { padding-bottom:12px; border-radius:12px; }
-.mobile-membership-next { display:flex; flex:none; flex-direction:column; align-items:flex-end; width:100%; margin:40px 0; padding:0; border:0; background:transparent; color:rgba(255,255,255,.64); text-align:right; text-transform:uppercase; font-family:'Bonds Google Sans Flex',sans-serif !important; font-size:14px !important; font-weight:600 !important; line-height:1.2 !important; }
+.mobile-membership-next { display:flex; flex:none; flex-direction:column; align-items:flex-end; width:100%; margin:auto 0 40px; padding:40px 0 0; border:0; background:transparent; color:rgba(255,255,255,.64); text-align:right; text-transform:uppercase; font-family:'Bonds Google Sans Flex',sans-serif !important; font-size:14px !important; font-weight:600 !important; line-height:1.2 !important; }
 .mobile-membership-card .mbh { position:relative; padding:0 !important; display:flex !important; align-items:center; gap:16px !important; width:100%; border:0; text-align:left; background:transparent; color:#f34141; min-height:44px; }
 .mobile-membership-card .mbh>span:not(.mobile-travel-header-icon) { font-size:18px !important; font-weight:600; }
 .mobile-membership-card .mbh>img { width:44px; height:44px; flex:none; }
@@ -198,7 +200,7 @@
 .mobile-membership-fold .mbc div { max-width:100%; }
 .mobile-membership-fold .mbc img:not([src*="ic-"]):not([src*="tv-"]) { width:100%; height:auto; object-fit:contain; }
 .mobile-membership-fold .mbc .mbi { max-width:48%; }
-.mobile-membership-fold .mbc p { font-size:14px !important; line-height:1.6 !important; }
+.mobile-membership-fold .mbc p { font-size:16px !important; line-height:1.6 !important; }
 .mobile-membership-fold .mbc p[aria-label] { font-size:36px !important; }
 #rewarding-privileges-card-2.mobile-membership-card { padding:12px 16px 24px; font-family:'Bonds Google Sans Flex',sans-serif; }
 #rewarding-privileges-card-2.mobile-membership-card.on { padding:16px 16px 44px; }
@@ -230,10 +232,10 @@
 #rewarding-privileges-card-4 .mobile-travel-icon-hotel { padding-top:3.332px; }
 #rewarding-privileges-card-4 .mobile-travel-content>p { font-size:16px !important; line-height:1.6 !important; color:#ddd; opacity:.8; }
 .mobile-facilities { padding:0 16px; background:#272c3f; }
-.mobile-facilities .mobile-topic-header { padding:24px 0; margin:0; }
+.mobile-facilities .mobile-topic-header { padding:24px 0; margin:0 0 45px; }
 .mobile-facilities .mobile-topic-header h2 { font-size:20px; line-height:1.2; letter-spacing:.4px; padding:0; }
 .mobile-facilities-back { display:block; flex:none; transform:rotate(90deg); }
-.mobile-facilities-content { display:flex; flex-direction:column; gap:40px; padding:24px 0 64px; }
+.mobile-facilities-content { display:flex; flex-direction:column; gap:40px; padding:0 0 64px; }
 .mobile-facility-card { display:flex; flex-direction:column; align-items:flex-start; margin:0; }
 .mobile-facility-gym { min-height:386px; align-items:flex-end; justify-content:flex-end; }
 .mobile-facility-photos { position:relative; flex:none; width:100%; margin-bottom:-32px; }
@@ -356,7 +358,6 @@
   .mobile-story-panel .mobile-copy-reveal { font-size:16px !important; }
 }
 @media (max-width:360px) {
-  .mobile-initiatives>h2 { font-size:28px; }
   .mobile-story-panel { grid-column:1/9; padding-inline:12px; }
 }
 @media (prefers-reduced-motion:reduce) {
@@ -372,7 +373,7 @@
 .mobile-content { transform:translate(var(--screen-offset-x,0px),var(--screen-offset,0px)) scale(var(--screen-scale,1)); transform-origin:50% 0; }
 .mobile-masthead-dim { position:absolute; inset:0; background:#272c3f; }
 .mobile-initiatives { padding:48px 16px 64px; background:#272c3f; }
-.mobile-initiatives>h2 { font-size:24px; margin-bottom:24px; }
+.mobile-initiatives>h2 { font-size:32px; margin-bottom:24px; }
 
 
 .mobile-screen { touch-action:pinch-zoom; outline:none; }
@@ -382,16 +383,16 @@
 /* Story copy shares the screen's native scrolling in both directions. */
 .mobile-layout[data-view=lf2] .lf2l,.mobile-layout[data-view=lf3] .lf3s { touch-action:pan-y pinch-zoom; overflow-anchor:none; }
 
-/* Top Picks is the explicitly allowed nested scroller; its surrounding screen stays fixed. */
-.mobile-membership { height:100svh; display:flex; flex-direction:column; padding-bottom:max(24px,env(safe-area-inset-bottom)); }
+/* Rewarding privileges grows with its content and uses the screen scroller. */
+.mobile-membership { min-height:100svh; height:auto; display:flex; flex-direction:column; padding-bottom:max(24px,env(safe-area-inset-bottom)); }
 .mobile-membership>.mobile-topic-header { flex:none; }
 .mobile-membership>p { flex:none; margin-bottom:24px; }
 .mobile-membership>.mobile-top-picks { flex:none; }
-.mobile-membership-cards { flex:1; min-height:0; overflow-y:scroll; scrollbar-gutter:stable; overscroll-behavior-y:contain; touch-action:pan-y pinch-zoom; scrollbar-width:thin; scrollbar-color:#6e778b transparent; }
+.mobile-membership-cards { flex:none; overflow:visible; }
 .mobile-membership-cards::-webkit-scrollbar { width:6px; }
 .mobile-membership-cards::-webkit-scrollbar-thumb { background:#6e778b; border-radius:3px; }
 .mobile-membership-cards::-webkit-scrollbar-track { background:transparent; }
-.mobile-screen.screen-mb { touch-action:pan-y pinch-zoom; }
+.mobile-screen.screen-mb { overflow-y:auto; touch-action:pan-y pinch-zoom; }
 .mobile-membership-card .mbh { flex-wrap:nowrap; }
 .mobile-membership-card.on .mbpl .mbpv { display:none; }
 
@@ -411,11 +412,11 @@
 
 /* Figma 3978:1375: Veterans' League collage, on a 393 × 853 mobile frame. */
 .mobile-veterans-story { padding:0 0 40px; }
-.mobile-veterans-story .mobile-topic-header { height:117px; padding:24px 16px; margin:0; }
+.mobile-veterans-story .mobile-topic-header { padding:24px 16px; margin:0 0 45px; }
 .mobile-veterans-story .mobile-topic-header h2 { font-size:20px; line-height:1.2; letter-spacing:.4px; padding:0; }
 .mobile-veterans-story .mobile-collage { display:block; height:calc(max(853px, 100svh) - 157px); padding:0; overflow:hidden; }
 .mobile-veterans-story .mobile-story-photo { position:absolute; margin:0; transform:none; }
-.mobile-veterans-story .photo-0 { top:0; right:0; width:55.97964%; height:260px; }
+.mobile-veterans-story .photo-0 { top:0; right:16px; width:55.97964%; height:260px; }
 .mobile-veterans-story .photo-1 { left:20.35623%; bottom:0; top:auto; width:192.704px; height:267.645px; }
 .mobile-veterans-story .mobile-story-photo img { position:absolute; max-width:none; object-fit:cover; }
 .mobile-veterans-story .photo-0 img { left:-62.81px; top:-82.04px; width:479.111px !important; height:359.333px !important; }
@@ -448,7 +449,7 @@
 .mobile-priorities>h2,.mobile-priority-photos { animation:mhUp .75s cubic-bezier(.2,.7,.2,1) .15s both; }
 @media (max-width:360px) and (max-height:700px) {
   .mobile-initiatives { padding-top:40px; }
-  .mobile-initiatives>h2 { font-size:20px; margin-bottom:16px; }
+  .mobile-initiatives>h2 { margin-bottom:16px; }
 }
 
 /* Per-story mobile compositions from the 393 × 853 Figma frames. */
@@ -459,7 +460,7 @@
 .mobile-bonds-story .figma-story-panel p { color:#ddd; }
 .mobile-content:has(>.mobile-figma-story) { width:393px; min-height:853px; max-width:none; }
 .mobile-figma-story { height:853px; min-height:853px !important; padding:0 0 40px; }
-.mobile-figma-story .mobile-topic-header { height:var(--story-header); padding:24px 16px; margin:0; }
+.mobile-figma-story .mobile-topic-header { padding:24px 16px; margin:0 0 45px; }
 .mobile-figma-story .mobile-topic-header h2 { font-size:20px; line-height:1.2; letter-spacing:.4px; padding:0; white-space:nowrap; }
 .mobile-figma-collage { position:relative; height:calc(813px - var(--story-header)); overflow:hidden; isolation:isolate; }
 .mobile-figma-collage .mobile-story-photo { position:absolute; margin:0; transform:none; }
@@ -476,7 +477,8 @@
 .figma-story-stat span:last-child { line-height:1.5; white-space:pre-line; }
 .figma-story-stat strong { font-size:24px; font-weight:400; line-height:1.2; }
 .mobile-figma-collage .figma-story-panel p { margin:0; font-size:12px; line-height:1.8 !important; text-wrap:pretty; }
-.figma-story-divider { display:block; flex:none; height:1px; width:186px; }
+/* Paint the line directly: Safari can drop the subpixel-height SVG when scaled. */
+.figma-story-divider { display:block; flex:none; height:1px; width:186px; background:rgb(221 221 221 / .4); }
 .mobile-figma-collage .mobile-story-progress { display:block !important; height:3.6px; border-radius:162px; }
 .mobile-story-next { position:absolute; left:16px; bottom:0; color:#6e778b; font-size:14px; font-weight:600; line-height:1.2; text-transform:uppercase; }
 .mobile-story-next.next-right { left:auto; right:16px; text-align:right; }

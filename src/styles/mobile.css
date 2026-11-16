@@ -306,7 +306,8 @@
 .mobile-layout .mobile-priorities .lf2i.on { border-left:4px solid #f34141; padding-left:21px; }
 .mobile-layout .mobile-priorities .lf2t { font-size:18px; line-height:1.2; }
 .mobile-layout .mobile-priorities .lf2b>p { font-size:16px; line-height:1.6; letter-spacing:0; }
-.mobile-layout .mobile-priorities .lf3b { max-height:none; overflow:visible; }
+.mobile-layout .mobile-priorities .lf3b { max-height:none; min-height:0; overflow:hidden; padding-top:0; }
+.mobile-layout .mobile-priorities .lf2i.on>.lf3c>.lf3b { padding-top:8px; }
 .mobile-layout .mobile-priorities .lf3b p,.mobile-layout .mobile-priorities .lf3b h4 { font-size:16px; line-height:1.6; }
 .mobile-layout .mobile-priorities .lf3im { position:relative !important; inset:auto !important; width:100% !important; height:auto !important; display:none !important; }
 .mobile-layout .mobile-priorities .lf3im.on { display:block !important; opacity:1; }

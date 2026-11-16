@@ -5173,13 +5173,20 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
+                    <img
+                      src="./assets/video-play.svg"
+                      alt=""
+                      aria-hidden="true"
+                      width="48"
+                      height="48"
+                      style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 3.8435px))`,
-                      }} />
+                      }}
+                    />
                   </button>
                   <button
                     className="dcph"
@@ -5216,13 +5223,20 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
+                    <img
+                      src="./assets/video-play.svg"
+                      alt=""
+                      aria-hidden="true"
+                      width="48"
+                      height="48"
+                      style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.5000px))`,
-                      }} />
+                      }}
+                    />
                   </button>
                   <button
                     className="dcph"
@@ -5259,13 +5273,20 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
+                    <img
+                      src="./assets/video-play.svg"
+                      alt=""
+                      aria-hidden="true"
+                      width="48"
+                      height="48"
+                      style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.1902px))`,
-                      }} />
+                      }}
+                    />
                   </button>
                   <button
                     className="dcph"
@@ -5302,13 +5323,20 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
+                    <img
+                      src="./assets/video-play.svg"
+                      alt=""
+                      aria-hidden="true"
+                      width="48"
+                      height="48"
+                      style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.1128px))`,
-                      }} />
+                      }}
+                    />
                   </button>
                   <div
                     className="dcpn"
@@ -5644,7 +5672,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/nsmen-deals-klook.jpg"
+                      src="./assets/nsmen-deals-klook-3.jpg"
                       alt=""
                       style={{
                         display: "block",

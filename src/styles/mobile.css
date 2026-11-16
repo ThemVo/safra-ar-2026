@@ -299,8 +299,15 @@
 .mobile-layout .mobile-priorities .lf3im { position:relative !important; inset:auto !important; width:100% !important; height:auto !important; display:none !important; }
 .mobile-layout .mobile-priorities .lf3im.on { display:block !important; opacity:1; }
 .mobile-layout .mobile-priorities .lf2i br { display:none; }
-.mobile-footer { background:linear-gradient(105deg,#6252a4,#f14192,#f69141); padding:24px 16px; }
-.mobile-layout .annual-report-download { position:relative !important; inset:auto !important; width:100%; max-width:100%; min-height:48px; font-size:14px; opacity:1; }
+/* Figma 4059:295: closing download CTA, centered in a 134px footer. */
+.mobile-footer { background:linear-gradient(170deg,#6252a4 0%,#f14192 49.038%,#f6765d 92.788%,#f69141 99.99%); padding:40px 16px; }
+.mh.mobile-layout .annual-report-actions { position:relative; inset:auto; width:100%; padding:0; }
+.mh.mobile-layout .annual-report-download { position:relative !important; inset:auto !important; width:max-content; max-width:100%; min-height:54px; justify-content:center; gap:16px; padding:16px 20px; border-radius:12px; font-size:18px; opacity:1; }
+.mh.mobile-layout .annual-report-download-icon { width:20px; height:18px; }
+.mh.mobile-layout .annual-report-download-icon img { transform:scale(.833333); transform-origin:1.8px 1.8px; }
+@media (max-width:360px) {
+  .mh.mobile-layout .annual-report-download { font-size:clamp(14px,4.444vw,16px); gap:12px; padding-inline:16px; }
+}
 /* Shared desktop menu themes/animation, sized to the mobile Figma panel (3978:598). */
 .mh.mobile-layout .smenu { top:max(16px,env(safe-area-inset-top)); right:max(16px,env(safe-area-inset-right)); }
 .mh.mobile-layout .sm-btn { width:40px; height:40px; border-radius:8px; }
@@ -354,7 +361,6 @@
 .mobile-initiatives { padding:48px 16px 64px; background:#272c3f; }
 .mobile-initiatives>h2 { font-size:24px; margin-bottom:24px; }
 
-.mobile-layout .annual-report-actions { position:relative; inset:auto; width:100%; }
 
 .mobile-screen { touch-action:pinch-zoom; outline:none; }
 .mobile-screen.screen-s5,.mobile-screen.screen-fc1,.mobile-screen.screen-fc2,.mobile-screen.screen-wc,.mobile-screen.screen-nx,.mobile-screen.screen-lf2,.mobile-screen.screen-lf3,.mobile-screen.screen-end { touch-action:pan-y pinch-zoom; }
@@ -378,8 +384,6 @@
 
 .mobile-membership-fold .mobile-offer-grid>.mbi { max-width:100%; }
 .mobile-offer-grid>.mbi:last-child:nth-child(3) { grid-column:1/-1; }
-.mobile-layout .annual-report-download { font-size:14px; }
-.mobile-layout .annual-report-actions { padding:0; }
 
 .mobile-layout[data-view=wc],.mobile-layout[data-view=lf2],.mobile-layout[data-view=lf3],.mobile-layout[data-view=end] { background:#18212a; }
 .mobile-layout[data-view=mb] { background:linear-gradient(120deg,#6252a4,#f14192 45%,#f6765d); }
@@ -410,8 +414,6 @@
 .mobile-veterans-story .mobile-story-panel>.mobile-story-progress { display:block; }
 .mobile-veterans-story .mobile-story-progress { height:3.6px; border-radius:162px; max-width:148.92px; }
 
-.mh.mobile-layout .annual-report-download { font-size:14px; justify-content:center; gap:10px; padding:14px 12px; }
-.mh.mobile-layout .annual-report-actions { padding:0; }
 .mobile-layout.post .lgl { animation:none !important; }
 .mobile-layout.post .mobile-cue { animation:mhBob 1.4s ease infinite; opacity:1; transition:opacity .6s ease 5.1s; }
 .mobile-layout.post.lg .mobile-cue { opacity:0; transition:opacity .3s ease; pointer-events:none; }

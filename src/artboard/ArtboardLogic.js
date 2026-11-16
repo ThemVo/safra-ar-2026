@@ -1,43 +1,112 @@
 // Behaviour for the artboard: the camera/view state machine, timers, measuring and every value the markup binds to.
 // Ported unchanged from the prototype; only the class header and module wiring are new.
-import { Logic } from './Logic.js';
-import { parseRoute, routeHash } from './routes.js';
+import { Logic } from "./Logic.js";
+import { parseRoute, routeHash } from "./routes.js";
 
 // Geometry. Desktop: the 1440 × 900 comp. Mobile: a 390 × 844 frame (16px margins) with the same structure,
 // type and spacing scaled down. applyGeo() picks one set when the artboard mounts.
 const FAM = '"Google Sans Flex", "Google Sans", system-ui, sans-serif';
 // Ink boxes measured from the original comp: each line is fitted so its ink spans x0..x1 and sits on `base`.
 const SPEC_D = {
-  t1: { text: 'Explore our efforts in', x0: 156, x1: 1084, base: 253, fs: 93 },
-  t2: { text: 'strengthening', x0: 211, x1: 1271, base: 390, fs: 157 },
-  t3: { text: 'commitment', x0: 623, x1: 1200, base: 484, fs: 96 },
-  t4b: { text: 'defence', x0: 300, x1: 801, base: 578, fs: 128 },
-  t4c: { text: 'and supporting', x0: 827, x1: 1287, base: 558, fs: 63 },
-  t5: { text: 'NSmen’s needs', x0: 253, x1: 1244, base: 702, fs: 136 }
+  t1: { text: "Explore our efforts in", x0: 156, x1: 1084, base: 253, fs: 93 },
+  t2: { text: "strengthening", x0: 211, x1: 1271, base: 390, fs: 157 },
+  t3: { text: "commitment", x0: 623, x1: 1200, base: 484, fs: 96 },
+  t4b: { text: "defence", x0: 300, x1: 801, base: 578, fs: 128 },
+  t4c: { text: "and supporting", x0: 827, x1: 1287, base: 558, fs: 63 },
+  t5: { text: "NSmen’s needs", x0: 253, x1: 1244, base: 702, fs: 136 },
 };
-const TO_D = { text: 'to', x0: 209, base: 558 };
+const TO_D = { text: "to", x0: 209, base: 558 };
 // mobile headline: the same composition scaled to the 358px column (16px margins), centred in the screen
-const HM = 358 / (1287 - 156), hmx = (x) => +(16 + (x - 156) * HM).toFixed(2), hmy = (y) => +(430 + (y - 477) * HM).toFixed(2);
-const SPEC_M = Object.fromEntries(Object.entries(SPEC_D).map(([k, v]) => [k, { ...v, x0: hmx(v.x0), x1: hmx(v.x1), base: hmy(v.base), fs: +(v.fs * HM).toFixed(2) }]));
+const HM = 358 / (1287 - 156),
+  hmx = (x) => +(16 + (x - 156) * HM).toFixed(2),
+  hmy = (y) => +(430 + (y - 477) * HM).toFixed(2);
+const SPEC_M = Object.fromEntries(
+  Object.entries(SPEC_D).map(([k, v]) => [
+    k,
+    {
+      ...v,
+      x0: hmx(v.x0),
+      x1: hmx(v.x1),
+      base: hmy(v.base),
+      fs: +(v.fs * HM).toFixed(2),
+    },
+  ]),
+);
 const TO_M = { ...TO_D, x0: hmx(TO_D.x0), base: hmy(TO_D.base) };
-const CAM_D = { logo: 0, top: 0, s2: 0, tg: -918, s3: -918, s4: -1818, s5: -1818, s6: -1818, s7: -1818, s8: -1818, t2: -1818, mb: -1818, fc1: -1818, fc2: -2347.8, fy: -2718, wc: -2718, nx: -3618, lf2: -4518, lf3: -5418, end: -5655 }; // desktop: Clubs & Facilities (fc1) is the L2 page of card 5, scroll-linked from fc1 down to fc2 // '& beyond' (t2) removed: t2 now sits on fc1, the start of the Clubs & Facilities stretch // desktop: Membership (mb) is the L2 page of the Rewarding privileges card
+const CAM_D = {
+  logo: 0,
+  top: 0,
+  s2: 0,
+  tg: -918,
+  s3: -918,
+  s4: -1818,
+  s5: -1818,
+  s6: -1818,
+  s7: -1818,
+  s8: -1818,
+  t2: -1818,
+  mb: -1818,
+  fc1: -1818,
+  fc2: -2347.8,
+  fy: -2718,
+  wc: -2718,
+  nx: -3618,
+  lf2: -4518,
+  lf3: -5418,
+  end: -5655,
+}; // desktop: Clubs & Facilities (fc1) is the L2 page of card 5, scroll-linked from fc1 down to fc2 // '& beyond' (t2) removed: t2 now sits on fc1, the start of the Clubs & Facilities stretch // desktop: Membership (mb) is the L2 page of the Rewarding privileges card
 const FC_H_M = 1440; // mobile Clubs & Facilities is taller than a screen; the rest of the stretch scrolls
-const CAM_M = { logo: 0, top: 0, s2: 0, tg: -844, s3: -844, s4: -1688, s5: -1688, s6: -1688, s7: -1688, s8: -1688, t2: -2532, mb: -2532, fc1: -3376, fc2: -3376 - (FC_H_M - 844), fy: -3376 - FC_H_M, wc: -3376 - FC_H_M, nx: -4220 - FC_H_M, lf2: -5064 - FC_H_M, lf3: -5908 - FC_H_M, end: -5908 - FC_H_M - 237 }; // '& beyond' (t2) removed: t2 now sits on mb
-let MOBILE = false, W = 1440, SPEC = SPEC_D, TO = TO_D, CAM = CAM_D;
+const CAM_M = {
+  logo: 0,
+  top: 0,
+  s2: 0,
+  tg: -844,
+  s3: -844,
+  s4: -1688,
+  s5: -1688,
+  s6: -1688,
+  s7: -1688,
+  s8: -1688,
+  t2: -2532,
+  mb: -2532,
+  fc1: -3376,
+  fc2: -3376 - (FC_H_M - 844),
+  fy: -3376 - FC_H_M,
+  wc: -3376 - FC_H_M,
+  nx: -4220 - FC_H_M,
+  lf2: -5064 - FC_H_M,
+  lf3: -5908 - FC_H_M,
+  end: -5908 - FC_H_M - 237,
+}; // '& beyond' (t2) removed: t2 now sits on mb
+let MOBILE = false,
+  W = 1440,
+  SPEC = SPEC_D,
+  TO = TO_D,
+  CAM = CAM_D;
 let GLANCE_BASE = 1066;
 let GL_FS = 72; // AT A GLANCE type size (small state)
-let TG_SCALE = 160 / 72, TG_BASE = 918 + 546; // transition to At a glance: the heading at 160px, centred in the screen (Figma 3714:567) // AT A GLANCE baseline (143px into section 3; section 2 overlays section 1, section 3 sits below)
+let TG_SCALE = 160 / 72,
+  TG_BASE = 918 + 546; // transition to At a glance: the heading at 160px, centred in the screen (Figma 3714:567) // AT A GLANCE baseline (143px into section 3; section 2 overlays section 1, section 3 sits below)
 let BAR_END = 900; // the bar drips into the top of section 2's gradient
 let CUE_X = 720; // centre of the arrow-down in section 2 (cam coords)
 let S4_FS = { a: 63, b: 82 }; // statement above the topic cards
 // statement lines: [key, text, font size, centre y in the section]. Desktop follows Figma 2116:2829 ("Beyond the numbers."), scaled to fit one screen;
 // mobile keeps its own statement until its layout is redone.
-const S4_LINES = () => MOBILE
-  ? [['a', 'The numbers tell our impact.', S4_FS.a, 115 + 36], ['b', 'The stories show what it means.', S4_FS.b, 115 + 71 + 8 + 47]]
-  : [['a', 'Discover how our initiatives', S4_FS.a, 106], ['b', 'made a difference in the lives of', S4_FS.b, 155], ['c', 'national\u00a0servicemen and their families.', S4_FS.b, 204]];
-const S4_W = () => MOBILE ? 400 : 500; // font weight
-const S4_LS = () => MOBILE ? 0 : 0.02; // letter spacing (em)
-let TABS_X = [40, 578, 1037], TABS_W = [458, 379, 281];
+const S4_LINES = () =>
+  MOBILE
+    ? [
+        ["a", "The numbers tell our impact.", S4_FS.a, 115 + 36],
+        ["b", "The stories show what it means.", S4_FS.b, 115 + 71 + 8 + 47],
+      ]
+    : [
+        ["a", "Discover how our initiatives", S4_FS.a, 106],
+        ["b", "made a difference in the lives of", S4_FS.b, 155],
+        ["c", "national\u00a0servicemen and their families.", S4_FS.b, 204],
+      ];
+const S4_W = () => (MOBILE ? 400 : 500); // font weight
+const S4_LS = () => (MOBILE ? 0 : 0.02); // letter spacing (em)
+let TABS_X = [40, 578, 1037],
+  TABS_W = [458, 379, 281];
 const MB_OPEN = 422; // Membership (desktop): open card height — 422 − 32 + 2 × 103 + 112 = the 708px under the header
 let MB_STEP = 107; // Membership: how much of each stacked card shows
 let NX_LEFT = [0, 0, 0]; // Looking forward: indicator offset per topic (mobile: the labels run across)
@@ -45,76 +114,665 @@ let FC_RANGE, LINKS;
 function applyGeo(mobile) {
   MOBILE = !!mobile;
   if (MOBILE) {
-    W = 390; SPEC = SPEC_M; TO = TO_M; CAM = CAM_M;
-    GL_FS = 32; GLANCE_BASE = 844 + 92; TG_SCALE = 52 / 32; TG_BASE = 844 + 440; BAR_END = 844; CUE_X = 195;
+    W = 390;
+    SPEC = SPEC_M;
+    TO = TO_M;
+    CAM = CAM_M;
+    GL_FS = 32;
+    GLANCE_BASE = 844 + 92;
+    TG_SCALE = 52 / 32;
+    TG_BASE = 844 + 440;
+    BAR_END = 844;
+    CUE_X = 195;
     S4_FS = { a: +(63 * 0.3105).toFixed(2), b: +(82 * 0.3105).toFixed(2) };
-    TABS_X = [16, 140, 264]; TABS_W = [110, 110, 110]; MB_STEP = 56; NX_LEFT = [0, 124, 248];
+    TABS_X = [16, 140, 264];
+    TABS_W = [110, 110, 110];
+    MB_STEP = 56;
+    NX_LEFT = [0, 124, 248];
   } else {
-    W = 1440; SPEC = SPEC_D; TO = TO_D; CAM = CAM_D;
-    GL_FS = 72; GLANCE_BASE = 1066; TG_SCALE = 160 / 72; TG_BASE = 918 + 546; BAR_END = 900; CUE_X = 720;
-    S4_FS = { a: 44.2, b: 44.2 }; TABS_X = [40, 578, 1037]; TABS_W = [458, 379, 281]; MB_STEP = 107; NX_LEFT = [0, 0, 0];
+    W = 1440;
+    SPEC = SPEC_D;
+    TO = TO_D;
+    CAM = CAM_D;
+    GL_FS = 72;
+    GLANCE_BASE = 1066;
+    TG_SCALE = 160 / 72;
+    TG_BASE = 918 + 546;
+    BAR_END = 900;
+    CUE_X = 720;
+    S4_FS = { a: 44.2, b: 44.2 };
+    TABS_X = [40, 578, 1037];
+    TABS_W = [458, 379, 281];
+    MB_STEP = 107;
+    NX_LEFT = [0, 0, 0];
   }
   FC_RANGE = CAM.fc1 - CAM.fc2; // Clubs & Facilities' own scroll length inside the stretch
   // Stretches of the page that scroll continuously (the camera follows the scroll 1:1); between them, sections snap.
   // at: where each view starts within the stretch; enter: how far in each section's entrance starts.
-  const a = CAM.t2 - CAM.mb, b = CAM.mb - CAM.fc1, c = CAM.wc - CAM.nx, a1 = CAM.t2 - CAM.fc1;
+  const a = CAM.t2 - CAM.mb,
+    b = CAM.mb - CAM.fc1,
+    c = CAM.wc - CAM.nx,
+    a1 = CAM.t2 - CAM.fc1;
   LINKS = {
     z1: MOBILE
-      ? { top: CAM.t2, len: CAM.t2 - CAM.fc2, at: [['t2', 0], ['mb', a / 2], ['fc1', a + b / 2]], enter: { s10: 0.35 * a, s15: a + 0.35 * b, s16: a + b + 0.3 * FC_RANGE } }
-      : { top: CAM.t2, len: CAM.t2 - CAM.fc2, at: [['t2', 0], ['fc1', a1 / 2]], enter: { s15: 0.35 * a1, s16: a1 + 0.3 * FC_RANGE } },
-    z2: { top: CAM.wc, len: c, at: [['wc', 0], ['nx', c / 2]], enter: { s13: 0.35 * c } },
+      ? {
+          top: CAM.t2,
+          len: CAM.t2 - CAM.fc2,
+          at: [
+            ["t2", 0],
+            ["mb", a / 2],
+            ["fc1", a + b / 2],
+          ],
+          enter: {
+            s10: 0.35 * a,
+            s15: a + 0.35 * b,
+            s16: a + b + 0.3 * FC_RANGE,
+          },
+        }
+      : {
+          top: CAM.t2,
+          len: CAM.t2 - CAM.fc2,
+          at: [
+            ["t2", 0],
+            ["fc1", a1 / 2],
+          ],
+          enter: { s15: 0.35 * a1, s16: a1 + 0.3 * FC_RANGE },
+        },
+    z2: {
+      top: CAM.wc,
+      len: c,
+      at: [
+        ["wc", 0],
+        ["nx", c / 2],
+      ],
+      enter: { s13: 0.35 * c },
+    },
     // The closing CTA is a 237px footer after the last story, revealed by scrolling.
-    z3: { top: CAM.lf3, len: 237, at: [['lf3', 0], ['end', 237]], enter: { s14: 0 } }
+    z3: {
+      top: CAM.lf3,
+      len: 237,
+      at: [
+        ["lf3", 0],
+        ["end", 237],
+      ],
+      enter: { s14: 0 },
+    },
   };
 }
 applyGeo(false);
-const AGM_AT = Date.parse('2026-11-22T14:30:00+08:00'); // 53rd SAFRA AGM start, Singapore time
+const AGM_AT = Date.parse("2026-11-22T14:30:00+08:00"); // 53rd SAFRA AGM start, Singapore time
 // section 6 stories, in the order given: values, description lines (as laid out), red bar width, photos
-const DC = [{"stats": ["500", "13"], "desc": ["Through NS Experience Camps, families got a", "taste of NS-inspired activities, gaining a deeper", "appreciation of their loved ones’ service."], "bar": 130, "photos": ["./assets/ns-experience-camp-main.jpg", "./assets/ns-experience-camp-detail-01-desktop.jpg", "./assets/ns-experience-camp-detail-02-desktop.jpg"], "alts": ["Participants in life vests sit in an inflatable boat in a swimming pool", "Children and adults assemble a raft frame from white water containers and pipes on a turf court", "Families stretch a green tarp between trees to build a shelter"], "gallery": ["./assets/ns-experience-camp-gallery-01.jpg", "./assets/ns-experience-camp-gallery-02.jpg", "./assets/ns-experience-camp-gallery-03.jpg", "./assets/ns-experience-camp-gallery-04.jpg", "./assets/ns-experience-camp-gallery-05.jpg", "./assets/ns-experience-camp-gallery-06.jpg", "./assets/ns-experience-camp-gallery-07.jpg"], "gi": [0, 2, 1]}, {"stats": ["140K"], "desc": ["Be@SAFRA Open Houses brought families", "together to reflect on the SAF's role as they", "enjoyed interactive activities, flight simulators and", "military K9 encounters."], "bar": 260, "photos": ["./assets/safra-open-house-main.jpg", "./assets/safra-open-house-detail-01.jpg", "./assets/safra-open-house-detail-02.jpg"], "alts": ["Parents and children play a giant board game with large red dice on a turf court", "Children play with toy blasters among camouflage tents on a green court", "An adult and child pose in flight suits and helmets against camouflage netting"], "gallery": ["./assets/safra-open-house-gallery-01.jpg", "./assets/safra-open-house-gallery-02.jpg", "./assets/safra-open-house-gallery-03.jpg", "./assets/safra-open-house-gallery-04.jpg", "./assets/safra-open-house-gallery-05.jpg", "./assets/safra-open-house-gallery-06.jpg"], "gi": [0, 2, 1]}, {"stats": ["20K"], "desc": ["Commitment to Defence (C2D)", "Ambassadors from the SAF Veterans’ League", "shared real-life experiences, reinforcing the", "importance of a strong defence."], "bar": 390, "photos": ["./assets/defence-veterans-main.jpg", "./assets/defence-veterans-detail-01-desktop.jpg"], "alts": ["A speaker addresses pupils seated in a classroom", "Service personnel seated outdoors listen to standing speakers"], "gallery": ["./assets/defence-veterans-gallery-01.jpg", "./assets/defence-veterans-gallery-02.jpg"], "gi": [0, 1]}, {"stats": ["40K"], "desc": ["Total Defence Day commemorative activities", "equipped participants with practical skills through", "hands-on demonstrations and interactive games."], "bar": 520, "photos": ["./assets/total-defence-day-main.jpg", "./assets/total-defence-day-detail-01-desktop.jpg", "./assets/total-defence-day-detail-02-desktop.jpg"], "alts": ["Children practise CPR on training manikins with instructors", "Emergency responders demonstrate a rescue to an audience under a sheltered walkway", "Boys look into a camouflage field pack held open by an instructor"], "gallery": ["./assets/total-defence-day-gallery-01.jpg", "./assets/total-defence-day-gallery-02.jpg", "./assets/total-defence-day-gallery-03.jpg", "./assets/total-defence-day-gallery-04.jpg"], "gi": [0, 1, 2]}]; // red bar = story progress: 1/4 … 4/4 of the panel
-const DC_WORDS = ['BRINGING', 'DEFENCE', 'CLOSER', 'TO', 'THE', 'COMMUNITY'];
+const DC = [
+  {
+    stats: ["500", "13"],
+    desc: [
+      "Through NS Experience Camps, families got a",
+      "taste of NS-inspired activities, gaining a deeper",
+      "appreciation of their loved ones’ service.",
+    ],
+    bar: 130,
+    photos: [
+      "./assets/ns-experience-camp-main.jpg",
+      "./assets/ns-experience-camp-detail-01-desktop.jpg",
+      "./assets/ns-experience-camp-detail-02-desktop.jpg",
+    ],
+    alts: [
+      "Participants in life vests sit in an inflatable boat in a swimming pool",
+      "Children and adults assemble a raft frame from white water containers and pipes on a turf court",
+      "Families stretch a green tarp between trees to build a shelter",
+    ],
+    gallery: [
+      "./assets/ns-experience-camp-gallery-01.jpg",
+      "./assets/ns-experience-camp-gallery-02.jpg",
+      "./assets/ns-experience-camp-gallery-03.jpg",
+      "./assets/ns-experience-camp-gallery-04.jpg",
+      "./assets/ns-experience-camp-gallery-05.jpg",
+      "./assets/ns-experience-camp-gallery-06.jpg",
+      "./assets/ns-experience-camp-gallery-07.jpg",
+    ],
+    gi: [0, 2, 1],
+  },
+  {
+    stats: ["140K"],
+    desc: [
+      "Be@SAFRA Open Houses brought families",
+      "together to reflect on the SAF's role as they",
+      "enjoyed interactive activities, flight simulators and",
+      "military K9 encounters.",
+    ],
+    bar: 260,
+    photos: [
+      "./assets/safra-open-house-main.jpg",
+      "./assets/safra-open-house-detail-01.jpg",
+      "./assets/safra-open-house-detail-02.jpg",
+    ],
+    alts: [
+      "Parents and children play a giant board game with large red dice on a turf court",
+      "Children play with toy blasters among camouflage tents on a green court",
+      "An adult and child pose in flight suits and helmets against camouflage netting",
+    ],
+    gallery: [
+      "./assets/safra-open-house-gallery-01.jpg",
+      "./assets/safra-open-house-gallery-02.jpg",
+      "./assets/safra-open-house-gallery-03.jpg",
+      "./assets/safra-open-house-gallery-04.jpg",
+      "./assets/safra-open-house-gallery-05.jpg",
+      "./assets/safra-open-house-gallery-06.jpg",
+    ],
+    gi: [0, 2, 1],
+  },
+  {
+    stats: ["20K"],
+    desc: [
+      "Commitment to Defence (C2D)",
+      "Ambassadors from the SAF Veterans’ League",
+      "shared real-life experiences, reinforcing the",
+      "importance of a strong defence.",
+    ],
+    bar: 390,
+    photos: [
+      "./assets/defence-veterans-main.jpg",
+      "./assets/defence-veterans-detail-01-desktop.jpg",
+    ],
+    alts: [
+      "A speaker addresses pupils seated in a classroom",
+      "Service personnel seated outdoors listen to standing speakers",
+    ],
+    gallery: [
+      "./assets/defence-veterans-gallery-01.jpg",
+      "./assets/defence-veterans-gallery-02.jpg",
+    ],
+    gi: [0, 1],
+  },
+  {
+    stats: ["40K"],
+    desc: [
+      "Total Defence Day commemorative activities",
+      "equipped participants with practical skills through",
+      "hands-on demonstrations and interactive games.",
+    ],
+    bar: 520,
+    photos: [
+      "./assets/total-defence-day-main.jpg",
+      "./assets/total-defence-day-detail-01-desktop.jpg",
+      "./assets/total-defence-day-detail-02-desktop.jpg",
+    ],
+    alts: [
+      "Children practise CPR on training manikins with instructors",
+      "Emergency responders demonstrate a rescue to an audience under a sheltered walkway",
+      "Boys look into a camouflage field pack held open by an instructor",
+    ],
+    gallery: [
+      "./assets/total-defence-day-gallery-01.jpg",
+      "./assets/total-defence-day-gallery-02.jpg",
+      "./assets/total-defence-day-gallery-03.jpg",
+      "./assets/total-defence-day-gallery-04.jpg",
+    ],
+    gi: [0, 1, 2],
+  },
+]; // red bar = story progress: 1/4 … 4/4 of the panel
+const DC_WORDS = ["BRINGING", "DEFENCE", "CLOSER", "TO", "THE", "COMMUNITY"];
 // section 7: Appreciating national servicemen (one story so far; the red bar shows 1 of 4)
-const DC7 = [{"stats": ["35K", "460"], "desc": ["Through the Appreciating NSmen Art Jam", "initiative, preschoolers learnt about", "national\u00a0servicemen's contributions and made", "personalised gifts to thank their fathers for", "defending Singapore."], "bar": 130, "photos": ["./assets/nsmen-art-jam-main-desktop.jpg", "./assets/nsmen-art-jam-children-desktop.jpg", "./assets/nsmen-art-jam-thank-you-card-desktop.jpg"], "alts": ["A preschool teacher shows the class photos of servicemen", "Preschoolers cut out and decorate thank-you cards at a table", "A preschooler writes a thank-you card with a family photo for an NSman father"], "gallery": ["./assets/nsmen-art-jam-gallery-01.jpg", "./assets/nsmen-art-jam-gallery-02.jpg", "./assets/nsmen-art-jam-gallery-03.jpg", "./assets/nsmen-art-jam-gallery-04.jpg"], "gi": [0, 1, 2]}, {"stats": ["145", "44"], "desc": ["The Appreciating NSmen Video Competition saw", "students using creative storytelling to highlight the", "contributions of national\u00a0servicemen and show", "their support."], "bar": 260, "photos": ["./assets/gratitude-in-bloom-poster.jpg", "./assets/serving-together-poster.jpg", "./assets/once-upon-a-time-poster.jpg", "./assets/the-strength-within-poster.jpg"], "alts": ["Video: Gratitude In Bloom (an animated serviceman gives a thumbs-up at a hawker stall offering 30% off to all NSmen)", "Video: Serving Together (a young serviceman shares a home-cooked meal with his family)", "Video: Once Upon a Time (paper-craft figures in different service uniforms stand in front of the Singapore skyline)", "Video: The Strength Within (cartoon characters representing different services stand side by side)"], "gallery": ["./assets/gratitude-in-bloom-poster.jpg", "./assets/serving-together-poster.jpg", "./assets/once-upon-a-time-poster.jpg", "./assets/the-strength-within-poster.jpg"], "videos": ["./assets/gratitude-in-bloom.mp4", "./assets/serving-together.mp4", "./assets/once-upon-a-time.mp4", "./assets/the-strength-within.mp4"], "gi": [0, 1, 2, 3]}, {"stats": ["180", "240"], "desc": ["A wide range of appreciation deals for", "national\u00a0servicemen, ranging from daily", "essentials to recreation, were secured through", "collaborations with merchants islandwide."], "bar": 390, "photos": ["./assets/nsmen-deals-burger-king.jpg", "./assets/nsmen-deals-popeyes.jpg", "./assets/nsmen-deals-klook.jpg", "./assets/nsmen-deals-jungle-upsara-spa.jpg"], "alts": ["Appreciating NSmen Deals: free Whopper at Burger King", "Appreciating NSmen Deals: $6 Hormat SG60 bundle at Popeyes", "Appreciating NSmen Deals: $30 off hotel bookings on Klook", "Appreciating NSmen Deals: 50% off all services at The Jungle Spa and The Upsara Spa"], "gallery": ["./assets/nsmen-deals-gallery-01.jpg", "./assets/nsmen-deals-gallery-02.jpg", "./assets/nsmen-deals-gallery-03.jpg", "./assets/nsmen-deals-gallery-04.jpg", "./assets/nsmen-deals-gallery-05.jpg", "./assets/nsmen-deals-gallery-06.jpg", "./assets/nsmen-deals-gallery-07.jpg", "./assets/nsmen-deals-gallery-08.jpg", "./assets/nsmen-deals-gallery-09.jpg", "./assets/nsmen-deals-gallery-10.jpg", "./assets/nsmen-deals-gallery-11.jpg", "./assets/nsmen-deals-gallery-12.jpg"], "gi": [0, 3, 5, 7]}, {"stats": ["15K", "15"], "desc": ["SAFRA gave away complimentary snacks to", "national\u00a0servicemen at various SAF camps, SAFRA", "clubs and events."], "bar": 520, "photos": ["./assets/nsmen-food-truck-main.jpg", "./assets/nsmen-food-truck-pizza-truck.jpg", "./assets/nsmen-food-truck-group.jpg"], "alts": ["National servicemen in PT kit hold up complimentary Old Chang Kee snacks", "A serviceman picks up a snack at the Canadian 2 for 1 Pizza food truck", "National servicemen with snacks in front of a food truck and an Appreciating NSmen banner"], "gallery": ["./assets/nsmen-food-truck-gallery-01.jpg", "./assets/nsmen-food-truck-gallery-02.jpg", "./assets/nsmen-food-truck-gallery-03.jpg", "./assets/nsmen-food-truck-gallery-04.jpg", "./assets/nsmen-food-truck-gallery-05.jpg"], "gi": [2, 0, 4]}];
-const AN_WORDS = ['APPRECIATING', 'NATIONAL', 'SERVICEMEN'];
+const DC7 = [
+  {
+    stats: ["35K", "460"],
+    desc: [
+      "Through the Appreciating NSmen Art Jam",
+      "initiative, preschoolers learnt about",
+      "national\u00a0servicemen's contributions and made",
+      "personalised gifts to thank their fathers for",
+      "defending Singapore.",
+    ],
+    bar: 130,
+    photos: [
+      "./assets/nsmen-art-jam-main-desktop.jpg",
+      "./assets/nsmen-art-jam-children-desktop.jpg",
+      "./assets/nsmen-art-jam-thank-you-card-desktop.jpg",
+    ],
+    alts: [
+      "A preschool teacher shows the class photos of servicemen",
+      "Preschoolers cut out and decorate thank-you cards at a table",
+      "A preschooler writes a thank-you card with a family photo for an NSman father",
+    ],
+    gallery: [
+      "./assets/nsmen-art-jam-gallery-01.jpg",
+      "./assets/nsmen-art-jam-gallery-02.jpg",
+      "./assets/nsmen-art-jam-gallery-03.jpg",
+      "./assets/nsmen-art-jam-gallery-04.jpg",
+    ],
+    gi: [0, 1, 2],
+  },
+  {
+    stats: ["145", "44"],
+    desc: [
+      "The Appreciating NSmen Video Competition saw",
+      "students using creative storytelling to highlight the",
+      "contributions of national\u00a0servicemen and show",
+      "their support.",
+    ],
+    bar: 260,
+    photos: [
+      "./assets/gratitude-in-bloom-poster.jpg",
+      "./assets/serving-together-poster.jpg",
+      "./assets/once-upon-a-time-poster.jpg",
+      "./assets/the-strength-within-poster.jpg",
+    ],
+    alts: [
+      "Video: Gratitude In Bloom (an animated serviceman gives a thumbs-up at a hawker stall offering 30% off to all NSmen)",
+      "Video: Serving Together (a young serviceman shares a home-cooked meal with his family)",
+      "Video: Once Upon a Time (paper-craft figures in different service uniforms stand in front of the Singapore skyline)",
+      "Video: The Strength Within (cartoon characters representing different services stand side by side)",
+    ],
+    gallery: [
+      "./assets/gratitude-in-bloom-poster.jpg",
+      "./assets/serving-together-poster.jpg",
+      "./assets/once-upon-a-time-poster.jpg",
+      "./assets/the-strength-within-poster.jpg",
+    ],
+    videos: [
+      "./assets/gratitude-in-bloom.mp4",
+      "./assets/serving-together.mp4",
+      "./assets/once-upon-a-time.mp4",
+      "./assets/the-strength-within.mp4",
+    ],
+    gi: [0, 1, 2, 3],
+  },
+  {
+    stats: ["180", "240"],
+    desc: [
+      "A wide range of appreciation deals for",
+      "national\u00a0servicemen, ranging from daily",
+      "essentials to recreation, were secured through",
+      "collaborations with merchants islandwide.",
+    ],
+    bar: 390,
+    photos: [
+      "./assets/nsmen-deals-burger-king.jpg",
+      "./assets/nsmen-deals-popeyes.jpg",
+      "./assets/nsmen-deals-klook-3.jpg",
+      "./assets/nsmen-deals-jungle-upsara-spa.jpg",
+    ],
+    alts: [
+      "Appreciating NSmen Deals: free Whopper at Burger King",
+      "Appreciating NSmen Deals: $6 Hormat SG60 bundle at Popeyes",
+      "Appreciating NSmen Deals: $30 off hotel bookings on Klook",
+      "Appreciating NSmen Deals: 50% off all services at The Jungle Spa and The Upsara Spa",
+    ],
+    gallery: [
+      "./assets/nsmen-deals-gallery-01.jpg",
+      "./assets/nsmen-deals-gallery-02.jpg",
+      "./assets/nsmen-deals-gallery-03.jpg",
+      "./assets/nsmen-deals-gallery-04.jpg",
+      "./assets/nsmen-deals-gallery-05.jpg",
+      "./assets/nsmen-deals-gallery-06.jpg",
+      "./assets/nsmen-deals-gallery-07.jpg",
+      "./assets/nsmen-deals-gallery-08.jpg",
+      "./assets/nsmen-deals-gallery-09.jpg",
+      "./assets/nsmen-deals-gallery-10.jpg",
+      "./assets/nsmen-deals-gallery-11.jpg",
+      "./assets/nsmen-deals-gallery-12.jpg",
+    ],
+    gi: [0, 3, 5, 7],
+  },
+  {
+    stats: ["15K", "15"],
+    desc: [
+      "SAFRA gave away complimentary snacks to",
+      "national\u00a0servicemen at various SAF camps, SAFRA",
+      "clubs and events.",
+    ],
+    bar: 520,
+    photos: [
+      "./assets/nsmen-food-truck-main.jpg",
+      "./assets/nsmen-food-truck-pizza-truck.jpg",
+      "./assets/nsmen-food-truck-group.jpg",
+    ],
+    alts: [
+      "National servicemen in PT kit hold up complimentary Old Chang Kee snacks",
+      "A serviceman picks up a snack at the Canadian 2 for 1 Pizza food truck",
+      "National servicemen with snacks in front of a food truck and an Appreciating NSmen banner",
+    ],
+    gallery: [
+      "./assets/nsmen-food-truck-gallery-01.jpg",
+      "./assets/nsmen-food-truck-gallery-02.jpg",
+      "./assets/nsmen-food-truck-gallery-03.jpg",
+      "./assets/nsmen-food-truck-gallery-04.jpg",
+      "./assets/nsmen-food-truck-gallery-05.jpg",
+    ],
+    gi: [2, 0, 4],
+  },
+];
+const AN_WORDS = ["APPRECIATING", "NATIONAL", "SERVICEMEN"];
 // photos each topic card flips through on hover (from its own section)
 const CARD_IMGS = {
-  '#dc-title': ['./assets/defence-veterans-feature.jpg', './assets/total-defence-day-detail-01.jpg', './assets/safra-open-house-feature.jpg', './assets/ns-experience-camp-detail-01.jpg', './assets/defence-veterans-detail-01.jpg', './assets/total-defence-day-feature.jpg', './assets/safra-open-house-detail-01.jpg', './assets/ns-experience-camp-feature.jpg', './assets/dc1-b.jpg', './assets/total-defence-day-detail-02.jpg', './assets/ns-experience-camp-detail-02.jpg'],
-  '#an-title': ['./assets/nsmen-art-jam-main.jpg', './assets/nsmen-art-jam-children.jpg', './assets/nsmen-art-jam-thank-you-card.jpg'],
-  '#sb-title': ['./assets/national-day-celebration-feature.jpg', './assets/national-day-celebration-detail-01.jpg', './assets/national-day-celebration-detail-02.jpg']
+  "#dc-title": [
+    "./assets/defence-veterans-feature.jpg",
+    "./assets/total-defence-day-detail-01.jpg",
+    "./assets/safra-open-house-feature.jpg",
+    "./assets/ns-experience-camp-detail-01.jpg",
+    "./assets/defence-veterans-detail-01.jpg",
+    "./assets/total-defence-day-feature.jpg",
+    "./assets/safra-open-house-detail-01.jpg",
+    "./assets/ns-experience-camp-feature.jpg",
+    "./assets/dc1-b.jpg",
+    "./assets/total-defence-day-detail-02.jpg",
+    "./assets/ns-experience-camp-detail-02.jpg",
+  ],
+  "#an-title": [
+    "./assets/nsmen-art-jam-main.jpg",
+    "./assets/nsmen-art-jam-children.jpg",
+    "./assets/nsmen-art-jam-thank-you-card.jpg",
+  ],
+  "#sb-title": [
+    "./assets/national-day-celebration-feature.jpg",
+    "./assets/national-day-celebration-detail-01.jpg",
+    "./assets/national-day-celebration-detail-02.jpg",
+  ],
 };
 // section 8: Strengthening bonds (one story so far)
-const DC8 = [{"stats": ["52K"], "desc": ["SAFRA’s National Day celebrations at Marina Bay", "and across all SAFRA clubs brought loved ones", "together for the live screening of the NDP,", "live performances and nostalgic games."], "bar": 86.67, "photos": ["./assets/national-day-celebration-main.jpg", "./assets/national-day-celebration-crowd.jpg", "./assets/national-day-celebration-family-mascot.jpg"], "alts": ["A family smiles in front of red fireworks at a National Day celebration", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["./assets/national-day-celebration-gallery-01.jpg", "./assets/national-day-celebration-gallery-02.jpg", "./assets/national-day-celebration-gallery-03.jpg", "./assets/national-day-celebration-gallery-04.jpg", "./assets/national-day-celebration-gallery-05.jpg"], "gi": [3, 1, 4]}, {"stats": ["1.2K", "420"], "desc": ["SG60 SAFRA Family Fiesta brought families", "together for fun-filled activities, including the", "SAFRA Diaper Dash and sing-along sessions with", "their favourite Pororo & Friends characters."], "bar": 173.33, "photos": ["./assets/family-fiesta-main.jpg", "./assets/family-fiesta-toddler-race.jpg", "./assets/family-fiesta-diaper-dash-desktop.jpg"], "alts": ["Children pose with Pororo & Friends characters at the SG60 SAFRA Family Fiesta", "Babies and toddlers race across a colourful mat as families cheer at the SAFRA Diaper Dash", "Parents and toddlers holding Pororo plush toys wait at the start of the SAFRA Diaper Dash"], "gallery": ["./assets/family-fiesta-gallery-01.jpg", "./assets/family-fiesta-gallery-02.jpg", "./assets/family-fiesta-gallery-03.jpg"], "gi": [2, 1, 0]}, {"stats": ["637", "52K"], "desc": ["Cohesion events were organised for SAF NS units", "at various SAFRA clubs and SAF camps, featuring", "a wide range of activities such as archery tag,", "bowling, inflatable games, water telematches and", "various sports competitions."], "bar": 260, "photos": ["./assets/ns-unit-cohesion-main.jpg", "./assets/ns-unit-cohesion-archery-tag.jpg", "./assets/ns-unit-cohesion-football-team.jpg"], "alts": ["National servicemen play human foosball on an inflatable pitch", "National servicemen in face masks pose with archery tag bows", "An NS unit poses for a team photo after a football match"], "gallery": ["./assets/ns-unit-cohesion-gallery-01.jpg", "./assets/ns-unit-cohesion-gallery-02.jpg", "./assets/ns-unit-cohesion-gallery-03.jpg", "./assets/ns-unit-cohesion-gallery-04.jpg", "./assets/ns-unit-cohesion-gallery-05.jpg", "./assets/ns-unit-cohesion-gallery-06.jpg", "./assets/ns-unit-cohesion-gallery-07.jpg"], "gi": [2, 0, 5]}, {"stats": ["1.2K"], "desc": ["SAFRA Youth Fiesta brought youths together to", "compete in the Ultimate Frisbee Tournament", "and indulge in Japanese pop culture at the", "DoujinFes Fair and Hololive Official Card Game", "community workshops."], "bar": 346.67, "photos": ["./assets/youth-fiesta-main.jpg", "./assets/youth-fiesta-cosplayers.jpg", "./assets/youth-fiesta-frisbee-tournament.jpg"], "alts": ["Youths compete in the Ultimate Frisbee Tournament at SAFRA Youth Fiesta", "Cosplayers at the DoujinFes Fair", "A player throws a frisbee past a defender during the Ultimate Frisbee Tournament"], "gallery": ["./assets/youth-fiesta-gallery-01.jpg", "./assets/youth-fiesta-gallery-02.jpg", "./assets/youth-fiesta-gallery-03.jpg"], "gi": [1, 2, 0]}, {"stats": ["430"], "desc": ["Soundbyte Beer Music Play brought", "national\u00a0servicemen and their friends together to", "enjoy live band performances, high-energy", "DJ sets, games and free flow of drinks."], "bar": 433.33, "photos": ["./assets/soundbyte-music-event-main.jpg", "./assets/soundbyte-music-event-hall.jpg", "./assets/soundbyte-music-event-arcade-game.jpg"], "alts": ["Guests dance with their arms raised at Soundbyte Beer Music Play", "A packed hall of guests raises their drinks at Soundbyte Beer Music Play", "Friends play an arcade button game at Soundbyte Beer Music Play"], "gallery": ["./assets/soundbyte-music-event-gallery-01.jpg", "./assets/soundbyte-music-event-gallery-02.jpg", "./assets/soundbyte-music-event-gallery-03.jpg"], "gi": [0, 1, 2]}, {"stats": ["5.5K", "$290K"], "desc": ["SAFRA Swim for Hope rallied the community to", "swim for charity and raise funds for the less", "privileged and those in need."], "bar": 520, "photos": ["./assets/swim-for-hope-main.jpg", "./assets/swim-for-hope-swimmers.jpg"], "alts": ["Organisers and partners present a S$290,000 cheque at SAFRA Swim for Hope", "Participants swim for charity at SAFRA Swim for Hope"], "gallery": ["./assets/swim-for-hope-main.jpg", "./assets/swim-for-hope-gallery-02.jpg"], "gi": [0, 1]}];
+const DC8 = [
+  {
+    stats: ["52K"],
+    desc: [
+      "SAFRA’s National Day celebrations at Marina Bay",
+      "and across all SAFRA clubs brought loved ones",
+      "together for the live screening of the NDP,",
+      "live performances and nostalgic games.",
+    ],
+    bar: 86.67,
+    photos: [
+      "./assets/national-day-celebration-main.jpg",
+      "./assets/national-day-celebration-crowd.jpg",
+      "./assets/national-day-celebration-family-mascot.jpg",
+    ],
+    alts: [
+      "A family smiles in front of red fireworks at a National Day celebration",
+      "Members cheer with SAFRA thunder sticks at a National Day celebration",
+      "A family on a picnic mat with the SAFRA mascot at a SG60 celebration",
+    ],
+    gallery: [
+      "./assets/national-day-celebration-gallery-01.jpg",
+      "./assets/national-day-celebration-gallery-02.jpg",
+      "./assets/national-day-celebration-gallery-03.jpg",
+      "./assets/national-day-celebration-gallery-04.jpg",
+      "./assets/national-day-celebration-gallery-05.jpg",
+    ],
+    gi: [3, 1, 4],
+  },
+  {
+    stats: ["1.2K", "420"],
+    desc: [
+      "SG60 SAFRA Family Fiesta brought families",
+      "together for fun-filled activities, including the",
+      "SAFRA Diaper Dash and sing-along sessions with",
+      "their favourite Pororo & Friends characters.",
+    ],
+    bar: 173.33,
+    photos: [
+      "./assets/family-fiesta-main.jpg",
+      "./assets/family-fiesta-toddler-race.jpg",
+      "./assets/family-fiesta-diaper-dash-desktop.jpg",
+    ],
+    alts: [
+      "Children pose with Pororo & Friends characters at the SG60 SAFRA Family Fiesta",
+      "Babies and toddlers race across a colourful mat as families cheer at the SAFRA Diaper Dash",
+      "Parents and toddlers holding Pororo plush toys wait at the start of the SAFRA Diaper Dash",
+    ],
+    gallery: [
+      "./assets/family-fiesta-gallery-01.jpg",
+      "./assets/family-fiesta-gallery-02.jpg",
+      "./assets/family-fiesta-gallery-03.jpg",
+    ],
+    gi: [2, 1, 0],
+  },
+  {
+    stats: ["637", "52K"],
+    desc: [
+      "Cohesion events were organised for SAF NS units",
+      "at various SAFRA clubs and SAF camps, featuring",
+      "a wide range of activities such as archery tag,",
+      "bowling, inflatable games, water telematches and",
+      "various sports competitions.",
+    ],
+    bar: 260,
+    photos: [
+      "./assets/ns-unit-cohesion-main.jpg",
+      "./assets/ns-unit-cohesion-archery-tag.jpg",
+      "./assets/ns-unit-cohesion-football-team.jpg",
+    ],
+    alts: [
+      "National servicemen play human foosball on an inflatable pitch",
+      "National servicemen in face masks pose with archery tag bows",
+      "An NS unit poses for a team photo after a football match",
+    ],
+    gallery: [
+      "./assets/ns-unit-cohesion-gallery-01.jpg",
+      "./assets/ns-unit-cohesion-gallery-02.jpg",
+      "./assets/ns-unit-cohesion-gallery-03.jpg",
+      "./assets/ns-unit-cohesion-gallery-04.jpg",
+      "./assets/ns-unit-cohesion-gallery-05.jpg",
+      "./assets/ns-unit-cohesion-gallery-06.jpg",
+      "./assets/ns-unit-cohesion-gallery-07.jpg",
+    ],
+    gi: [2, 0, 5],
+  },
+  {
+    stats: ["1.2K"],
+    desc: [
+      "SAFRA Youth Fiesta brought youths together to",
+      "compete in the Ultimate Frisbee Tournament",
+      "and indulge in Japanese pop culture at the",
+      "DoujinFes Fair and Hololive Official Card Game",
+      "community workshops.",
+    ],
+    bar: 346.67,
+    photos: [
+      "./assets/youth-fiesta-main.jpg",
+      "./assets/youth-fiesta-cosplayers.jpg",
+      "./assets/youth-fiesta-frisbee-tournament.jpg",
+    ],
+    alts: [
+      "Youths compete in the Ultimate Frisbee Tournament at SAFRA Youth Fiesta",
+      "Cosplayers at the DoujinFes Fair",
+      "A player throws a frisbee past a defender during the Ultimate Frisbee Tournament",
+    ],
+    gallery: [
+      "./assets/youth-fiesta-gallery-01.jpg",
+      "./assets/youth-fiesta-gallery-02.jpg",
+      "./assets/youth-fiesta-gallery-03.jpg",
+    ],
+    gi: [1, 2, 0],
+  },
+  {
+    stats: ["430"],
+    desc: [
+      "Soundbyte Beer Music Play brought",
+      "national\u00a0servicemen and their friends together to",
+      "enjoy live band performances, high-energy",
+      "DJ sets, games and free flow of drinks.",
+    ],
+    bar: 433.33,
+    photos: [
+      "./assets/soundbyte-music-event-main.jpg",
+      "./assets/soundbyte-music-event-hall.jpg",
+      "./assets/soundbyte-music-event-arcade-game.jpg",
+    ],
+    alts: [
+      "Guests dance with their arms raised at Soundbyte Beer Music Play",
+      "A packed hall of guests raises their drinks at Soundbyte Beer Music Play",
+      "Friends play an arcade button game at Soundbyte Beer Music Play",
+    ],
+    gallery: [
+      "./assets/soundbyte-music-event-gallery-01.jpg",
+      "./assets/soundbyte-music-event-gallery-02.jpg",
+      "./assets/soundbyte-music-event-gallery-03.jpg",
+    ],
+    gi: [0, 1, 2],
+  },
+  {
+    stats: ["5.5K", "$290K"],
+    desc: [
+      "SAFRA Swim for Hope rallied the community to",
+      "swim for charity and raise funds for the less",
+      "privileged and those in need.",
+    ],
+    bar: 520,
+    photos: [
+      "./assets/swim-for-hope-main.jpg",
+      "./assets/swim-for-hope-swimmers.jpg",
+    ],
+    alts: [
+      "Organisers and partners present a S$290,000 cheque at SAFRA Swim for Hope",
+      "Participants swim for charity at SAFRA Swim for Hope",
+    ],
+    gallery: [
+      "./assets/swim-for-hope-main.jpg",
+      "./assets/swim-for-hope-gallery-02.jpg",
+    ],
+    gi: [0, 1],
+  },
+];
 // section 10: membership categories
 // Looking-forward galleries share the existing photo viewer.
 const LF_GALLERIES = {
-  lf2: { gallery: ['./assets/future-ns-experience-camp.jpg', './assets/future-fitx-challenge.jpg'], alts: ['NS Experience Camp', 'FitX Challenge'] },
+  lf2: {
+    gallery: [
+      "./assets/future-ns-experience-camp.jpg",
+      "./assets/future-fitx-challenge.jpg",
+    ],
+    alts: ["NS Experience Camp", "FitX Challenge"],
+  },
   lf3: [
-    { gallery: ['./assets/future-tampines-ibat.jpg'], alts: ['iBat at SAFRA Tampines'] },
-    { gallery: ['./assets/future-jurong-resort-villas.jpg'], alts: ['Artist’s impression of the new resort-style villas at SAFRA Jurong'] },
-    { gallery: ['./assets/future-bayshore-location-map.jpg'], alts: ['Future location of SAFRA Bayshore'] },
+    {
+      gallery: ["./assets/future-tampines-ibat.jpg"],
+      alts: ["iBat at SAFRA Tampines"],
+    },
+    {
+      gallery: ["./assets/future-jurong-resort-villas.jpg"],
+      alts: [
+        "Artist’s impression of the new resort-style villas at SAFRA Jurong",
+      ],
+    },
+    {
+      gallery: ["./assets/future-bayshore-location-map.jpg"],
+      alts: ["Future location of SAFRA Bayshore"],
+    },
   ],
 };
-const lfGallery = (view, story = 0) => view === 'lf2' ? LF_GALLERIES.lf2 : LF_GALLERIES.lf3[story];
-const NX_TABS = ['Bringing defence closer', 'Creating better spaces', 'Making visits seamless'];
-const MB_TABS = ['FOOD & GROCERIES', 'EDUCATION', 'MOVIES & LIVE ENTERTAINMENT', 'TRAVEL, STAYCATIONS & LOCAL ATTRACTIONS'];
+const lfGallery = (view, story = 0) =>
+  view === "lf2" ? LF_GALLERIES.lf2 : LF_GALLERIES.lf3[story];
+const NX_TABS = [
+  "Bringing defence closer",
+  "Creating better spaces",
+  "Making visits seamless",
+];
+const MB_TABS = [
+  "FOOD & GROCERIES",
+  "EDUCATION",
+  "MOVIES & LIVE ENTERTAINMENT",
+  "TRAVEL, STAYCATIONS & LOCAL ATTRACTIONS",
+];
 // how far along the page each view is (views off the main ORDER sit beside their neighbours)
-const rankOf = (v) => ((v === 'mb' || v === 'fc1' || v === 'fc2') && !MOBILE ? 4 : RANK[v]); // desktop: Membership and Clubs & Facilities are L2 pages like s6–s8
-const linkOf = (v) => Object.keys(LINKS).find((k) => LINKS[k].at.some(([x]) => x === v));
-const RANK = { logo: -1, top: 0, s2: 1, tg: 2, s3: 2, s5: 3, s6: 4, s7: 4, s8: 4, t2: 5, mb: 6, fc1: 6, fc2: 6, fy: 7, wc: 8, nx: 9, lf2: 9.5, lf3: 9.7, end: 10 };
-const SCR = { cps: 60, settle: 0.3, set: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%#_' };
+const rankOf = (v) =>
+  (v === "mb" || v === "fc1" || v === "fc2") && !MOBILE ? 4 : RANK[v]; // desktop: Membership and Clubs & Facilities are L2 pages like s6–s8
+const linkOf = (v) =>
+  Object.keys(LINKS).find((k) => LINKS[k].at.some(([x]) => x === v));
+const RANK = {
+  logo: -1,
+  top: 0,
+  s2: 1,
+  tg: 2,
+  s3: 2,
+  s5: 3,
+  s6: 4,
+  s7: 4,
+  s8: 4,
+  t2: 5,
+  mb: 6,
+  fc1: 6,
+  fc2: 6,
+  fy: 7,
+  wc: 8,
+  nx: 9,
+  lf2: 9.5,
+  lf3: 9.7,
+  end: 10,
+};
+const SCR = {
+  cps: 60,
+  settle: 0.3,
+  set: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%#_",
+};
 const SLIDE = { dur: 0.7, stag: 0.08, dist: 24 }; // description lines: slide-in timing (s) and travel (px)
-const dcSeconds = (d) => Math.max(0.8, MOBILE ? 1.5 : 1.25, (d.desc.length - 1) * SLIDE.stag + SLIDE.dur);
+const dcSeconds = (d) =>
+  Math.max(
+    0.8,
+    MOBILE ? 1.5 : 1.25,
+    (d.desc.length - 1) * SLIDE.stag + SLIDE.dur,
+  );
 const eOut2 = (x) => 1 - Math.pow(1 - x, 3); // power2.out
 const eOut1 = (x) => 1 - Math.pow(1 - x, 2); // power1.out
-const fmtCount = (v, k) => { const m = /^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/.exec(v); if (!m) return v; const dec = m[2].includes('.') ? m[2].split('.')[1].length : 0; const n = Number(m[2].replace(/,/g, '')) * k; return m[1] + n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec, useGrouping: m[2].includes(',') }) + m[3]; };
+const fmtCount = (v, k) => {
+  const m = /^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/.exec(v);
+  if (!m) return v;
+  const dec = m[2].includes(".") ? m[2].split(".")[1].length : 0;
+  const n = Number(m[2].replace(/,/g, "")) * k;
+  return (
+    m[1] +
+    n.toLocaleString("en-US", {
+      minimumFractionDigits: dec,
+      maximumFractionDigits: dec,
+      useGrouping: m[2].includes(","),
+    }) +
+    m[3]
+  );
+};
 function scramble(lines, t, seed) {
-  let o = 0; const step = Math.floor(Math.max(0, t) * SCR.cps);
-  return lines.map((line) => { let out = ''; for (const c of line) { const at = o / SCR.cps; if (t >= at) out += (t >= at + SCR.settle || /\s/.test(c)) ? c : SCR.set[(Math.imul(seed + o * 31 + step * 7, 2654435761) >>> 0) % SCR.set.length]; o++; } o++; return out; });
+  let o = 0;
+  const step = Math.floor(Math.max(0, t) * SCR.cps);
+  return lines.map((line) => {
+    let out = "";
+    for (const c of line) {
+      const at = o / SCR.cps;
+      if (t >= at)
+        out +=
+          t >= at + SCR.settle || /\s/.test(c)
+            ? c
+            : SCR.set[
+                (Math.imul(seed + o * 31 + step * 7, 2654435761) >>> 0) %
+                  SCR.set.length
+              ];
+      o++;
+    }
+    o++;
+    return out;
+  });
 }
-const ORDER = ['top', 'tg', 's3', 's5']; // '& beyond' (t2) removed: below the cards comes Clubs & Facilities (desktop) / Membership (mobile)
-const AFTER = () => 'wc'; // the initiatives (s6/s7/s8) are L2 pages opened from the topic cards, off the main scroll; // section 2 (AGM countdown) removed: the masthead leads straight into At a glance // s7 is reached from the last s6 story via the cards (see go) // the statement and the topic cards are one stop (s5)
+const ORDER = ["top", "tg", "s3", "s5"]; // '& beyond' (t2) removed: below the cards comes Clubs & Facilities (desktop) / Membership (mobile)
+const AFTER = () => "wc"; // the initiatives (s6/s7/s8) are L2 pages opened from the topic cards, off the main scroll; // section 2 (AGM countdown) removed: the masthead leads straight into At a glance // s7 is reached from the last s6 story via the cards (see go) // the statement and the topic cards are one stop (s5)
 const STEM_TOP = 732 + 56; // top of the arrow's stem (cam coords)
-const ROLL_AFTER = 1500, ROLL_DUR = 1200; // countdown roll-up once the tiles have slid in
-const viewOf = (v) => /^10|membership/i.test(v || '') ? 'mb' : /^9|transition-2/i.test(v || '') ? 's5' : /^8|strengthening|1sg60/i.test(v || '') ? 's8' : /^7|appreciating/i.test(v || '') ? 's7' : /^6|defence closer|community/i.test(v || '') ? 's6' : /^5|topic/i.test(v || '') ? 's5' : /^4|transition/i.test(v || '') ? 's5' : /^3|glance/i.test(v || '') ? 's3' : /^2|countdown|registration/i.test(v || '') ? 's2' : 'top';
+const ROLL_AFTER = 1500,
+  ROLL_DUR = 1200; // countdown roll-up once the tiles have slid in
+const viewOf = (v) =>
+  /^10|membership/i.test(v || "")
+    ? "mb"
+    : /^9|transition-2/i.test(v || "")
+      ? "s5"
+      : /^8|strengthening|1sg60/i.test(v || "")
+        ? "s8"
+        : /^7|appreciating/i.test(v || "")
+          ? "s7"
+          : /^6|defence closer|community/i.test(v || "")
+            ? "s6"
+            : /^5|topic/i.test(v || "")
+              ? "s5"
+              : /^4|transition/i.test(v || "")
+                ? "s5"
+                : /^3|glance/i.test(v || "")
+                  ? "s3"
+                  : /^2|countdown|registration/i.test(v || "")
+                    ? "s2"
+                    : "top";
 const AGM_INK_TOP = 561.2; // logo's visible bottom edge (513.2 at 80%) + 48px
 const AGM_FS = 27.2;
 const COUNT_AFTER = 1600; // ms after arriving at section 3
@@ -129,20 +787,57 @@ export class ArtboardLogic extends Logic {
     super(props);
     applyGeo(props.mobile);
     const sv = viewOf(props.startView);
-    this.state = { phase: 'run', mx: 0, my: 0, p: 0, lay: null, view: sv, s2: sv !== 'top', s3: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 2, s4: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 3, s6: sv === 's6', step6: 0, t6: null, s7: sv === 's7', step7: 0, t7: null, s8: sv === 's8', step8: 0, t8: null, s9: sv === 't2' || sv === 'mb', s10: sv === 'mb', mbTab: -1, mbOrd: [3, 2, 1, 0], mbMv: null, lb: null, hx: null, hy: null, ready: false, now: Date.now(), step: 0, fresh: sv === 's3', cdP: sv === 'top' ? 0 : 1 };
-    this.played2 = sv !== 'top';
+    this.state = {
+      phase: "run",
+      mx: 0,
+      my: 0,
+      p: 0,
+      lay: null,
+      view: sv,
+      s2: sv !== "top",
+      s3: ["top", "tg", "s3", "s5", "s6"].indexOf(sv) >= 2,
+      s4: ["top", "tg", "s3", "s5", "s6"].indexOf(sv) >= 3,
+      s6: sv === "s6",
+      step6: 0,
+      t6: null,
+      s7: sv === "s7",
+      step7: 0,
+      t7: null,
+      s8: sv === "s8",
+      step8: 0,
+      t8: null,
+      s9: sv === "t2" || sv === "mb",
+      s10: sv === "mb",
+      mbTab: -1,
+      mbOrd: [3, 2, 1, 0],
+      mbMv: null,
+      lb: null,
+      hx: null,
+      hy: null,
+      ready: false,
+      now: Date.now(),
+      step: 0,
+      fresh: sv === "s3",
+      cdP: sv === "top" ? 0 : 1,
+    };
+    this.played2 = sv !== "top";
   }
   componentDidMount() {
     this.urlMounted = true;
     this.onUrlChange = () => this.restoreUrl();
-    window.addEventListener('popstate', this.onUrlChange);
-    window.addEventListener('hashchange', this.onUrlChange);
-    if (this.state.view === 'tg' || this.state.view === 's3') this.b3T = setTimeout(() => this.setState({ b3ok: true }), 950);
+    window.addEventListener("popstate", this.onUrlChange);
+    window.addEventListener("hashchange", this.onUrlChange);
+    if (this.state.view === "tg" || this.state.view === "s3")
+      this.b3T = setTimeout(() => this.setState({ b3ok: true }), 950);
     this.readyT = setTimeout(() => this.setState({ ready: true }), INTRO_DONE);
-    this.curT = setTimeout(() => this.setState({ curOn: true }), INTRO_DONE + CURSOR_AFTER);
+    this.curT = setTimeout(
+      () => this.setState({ curOn: true }),
+      INTRO_DONE + CURSOR_AFTER,
+    );
     this.tick = setInterval(() => this.setState({ now: Date.now() }), 1000);
     this.startTimers();
-    if (window.location.hash) this.restoreUrl(); else this.queueUrlSync();
+    if (window.location.hash) this.restoreUrl();
+    else this.queueUrlSync();
     const go = () => requestAnimationFrame(() => this.measure());
     try {
       if (document.fonts && document.fonts.load) {
@@ -150,13 +845,18 @@ export class ArtboardLogic extends Logic {
           document.fonts.load('400 100px "Google Sans Flex"'),
           document.fonts.load('500 72px "Google Sans Flex"'),
           document.fonts.load('400 100px "Google Sans"'),
-          document.fonts.load('500 72px "Google Sans"')
+          document.fonts.load('500 72px "Google Sans"'),
         ]).then(go, go);
         document.fonts.ready.then(go, go);
-      } else { go(); }
-    } catch (e) { go(); }
+      } else {
+        go();
+      }
+    } catch (e) {
+      go();
+    }
     setTimeout(go, 1500);
-    setTimeout(() => this.hvLayout(), 600); setTimeout(() => this.hvLayout(), 2500);
+    setTimeout(() => this.hvLayout(), 600);
+    setTimeout(() => this.hvLayout(), 2500);
     setTimeout(go, 4000);
   }
   queueUrlSync() {
@@ -165,115 +865,228 @@ export class ArtboardLogic extends Logic {
     queueMicrotask(() => {
       this.urlQueued = false;
       if (!this.urlMounted || this.restoringUrl) return;
-      const hash = routeHash({ ...this.state, ...(this.state.view === 'fc1' && this.state.link ? { fcY: CAM.fc1 - this.camNow() } : {}) });
+      const hash = routeHash({
+        ...this.state,
+        ...(this.state.view === "fc1" && this.state.link
+          ? { fcY: CAM.fc1 - this.camNow() }
+          : {}),
+      });
       if (hash === null || hash === window.location.hash) return;
-      const old = window.location.hash ? parseRoute(window.location.hash, MOBILE) : { view: 'top' };
+      const old = window.location.hash
+        ? parseRoute(window.location.hash, MOBILE)
+        : { view: "top" };
       // Continuous motion and automatic intro transitions should not fill browser history.
-      const replace = !old || window.location.hash.split('?')[0] === hash.split('?')[0] || (old.view === 'tg' && this.state.view === 's3');
+      const replace =
+        !old ||
+        window.location.hash.split("?")[0] === hash.split("?")[0] ||
+        (old.view === "tg" && this.state.view === "s3");
       const url = hash || window.location.pathname + window.location.search;
-      window.history[replace ? 'replaceState' : 'pushState'](window.history.state, '', url);
+      window.history[replace ? "replaceState" : "pushState"](
+        window.history.state,
+        "",
+        url,
+      );
     });
   }
   restoreUrl() {
     const route = parseRoute(window.location.hash, MOBILE);
     this.restoringUrl = true;
     try {
-      const to = route?.view || 'top';
+      const to = route?.view || "top";
       this.jumpTo(to);
-      const patch = { link: null, linkY: 0, z2top: false, z2end: false, lb: null, ready: true, curOn: true, s3: to !== 'top', s4: to !== 'top',
-        step: 0, fresh: false, hd: to === 'tg' || to === 's3', mbTab: -1, mbOrd: [3, 2, 1, 0] };
-      if (to === 's3') patch.step = route.index ?? 0;
-      if (to === 'mb' && route.index != null) {
+      const patch = {
+        link: null,
+        linkY: 0,
+        z2top: false,
+        z2end: false,
+        lb: null,
+        ready: true,
+        curOn: true,
+        s3: to !== "top",
+        s4: to !== "top",
+        step: 0,
+        fresh: false,
+        hd: to === "tg" || to === "s3",
+        mbTab: -1,
+        mbOrd: [3, 2, 1, 0],
+      };
+      if (to === "s3") patch.step = route.index ?? 0;
+      if (to === "mb" && route.index != null) {
         patch.mbTab = route.index;
         const ord = [3, 2, 1, 0];
         while (ord[3] !== route.index) ord.unshift(ord.pop());
         patch.mbOrd = ord;
       }
-      for (const timer of ['tgT', 'tgA']) clearTimeout(this[timer]);
-      if (to === 'lf2') { patch.s17 = true; patch.lf2s = route.index ?? 0; }
-      if (to === 'lf3') { patch.s18 = true; patch.lf3s = route.index ?? 0; }
-      if (to === 'nx') { patch.s13 = true; patch.lf1 = route.index != null; }
-      if (to === 'wc') patch.s12 = true;
-      if (to === 'end') { patch.s14 = true; patch.s18 = true; patch.lf3s = 2; }
-      if (to === 'fc1') { patch.fcY = Math.min(FC_RANGE, route.offset); patch.s16 = patch.fcY > 0; this.fcPos = patch.fcY; }
-      if (['s6', 's7', 's8'].includes(to)) {
-        const n = route.index ?? 0, topic = Number(to.slice(1));
-        this['play' + topic](n, 0);
-        const data = { s6: DC, s7: DC7, s8: DC8 }[to][n];
-        if (route.photo > 0 && route.photo <= data.gallery.length) patch.lb = { t: topic, s: n, i: route.photo - 1 };
+      for (const timer of ["tgT", "tgA"]) clearTimeout(this[timer]);
+      if (to === "lf2") {
+        patch.s17 = true;
+        patch.lf2s = route.index ?? 0;
       }
-      if (['lf2', 'lf3'].includes(to)) {
-        const n = route.index ?? 0, data = lfGallery(to, n);
-        if (route.photo > 0 && route.photo <= data.gallery.length) patch.lb = { t: to, s: n, i: route.photo - 1 };
+      if (to === "lf3") {
+        patch.s18 = true;
+        patch.lf3s = route.index ?? 0;
+      }
+      if (to === "nx") {
+        patch.s13 = true;
+        patch.lf1 = route.index != null;
+      }
+      if (to === "wc") patch.s12 = true;
+      if (to === "end") {
+        patch.s14 = true;
+        patch.s18 = true;
+        patch.lf3s = 2;
+      }
+      if (to === "fc1") {
+        patch.fcY = Math.min(FC_RANGE, route.offset);
+        patch.s16 = patch.fcY > 0;
+        this.fcPos = patch.fcY;
+      }
+      if (["s6", "s7", "s8"].includes(to)) {
+        const n = route.index ?? 0,
+          topic = Number(to.slice(1));
+        this["play" + topic](n, 0);
+        const data = { s6: DC, s7: DC7, s8: DC8 }[to][n];
+        if (route.photo > 0 && route.photo <= data.gallery.length)
+          patch.lb = { t: topic, s: n, i: route.photo - 1 };
+      }
+      if (["lf2", "lf3"].includes(to)) {
+        const n = route.index ?? 0,
+          data = lfGallery(to, n);
+        if (route.photo > 0 && route.photo <= data.gallery.length)
+          patch.lb = { t: to, s: n, i: route.photo - 1 };
       }
       this.setState(patch);
-    } finally { this.restoringUrl = false; }
+    } finally {
+      this.restoringUrl = false;
+    }
     this.queueUrlSync();
   }
   // leaving section 6/7 for the cards: hold the entered card navy and quiet until the camera has pulled back out
-  leaveTo5(from) { clearTimeout(this.lvT); this.setState({ lv: from }); this.lvT = setTimeout(() => this.setState({ lv: null }), 1500); }
+  leaveTo5(from) {
+    clearTimeout(this.lvT);
+    this.setState({ lv: from });
+    this.lvT = setTimeout(() => this.setState({ lv: null }), 1500);
+  }
   // At a glance: once the camera has settled there, let the gradient connector reach up through the band above a
   // letterboxed artboard (b3ok); never during the move, so the extension can't cross the masthead
   // Looking forward lists: one red indicator per list that glides to the open story (eases toward it every frame while the stories open/close)
   barLoop() {
     if (this.barRaf) return;
     const tick = () => {
-      if (!['nx', 'lf2', 'lf3', 'end'].includes(this.state.view)) { this.barRaf = 0; return; }
-      const root = this.findRoot && this.findRoot();
-      if (root) for (const list of root.querySelectorAll('.lf2l, .lf3s')) {
-        const bar = list.querySelector(':scope > .lfbar'), on = list.querySelector(':scope > .lf2i.on'); if (!bar || !on) continue;
-        // the bar sits on the open story and grows from its top down to its bottom whenever the open story changes
-        const ty = on.offsetTop, th = on.offsetHeight;
-        if (bar._on !== on) { bar._t = bar._on ? performance.now() : -1e9; bar._on = on; }
-        const rs = this.barReset; // arriving at the section: its indicator grows in too, once the section has glided in
-        if (rs && list.closest(rs.sel)) { bar._t = rs.t; bar._on = on; this.barReset = null; }
-        const x = Math.max(0, Math.min(1, (performance.now() - bar._t) / 700)), q = 1 - Math.pow(1 - x, 3);
-        bar.style.transform = `translateY(${ty}px)`; bar.style.height = `${(th * q).toFixed(2)}px`;
+      if (!["nx", "lf2", "lf3", "end"].includes(this.state.view)) {
+        this.barRaf = 0;
+        return;
       }
+      const root = this.findRoot && this.findRoot();
+      if (root)
+        for (const list of root.querySelectorAll(".lf2l, .lf3s")) {
+          const bar = list.querySelector(":scope > .lfbar"),
+            on = list.querySelector(":scope > .lf2i.on");
+          if (!bar || !on) continue;
+          // the bar sits on the open story and grows from its top down to its bottom whenever the open story changes
+          const ty = on.offsetTop,
+            th = on.offsetHeight;
+          if (bar._on !== on) {
+            bar._t = bar._on ? performance.now() : -1e9;
+            bar._on = on;
+          }
+          const rs = this.barReset; // arriving at the section: its indicator grows in too, once the section has glided in
+          if (rs && list.closest(rs.sel)) {
+            bar._t = rs.t;
+            bar._on = on;
+            this.barReset = null;
+          }
+          const x = Math.max(
+              0,
+              Math.min(1, (performance.now() - bar._t) / 700),
+            ),
+            q = 1 - Math.pow(1 - x, 3);
+          bar.style.transform = `translateY(${ty}px)`;
+          bar.style.height = `${(th * q).toFixed(2)}px`;
+        }
       this.barRaf = requestAnimationFrame(tick);
     };
     this.barRaf = requestAnimationFrame(tick);
   }
   setState(update, cb) {
-    const was = this.state.view, s13w = this.state.s13, lf1w = this.state.lf1, s15w = this.state.s15; super.setState(update, cb); const now = this.state.view;
+    const was = this.state.view,
+      s13w = this.state.s13,
+      lf1w = this.state.lf1,
+      s15w = this.state.s15;
+    super.setState(update, cb);
+    const now = this.state.view;
     this.queueUrlSync();
     // Clubs & Facilities: once the 1st item has fully come in (cards land by ~1.95s), the 2nd comes in by itself — no need to scroll to it
-    if (this.state.s15 && !s15w && !this.state.s16) { clearTimeout(this.fc2T); this.fc2T = setTimeout(() => { if (this.state.s15 && !this.state.s16) super.setState({ s16: true }); }, 1200); }
-    if ((this.state.s13 && !s13w) || (MOBILE && now === 'nx' && was !== 'nx')) {
+    if (this.state.s15 && !s15w && !this.state.s16) {
+      clearTimeout(this.fc2T);
+      this.fc2T = setTimeout(() => {
+        if (this.state.s15 && !this.state.s16) super.setState({ s16: true });
+      }, 1200);
+    }
+    if ((this.state.s13 && !s13w) || (MOBILE && now === "nx" && was !== "nx")) {
       this.nxReady = Date.now() + 1500; // Let the introduction settle on every arrival.
-      if (MOBILE) { this.mobileWheelOwned = true; this.touchOwned = true; }
+      if (MOBILE) {
+        this.mobileWheelOwned = true;
+        this.touchOwned = true;
+      }
     }
     if (this.state.lf1 && !lf1w) this.nxReady = Date.now() + 2000; // the circle, then the 01 panel's three lines (from .85s, .12s apart, .8s each)
-    if (now !== was && (now === 'lf2' || now === 'lf3')) this.barReset = { sel: now === 'lf2' ? '.s17' : '.s18', t: performance.now() + 450 };
-    if (['nx', 'lf2', 'lf3', 'end'].includes(now)) this.barLoop();
+    if (now !== was && (now === "lf2" || now === "lf3"))
+      this.barReset = {
+        sel: now === "lf2" ? ".s17" : ".s18",
+        t: performance.now() + 450,
+      };
+    if (["nx", "lf2", "lf3", "end"].includes(now)) this.barLoop();
     requestAnimationFrame(() => this.xclipToDom());
-    if (now !== was && now === 's5' && !this.played5) { this.played5 = true; super.setState({ i4: true }); clearTimeout(this.i4T); this.i4T = setTimeout(() => super.setState({ i4: false }), 4500); }
+    if (now !== was && now === "s5" && !this.played5) {
+      this.played5 = true;
+      super.setState({ i4: true });
+      clearTimeout(this.i4T);
+      this.i4T = setTimeout(() => super.setState({ i4: false }), 4500);
+    }
     if (now !== was) {
-      const at = (v) => v === 'tg' || v === 's3';
+      const at = (v) => v === "tg" || v === "s3";
       clearTimeout(this.b3T);
-      if (!(at(now) && at(was)) && this.state.b3ok) super.setState({ b3ok: false });
-      if (at(now) && !this.state.b3ok) this.b3T = setTimeout(() => { if (at(this.state.view)) super.setState({ b3ok: true }); }, 950);
+      if (!(at(now) && at(was)) && this.state.b3ok)
+        super.setState({ b3ok: false });
+      if (at(now) && !this.state.b3ok)
+        this.b3T = setTimeout(() => {
+          if (at(this.state.view)) super.setState({ b3ok: true });
+        }, 950);
       // progress bar: keep its strip at the screen's bottom edge visible through the move away, so it rides off with the section
       clearTimeout(this.swT);
-      if (at(now)) { if (!this.state.swk) super.setState({ swk: true }); }
-      else if (at(was)) this.swT = setTimeout(() => { if (!at(this.state.view)) super.setState({ swk: false }); }, 1000);
+      if (at(now)) {
+        if (!this.state.swk) super.setState({ swk: true });
+      } else if (at(was))
+        this.swT = setTimeout(() => {
+          if (!at(this.state.view)) super.setState({ swk: false });
+        }, 1000);
       // back up from Our impact: a gentler camera move, and the cards travel up with the page instead of fading out first
       clearTimeout(this.up5T);
-      if (was === 's5' && at(now)) { super.setState({ up5: true }); this.up5T = setTimeout(() => super.setState({ up5: false }), 1100); }
-      else if (this.state.up5) super.setState({ up5: false });
+      if (was === "s5" && at(now)) {
+        super.setState({ up5: true });
+        this.up5T = setTimeout(() => super.setState({ up5: false }), 1100);
+      } else if (this.state.up5) super.setState({ up5: false });
     }
   }
   componentDidUpdate(prev, prevState) {
-    if (this.stkCard && this.state.view !== 's5') this.cardStack(null);
-    if (prevState && prevState.view !== this.state.view && this.state.view === 't2') { this.hvLayout(); setTimeout(() => this.hvLayout(), 400); }
+    if (this.stkCard && this.state.view !== "s5") this.cardStack(null);
+    if (
+      prevState &&
+      prevState.view !== this.state.view &&
+      this.state.view === "t2"
+    ) {
+      this.hvLayout();
+      setTimeout(() => this.hvLayout(), 400);
+    }
     // leaving section 6/7 for the cards: hold the entered card navy until the camera has pulled back out
 
     if (prev.startView !== this.props.startView) {
       const v = viewOf(this.props.startView);
       this.setState({ view: v });
-      if (v !== 'top') this.setState({ s2: true });
-      if (v === 's3') this.arrive3();
-      if (v === 's4' || v === 's5') this.setState({ s3: true, s4: true });
+      if (v !== "top") this.setState({ s2: true });
+      if (v === "s3") this.arrive3();
+      if (v === "s4" || v === "s5") this.setState({ s3: true, s4: true });
     }
   }
   // generic letter hover for statement text (.hv): same push/tilt as the masthead headline
@@ -281,63 +1094,143 @@ export class ArtboardLogic extends Logic {
   cardStack(card) {
     if (card === this.stkCard) return;
     clearInterval(this.stkT);
-    if (this.stkCard) { const old = this.stkCard; clearTimeout(old._stkOff); old._stkOff = setTimeout(() => { if (old !== this.stkCard) old.querySelectorAll('.stk').forEach((im) => { im.style.display = 'none'; im.classList.remove('pop', 'out', 'now'); }); }, 200); }
+    if (this.stkCard) {
+      const old = this.stkCard;
+      clearTimeout(old._stkOff);
+      old._stkOff = setTimeout(() => {
+        if (old !== this.stkCard)
+          old.querySelectorAll(".stk").forEach((im) => {
+            im.style.display = "none";
+            im.classList.remove("pop", "out", "now");
+          });
+      }, 200);
+    }
     this.stkCard = card;
     if (!card) return;
-    if (card.querySelector('.tc-one')) return; // static hover photo (Figma 2121:4281): no auto-changing stack
-    const src = { '#dc-title': DC, '#an-title': DC7, '#sb-title': DC8 }[card.getAttribute('href')] || [];
+    if (card.querySelector(".tc-one")) return; // static hover photo (Figma 2121:4281): no auto-changing stack
+    const src =
+      { "#dc-title": DC, "#an-title": DC7, "#sb-title": DC8 }[
+        card.getAttribute("href")
+      ] || [];
     const list = [...new Set(src.flatMap((d) => d.gallery || []))];
     if (!list.length) return;
     clearTimeout(card._stkOff);
-    const slots = [...card.querySelectorAll('.stk')].slice(0, 2); let n = 0;
+    const slots = [...card.querySelectorAll(".stk")].slice(0, 2);
+    let n = 0;
     const TILT = [-4, 3.5, -2.5, 4.5];
     const step = () => {
-      const im = slots[n % 2], prev = slots[(n + 1) % 2];
-      if (n > 0) { prev.style.zIndex = '1'; }
-      im.classList.remove('out', 'pop', 'now'); im.src = list[n % list.length];
-      im.style.setProperty('--sr', TILT[n % TILT.length] + 'deg'); im.style.zIndex = '2'; im.style.display = 'block';
-      void im.offsetWidth; im.classList.add(n === 0 ? 'now' : 'pop');
+      const im = slots[n % 2],
+        prev = slots[(n + 1) % 2];
+      if (n > 0) {
+        prev.style.zIndex = "1";
+      }
+      im.classList.remove("out", "pop", "now");
+      im.src = list[n % list.length];
+      im.style.setProperty("--sr", TILT[n % TILT.length] + "deg");
+      im.style.zIndex = "2";
+      im.style.display = "block";
+      void im.offsetWidth;
+      im.classList.add(n === 0 ? "now" : "pop");
       n++;
     };
-    step(); this.stkT = setInterval(step, 1100);
+    step();
+    this.stkT = setInterval(step, 1100);
   }
   hvLayout() {
-    const root = this.findRoot(); if (!root) return;
-    if (document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(() => this.hvLayout());
-    root.querySelectorAll('.hv[data-g]').forEach((line) => {
-      const w = line.offsetWidth; line.querySelectorAll('.lt').forEach((l) => { l.style.backgroundSize = w + 'px 100%'; l.style.backgroundPosition = (line.offsetLeft - l.offsetLeft) + 'px 0'; });
+    const root = this.findRoot();
+    if (!root) return;
+    if (document.fonts && document.fonts.status !== "loaded")
+      document.fonts.ready.then(() => this.hvLayout());
+    root.querySelectorAll(".hv[data-g]").forEach((line) => {
+      const w = line.offsetWidth;
+      line.querySelectorAll(".lt").forEach((l) => {
+        l.style.backgroundSize = w + "px 100%";
+        l.style.backgroundPosition = line.offsetLeft - l.offsetLeft + "px 0";
+      });
     });
   }
   hvMove(cx, cy, scale) {
-    const root = this.findRoot(); if (!root) return;
-    const rb = root.getBoundingClientRect(), R = 170;
-    root.querySelectorAll('.hv').forEach((line) => {
-      const sec = line.closest('section'); const vis = sec && getComputedStyle(sec).visibility !== 'hidden';
+    const root = this.findRoot();
+    if (!root) return;
+    const rb = root.getBoundingClientRect(),
+      R = 170;
+    root.querySelectorAll(".hv").forEach((line) => {
+      const sec = line.closest("section");
+      const vis = sec && getComputedStyle(sec).visibility !== "hidden";
       const fs = parseFloat(getComputedStyle(line).fontSize) || 60;
-      line.querySelectorAll('.lt').forEach((l) => {
-        let tf = '';
+      line.querySelectorAll(".lt").forEach((l) => {
+        let tf = "";
         if (vis && cx != null && l.textContent.trim()) {
-          const b = l.getBoundingClientRect(); if (b.bottom > rb.top && b.top < rb.bottom) {
-            const x = (b.left + b.width / 2 - rb.left) * scale, y = (b.top + b.height * 0.55 - rb.top) * scale, dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy);
-            if (d < R) { const f = Math.pow(1 - d / R, 2), n = d || 1, push = 0.34 * fs * f;
-              tf = 'translate(' + (dx / n * push).toFixed(1) + 'px,' + (dy / n * push - fs * 0.08 * f).toFixed(1) + 'px) rotate(' + ((dx >= 0 ? 1 : -1) * 16 * f).toFixed(1) + 'deg) scale(' + (1 + 0.12 * f).toFixed(3) + ')'; }
+          const b = l.getBoundingClientRect();
+          if (b.bottom > rb.top && b.top < rb.bottom) {
+            const x = (b.left + b.width / 2 - rb.left) * scale,
+              y = (b.top + b.height * 0.55 - rb.top) * scale,
+              dx = x - cx,
+              dy = y - cy,
+              d = Math.hypot(dx, dy);
+            if (d < R) {
+              const f = Math.pow(1 - d / R, 2),
+                n = d || 1,
+                push = 0.34 * fs * f;
+              tf =
+                "translate(" +
+                ((dx / n) * push).toFixed(1) +
+                "px," +
+                ((dy / n) * push - fs * 0.08 * f).toFixed(1) +
+                "px) rotate(" +
+                ((dx >= 0 ? 1 : -1) * 16 * f).toFixed(1) +
+                "deg) scale(" +
+                (1 + 0.12 * f).toFixed(3) +
+                ")";
+            }
           }
         }
         if (l.style.transform !== tf) l.style.transform = tf;
       });
     });
   }
-  componentWillUnmount() { this.urlMounted = false; window.removeEventListener('popstate', this.onUrlChange); window.removeEventListener('hashchange', this.onUrlChange); clearInterval(this.stkT); ['tgA', 'tgT', 'b3T', 'swT', 'up5T', 'fc2T', 'landT', 'mbHT', 'i4T'].forEach(k => clearTimeout(this[k])); if (this.barRaf) cancelAnimationFrame(this.barRaf); if (this.raf8) cancelAnimationFrame(this.raf8); this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); }
+  componentWillUnmount() {
+    this.urlMounted = false;
+    window.removeEventListener("popstate", this.onUrlChange);
+    window.removeEventListener("hashchange", this.onUrlChange);
+    clearInterval(this.stkT);
+    [
+      "tgA",
+      "tgT",
+      "b3T",
+      "swT",
+      "up5T",
+      "fc2T",
+      "landT",
+      "mbHT",
+      "i4T",
+    ].forEach((k) => clearTimeout(this[k]));
+    if (this.barRaf) cancelAnimationFrame(this.barRaf);
+    if (this.raf8) cancelAnimationFrame(this.raf8);
+    this.clearAll();
+    clearInterval(this.tick);
+    clearTimeout(this.hopT);
+    if (this.raf6) cancelAnimationFrame(this.raf6);
+    if (this.raf7) cancelAnimationFrame(this.raf7);
+  }
   // Section 6: play a story's entrance (photos rise into their frames, numbers count, description decodes, red bar fills)
   play6(n, delay, hold) {
     if (this.raf6) cancelAnimationFrame(this.raf6);
     this.hold = hold || 0;
-    const dur = dcSeconds(DC[n]) + this.hold, t0 = performance.now() + delay * 1000;
-    this.bar6From = this.state.s6 && this.state.view === 's6' ? DC[this.state.step6 || 0].bar : 0; // progress bar continues from the story we're leaving
+    const dur = dcSeconds(DC[n]) + this.hold,
+      t0 = performance.now() + delay * 1000;
+    this.bar6From =
+      this.state.s6 && this.state.view === "s6"
+        ? DC[this.state.step6 || 0].bar
+        : 0; // progress bar continues from the story we're leaving
     this.setState({ step6: n, t6: -delay });
     const tick = (now) => {
       const t = (now - t0) / 1000;
-      if (t >= dur) { this.raf6 = 0; this.setState({ t6: null }); return; }
+      if (t >= dur) {
+        this.raf6 = 0;
+        this.setState({ t6: null });
+        return;
+      }
       this.setState({ t6: t });
       this.raf6 = requestAnimationFrame(tick);
     };
@@ -347,33 +1240,70 @@ export class ArtboardLogic extends Logic {
   play7(n, delay, hold) {
     if (this.raf7) cancelAnimationFrame(this.raf7);
     this.hold = hold || 0;
-    const dur = dcSeconds(DC7[n]) + this.hold, t0 = performance.now() + delay * 1000;
-    this.bar7From = this.state.s7 && this.state.view === 's7' ? DC7[this.state.step7 || 0].bar : 0;
+    const dur = dcSeconds(DC7[n]) + this.hold,
+      t0 = performance.now() + delay * 1000;
+    this.bar7From =
+      this.state.s7 && this.state.view === "s7"
+        ? DC7[this.state.step7 || 0].bar
+        : 0;
     this.setState({ step7: n, t7: -delay });
-    const tick = (now) => { const t = (now - t0) / 1000; if (t >= dur) { this.raf7 = 0; this.setState({ t7: null }); return; } this.setState({ t7: t }); this.raf7 = requestAnimationFrame(tick); };
+    const tick = (now) => {
+      const t = (now - t0) / 1000;
+      if (t >= dur) {
+        this.raf7 = 0;
+        this.setState({ t7: null });
+        return;
+      }
+      this.setState({ t7: t });
+      this.raf7 = requestAnimationFrame(tick);
+    };
     this.raf7 = requestAnimationFrame(tick);
   }
   play8(n, delay, hold) {
     if (this.raf8) cancelAnimationFrame(this.raf8);
     this.hold = hold || 0;
-    this.bar8From = this.state.s8 && this.state.view === 's8' ? DC8[this.state.step8 || 0].bar : 0;
-    const dur = dcSeconds(DC8[n]) + this.hold, t0 = performance.now() + delay * 1000;
+    this.bar8From =
+      this.state.s8 && this.state.view === "s8"
+        ? DC8[this.state.step8 || 0].bar
+        : 0;
+    const dur = dcSeconds(DC8[n]) + this.hold,
+      t0 = performance.now() + delay * 1000;
     this.setState({ step8: n, t8: -delay });
-    const tick = (now) => { const t = (now - t0) / 1000; if (t >= dur) { this.raf8 = 0; this.setState({ t8: null }); return; } this.setState({ t8: t }); this.raf8 = requestAnimationFrame(tick); };
+    const tick = (now) => {
+      const t = (now - t0) / 1000;
+      if (t >= dur) {
+        this.raf8 = 0;
+        this.setState({ t8: null });
+        return;
+      }
+      this.setState({ t8: t });
+      this.raf8 = requestAnimationFrame(tick);
+    };
     this.raf8 = requestAnimationFrame(tick);
   }
-  land() { clearTimeout(this.landT); this.setState({ landing: true }); this.landT = setTimeout(() => this.setState({ landing: false }), 1150); }
-  arrive8() { this.land(); this.setState({ s8: true }); this.play8(0, 0.15, 0.3); }
+  land() {
+    clearTimeout(this.landT);
+    this.setState({ landing: true });
+    this.landT = setTimeout(() => this.setState({ landing: false }), 1150);
+  }
+  arrive8() {
+    this.land();
+    this.setState({ s8: true });
+    this.play8(0, 0.15, 0.3);
+  }
   // Membership (desktop): scale the card stack so the open card shows whole within the 708px below the header
   mbFit() {
     if (MOBILE) return;
-    const el = document.querySelector('.s10 .mbs.on'); if (!el) return;
+    const el = document.querySelector(".s10 .mbs.on");
+    if (!el) return;
     const sc = Math.min(1, 708 / (MB_STEP * 3 + el.offsetHeight));
-    if (Math.abs(sc - (this.state.mbSc ?? 1)) > 0.002) this.setState({ mbSc: sc });
+    if (Math.abs(sc - (this.state.mbSc ?? 1)) > 0.002)
+      this.setState({ mbSc: sc });
   }
   mbTo(t) {
     if (MOBILE) {
-      const next = this.state.mbTab === t ? -1 : t, ord = [3, 2, 1, 0];
+      const next = this.state.mbTab === t ? -1 : t,
+        ord = [3, 2, 1, 0];
       if (next >= 0) while (ord[3] !== next) ord.unshift(ord.pop());
       this.setState({ mbTab: next, mbOrd: ord });
       return;
@@ -381,44 +1311,74 @@ export class ArtboardLogic extends Logic {
     if (!MOBILE) {
       // accordion: tap a card to open it (the open one folds shut), tap the open card again to close it;
       // the content height animates, and the stack scrolls back so it sits from the top
-      const cur = this.state.mbTab ?? -1, next = t === cur ? -1 : t;
-      const box = (i) => document.querySelector(`.s10 .mbs:nth-child(${i + 1}) .mbc`);
-      const a = cur >= 0 ? box(cur) : null, b = next >= 0 ? box(next) : null;
-      if (a) a.style.height = a.offsetHeight + 'px';
-      if (b) b.style.height = '0px';
+      const cur = this.state.mbTab ?? -1,
+        next = t === cur ? -1 : t;
+      const box = (i) =>
+        document.querySelector(`.s10 .mbs:nth-child(${i + 1}) .mbc`);
+      const a = cur >= 0 ? box(cur) : null,
+        b = next >= 0 ? box(next) : null;
+      if (a) a.style.height = a.offsetHeight + "px";
+      if (b) b.style.height = "0px";
       if (a || b) void (a || b).offsetHeight;
       clearTimeout(this.mbHT);
-      this.setState({ mbTab: next }, () => requestAnimationFrame(() => {
-        if (a) a.style.height = '0px';
-        if (b) b.style.height = b.scrollHeight + 'px';
-        this.mbHT = setTimeout(() => { if (a) a.style.height = ''; if (b) b.style.height = ''; }, 560);
-        const sc = document.querySelector('.s10 .mbsc'); if (sc && next >= 0) sc.scrollTo({ top: 0, behavior: 'smooth' });
-      }));
+      this.setState({ mbTab: next }, () =>
+        requestAnimationFrame(() => {
+          if (a) a.style.height = "0px";
+          if (b) b.style.height = b.scrollHeight + "px";
+          this.mbHT = setTimeout(() => {
+            if (a) a.style.height = "";
+            if (b) b.style.height = "";
+          }, 560);
+          const sc = document.querySelector(".s10 .mbsc");
+          if (sc && next >= 0) sc.scrollTo({ top: 0, behavior: "smooth" });
+        }),
+      );
       return;
     }
   }
   // While AT A GLANCE scales down, the connector is trimmed so it never runs past the top of the L;
   // scaling back up lets it reach up to the masthead again.
   arriveFy() {
-    if (this.playedFy) return; this.playedFy = true;
+    if (this.playedFy) return;
+    this.playedFy = true;
     if (this.rafF) cancelAnimationFrame(this.rafF);
     const t0 = performance.now() + 1100; // cards have started rising
-    const step = (now) => { const x = Math.min(1, Math.max(0, (now - t0) / 1400)); this.setState({ pF: 1 - Math.pow(1 - x, 3) }); if (x < 1) this.rafF = requestAnimationFrame(step); };
-    this.setState({ pF: 0 }); this.rafF = requestAnimationFrame(step);
+    const step = (now) => {
+      const x = Math.min(1, Math.max(0, (now - t0) / 1400));
+      this.setState({ pF: 1 - Math.pow(1 - x, 3) });
+      if (x < 1) this.rafF = requestAnimationFrame(step);
+    };
+    this.setState({ pF: 0 });
+    this.rafF = requestAnimationFrame(step);
   }
   // Looking forward: the section holds still while the right column scrolls; at the end of a topic's
   // content the indicator moves to the next label (and back up at the top); past the last/first topic the page moves on.
-  nxEl() { try { return document.querySelector('.mh .lf3s'); } catch (err) { return null; } } // the scrolling column (03 Supporting NSmen's needs)
-  nxMax(el) { return Math.max(0, el.scrollHeight - el.clientHeight); }
-  nxPin() { return 0; }
+  nxEl() {
+    try {
+      return document.querySelector(".mh .lf3s");
+    } catch (err) {
+      return null;
+    }
+  } // the scrolling column (03 Supporting NSmen's needs)
+  nxMax(el) {
+    return Math.max(0, el.scrollHeight - el.clientHeight);
+  }
+  nxPin() {
+    return 0;
+  }
   nxFade() {}
   nxReveal() {}
   nxGo(el, target) {
     this.nxPos = target;
     if (this.nxRaf) return;
     const tick = () => {
-      const e = this.nxEl(); if (!e) { this.nxRaf = 0; return; }
-      const cur = e.scrollTop, d = this.nxPos - cur;
+      const e = this.nxEl();
+      if (!e) {
+        this.nxRaf = 0;
+        return;
+      }
+      const cur = e.scrollTop,
+        d = this.nxPos - cur;
       e.scrollTop = Math.abs(d) < 0.5 ? this.nxPos : cur + d * 0.16;
       this.nxReveal(e);
       this.nxRaf = Math.abs(d) < 0.5 ? 0 : requestAnimationFrame(tick);
@@ -427,90 +1387,171 @@ export class ArtboardLogic extends Logic {
   }
   nxSet(k, at) {
     this.setState({ nxTab: k });
-    requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; el.style.scrollBehavior = 'auto'; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = at === 'end' ? this.nxMax(el) : 0; this.nxPos = el.scrollTop; this.nxReveal(el); el.style.scrollBehavior = ''; });
+    requestAnimationFrame(() => {
+      const el = this.nxEl();
+      if (!el) return;
+      el.style.scrollBehavior = "auto";
+      if (this.nxRaf) {
+        cancelAnimationFrame(this.nxRaf);
+        this.nxRaf = 0;
+      }
+      el.scrollTop = at === "end" ? this.nxMax(el) : 0;
+      this.nxPos = el.scrollTop;
+      this.nxReveal(el);
+      el.style.scrollBehavior = "";
+    });
   }
   // "03 Supporting NSmen's needs": change stories in place before moving on.
   lf3Enter(dir) {
-    this.nxPos = null; this.nxEdge = Date.now(); this.setState({ lf3s: dir > 0 ? 0 : 2 });
-    requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = 0; });
+    this.nxPos = null;
+    this.nxEdge = Date.now();
+    this.setState({ lf3s: dir > 0 ? 0 : 2 });
+    requestAnimationFrame(() => {
+      const el = this.nxEl();
+      if (!el) return;
+      if (this.nxRaf) {
+        cancelAnimationFrame(this.nxRaf);
+        this.nxRaf = 0;
+      }
+      el.scrollTop = 0;
+    });
   }
   lf3Step(k) {
-    if (this.state.link === 'z3') this.linkStop();
-    if (this.state.view === 'end') this.setState({ view: 'lf3' });
+    if (this.state.link === "z3") this.linkStop();
+    if (this.state.view === "end") this.setState({ view: "lf3" });
     this.lockUntil = Date.now() + 950;
     this.nxPos = null;
-    if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; }
+    if (this.nxRaf) {
+      cancelAnimationFrame(this.nxRaf);
+      this.nxRaf = 0;
+    }
     this.setState({ lf3s: k });
   }
   lf3Wheel(dy) {
-    if (this.state.link === 'z3') {
+    if (this.state.link === "z3") {
       return false; // Finish moving the camera before changing the active story.
     }
-    if (this.state.view !== 'lf3' || this.state.lb) return false;
-    const now = Date.now(), streak = now - (this.l3Last || 0) < 160; this.l3Last = now;
+    if (this.state.view !== "lf3" || this.state.lb) return false;
+    const now = Date.now(),
+      streak = now - (this.l3Last || 0) < 160;
+    this.l3Last = now;
     if (this.lockUntil && now < this.lockUntil) return true;
     if (streak) return true;
     const k = this.state.lf3s || 0;
-    if (dy > 0 && k < 2) { this.lf3Step(k + 1); return true; }
-    if (dy < 0 && k > 0) { this.lf3Step(k - 1); return true; }
+    if (dy > 0 && k < 2) {
+      this.lf3Step(k + 1);
+      return true;
+    }
+    if (dy < 0 && k > 0) {
+      this.lf3Step(k - 1);
+      return true;
+    }
     return false;
   }
   // One fresh gesture per story; momentum must never carry into another section.
   lf2Wheel(dy) {
-    if (this.state.view !== 'lf2' || this.state.lb) return false;
-    const now = Date.now(), streak = now - (this.l2Last || 0) < 160; this.l2Last = now;
+    if (this.state.view !== "lf2" || this.state.lb) return false;
+    const now = Date.now(),
+      streak = now - (this.l2Last || 0) < 160;
+    this.l2Last = now;
     if (this.lockUntil && now < this.lockUntil) return true;
     if (streak) return true;
     const k = this.state.lf2s || 0;
-    if (dy > 0 && k < 3) { this.lockUntil = now + 900; this.l2Edge = now; this.setState({ lf2s: k + 1 }); return true; }
-    if (dy < 0 && k > 0) { this.lockUntil = now + 900; this.l2Edge = now; this.setState({ lf2s: k - 1 }); return true; }
+    if (dy > 0 && k < 3) {
+      this.lockUntil = now + 900;
+      this.l2Edge = now;
+      this.setState({ lf2s: k + 1 });
+      return true;
+    }
+    if (dy < 0 && k > 0) {
+      this.lockUntil = now + 900;
+      this.l2Edge = now;
+      this.setState({ lf2s: k - 1 });
+      return true;
+    }
     return false;
   }
   // Looking forward has two steps on the spot: the intro, then the "01" panel the dark circle spreads out to reveal.
   nxWheel(dy) {
-    if (this.state.view !== 'nx' || this.state.lb || this.state.link) return false;
-    const now = Date.now(), streak = now - (this.nxLast || 0) < 160; this.nxLast = now;
+    if (this.state.view !== "nx" || this.state.lb || this.state.link)
+      return false;
+    const now = Date.now(),
+      streak = now - (this.nxLast || 0) < 160;
+    this.nxLast = now;
     if (this.lockUntil && now < this.lockUntil) return true;
     if (now < (this.nxReady || 0)) return true; // text / 01 panel still coming in: hold
     if (streak && now - (this.nxEdge || 0) < 1600) return true; // the gesture that just switched steps: let it run out
     const on = !!this.state.lf1;
-    if (dy > 0 && !on) { this.lockUntil = now + 1300; this.nxEdge = now; this.setState({ lf1: true }); return true; }
-    if (dy < 0 && on) { this.lockUntil = now + 1000; this.nxEdge = now; this.setState({ lf1: false }); return true; }
+    if (dy > 0 && !on) {
+      this.lockUntil = now + 1300;
+      this.nxEdge = now;
+      this.setState({ lf1: true });
+      return true;
+    }
+    if (dy < 0 && on) {
+      this.lockUntil = now + 1000;
+      this.nxEdge = now;
+      this.setState({ lf1: false });
+      return true;
+    }
     return false;
   }
   // Arriving at Clubs & Facilities by a snap (from below): sit at its bottom so the stretch continues from there.
   fcEnter(dir) {
     const y = dir > 0 ? 0 : FC_RANGE;
-    this.fcPos = y; this.fcEdge = Date.now();
+    this.fcPos = y;
+    this.fcEdge = Date.now();
     this.setState({ fcY: y, ...(dir < 0 ? { s16: true } : {}) });
   }
   // Scroll-linked stretches (see LINKS): the camera follows the scroll; sections' entrances start as they come in.
   // At either end of a stretch the scroll waits for a fresh gesture, then snaps on to the next section.
   linkPosOf(key) {
-    const v = this.state.view, L = LINKS[key];
-    const at = L.at.find(([x]) => x === v); if (!at) return 0;
-    if (v === 'fc1') return CAM.t2 - CAM.fc1 + (this.state.fcY || 0);
+    const v = this.state.view,
+      L = LINKS[key];
+    const at = L.at.find(([x]) => x === v);
+    if (!at) return 0;
+    if (v === "fc1") return CAM.t2 - CAM.fc1 + (this.state.fcY || 0);
     return v === L.at[0][0] ? 0 : CAM.t2 === L.top ? L.top - CAM[v] : L.len;
   }
   linkWheel(dy) {
     if (this.state.lb) return false;
-    if (this.state.view === 'nx' && Date.now() < (this.nxReady || 0) && (!this.state.link || this.state.z2end)) return true; // Looking forward's text still coming in: hold
-    const now = Date.now(), streak = now - (this.lkLast || 0) < 160; this.lkLast = now;
+    if (
+      this.state.view === "nx" &&
+      Date.now() < (this.nxReady || 0) &&
+      (!this.state.link || this.state.z2end)
+    )
+      return true; // Looking forward's text still coming in: hold
+    const now = Date.now(),
+      streak = now - (this.lkLast || 0) < 160;
+    this.lkLast = now;
     let key = this.state.link;
     if (!key) {
       if (this.lockUntil && now < this.lockUntil) return false;
-      key = linkOf(this.state.view); if (!key) return false;
-      const y0 = this.linkPosOf(key), L0 = LINKS[key];
+      key = linkOf(this.state.view);
+      if (!key) return false;
+      const y0 = this.linkPosOf(key),
+        L0 = LINKS[key];
       if ((dy < 0 && y0 <= 0) || (dy > 0 && y0 >= L0.len)) return false; // already at the end: let it snap on
-      this.lkPos = y0; this.lkEdge = 0; this.setState({ link: key, linkY: y0, z2top: key === 'z2' && y0 <= 0.5, z2end: key === 'z2' && y0 >= L0.len - 0.5 });
+      this.lkPos = y0;
+      this.lkEdge = 0;
+      this.setState({
+        link: key,
+        linkY: y0,
+        z2top: key === "z2" && y0 <= 0.5,
+        z2end: key === "z2" && y0 >= L0.len - 0.5,
+      });
     }
-    const L = LINKS[key], pos = this.lkPos ?? this.state.linkY ?? 0;
+    const L = LINKS[key],
+      pos = this.lkPos ?? this.state.linkY ?? 0;
     const atEnd = (dy < 0 && pos <= 0.5) || (dy > 0 && pos >= L.len - 0.5);
     if (atEnd) {
-      if (streak && now - (this.lkEdge || 0) < 900) { this.lkEdge = now; return true; } // reached the end with this gesture: wait
+      if (streak && now - (this.lkEdge || 0) < 900) {
+        this.lkEdge = now;
+        return true;
+      } // reached the end with this gesture: wait
       this.linkSettle();
-      if (key === 'z3') return true;
-      return this.state.view === 'nx' && dy > 0; // fresh gesture at the end: hand over to the snap (or to Looking Forward's own column)
+      if (key === "z3") return true;
+      return this.state.view === "nx" && dy > 0; // fresh gesture at the end: hand over to the snap (or to Looking Forward's own column)
     }
     this.linkGo(Math.max(0, Math.min(L.len, pos + dy)));
     if (this.lkPos <= 0 || this.lkPos >= L.len) this.lkEdge = now;
@@ -520,15 +1561,31 @@ export class ArtboardLogic extends Logic {
     this.lkPos = target;
     if (this.lkRaf) return;
     const tick = () => {
-      const key = this.state.link; if (!key) { this.lkRaf = 0; return; }
-      const L = LINKS[key], cur = this.state.linkY || 0, d = this.lkPos - cur;
+      const key = this.state.link;
+      if (!key) {
+        this.lkRaf = 0;
+        return;
+      }
+      const L = LINKS[key],
+        cur = this.state.linkY || 0,
+        d = this.lkPos - cur;
       const y = Math.abs(d) < 0.5 ? this.lkPos : cur + d * 0.2;
-      let view = L.at[0][0]; for (const [v, from] of L.at) if (y >= from) view = v;
+      let view = L.at[0][0];
+      for (const [v, from] of L.at) if (y >= from) view = v;
       const up = {};
       if (view !== this.state.view) up.view = view;
-      for (const f in L.enter) if (y >= L.enter[f] && !this.state[f]) up[f] = true;
-      { const e2 = key === 'z2' && y <= 0.5, e3 = key === 'z2' && y >= L.len - 0.5; if (e2 !== !!this.state.z2top) up.z2top = e2; if (e3 !== !!this.state.z2end) up.z2end = e3; } // 'We're building for the future' fully in view: its bands go dark
-      if (Object.keys(up).length) { this.setState({ linkY: y, ...up }); if (up.s10) this.arriveMb(); } else this.quiet({ linkY: y });
+      for (const f in L.enter)
+        if (y >= L.enter[f] && !this.state[f]) up[f] = true;
+      {
+        const e2 = key === "z2" && y <= 0.5,
+          e3 = key === "z2" && y >= L.len - 0.5;
+        if (e2 !== !!this.state.z2top) up.z2top = e2;
+        if (e3 !== !!this.state.z2end) up.z2end = e3;
+      } // 'We're building for the future' fully in view: its bands go dark
+      if (Object.keys(up).length) {
+        this.setState({ linkY: y, ...up });
+        if (up.s10) this.arriveMb();
+      } else this.quiet({ linkY: y });
       this.camToDom();
       this.lkRaf = Math.abs(d) < 0.5 ? 0 : requestAnimationFrame(tick);
     };
@@ -536,132 +1593,284 @@ export class ArtboardLogic extends Logic {
   }
   // leave the stretch where the camera is: settle into the section it sits in (no movement)
   linkSettle() {
-    const key = this.state.link; if (!key) return;
-    if (this.lkRaf) { cancelAnimationFrame(this.lkRaf); this.lkRaf = 0; }
-    const L = LINKS[key], y = this.state.linkY || 0;
-    let view = L.at[0][0]; for (const [v, from] of L.at) if (y >= from) view = v;
+    const key = this.state.link;
+    if (!key) return;
+    if (this.lkRaf) {
+      cancelAnimationFrame(this.lkRaf);
+      this.lkRaf = 0;
+    }
+    const L = LINKS[key],
+      y = this.state.linkY || 0;
+    let view = L.at[0][0];
+    for (const [v, from] of L.at) if (y >= from) view = v;
     const patch = { link: null, linkY: 0, view, z2top: false, z2end: false };
-    if (view === 'fc1') { patch.fcY = Math.max(0, y - (CAM.t2 - CAM.fc1)); this.fcPos = patch.fcY; }
+    if (view === "fc1") {
+      patch.fcY = Math.max(0, y - (CAM.t2 - CAM.fc1));
+      this.fcPos = patch.fcY;
+    }
     this.setState(patch);
-    if (view === 'nx') this.nxEnter(1);
-    if (view === 'wc') setTimeout(() => this.hvLayout(), 60);
+    if (view === "nx") this.nxEnter(1);
+    if (view === "wc") setTimeout(() => this.hvLayout(), 60);
   }
-  linkStop() { if (this.lkRaf) { cancelAnimationFrame(this.lkRaf); this.lkRaf = 0; } if (this.state.link) this.linkSettle(); }
+  linkStop() {
+    if (this.lkRaf) {
+      cancelAnimationFrame(this.lkRaf);
+      this.lkRaf = 0;
+    }
+    if (this.state.link) this.linkSettle();
+  }
   // Camera position. While a scroll-linked move is running, each frame writes it straight to the camera element
   // (quiet state, no re-render of the whole page), which keeps the motion smooth.
   camNow() {
     const view = this.state.view;
-    return this.state.link ? +(LINKS[this.state.link].top - (this.state.linkY || 0)).toFixed(2) : view === 'fc1' ? +(CAM.fc1 - (this.state.fcY || 0)).toFixed(2) : (CAM[view] ?? 0);
+    return this.state.link
+      ? +(LINKS[this.state.link].top - (this.state.linkY || 0)).toFixed(2)
+      : view === "fc1"
+        ? +(CAM.fc1 - (this.state.fcY || 0)).toFixed(2)
+        : (CAM[view] ?? 0);
   }
-  quiet(patch) { this.state = { ...this.state, ...patch }; this.queueUrlSync(); }
+  quiet(patch) {
+    this.state = { ...this.state, ...patch };
+    this.queueUrlSync();
+  }
   camToDom() {
-    if (!this.camEl || !this.camEl.isConnected) { const r = this.findRoot(); this.camEl = r && r.querySelector('.cam'); }
-    if (this.camEl) this.camEl.style.transform = `translateY(${this.camNow()}px)`;
+    if (!this.camEl || !this.camEl.isConnected) {
+      const r = this.findRoot();
+      this.camEl = r && r.querySelector(".cam");
+    }
+    if (this.camEl)
+      this.camEl.style.transform = `translateY(${this.camNow()}px)`;
     this.xclipToDom();
   }
   // Continuous stretches (Clubs & Facilities' own scroll, and 'We're building…' → Looking forward): on a screen taller than the
   // artboard the content runs on into the bands above/below instead of being cut at the artboard's edge. How far it may run
   // (--ct / --cb) is the distance to the stretch's own start / end, so nothing from an unrelated section ever shows there.
   xclipToDom() {
-    const mh = this.mhEl && this.mhEl.isConnected ? this.mhEl : (this.mhEl = (() => { const r = this.findRoot(); return r && (r.classList && r.classList.contains('mh') ? r : r.querySelector('.mh')); })());
+    const mh =
+      this.mhEl && this.mhEl.isConnected
+        ? this.mhEl
+        : (this.mhEl = (() => {
+            const r = this.findRoot();
+            return (
+              r &&
+              (r.classList && r.classList.contains("mh")
+                ? r
+                : r.querySelector(".mh"))
+            );
+          })());
     if (!mh) return;
-    const cam = this.camNow(), link = this.state.link, view = this.state.view;
-    let off = null, len = 0;
-    if (!MOBILE && (view === 'fc1' || link === 'z1')) { off = CAM.fc1 - cam; len = CAM.fc1 - CAM.fc2; }
-    else if (link === 'z2') { off = CAM.wc - cam; len = CAM.wc - CAM.nx; }
+    const cam = this.camNow(),
+      link = this.state.link,
+      view = this.state.view;
+    let off = null,
+      len = 0;
+    if (!MOBILE && (view === "fc1" || link === "z1")) {
+      off = CAM.fc1 - cam;
+      len = CAM.fc1 - CAM.fc2;
+    } else if (link === "z2") {
+      off = CAM.wc - cam;
+      len = CAM.wc - CAM.nx;
+    }
     if (off == null) return;
-    mh.style.setProperty('--ct', `${Math.max(0, off).toFixed(1)}px`); mh.style.setProperty('--cb', `${Math.max(0, len - off).toFixed(1)}px`);
+    mh.style.setProperty("--ct", `${Math.max(0, off).toFixed(1)}px`);
+    mh.style.setProperty("--cb", `${Math.max(0, len - off).toFixed(1)}px`);
   }
-  nxEnter(dir) { this.nxEdge = Date.now(); this.setState({ lf1: dir < 0 }); } // from below (the closing section): come back to the "01" panel
+  nxEnter(dir) {
+    this.nxEdge = Date.now();
+    this.setState({ lf1: dir < 0 });
+  } // from below (the closing section): come back to the "01" panel
   arriveMb() {
-    const first = !this.state.s10; this.setState({ s10: true });
+    const first = !this.state.s10;
+    this.setState({ s10: true });
     if (!first) return;
     if (this.rafM) cancelAnimationFrame(this.rafM);
     const t0 = performance.now() + 1400;
-    const step = (now) => { const x = Math.min(1, Math.max(0, (now - t0) / 1300)); this.setState({ pM: 1 - Math.pow(1 - x, 3) }); if (x < 1) this.rafM = requestAnimationFrame(step); };
-    this.setState({ pM: 0 }); this.rafM = requestAnimationFrame(step);
+    const step = (now) => {
+      const x = Math.min(1, Math.max(0, (now - t0) / 1300));
+      this.setState({ pM: 1 - Math.pow(1 - x, 3) });
+      if (x < 1) this.rafM = requestAnimationFrame(step);
+    };
+    this.setState({ pM: 0 });
+    this.rafM = requestAnimationFrame(step);
   }
-  arrive7() { this.land(); const first = !this.state.s7; this.setState({ s7: true }); this.play7(0, 0.15, 0.3); }
+  arrive7() {
+    this.land();
+    const first = !this.state.s7;
+    this.setState({ s7: true });
+    this.play7(0, 0.15, 0.3);
+  }
   // 6 ⇄ 7 travels through the topic cards: zoom back out to the cards, then into the next card
   // leave a topic (or transition-2) and come back to the three cards — the visitor picks what's next
   toCards() {
     clearTimeout(this.hopT);
     const from = this.state.view;
     this.lockUntil = Date.now() + 1500;
-    if (from !== 't2' && from !== 'wc' && !(MOBILE && (from === 'mb' || from === 'fc1'))) this.leaveTo5(from); // straight back up from the section below: no card zoom-out
-    this.setState({ view: 's5', hopping: false });
+    if (
+      from !== "t2" &&
+      from !== "wc" &&
+      !(MOBILE && (from === "mb" || from === "fc1"))
+    )
+      this.leaveTo5(from); // straight back up from the section below: no card zoom-out
+    this.setState({ view: "s5", hopping: false });
   }
   // skip buttons: straight to the named screen — the story panel grows to full navy, then the next section opens out of it
   // sticky menu: jump straight to a section
   jumpTo(to) {
-    if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8);
-    clearTimeout(this.hopT); clearTimeout(this.lvT);
+    if (this.raf6) cancelAnimationFrame(this.raf6);
+    if (this.raf7) cancelAnimationFrame(this.raf7);
+    if (this.raf8) cancelAnimationFrame(this.raf8);
+    clearTimeout(this.hopT);
+    clearTimeout(this.lvT);
     this.lockUntil = Date.now() + 1300;
-    const flag = { fy: 's11', nx: 's13' }[to];
-    this.linkStop(); if (to === 'end') this.setState({ s14: true, s18: true, lf3s: 2 }); this.setState({ menu: false, lv: null, hopping: false, view: to, ...(flag ? { [flag]: true } : {}), ...(to === 's5' ? { s4: true } : {}) });
-    if (to === 's2') this.arrive2();
-    if (to === 'fy') this.arriveFy();
-    if (to === 'nx') this.nxEnter(1);
-    if (['s6', 's7', 's8', 'mb', 'fc1'].includes(to)) { // topic / inner pages: the cards sit behind them, then the page opens as from its card
-      if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8);
-      this.setState({ s4: true, ...(to in { s6: 1, s7: 1, s8: 1 } ? { tabLast: { s6: 0, s7: 1, s8: 2 }[to] } : {}) });
-      if (to === 's6') this.arrive6(); else if (to === 's7') this.arrive7(); else if (to === 's8') this.arrive8();
-      else if (to === 'mb') this.arriveMb(); else { this.setState({ s15: true }); this.fcEnter(1); }
+    const flag = { fy: "s11", nx: "s13" }[to];
+    this.linkStop();
+    if (to === "end") this.setState({ s14: true, s18: true, lf3s: 2 });
+    this.setState({
+      menu: false,
+      lv: null,
+      hopping: false,
+      view: to,
+      ...(flag ? { [flag]: true } : {}),
+      ...(to === "s5" ? { s4: true } : {}),
+    });
+    if (to === "s2") this.arrive2();
+    if (to === "fy") this.arriveFy();
+    if (to === "nx") this.nxEnter(1);
+    if (["s6", "s7", "s8", "mb", "fc1"].includes(to)) {
+      // topic / inner pages: the cards sit behind them, then the page opens as from its card
+      if (this.raf6) cancelAnimationFrame(this.raf6);
+      if (this.raf7) cancelAnimationFrame(this.raf7);
+      if (this.raf8) cancelAnimationFrame(this.raf8);
+      this.setState({
+        s4: true,
+        ...(to in { s6: 1, s7: 1, s8: 1 }
+          ? { tabLast: { s6: 0, s7: 1, s8: 2 }[to] }
+          : {}),
+      });
+      if (to === "s6") this.arrive6();
+      else if (to === "s7") this.arrive7();
+      else if (to === "s8") this.arrive8();
+      else if (to === "mb") this.arriveMb();
+      else {
+        this.setState({ s15: true });
+        this.fcEnter(1);
+      }
     }
-    if (to === 's3') { clearTimeout(this.tgT); if (this.played3 && this.state.s3) { if (this.state.step !== 0) this.setStep(0); } else this.arrive3(true); }
+    if (to === "s3") {
+      clearTimeout(this.tgT);
+      if (this.played3 && this.state.s3) {
+        if (this.state.step !== 0) this.setStep(0);
+      } else this.arrive3(true);
+    }
   }
   // desktop: the five card pages (L2) read as one vertical run — past the last story of one card the scroll moves
   // straight on to the next card's page (back up lands on the previous page's last story)
   l2To(to, dir) {
-    if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8);
-    clearTimeout(this.hopT); clearTimeout(this.lvT);
+    if (this.raf6) cancelAnimationFrame(this.raf6);
+    if (this.raf7) cancelAnimationFrame(this.raf7);
+    if (this.raf8) cancelAnimationFrame(this.raf8);
+    clearTimeout(this.hopT);
+    clearTimeout(this.lvT);
     this.lockUntil = Date.now() + 1100;
-    this.setState({ view: to, lv: null, hopping: false, s4: true, ...(to in { s6: 1, s7: 1, s8: 1 } ? { tabLast: { s6: 0, s7: 1, s8: 2 }[to] } : {}) });
+    this.setState({
+      view: to,
+      lv: null,
+      hopping: false,
+      s4: true,
+      ...(to in { s6: 1, s7: 1, s8: 1 }
+        ? { tabLast: { s6: 0, s7: 1, s8: 2 }[to] }
+        : {}),
+    });
     const back = dir < 0;
-    if (to === 's6') { this.land(); this.setState({ s6: true }); this.play6(back ? DC.length - 1 : 0, 0.15, 0.3); this.bar6From = 0; }
-    else if (to === 's7') { this.land(); this.setState({ s7: true }); this.play7(back ? DC7.length - 1 : 0, 0.15, 0.3); this.bar7From = 0; }
-    else if (to === 's8') { this.land(); this.setState({ s8: true }); this.play8(back ? DC8.length - 1 : 0, 0.15, 0.3); this.bar8From = 0; }
-    else if (to === 'mb') this.arriveMb();
-    else if (to === 'fc1') { this.setState({ s15: true }); this.fcEnter(dir); }
+    if (to === "s6") {
+      this.land();
+      this.setState({ s6: true });
+      this.play6(back ? DC.length - 1 : 0, 0.15, 0.3);
+      this.bar6From = 0;
+    } else if (to === "s7") {
+      this.land();
+      this.setState({ s7: true });
+      this.play7(back ? DC7.length - 1 : 0, 0.15, 0.3);
+      this.bar7From = 0;
+    } else if (to === "s8") {
+      this.land();
+      this.setState({ s8: true });
+      this.play8(back ? DC8.length - 1 : 0, 0.15, 0.3);
+      this.bar8From = 0;
+    } else if (to === "mb") this.arriveMb();
+    else if (to === "fc1") {
+      this.setState({ s15: true });
+      this.fcEnter(dir);
+    }
   }
   // topic tabs: switch straight to a topic (always its first story)
   tabTo(to) {
     const from = this.state.view;
-    if (from === to || !['s6', 's7', 's8'].includes(from)) return;
-    if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8);
+    if (from === to || !["s6", "s7", "s8"].includes(from)) return;
+    if (this.raf6) cancelAnimationFrame(this.raf6);
+    if (this.raf7) cancelAnimationFrame(this.raf7);
+    if (this.raf8) cancelAnimationFrame(this.raf8);
     clearTimeout(this.hopT);
     this.lockUntil = Date.now() + 900;
     this.setState({ view: to, tabLast: { s6: 0, s7: 1, s8: 2 }[to] });
-    if (to === 's6') { this.setState({ s6: true }); this.play6(0, 0.15, 0.3); } else if (to === 's7') this.arrive7(); else this.arrive8();
+    if (to === "s6") {
+      this.setState({ s6: true });
+      this.play6(0, 0.15, 0.3);
+    } else if (to === "s7") this.arrive7();
+    else this.arrive8();
   }
   skipTo(to) {
     const from = this.state.view;
-    if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); if (this.raf8) cancelAnimationFrame(this.raf8);
-    clearTimeout(this.hopT); clearTimeout(this.lvT);
+    if (this.raf6) cancelAnimationFrame(this.raf6);
+    if (this.raf7) cancelAnimationFrame(this.raf7);
+    if (this.raf8) cancelAnimationFrame(this.raf8);
+    clearTimeout(this.hopT);
+    clearTimeout(this.lvT);
     this.lockUntil = Date.now() + 1600;
     this.setState({ lv: from, hopping: true }); // panel grows back to full-screen navy
     this.hopT = setTimeout(() => {
-      this.setState({ view: to, hopping: false, lv: null, s9: to === 't2' ? true : this.state.s9 });
-      if (to === 's7') this.arrive7(); else if (to === 's8') this.arrive8();
-      else if (to === 'fc1') { this.setState({ s15: true }); this.fcEnter(1); }
-      else if (to === 'wc') { this.setState({ s12: true }); setTimeout(() => this.hvLayout(), 60); }
-      else if (to === 'mb') this.arriveMb();
-      else if (to === 's6') { this.land(); this.setState({ s6: true }); this.play6(DC.length - 1, 0.15, 0.3); } // back up into the last story
+      this.setState({
+        view: to,
+        hopping: false,
+        lv: null,
+        s9: to === "t2" ? true : this.state.s9,
+      });
+      if (to === "s7") this.arrive7();
+      else if (to === "s8") this.arrive8();
+      else if (to === "fc1") {
+        this.setState({ s15: true });
+        this.fcEnter(1);
+      } else if (to === "wc") {
+        this.setState({ s12: true });
+        setTimeout(() => this.hvLayout(), 60);
+      } else if (to === "mb") this.arriveMb();
+      else if (to === "s6") {
+        this.land();
+        this.setState({ s6: true });
+        this.play6(DC.length - 1, 0.15, 0.3);
+      } // back up into the last story
     }, 40);
   }
   hop(to) {
     clearTimeout(this.hopT);
-    const from = this.state.view, viaT2 = to === 't2' || from === 't2';
+    const from = this.state.view,
+      viaT2 = to === "t2" || from === "t2";
     this.lockUntil = Date.now() + (viaT2 ? 2700 : 4600);
     this.leaveTo5(from);
-    this.setState({ view: 's5', hopping: true });
-    this.hopT = setTimeout(() => {
-      this.setState({ view: to, hopping: false });
-      if (to === 's7') this.arrive7();
-      else if (to === 's8') this.arrive8();
-      else if (to === 't2') this.setState({ s9: true });
-      else { this.setState({ s6: true }); this.play6(DC.length - 1, 0.7); }
-    }, viaT2 ? 1600 : 3000); // card ⇄ card: pull back, hold ~2s, zoom into the next card; to/from transition-2: pull back, then glide down
+    this.setState({ view: "s5", hopping: true });
+    this.hopT = setTimeout(
+      () => {
+        this.setState({ view: to, hopping: false });
+        if (to === "s7") this.arrive7();
+        else if (to === "s8") this.arrive8();
+        else if (to === "t2") this.setState({ s9: true });
+        else {
+          this.setState({ s6: true });
+          this.play6(DC.length - 1, 0.7);
+        }
+      },
+      viaT2 ? 1600 : 3000,
+    ); // card ⇄ card: pull back, hold ~2s, zoom into the next card; to/from transition-2: pull back, then glide down
   }
   arrive6() {
     this.land();
@@ -670,7 +1879,12 @@ export class ArtboardLogic extends Logic {
     this.play6(0, 0.15, 0.3);
   }
   clearAll() {
-    clearTimeout(this.resetT); clearTimeout(this.countT); clearTimeout(this.swapT); clearTimeout(this.readyT); clearTimeout(this.curT); clearTimeout(this.rollT);
+    clearTimeout(this.resetT);
+    clearTimeout(this.countT);
+    clearTimeout(this.swapT);
+    clearTimeout(this.readyT);
+    clearTimeout(this.curT);
+    clearTimeout(this.rollT);
     if (this.raf) cancelAnimationFrame(this.raf);
     if (this.rafC) cancelAnimationFrame(this.rafC);
   }
@@ -688,7 +1902,10 @@ export class ArtboardLogic extends Logic {
   }
   // Section 1.5 plays its entrance the first time it is reached.
   arrive2() {
-    if (this.props.showFinal || this.played2) { if (!this.state.s2) this.setState({ s2: true }); return; }
+    if (this.props.showFinal || this.played2) {
+      if (!this.state.s2) this.setState({ s2: true });
+      return;
+    }
     this.played2 = true;
     this.setState({ s2: true, cdP: 0 });
     clearTimeout(this.rollT);
@@ -710,30 +1927,49 @@ export class ArtboardLogic extends Logic {
     this.countT = setTimeout(() => this.countUp(), 420);
   }
   mobileScroller(target) {
-    return target?.closest?.('[data-mobile-scroll]') || null;
+    return target?.closest?.("[data-mobile-scroll]") || null;
   }
   mobileCanScroll(el, dy) {
-    return el && (dy > 0 ? el.scrollTop + el.clientHeight < el.scrollHeight - 2 : el.scrollTop > Number(el.dataset?.mobileScrollMin || 0) + 2);
+    return (
+      el &&
+      (dy > 0
+        ? el.scrollTop + el.clientHeight < el.scrollHeight - 2
+        : el.scrollTop > Number(el.dataset?.mobileScrollMin || 0) + 2)
+    );
   }
   mobileScrolled(el) {
     // The Annual Report clamps reverse scrolling at the previous section's
     // boundary. Those corrective scroll events are not native momentum: if
     // they refresh this timer, every attempt to scroll up keeps the exit locked.
-    if (this.state.view === 'end' && el.dataset?.mobileScrollMin != null && el.scrollTop <= Number(el.dataset.mobileScrollMin) + 2) return;
+    if (
+      this.state.view === "end" &&
+      el.dataset?.mobileScrollMin != null &&
+      el.scrollTop <= Number(el.dataset.mobileScrollMin) + 2
+    )
+      return;
     this.mobileNativeScroller = el;
     this.mobileNativeScrollAt = Date.now();
   }
   mobileWheel(e) {
     if (this.state.menu || this.state.lb) return;
-    const now = Date.now(), fresh = now - (this.mobileWheelAt ?? -Infinity) > 220;
+    const now = Date.now(),
+      fresh = now - (this.mobileWheelAt ?? -Infinity) > 220;
     this.mobileWheelAt = now;
     if (fresh) this.mobileWheelOwned = false;
     const el = this.mobileScroller(e.target);
-    if (this.mobileCanScroll(el, e.deltaY)) { this.mobileWheelOwned = true; return; }
+    if (this.mobileCanScroll(el, e.deltaY)) {
+      this.mobileWheelOwned = true;
+      return;
+    }
     // Native scrolling (including momentum) can reach the edge before this wheel event.
     // Keep that gesture on the current screen until the content has stopped moving.
-    if (['mb', 'fc1', 'nx', 'lf2', 'lf3', 'end'].includes(this.state.view) && el === this.mobileNativeScroller && now - this.mobileNativeScrollAt < 350) {
-      this.mobileWheelOwned = true; return;
+    if (
+      ["mb", "fc1", "nx", "lf2", "lf3", "end"].includes(this.state.view) &&
+      el === this.mobileNativeScroller &&
+      now - this.mobileNativeScrollAt < 350
+    ) {
+      this.mobileWheelOwned = true;
+      return;
     }
     if (this.mobileWheelOwned) return;
     this.mobileWheelOwned = true;
@@ -743,12 +1979,14 @@ export class ArtboardLogic extends Logic {
     const now = Date.now();
     if (this.lockUntil && now < this.lockUntil) return;
     this.mobileDirection = dir;
-    if (['lf2', 'lf3'].includes(this.state.view)) {
-      const key = this.state.view === 'lf2' ? 'lf2s' : 'lf3s';
-      const max = this.state.view === 'lf2' ? 3 : 2, index = (this.state[key] || 0) + dir;
+    if (["lf2", "lf3"].includes(this.state.view)) {
+      const key = this.state.view === "lf2" ? "lf2s" : "lf3s";
+      const max = this.state.view === "lf2" ? 3 : 2,
+        index = (this.state[key] || 0) + dir;
       if (index >= 0 && index <= max) {
         this.lockUntil = now + 500;
-        this.setState({ [key]: index }); return;
+        this.setState({ [key]: index });
+        return;
       }
     }
     this.go(dir);
@@ -757,89 +1995,212 @@ export class ArtboardLogic extends Logic {
     const now = Date.now();
     if (this.state.link) this.linkStop();
     if (this.lockUntil && now < this.lockUntil) return;
-    if (this.state.view === 'top' && !this.state.curOn) return; // masthead: no scrolling until the headline and the red cursor are in
-    if (this.state.view === 'nx' && now < (this.nxReady || 0)) return; // Looking forward: … until its text has come in
-    if (MOBILE && this.state.view === 'nx') {
-      if (dir > 0 && !this.state.lf1) { this.setState({ lf1: true }); this.lockUntil = now + 1200; return; }
-      if (dir < 0 && this.state.lf1) { this.setState({ lf1: false }); this.lockUntil = now + 900; return; }
+    if (this.state.view === "top" && !this.state.curOn) return; // masthead: no scrolling until the headline and the red cursor are in
+    if (this.state.view === "nx" && now < (this.nxReady || 0)) return; // Looking forward: … until its text has come in
+    if (MOBILE && this.state.view === "nx") {
+      if (dir > 0 && !this.state.lf1) {
+        this.setState({ lf1: true });
+        this.lockUntil = now + 1200;
+        return;
+      }
+      if (dir < 0 && this.state.lf1) {
+        this.setState({ lf1: false });
+        this.lockUntil = now + 900;
+        return;
+      }
     }
     // section 1 ⇄ the SAFRA logo it started from
-    if (this.state.view === 'top' && dir < 0) { if (this.state.ready) { this.lockUntil = now + 1700; this.setState({ view: 'logo' }); } return; }
-    if (this.state.view === 'logo') { if (dir > 0) { this.lockUntil = now + 1300; this.setState({ view: 'top', curOn: false }); clearTimeout(this.curT); this.curT = setTimeout(() => this.setState({ curOn: true }), REPLAY_DONE + CURSOR_AFTER); } return; }
-    if (this.state.lb) return; // gallery open
-    if (this.state.view === 'mb') { this.l2To(dir > 0 ? 'fc1' : 's8', dir); return; } // Membership: on to Clubs & Facilities / back to Strengthening Bonds
-    if (this.state.view === 'fc1') { if (dir > 0) this.skipTo(AFTER()); else this.l2To('mb', -1); return; } // Clubs & Facilities page: once its own scroll ends, on below the cards / back up to the cards // Membership page: down to & beyond, up back to the cards
-    { const TAIL = ['wc', 'nx', 'lf2', 'lf3', 'end'] /* 'fy' (Our year in summary) removed */, ti = TAIL.indexOf(this.state.view);
-      if (ti >= 0) {
-        if (ti === 0 && dir < 0) { this.toCards(); return; }
-        const nv = TAIL[ti + dir]; if (!nv) return;
-        this.lockUntil = now + 1200; this.setState({ view: nv, [{ fc1: 's15', fc2: 's16', fy: 's11', wc: 's12', nx: 's13', lf2: 's17', lf3: 's18', end: 's14' }[nv] || 's10']: true });
-        if (nv === 'fc1') this.fcEnter(dir);
-        if (nv === 'wc') setTimeout(() => this.hvLayout(), 60);
-        if (nv === 'fy') this.arriveFy();
-        if (nv === 'nx') this.nxEnter(dir);
-        if (nv === 'lf3') this.lf3Enter(dir);
-        if (nv === 'lf2') this.setState({ lf2s: dir > 0 ? 0 : 3 }); // Strengthening commitment: from above start at the first story, from below at the last
-        return;
-      } }
-    if (this.state.view === 't2') {
-      if (dir > 0) { this.lockUntil = now + 1200; if (MOBILE) { this.setState({ view: 'mb' }); this.arriveMb(); } else { this.setState({ view: 'fc1', s15: true }); this.fcEnter(1); } }
-      else this.toCards();
+    if (this.state.view === "top" && dir < 0) {
+      if (this.state.ready) {
+        this.lockUntil = now + 1700;
+        this.setState({ view: "logo" });
+      }
       return;
     }
-    if (this.state.view === 's8') {
+    if (this.state.view === "logo") {
+      if (dir > 0) {
+        this.lockUntil = now + 1300;
+        this.setState({ view: "top", curOn: false });
+        clearTimeout(this.curT);
+        this.curT = setTimeout(
+          () => this.setState({ curOn: true }),
+          REPLAY_DONE + CURSOR_AFTER,
+        );
+      }
+      return;
+    }
+    if (this.state.lb) return; // gallery open
+    if (this.state.view === "mb") {
+      this.l2To(dir > 0 ? "fc1" : "s8", dir);
+      return;
+    } // Membership: on to Clubs & Facilities / back to Strengthening Bonds
+    if (this.state.view === "fc1") {
+      if (dir > 0) this.skipTo(AFTER());
+      else this.l2To("mb", -1);
+      return;
+    } // Clubs & Facilities page: once its own scroll ends, on below the cards / back up to the cards // Membership page: down to & beyond, up back to the cards
+    {
+      const TAIL = [
+          "wc",
+          "nx",
+          "lf2",
+          "lf3",
+          "end",
+        ] /* 'fy' (Our year in summary) removed */,
+        ti = TAIL.indexOf(this.state.view);
+      if (ti >= 0) {
+        if (ti === 0 && dir < 0) {
+          this.toCards();
+          return;
+        }
+        const nv = TAIL[ti + dir];
+        if (!nv) return;
+        this.lockUntil = now + 1200;
+        this.setState({
+          view: nv,
+          [{
+            fc1: "s15",
+            fc2: "s16",
+            fy: "s11",
+            wc: "s12",
+            nx: "s13",
+            lf2: "s17",
+            lf3: "s18",
+            end: "s14",
+          }[nv] || "s10"]: true,
+        });
+        if (nv === "fc1") this.fcEnter(dir);
+        if (nv === "wc") setTimeout(() => this.hvLayout(), 60);
+        if (nv === "fy") this.arriveFy();
+        if (nv === "nx") this.nxEnter(dir);
+        if (nv === "lf3") this.lf3Enter(dir);
+        if (nv === "lf2") this.setState({ lf2s: dir > 0 ? 0 : 3 }); // Strengthening commitment: from above start at the first story, from below at the last
+        return;
+      }
+    }
+    if (this.state.view === "t2") {
+      if (dir > 0) {
+        this.lockUntil = now + 1200;
+        if (MOBILE) {
+          this.setState({ view: "mb" });
+          this.arriveMb();
+        } else {
+          this.setState({ view: "fc1", s15: true });
+          this.fcEnter(1);
+        }
+      } else this.toCards();
+      return;
+    }
+    if (this.state.view === "s8") {
       const ns = (this.state.step8 || 0) + dir;
-      if (ns >= DC8.length) { this.l2To('mb', 1); return; }
-      if (ns < 0) { this.l2To('s7', -1); return; }
-      this.lockUntil = now + 900; this.play8(ns, 0.2); return;
+      if (ns >= DC8.length) {
+        this.l2To("mb", 1);
+        return;
+      }
+      if (ns < 0) {
+        this.l2To("s7", -1);
+        return;
+      }
+      this.lockUntil = now + 900;
+      this.play8(ns, 0.2);
+      return;
     }
-    if (this.state.view === 's7') {
+    if (this.state.view === "s7") {
       const ns = (this.state.step7 || 0) + dir;
-      if (ns >= DC7.length) { this.l2To('s8', 1); return; }
-      if (ns < 0) { this.l2To('s6', -1); return; }
-      this.lockUntil = now + 900; this.play7(ns, 0.2); return;
+      if (ns >= DC7.length) {
+        this.l2To("s8", 1);
+        return;
+      }
+      if (ns < 0) {
+        this.l2To("s6", -1);
+        return;
+      }
+      this.lockUntil = now + 900;
+      this.play7(ns, 0.2);
+      return;
     }
-    if (this.state.view === 's6') {
+    if (this.state.view === "s6") {
       const ns = (this.state.step6 || 0) + dir;
-      if (ns >= DC.length) { this.l2To('s7', 1); return; }
-      if (ns < 0) { this.toCards(); return; }
-      this.lockUntil = now + 900; this.play6(ns, 0.2); return;
+      if (ns >= DC.length) {
+        this.l2To("s7", 1);
+        return;
+      }
+      if (ns < 0) {
+        this.toCards();
+        return;
+      }
+      this.lockUntil = now + 900;
+      this.play6(ns, 0.2);
+      return;
     }
-    if (this.state.view === 's3') {
+    if (this.state.view === "s3") {
       const ns = this.state.step + dir;
-      if (ns >= 0 && ns <= 2) { this.lockUntil = now + 1150; this.setStep(ns); return; }
+      if (ns >= 0 && ns <= 2) {
+        this.lockUntil = now + 1150;
+        this.setStep(ns);
+        return;
+      }
     }
-    if (this.state.view === 's5' && dir > 0) { this.lockUntil = now + 1200; this.setState({ view: 'wc', s12: true }); setTimeout(() => this.hvLayout(), 60); return; }
+    if (this.state.view === "s5" && dir > 0) {
+      this.lockUntil = now + 1200;
+      this.setState({ view: "wc", s12: true });
+      setTimeout(() => this.hvLayout(), 60);
+      return;
+    }
     const j = ORDER.indexOf(this.state.view) + dir;
     if (j < 0 || j >= ORDER.length) return;
     const v = ORDER[j];
-    this.lockUntil = now + ((v === 's6' || this.state.view === 's6') ? 1400 : 1200); // let the navy zoom finish
-    if (this.state.view === 's6' && v === 's5') this.leaveTo5('s6');
+    this.lockUntil =
+      now + (v === "s6" || this.state.view === "s6" ? 1400 : 1200); // let the navy zoom finish
+    if (this.state.view === "s6" && v === "s5") this.leaveTo5("s6");
     this.setState({ view: v });
-    if (v === 's2') this.arrive2();
-    if (v === 'tg') {
-      this.setState({ hd: true }); this.holdTg = true;
+    if (v === "s2") this.arrive2();
+    if (v === "tg") {
+      this.setState({ hd: true });
+      this.holdTg = true;
       // back up from the cards: once they've faded out, reset At a glance so the next visit plays its entrance again
       clearTimeout(this.tgT);
-      if (dir < 0) this.tgT = setTimeout(() => { if (this.state.view === 'tg') this.setState({ s3: false, fresh: false }); }, 500);
+      if (dir < 0)
+        this.tgT = setTimeout(() => {
+          if (this.state.view === "tg")
+            this.setState({ s3: false, fresh: false });
+        }, 500);
       // coming down: the large AT A GLANCE heading holds a moment, then shrinks into place on its own (on into At a glance)
       clearTimeout(this.tgA);
-      if (dir > 0) this.tgA = setTimeout(() => { if (this.state.view === 'tg' && !this.state.menu) { this.lockUntil = 0; this.holdTg = false; this.go(1); } }, MOBILE ? MOBILE_TG_AUTO : TG_AUTO);
+      if (dir > 0)
+        this.tgA = setTimeout(
+          () => {
+            if (this.state.view === "tg" && !this.state.menu) {
+              this.lockUntil = 0;
+              this.holdTg = false;
+              this.go(1);
+            }
+          },
+          MOBILE ? MOBILE_TG_AUTO : TG_AUTO,
+        );
     }
-    if (v === 's3') {
+    if (v === "s3") {
       clearTimeout(this.tgT);
       if (!this.played3) this.arrive3();
-      else if (dir > 0) { // coming down from the large heading again: replay the first entrance (heading shrinks, then the cards rise in)
-        if (this.state.s3) { this.setState({ s3: false }); requestAnimationFrame(() => requestAnimationFrame(() => { if (this.state.view === 's3') this.arrive3(true); })); }
-        else this.arrive3(true);
+      else if (dir > 0) {
+        // coming down from the large heading again: replay the first entrance (heading shrinks, then the cards rise in)
+        if (this.state.s3) {
+          this.setState({ s3: false });
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+              if (this.state.view === "s3") this.arrive3(true);
+            }),
+          );
+        } else this.arrive3(true);
       }
     }
-    if (v === 's5') this.setState({ s4: true });
-    if (v === 't2') this.setState({ s9: true });
+    if (v === "s5") this.setState({ s4: true });
+    if (v === "t2") this.setState({ s9: true });
   }
   countUp() {
     if (this.raf) cancelAnimationFrame(this.raf);
-    const t0 = performance.now(), dur = 1400;
+    const t0 = performance.now(),
+      dur = 1400;
     const step = (now) => {
       const x = Math.min(1, (now - t0) / dur);
       this.setState({ p: 1 - Math.pow(1 - x, 3) });
@@ -849,56 +2210,106 @@ export class ArtboardLogic extends Logic {
   }
   restart() {
     this.clearAll();
-    this.played3 = false; this.played2 = false;
+    this.played3 = false;
+    this.played2 = false;
     this.lockUntil = Date.now() + 1200;
-    this.setState({ phase: 'reset', p: 0, cdP: 0, step: 0, fresh: false, s2: false, s3: false, hd: false, view: 'top', ready: false, curOn: false });
-    this.readyT = setTimeout(() => this.setState({ ready: true }), INTRO_DONE + 90);
-    this.curT = setTimeout(() => this.setState({ curOn: true }), INTRO_DONE + 90 + CURSOR_AFTER);
-    this.resetT = setTimeout(() => { this.setState({ phase: 'run' }); }, 90);
+    this.setState({
+      phase: "reset",
+      p: 0,
+      cdP: 0,
+      step: 0,
+      fresh: false,
+      s2: false,
+      s3: false,
+      hd: false,
+      view: "top",
+      ready: false,
+      curOn: false,
+    });
+    this.readyT = setTimeout(
+      () => this.setState({ ready: true }),
+      INTRO_DONE + 90,
+    );
+    this.curT = setTimeout(
+      () => this.setState({ curOn: true }),
+      INTRO_DONE + 90 + CURSOR_AFTER,
+    );
+    this.resetT = setTimeout(() => {
+      this.setState({ phase: "run" });
+    }, 90);
   }
   // Draw one glyph and return its ink columns on a given row (relative to the pen position) and its cap/ascender top.
   glyph(ch, font, size) {
-    const W = Math.ceil(size * 2) + 40, H = Math.ceil(size * 1.6) + 20, ox = 20, oy = Math.ceil(size * 1.2);
-    const c = document.createElement('canvas'); c.width = W; c.height = H;
-    const ctx = c.getContext('2d'); ctx.font = font; ctx.fillText(ch, ox, oy);
+    const W = Math.ceil(size * 2) + 40,
+      H = Math.ceil(size * 1.6) + 20,
+      ox = 20,
+      oy = Math.ceil(size * 1.2);
+    const c = document.createElement("canvas");
+    c.width = W;
+    c.height = H;
+    const ctx = c.getContext("2d");
+    ctx.font = font;
+    ctx.fillText(ch, ox, oy);
     const d = ctx.getImageData(0, 0, W, H).data;
     const ink = (x, y) => d[(y * W + x) * 4 + 3] > 128;
     let top = -1;
-    for (let y = 0; y < oy && top < 0; y++) for (let x = 0; x < W; x++) if (ink(x, y)) { top = y; break; }
+    for (let y = 0; y < oy && top < 0; y++)
+      for (let x = 0; x < W; x++)
+        if (ink(x, y)) {
+          top = y;
+          break;
+        }
     return { ink, ox, oy, W, top: top < 0 ? null : oy - top };
   }
   runs(g, row) {
-    const out = []; let s = -1;
+    const out = [];
+    let s = -1;
     for (let x = 0; x <= g.W; x++) {
       const on = x < g.W && g.ink(x, row);
       if (on && s < 0) s = x;
-      if (!on && s >= 0) { out.push([s - g.ox, x - 1 - g.ox]); s = -1; }
+      if (!on && s >= 0) {
+        out.push([s - g.ox, x - 1 - g.ox]);
+        s = -1;
+      }
     }
     return out;
   }
   findRoot() {
     if (this.root && this.root.isConnected) return this.root;
     const walk = (r) => {
-      const f = r.querySelector && r.querySelector('.mh');
+      const f = r.querySelector && r.querySelector(".mh");
       if (f) return f;
-      const all = r.querySelectorAll ? r.querySelectorAll('*') : [];
-      for (const el of all) if (el.shadowRoot) { const x = walk(el.shadowRoot); if (x) return x; }
+      const all = r.querySelectorAll ? r.querySelectorAll("*") : [];
+      for (const el of all)
+        if (el.shadowRoot) {
+          const x = walk(el.shadowRoot);
+          if (x) return x;
+        }
       return null;
     };
-    try { this.root = walk(document); } catch (e) { this.root = null; }
+    try {
+      this.root = walk(document);
+    } catch (e) {
+      this.root = null;
+    }
     return this.root;
   }
   measure() {
     try {
-      const c = document.createElement('canvas');
-      const ctx = c.getContext('2d');
-      ctx.font = '400 100px ' + FAM;
+      const c = document.createElement("canvas");
+      const ctx = c.getContext("2d");
+      ctx.font = "400 100px " + FAM;
       const t = {};
       const place = (m, k, x0, base) => {
         const fs = 100 * k;
-        const A = (m.fontBoundingBoxAscent ?? 92) * k, D = (m.fontBoundingBoxDescent ?? 24) * k;
+        const A = (m.fontBoundingBoxAscent ?? 92) * k,
+          D = (m.fontBoundingBoxDescent ?? 24) * k;
         const baseOff = (fs - (A + D)) / 2 + A;
-        return { x: +(x0 + m.actualBoundingBoxLeft * k).toFixed(2), y: +(base - baseOff).toFixed(2), fs: +fs.toFixed(2) };
+        return {
+          x: +(x0 + m.actualBoundingBoxLeft * k).toFixed(2),
+          y: +(base - baseOff).toFixed(2),
+          fs: +fs.toFixed(2),
+        };
       };
       for (const id in SPEC) {
         const s = SPEC[id];
@@ -908,22 +2319,42 @@ export class ArtboardLogic extends Logic {
         t[id] = place(m, (s.x1 - s.x0 + 1) / inkW, s.x0, s.base);
       }
       t.t4a = place(ctx.measureText(TO.text), t.t4c.fs / 100, TO.x0, TO.base);
-      const TEXTS = { t1: SPEC.t1.text, t2: SPEC.t2.text, t3: SPEC.t3.text, t4a: TO.text, t4b: SPEC.t4b.text, t4c: SPEC.t4c.text, t5: SPEC.t5.text };
+      const TEXTS = {
+        t1: SPEC.t1.text,
+        t2: SPEC.t2.text,
+        t3: SPEC.t3.text,
+        t4a: TO.text,
+        t4b: SPEC.t4b.text,
+        t4c: SPEC.t4c.text,
+        t5: SPEC.t5.text,
+      };
       for (const id in TEXTS) {
-        const kk = t[id].fs / 100; let acc = 0; const offs = [], ws = [];
-        for (const ch of Array.from(TEXTS[id])) { const w = ctx.measureText(ch).width * kk; offs.push(+acc.toFixed(2)); ws.push(+w.toFixed(2)); acc += w; }
-        t[id].offs = offs; t[id].ws = ws; t[id].w = +acc.toFixed(2);
+        const kk = t[id].fs / 100;
+        let acc = 0;
+        const offs = [],
+          ws = [];
+        for (const ch of Array.from(TEXTS[id])) {
+          const w = ctx.measureText(ch).width * kk;
+          offs.push(+acc.toFixed(2));
+          ws.push(+w.toFixed(2));
+          acc += w;
+        }
+        t[id].offs = offs;
+        t[id].ws = ws;
+        t[id].w = +acc.toFixed(2);
       }
-      const mA = ctx.measureText('53 SAFRA');
-      const k34 = AGM_FS / 100, A34 = (mA.fontBoundingBoxAscent ?? 92) * k34, D34 = (mA.fontBoundingBoxDescent ?? 24) * k34;
+      const mA = ctx.measureText("53 SAFRA");
+      const k34 = AGM_FS / 100,
+        A34 = (mA.fontBoundingBoxAscent ?? 92) * k34,
+        D34 = (mA.fontBoundingBoxDescent ?? 24) * k34;
       const agmBase = AGM_INK_TOP + mA.actualBoundingBoxAscent * k34;
       const agmTop = +(agmBase - ((AGM_FS - (A34 + D34)) / 2 + A34)).toFixed(2);
 
       // The bar = the right stem of the second "n" in NSmen.
       const fs5 = t.t5.fs;
-      ctx.font = '400 ' + fs5 + 'px ' + FAM;
+      ctx.font = "400 " + fs5 + "px " + FAM;
       const adv = t.t5.offs[4];
-      const gn = this.glyph('n', '400 ' + fs5 + 'px ' + FAM, fs5);
+      const gn = this.glyph("n", "400 " + fs5 + "px " + FAM, fs5);
       const nRuns = this.runs(gn, gn.oy - Math.round(fs5 * 0.08));
       if (nRuns.length < 2) return;
       const st = nRuns[nRuns.length - 1];
@@ -932,12 +2363,13 @@ export class ArtboardLogic extends Logic {
       const barTop = SPEC.t5.base - Math.round(fs5 * 0.12);
 
       // The L of AT A GLANCE (72px, 500): its shape from the font, its place from the page.
-      const gl = this.glyph('L', '500 ' + GL_FS + 'px ' + FAM, GL_FS);
+      const gl = this.glyph("L", "500 " + GL_FS + "px " + FAM, GL_FS);
       if (!gl.top) return;
       const capH = gl.top;
       const lRuns = this.runs(gl, Math.round(gl.oy - capH * 0.5));
       if (!lRuns.length) return;
-      const lsb = lRuns[0][0], lW = lRuns[0][1] - lRuns[0][0] + 1;
+      const lsb = lRuns[0][0],
+        lW = lRuns[0][1] - lRuns[0][0] + 1;
       const fRuns = this.runs(gl, gl.oy - 2);
       const footR = fRuns.length ? fRuns[fRuns.length - 1][1] : lsb + 32;
       const fw = footR - lsb + 1;
@@ -947,61 +2379,176 @@ export class ArtboardLogic extends Logic {
       if (fh < 3 || fh > capH / 3) fh = lW;
 
       const root = this.findRoot();
-      const span = root && root.querySelector('.gL');
-      const mark = root && root.querySelector('.gLb');
+      const span = root && root.querySelector(".gL");
+      const mark = root && root.querySelector(".gLb");
       let Lx, Lbase;
       if (span && mark && span.offsetParent) {
         // sub-pixel exact (offsetLeft/Top round to whole pixels, which left the line ~0.5px off the L)
-        const pe = span.offsetParent, pr = pe.getBoundingClientRect(), k = pe.offsetWidth ? pr.width / pe.offsetWidth : 1;
-        const sr = span.getBoundingClientRect(), mr = mark.getBoundingClientRect();
+        const pe = span.offsetParent,
+          pr = pe.getBoundingClientRect(),
+          k = pe.offsetWidth ? pr.width / pe.offsetWidth : 1;
+        const sr = span.getBoundingClientRect(),
+          mr = mark.getBoundingClientRect();
         Lx = k ? (sr.left - pr.left) / k - pe.clientLeft : span.offsetLeft;
-        Lbase = k ? (mr.top - pr.top) / k - pe.clientTop : span.offsetTop + mark.offsetTop;
+        Lbase = k
+          ? (mr.top - pr.top) / k - pe.clientTop
+          : span.offsetTop + mark.offsetTop;
       } else {
-        ctx.font = '500 ' + GL_FS + 'px ' + FAM;
-        const mh = ctx.measureText('A');
-        const hA = mh.fontBoundingBoxAscent ?? 66, hD = mh.fontBoundingBoxDescent ?? 17;
-        Lx = ctx.measureText('AT A G').width + 6 * 0.36;
+        ctx.font = "500 " + GL_FS + "px " + FAM;
+        const mh = ctx.measureText("A");
+        const hA = mh.fontBoundingBoxAscent ?? 66,
+          hD = mh.fontBoundingBoxDescent ?? 17;
+        Lx = ctx.measureText("AT A G").width + 6 * 0.36;
         Lbase = (GL_FS - (hA + hD)) / 2 + hA;
       }
       const markTop = mark ? mark.offsetTop : null;
       const ox = Lx + lsb + lW / 2;
       const oy = Lbase - capH;
-      const head = { x: +(CUE_X - ox).toFixed(2), y: +(GLANCE_BASE - Lbase).toFixed(2), ox: +ox.toFixed(2), oy: +oy.toFixed(2) };
-      const base = markTop != null ? markTop : (Lbase - (span ? span.offsetTop : 0));
-      const Ld = { sx: lsb, st: +(base - capH).toFixed(2), sw: lW, sh: capH, ft: +(base - fh).toFixed(2), fw, fh };
+      const head = {
+        x: +(CUE_X - ox).toFixed(2),
+        y: +(GLANCE_BASE - Lbase).toFixed(2),
+        ox: +ox.toFixed(2),
+        oy: +oy.toFixed(2),
+      };
+      const base =
+        markTop != null ? markTop : Lbase - (span ? span.offsetTop : 0);
+      const Ld = {
+        sx: lsb,
+        st: +(base - capH).toFixed(2),
+        sw: lW,
+        sh: capH,
+        ft: +(base - fh).toFixed(2),
+        fw,
+        fh,
+      };
       const barH = Math.max(40, Math.round(BAR_END - barTop));
       // the wipe starts as exactly the L, then opens out to the whole heading
-      const h2 = root && root.querySelector('#glance-title');
+      const h2 = root && root.querySelector("#glance-title");
       let wipe = { l: 45, r: 45 };
       if (h2 && h2.offsetWidth) {
-        const hl = h2.offsetLeft, hw = h2.offsetWidth;
-        wipe = { l: +((Lx + lsb - hl) / hw * 100).toFixed(3), r: +(100 - (Lx + lsb + fw - hl) / hw * 100).toFixed(3) };
+        const hl = h2.offsetLeft,
+          hw = h2.offsetWidth;
+        wipe = {
+          l: +(((Lx + lsb - hl) / hw) * 100).toFixed(3),
+          r: +(100 - ((Lx + lsb + fw - hl) / hw) * 100).toFixed(3),
+        };
       }
       // section 4: per-letter offsets/widths so each letter carries its slice of the line's gradient and can react to the cursor
       const s4 = {};
       S4_LINES().forEach(([k, txt, fs]) => {
-        ctx.font = S4_W() + ' ' + fs + 'px ' + FAM; let acc = 0; const offs = [], ws = []; const ls = S4_LS() * fs;
-        for (const ch of Array.from(txt)) { const w = ctx.measureText(ch).width + ls; offs.push(+acc.toFixed(2)); ws.push(+w.toFixed(2)); acc += w; }
+        ctx.font = S4_W() + " " + fs + "px " + FAM;
+        let acc = 0;
+        const offs = [],
+          ws = [];
+        const ls = S4_LS() * fs;
+        for (const ch of Array.from(txt)) {
+          const w = ctx.measureText(ch).width + ls;
+          offs.push(+acc.toFixed(2));
+          ws.push(+w.toFixed(2));
+          acc += w;
+        }
         s4[k] = { txt, fs, offs, ws, w: +acc.toFixed(2) };
       });
       // section 6 heading: each word carries the shared gradient, offset by where it sits in its line
-      ctx.font = '600 56px ' + FAM;
-      const sp = ctx.measureText(' ').width, dcw = [];
+      ctx.font = "600 56px " + FAM;
+      const sp = ctx.measureText(" ").width,
+        dcw = [];
       let dcW = 0;
-      [[0, 1, 2], [3, 4, 5]].forEach((ids) => { let x = 0; ids.forEach((i) => { dcw[i] = -Math.round(x * 10) / 10; x += ctx.measureText(DC_WORDS[i]).width + sp; }); dcW = Math.max(dcW, Math.ceil(x - sp + 4)); });
+      [
+        [0, 1, 2],
+        [3, 4, 5],
+      ].forEach((ids) => {
+        let x = 0;
+        ids.forEach((i) => {
+          dcw[i] = -Math.round(x * 10) / 10;
+          x += ctx.measureText(DC_WORDS[i]).width + sp;
+        });
+        dcW = Math.max(dcW, Math.ceil(x - sp + 4));
+      });
       // desktop section 6 header title: 40px, 0.8px tracking
-      ctx.font = '600 40px ' + FAM; const dch = []; let dcHW = 0;
-      const wTr = (w) => ctx.measureText(w).width + 0.8 * Array.from(w).length, spT = ctx.measureText(' ').width + 0.8;
-      [[0, 1, 2], [3, 4, 5]].forEach((ids) => { let x = 0; ids.forEach((i) => { dch[i] = -Math.round(x * 10) / 10; x += wTr(DC_WORDS[i]) + spT; }); dcHW = Math.max(dcHW, Math.ceil(x - spT + 4)); });
-      const dch7 = []; let dcHW7 = 0; ctx.font = '600 40px ' + FAM;
-      [[0, 1]].forEach((ids) => { let x = 0; ids.forEach((i) => { dch7[i] = -Math.round(x * 10) / 10; x += wTr(['APPRECIATING', 'NSMEN'][i]) + spT; }); dcHW7 = Math.max(dcHW7, Math.ceil(x - spT + 4)); });
-      ctx.font = '600 56px ' + FAM;
-      const dcw7 = []; let dcW7 = 0;
-      [[0], [1, 2]].forEach((ids) => { let x = 0; ids.forEach((i) => { dcw7[i] = -Math.round(x * 10) / 10; x += ctx.measureText(AN_WORDS[i]).width + sp; }); dcW7 = Math.max(dcW7, Math.ceil(x - sp + 4)); });
-      const dch8 = []; let dcHW8 = 0; ctx.font = '600 40px ' + FAM;
-      [[0, 1]].forEach((ids) => { let x = 0; ids.forEach((i) => { dch8[i] = -Math.round(x * 10) / 10; x += wTr(['STRENGTHENING', 'BONDS'][i]) + spT; }); dcHW8 = Math.max(dcHW8, Math.ceil(x - spT + 4)); });
-      ctx.font = '600 56px ' + FAM; const dcW8 = Math.ceil(Math.max(ctx.measureText('STRENGTHENING').width, ctx.measureText('BONDS').width) + 4);
-      this.setState({ lay: { t, agmTop, barX, barW, barTop, barH, lW, lBase: GLANCE_BASE, head, Ld, wipe, dcw, dcW, dch, dcHW, dch7, dcHW7, dch8, dcHW8, s4, dcw7, dcW7, dcW8 } });
+      ctx.font = "600 40px " + FAM;
+      const dch = [];
+      let dcHW = 0;
+      const wTr = (w) => ctx.measureText(w).width + 0.8 * Array.from(w).length,
+        spT = ctx.measureText(" ").width + 0.8;
+      [
+        [0, 1, 2],
+        [3, 4, 5],
+      ].forEach((ids) => {
+        let x = 0;
+        ids.forEach((i) => {
+          dch[i] = -Math.round(x * 10) / 10;
+          x += wTr(DC_WORDS[i]) + spT;
+        });
+        dcHW = Math.max(dcHW, Math.ceil(x - spT + 4));
+      });
+      const dch7 = [];
+      let dcHW7 = 0;
+      ctx.font = "600 40px " + FAM;
+      [[0, 1]].forEach((ids) => {
+        let x = 0;
+        ids.forEach((i) => {
+          dch7[i] = -Math.round(x * 10) / 10;
+          x += wTr(["APPRECIATING", "NSMEN"][i]) + spT;
+        });
+        dcHW7 = Math.max(dcHW7, Math.ceil(x - spT + 4));
+      });
+      ctx.font = "600 56px " + FAM;
+      const dcw7 = [];
+      let dcW7 = 0;
+      [[0], [1, 2]].forEach((ids) => {
+        let x = 0;
+        ids.forEach((i) => {
+          dcw7[i] = -Math.round(x * 10) / 10;
+          x += ctx.measureText(AN_WORDS[i]).width + sp;
+        });
+        dcW7 = Math.max(dcW7, Math.ceil(x - sp + 4));
+      });
+      const dch8 = [];
+      let dcHW8 = 0;
+      ctx.font = "600 40px " + FAM;
+      [[0, 1]].forEach((ids) => {
+        let x = 0;
+        ids.forEach((i) => {
+          dch8[i] = -Math.round(x * 10) / 10;
+          x += wTr(["STRENGTHENING", "BONDS"][i]) + spT;
+        });
+        dcHW8 = Math.max(dcHW8, Math.ceil(x - spT + 4));
+      });
+      ctx.font = "600 56px " + FAM;
+      const dcW8 = Math.ceil(
+        Math.max(
+          ctx.measureText("STRENGTHENING").width,
+          ctx.measureText("BONDS").width,
+        ) + 4,
+      );
+      this.setState({
+        lay: {
+          t,
+          agmTop,
+          barX,
+          barW,
+          barTop,
+          barH,
+          lW,
+          lBase: GLANCE_BASE,
+          head,
+          Ld,
+          wipe,
+          dcw,
+          dcW,
+          dch,
+          dcHW,
+          dch7,
+          dcHW7,
+          dch8,
+          dcHW8,
+          s4,
+          dcw7,
+          dcW7,
+          dcW8,
+        },
+      });
       requestAnimationFrame(() => this.hvLayout());
     } catch (e) {}
   }
@@ -1009,45 +2556,101 @@ export class ArtboardLogic extends Logic {
     const k = this.props.parallax ?? 1;
     const { mx, my } = this.state;
     const p = this.props.showFinal ? 1 : this.state.p;
-    const tr = (d) => 'translate3d(' + (mx * d * k).toFixed(1) + 'px,' + (my * d * k).toFixed(1) + 'px,0)';
-    const stageClass = this.props.showFinal ? 'is-final' : (this.state.phase === 'run' ? 'is-run' : 'is-reset');
+    const tr = (d) =>
+      "translate3d(" +
+      (mx * d * k).toFixed(1) +
+      "px," +
+      (my * d * k).toFixed(1) +
+      "px,0)";
+    const stageClass = this.props.showFinal
+      ? "is-final"
+      : this.state.phase === "run"
+        ? "is-run"
+        : "is-reset";
 
     const lay = this.state.lay;
     const t = lay ? lay.t : {};
-    for (const id in SPEC) if (!t[id]) { const s = SPEC[id]; t[id] = { x: s.x0, y: s.base - s.fs * 0.8, fs: s.fs }; }
+    for (const id in SPEC)
+      if (!t[id]) {
+        const s = SPEC[id];
+        t[id] = { x: s.x0, y: s.base - s.fs * 0.8, fs: s.fs };
+      }
     if (!t.t4a) t.t4a = { x: TO.x0, y: TO.base - 50, fs: 63 };
 
-    const barW = lay ? lay.barW : 15, barX = lay ? lay.barX : 696, barTop = lay ? lay.barTop : 698;
+    const barW = lay ? lay.barW : 15,
+      barX = lay ? lay.barX : 696,
+      barTop = lay ? lay.barTop : 698;
     const barH = lay ? lay.barH : 202;
-    const clip = 'none';
+    const clip = "none";
     const head = lay ? lay.head : { x: 478, y: 986, ox: 226, oy: 6 };
     // live countdown to the AGM
     const left = Math.max(0, AGM_AT - this.state.now);
-    const cdD = Math.floor(left / 864e5), cdH = Math.floor(left / 36e5) % 24, cdM = Math.floor(left / 6e4) % 60, cdS = Math.floor(left / 1e3) % 60;
+    const cdD = Math.floor(left / 864e5),
+      cdH = Math.floor(left / 36e5) % 24,
+      cdM = Math.floor(left / 6e4) % 60,
+      cdS = Math.floor(left / 1e3) % 60;
     const cp = this.props.showFinal ? 1 : this.state.cdP;
-    const cd = { d: Math.round(cdD * cp), h: Math.round(cdH * cp), m: Math.round(cdM * cp), s: Math.round(cdS * cp),
-      aria: cdD + ' days, ' + cdH + ' hours, ' + cdM + ' minutes and ' + cdS + ' seconds to the 53rd SAFRA AGM' };
+    const cd = {
+      d: Math.round(cdD * cp),
+      h: Math.round(cdH * cp),
+      m: Math.round(cdM * cp),
+      s: Math.round(cdS * cp),
+      aria:
+        cdD +
+        " days, " +
+        cdH +
+        " hours, " +
+        cdM +
+        " minutes and " +
+        cdS +
+        " seconds to the 53rd SAFRA AGM",
+    };
 
-    const TEXTS = { t1: SPEC.t1.text, t2: SPEC.t2.text, t3: SPEC.t3.text, t4a: TO.text, t4b: SPEC.t4b.text, t4c: SPEC.t4c.text, t5: SPEC.t5.text };
-    const hx = this.state.hx, hy = this.state.hy;
-    const active = hx != null && this.state.view === 'top' && this.state.phase === 'run';
+    const TEXTS = {
+      t1: SPEC.t1.text,
+      t2: SPEC.t2.text,
+      t3: SPEC.t3.text,
+      t4a: TO.text,
+      t4b: SPEC.t4b.text,
+      t4c: SPEC.t4c.text,
+      t5: SPEC.t5.text,
+    };
+    const hx = this.state.hx,
+      hy = this.state.hy;
+    const active =
+      hx != null && this.state.view === "top" && this.state.phase === "run";
     const R = 170;
     const letters = {};
     for (const id in TEXTS) {
-      const line = t[id], chars = Array.from(TEXTS[id]);
-      const fs = line.fs, w = line.w || chars.length * fs * 0.5;
-      letters['L_' + id] = chars.map((ch, i) => {
+      const line = t[id],
+        chars = Array.from(TEXTS[id]);
+      const fs = line.fs,
+        w = line.w || chars.length * fs * 0.5;
+      letters["L_" + id] = chars.map((ch, i) => {
         const off = line.offs ? line.offs[i] : i * fs * 0.5;
         const cw = line.ws ? line.ws[i] : fs * 0.5;
-        let tf = 'none';
-        const fixed = id === 't5' && i === 4; // the n the bar grows from
-        if (active && !fixed && ch !== ' ') {
-          const cx = line.x + off + cw / 2, cy = line.y + fs * 0.55;
-          const dx = cx - hx, dy = cy - hy, d = Math.hypot(dx, dy);
+        let tf = "none";
+        const fixed = id === "t5" && i === 4; // the n the bar grows from
+        if (active && !fixed && ch !== " ") {
+          const cx = line.x + off + cw / 2,
+            cy = line.y + fs * 0.55;
+          const dx = cx - hx,
+            dy = cy - hy,
+            d = Math.hypot(dx, dy);
           if (d < R) {
-            const f = Math.pow(1 - d / R, 2), n = d || 1;
+            const f = Math.pow(1 - d / R, 2),
+              n = d || 1;
             const push = 0.34 * fs * f;
-            tf = 'translate(' + (dx / n * push).toFixed(1) + 'px,' + (dy / n * push - fs * 0.08 * f).toFixed(1) + 'px) rotate(' + ((dx >= 0 ? 1 : -1) * 16 * f).toFixed(1) + 'deg) scale(' + (1 + 0.12 * f).toFixed(3) + ')';
+            tf =
+              "translate(" +
+              ((dx / n) * push).toFixed(1) +
+              "px," +
+              ((dy / n) * push - fs * 0.08 * f).toFixed(1) +
+              "px) rotate(" +
+              ((dx >= 0 ? 1 : -1) * 16 * f).toFixed(1) +
+              "deg) scale(" +
+              (1 + 0.12 * f).toFixed(3) +
+              ")";
           }
         }
         return { ch, tf, bw: w.toFixed(1), bx: (-off).toFixed(1) };
@@ -1055,21 +2658,52 @@ export class ArtboardLogic extends Logic {
     }
     // section 4 letters: push/tilt away from the cursor while the statement is on screen
     {
-      const s4 = lay && lay.s4, v = this.state.view, on4 = hx != null && (v === 's4' || v === 's5');
+      const s4 = lay && lay.s4,
+        v = this.state.view,
+        on4 = hx != null && (v === "s4" || v === "s5");
       const ty = 0; // statement sits above the cards
       const lines = S4_LINES();
-      const wOf = (k, txt, fs) => (s4 && s4[k] ? s4[k].w : Array.from(txt).length * fs * 0.48);
-      const gw = Math.max(...lines.filter(([k]) => MOBILE ? k !== 'a' : true).map(([k, txt, fs]) => wOf(k, txt, fs))); // the gradient spans the whole block
+      const wOf = (k, txt, fs) =>
+        s4 && s4[k] ? s4[k].w : Array.from(txt).length * fs * 0.48;
+      const gw = Math.max(
+        ...lines
+          .filter(([k]) => (MOBILE ? k !== "a" : true))
+          .map(([k, txt, fs]) => wOf(k, txt, fs)),
+      ); // the gradient spans the whole block
       lines.forEach(([k, txt, fs, cy0]) => {
-        const m = s4 && s4[k], chars = Array.from(txt), w = wOf(k, txt, fs), x0 = (W - w) / 2;
-        const bw = MOBILE ? w : gw, lead = MOBILE ? 0 : (gw - w) / 2; /* desktop: one gradient across all three lines */
-        letters['L_s4' + k] = chars.map((ch, i) => {
-          const off = m ? m.offs[i] : i * fs * 0.48, cw = m ? m.ws[i] : fs * 0.48;
-          let tf = 'none';
-          if (on4 && ch !== ' ') {
-            const cx = x0 + off + cw / 2, cy = cy0 + ty, dx = cx - hx, dy = cy - hy, d = Math.hypot(dx, dy);
-            if (d < R) { const f = Math.pow(1 - d / R, 2), n = d || 1, push = 0.34 * fs * f;
-              tf = 'translate(' + (dx / n * push).toFixed(1) + 'px,' + (dy / n * push - fs * 0.08 * f).toFixed(1) + 'px) rotate(' + ((dx >= 0 ? 1 : -1) * 16 * f).toFixed(1) + 'deg) scale(' + (1 + 0.12 * f).toFixed(3) + ')'; }
+        const m = s4 && s4[k],
+          chars = Array.from(txt),
+          w = wOf(k, txt, fs),
+          x0 = (W - w) / 2;
+        const bw = MOBILE ? w : gw,
+          lead = MOBILE
+            ? 0
+            : (gw - w) / 2; /* desktop: one gradient across all three lines */
+        letters["L_s4" + k] = chars.map((ch, i) => {
+          const off = m ? m.offs[i] : i * fs * 0.48,
+            cw = m ? m.ws[i] : fs * 0.48;
+          let tf = "none";
+          if (on4 && ch !== " ") {
+            const cx = x0 + off + cw / 2,
+              cy = cy0 + ty,
+              dx = cx - hx,
+              dy = cy - hy,
+              d = Math.hypot(dx, dy);
+            if (d < R) {
+              const f = Math.pow(1 - d / R, 2),
+                n = d || 1,
+                push = 0.34 * fs * f;
+              tf =
+                "translate(" +
+                ((dx / n) * push).toFixed(1) +
+                "px," +
+                ((dy / n) * push - fs * 0.08 * f).toFixed(1) +
+                "px) rotate(" +
+                ((dx >= 0 ? 1 : -1) * 16 * f).toFixed(1) +
+                "deg) scale(" +
+                (1 + 0.12 * f).toFixed(3) +
+                ")";
+            }
           }
           return { ch, tf, bw: bw.toFixed(1), bx: (-off - lead).toFixed(1) };
         });
@@ -1077,254 +2711,999 @@ export class ArtboardLogic extends Logic {
     }
     const fin = !!this.props.showFinal;
     const view = this.state.view;
-    const masthead = view === 'top' || view === 'logo';
+    const masthead = view === "top" || view === "logo";
     const mobile = MOBILE; // arrow cursor while the headline reveals, then the red circle replaces it
-    const circle = (masthead && (this.state.curOn || fin)) || (view === 'nx' && !this.state.menu && (!this.state.link || this.state.z2end)); // Looking forward: the same red 'Scroll for more' cursor
+    const circle =
+      (masthead && (this.state.curOn || fin)) ||
+      (view === "nx" &&
+        !this.state.menu &&
+        (!this.state.link || this.state.z2end)); // Looking forward: the same red 'Scroll for more' cursor
     return {
       mobileView: view,
       // Mobile wraps the same copy into more lines; keep the desktop timing for each line.
       mobileStoryLine: (index) => {
         const t = fin ? null : this.state[`t${view.slice(1)}`];
-        const q = t == null ? 1 : eOut2(Math.min(1, Math.max(0, (t - (this.hold || 0) - index * SLIDE.stag) / SLIDE.dur)));
-        return { transform: `translateY(${((1 - q) * SLIDE.dist).toFixed(1)}px)`, opacity: q.toFixed(3) };
+        const q =
+          t == null
+            ? 1
+            : eOut2(
+                Math.min(
+                  1,
+                  Math.max(
+                    0,
+                    (t - (this.hold || 0) - index * SLIDE.stag) / SLIDE.dur,
+                  ),
+                ),
+              );
+        return {
+          transform: `translateY(${((1 - q) * SLIDE.dist).toFixed(1)}px)`,
+          opacity: q.toFixed(3),
+        };
       },
       mobileScrollOffset: this.state.fcY || 0,
       mobileScrollDirection: this.mobileDirection || 1,
-      mobilePriorityStory: this.state[view === 'lf2' ? 'lf2s' : 'lf3s'] || 0,
+      mobilePriorityStory: this.state[view === "lf2" ? "lf2s" : "lf3s"] || 0,
       mobileContentScroll: (e) => this.mobileScrolled(e.currentTarget),
-      mobileScroll: (e) => { this.mobileScrolled(e.currentTarget); this.state.fcY = e.currentTarget.scrollTop; this.queueUrlSync(); },
+      mobileScroll: (e) => {
+        this.mobileScrolled(e.currentTarget);
+        this.state.fcY = e.currentTarget.scrollTop;
+        this.queueUrlSync();
+      },
       mobileMembershipScroll: (e) => this.mobileScrolled(e.currentTarget),
       // The originating section and future content share native scroll flow.
       mobileScrollSection: (view) => {
-        if (MOBILE && this.state.view === 'end' && view === 'lf3') {
-          this.setState({ view: 'lf3' });
+        if (MOBILE && this.state.view === "end" && view === "lf3") {
+          this.setState({ view: "lf3" });
           return;
         }
-        if (MOBILE && ['s5', 'fc1', 'fc2', 'wc', 'nx'].includes(this.state.view) && ['s5', 'fc1', 'wc', 'nx'].includes(view) && view !== this.state.view) {
-          this.setState({ view, ...(view === 'wc' ? { s12: true } : view === 'nx' ? { s13: true, lf1: false } : view === 'fc1' ? { s15: true } : {}) });
+        if (
+          MOBILE &&
+          ["s5", "fc1", "fc2", "wc", "nx"].includes(this.state.view) &&
+          ["s5", "fc1", "wc", "nx"].includes(view) &&
+          view !== this.state.view
+        ) {
+          this.setState({
+            view,
+            ...(view === "wc"
+              ? { s12: true }
+              : view === "nx"
+                ? { s13: true, lf1: false }
+                : view === "fc1"
+                  ? { s15: true }
+                  : {}),
+          });
         }
       },
       mobileStep: this.state.step,
-      mobileStory: this.state[{ s6: 'step6', s7: 'step7', s8: 'step8' }[view]] || 0,
+      mobileStory:
+        this.state[{ s6: "step6", s7: "step7", s8: "step8" }[view]] || 0,
       mobileMembership: this.state.mbTab ?? -1,
       mobilePriority: !!this.state.lf1,
       mobileMenu: !!this.state.menu,
       mobileGallery: this.state.lb,
       mobileAdvance: (dir) => this.mobileGo(dir),
       stageClass,
-      mClass: MOBILE ? 'm' : '',
-      s2Class: (fin || this.state.s2) ? 'is-s2' : '',
-      s3Class: (fin || this.state.s3) ? 'is-s3' : '',
-      viewClass: masthead ? 'v-top' + (circle ? ' v-cur' : '') : ('v-in' + (view === 't2' ? ' v-t2' : '') + (circle ? ' v-cur' : '')),
+      mClass: MOBILE ? "m" : "",
+      s2Class: fin || this.state.s2 ? "is-s2" : "",
+      s3Class: fin || this.state.s3 ? "is-s3" : "",
+      viewClass: masthead
+        ? "v-top" + (circle ? " v-cur" : "")
+        : "v-in" + (view === "t2" ? " v-t2" : "") + (circle ? " v-cur" : ""),
       camY: this.camNow(),
-      fcFreeClass: this.state.link ? 'fcfree' : '',
-      go2Class: (rankOf(view) ?? 0) >= 1 ? 'go2' : '',
-      postClass: (this.state.ready && this.state.phase === 'run') ? 'post' : '',
-      lgClass: view === 'logo' ? 'lg' : '',
-      go3Class: (rankOf(view) ?? 0) >= 2 ? 'go3' : '',
-      s4Class: (fin || this.state.s4) ? 'is-s4' : '',
-      go5Class: (rankOf(view) ?? 0) >= 3 ? 'go5' : '', // cards stay put while the camera zooms into a card
-      s6Class: (fin || this.state.s6) ? 'is-s6' : '',
-      go6Class: (view === 's6' ? 'go6' : '') + (this.state.landing ? ' landing' : ''),
-      s7Class: (fin || this.state.s7) ? 'is-s7' : '',
-      lvClass: this.state.lv ? 'lv' : '', lv1: this.state.lv === 's6' ? 'lvc' : '', lv2: this.state.lv === 's7' ? 'lvc' : '', lv3: this.state.lv === 's8' ? 'lvc' : '', lv4: this.state.lv === 'mb' ? 'lvc' : '', lv5: this.state.lv === 'fc1' ? 'lvc' : '',
-      go7Class: (view === 's7' ? 'go7' : '') + (this.state.hopping ? ' hopping' : ''),
-      s8Class: (fin || this.state.s8) ? 'is-s8' : '',
-      go8Class: view === 's8' ? 'go8' : '',
-      goMClass: !MOBILE && view === 'mb' ? 'goM' : '',
-      goFClass: !MOBILE && view === 'fc1' ? 'goF' : '',
-      s9Class: (fin || this.state.s9) ? 'is-s9' : '',
-      fyv: (() => { const k = fin ? 1 : (this.state.pF ?? 0); const r = {}; ['$134.6M', '$154.2M', '$19.6M', '$20.9M', '$1.9M', '$405.5M'].forEach((v, i) => { r['n' + i] = fmtCount(v, k); }); return r; })(),
-      s10Class: (fin || this.state.s10) ? 'is-s10' : '',
-      s11Class: (fin || this.state.s11) ? 'is-s11' : '', s12Class: (fin || this.state.s12) ? 'is-s12' : '', s13Class: (fin || this.state.s13) ? 'is-s13' : '', s14Class: (fin || this.state.s14) ? 'is-s14' : '', s15Class: (fin || this.state.s15) ? 'is-s15' : '', s16Class: (fin || this.state.s16) ? 'is-s16' : '',
-      nxv: (() => { const k = this.state.nxTab || 0; return { t0: k === 0 ? 'on' : '', t1: k === 1 ? 'on' : '', t2: k === 2 ? 'on' : '', a0: String(k === 0), a1: String(k === 1), a2: String(k === 2), top: 64 * k, left: NX_LEFT[k], p0: k === 0 ? 'on' : '', px: k === 0 ? '' : 'on', name: NX_TABS[k] }; })(),
-      nxTab0: (e) => { e.stopPropagation(); this.nxSet(0, 'pin'); }, nxTab1: (e) => { e.stopPropagation(); this.nxSet(1, 'pin'); }, nxTab2: (e) => { e.stopPropagation(); this.nxSet(2, 'pin'); },
-      back6: (e) => { e.stopPropagation(); if (this.state.view === 's6') this.toCards(); },
-      skip6: (e) => { e.stopPropagation(); if (this.state.view === 's6') this.skipTo('s7'); },
-      back7: (e) => { e.stopPropagation(); if (this.state.view === 's7') this.toCards(); },
-      skip7: (e) => { e.stopPropagation(); if (this.state.view === 's7') this.skipTo('s8'); },
-      back8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.toCards(); },
-      backFc: (e) => { e.stopPropagation(); if (this.state.view === 'fc1') this.toCards(); },
-      backMb: (e) => { e.stopPropagation(); if (this.state.view === 'mb') this.toCards(); },
-      skip8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.skipTo(AFTER()); },
-      topic3: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's8' }); this.arrive8(); } },
-      dch8: (() => { const o = (this.state.lay && this.state.lay.dch8) || [0, -360]; const r = { W: (this.state.lay && this.state.lay.dcHW8) || 500 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
+      fcFreeClass: this.state.link ? "fcfree" : "",
+      go2Class: (rankOf(view) ?? 0) >= 1 ? "go2" : "",
+      postClass: this.state.ready && this.state.phase === "run" ? "post" : "",
+      lgClass: view === "logo" ? "lg" : "",
+      go3Class: (rankOf(view) ?? 0) >= 2 ? "go3" : "",
+      s4Class: fin || this.state.s4 ? "is-s4" : "",
+      go5Class: (rankOf(view) ?? 0) >= 3 ? "go5" : "", // cards stay put while the camera zooms into a card
+      s6Class: fin || this.state.s6 ? "is-s6" : "",
+      go6Class:
+        (view === "s6" ? "go6" : "") + (this.state.landing ? " landing" : ""),
+      s7Class: fin || this.state.s7 ? "is-s7" : "",
+      lvClass: this.state.lv ? "lv" : "",
+      lv1: this.state.lv === "s6" ? "lvc" : "",
+      lv2: this.state.lv === "s7" ? "lvc" : "",
+      lv3: this.state.lv === "s8" ? "lvc" : "",
+      lv4: this.state.lv === "mb" ? "lvc" : "",
+      lv5: this.state.lv === "fc1" ? "lvc" : "",
+      go7Class:
+        (view === "s7" ? "go7" : "") + (this.state.hopping ? " hopping" : ""),
+      s8Class: fin || this.state.s8 ? "is-s8" : "",
+      go8Class: view === "s8" ? "go8" : "",
+      goMClass: !MOBILE && view === "mb" ? "goM" : "",
+      goFClass: !MOBILE && view === "fc1" ? "goF" : "",
+      s9Class: fin || this.state.s9 ? "is-s9" : "",
+      fyv: (() => {
+        const k = fin ? 1 : (this.state.pF ?? 0);
+        const r = {};
+        ["$134.6M", "$154.2M", "$19.6M", "$20.9M", "$1.9M", "$405.5M"].forEach(
+          (v, i) => {
+            r["n" + i] = fmtCount(v, k);
+          },
+        );
+        return r;
+      })(),
+      s10Class: fin || this.state.s10 ? "is-s10" : "",
+      s11Class: fin || this.state.s11 ? "is-s11" : "",
+      s12Class: fin || this.state.s12 ? "is-s12" : "",
+      s13Class: fin || this.state.s13 ? "is-s13" : "",
+      s14Class: fin || this.state.s14 ? "is-s14" : "",
+      s15Class: fin || this.state.s15 ? "is-s15" : "",
+      s16Class: fin || this.state.s16 ? "is-s16" : "",
+      nxv: (() => {
+        const k = this.state.nxTab || 0;
+        return {
+          t0: k === 0 ? "on" : "",
+          t1: k === 1 ? "on" : "",
+          t2: k === 2 ? "on" : "",
+          a0: String(k === 0),
+          a1: String(k === 1),
+          a2: String(k === 2),
+          top: 64 * k,
+          left: NX_LEFT[k],
+          p0: k === 0 ? "on" : "",
+          px: k === 0 ? "" : "on",
+          name: NX_TABS[k],
+        };
+      })(),
+      nxTab0: (e) => {
+        e.stopPropagation();
+        this.nxSet(0, "pin");
+      },
+      nxTab1: (e) => {
+        e.stopPropagation();
+        this.nxSet(1, "pin");
+      },
+      nxTab2: (e) => {
+        e.stopPropagation();
+        this.nxSet(2, "pin");
+      },
+      back6: (e) => {
+        e.stopPropagation();
+        if (this.state.view === "s6") this.toCards();
+      },
+      skip6: (e) => {
+        e.stopPropagation();
+        if (this.state.view === "s6") this.skipTo("s7");
+      },
+      back7: (e) => {
+        e.stopPropagation();
+        if (this.state.view === "s7") this.toCards();
+      },
+      skip7: (e) => {
+        e.stopPropagation();
+        if (this.state.view === "s7") this.skipTo("s8");
+      },
+      back8: (e) => {
+        e.stopPropagation();
+        if (this.state.view === "s8") this.toCards();
+      },
+      backFc: (e) => {
+        e.stopPropagation();
+        if (this.state.view === "fc1") this.toCards();
+      },
+      backMb: (e) => {
+        e.stopPropagation();
+        if (this.state.view === "mb") this.toCards();
+      },
+      skip8: (e) => {
+        e.stopPropagation();
+        if (this.state.view === "s8") this.skipTo(AFTER());
+      },
+      topic3: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (
+          ["s5", "wc"].includes(this.state.view) &&
+          !(this.lockUntil && Date.now() < this.lockUntil)
+        ) {
+          this.lockUntil = Date.now() + 1400;
+          this.setState({ view: "s8" });
+          this.arrive8();
+        }
+      },
+      dch8: (() => {
+        const o = (this.state.lay && this.state.lay.dch8) || [0, -360];
+        const r = { W: (this.state.lay && this.state.lay.dcHW8) || 500 };
+        o.forEach((v, i) => {
+          r["w" + i] = v;
+        });
+        return r;
+      })(),
       dcw8: { W: (this.state.lay && this.state.lay.dcW8) || 480 },
       d8: (() => {
-        const st = this.state.step8 || 0, t = fin ? null : (this.state.t8 ?? null), r = {};
+        const st = this.state.step8 || 0,
+          t = fin ? null : (this.state.t8 ?? null),
+          r = {};
         DC8.forEach((d, i) => {
-          r['on' + i] = st === i ? 'on' : '';
-          const live = i === st && t !== null, tt = live ? t : 99;
-          const pPh = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1, pC = live ? eOut1(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / 1.25))) : 1, pB = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1;
-          const from = this.bar8From ?? 0, o = { ph: ((1 - pPh) * 100).toFixed(2), bar: Math.round(from + (d.bar - from) * pB) };
-          d.stats.forEach((v, k) => { o['c' + k] = live ? fmtCount(v, pC) : v; });
-          d.desc.forEach((l, k) => { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0) - k * SLIDE.stag) / SLIDE.dur))) : 1; o['l' + k] = l; o['y' + k] = ((1 - q) * SLIDE.dist).toFixed(1); o['a' + k] = q.toFixed(3); }); // description: lines slide up in, one after another
-          for (let j = 0; j < 6; j++) { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0) - j * SLIDE.stag) / SLIDE.dur))) : 1; o['yb' + j] = ((1 - q) * SLIDE.dist).toFixed(1); o['ab' + j] = q.toFixed(3); } // stat labels above/below the numbers: same slide-in
-          { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / SLIDE.dur))) : 1; o.yt = ((1 - q) * SLIDE.dist).toFixed(1); o.at = q.toFixed(3); } // the red story title: same slide-in, leading the copy
-          r['s' + i] = o;
+          r["on" + i] = st === i ? "on" : "";
+          const live = i === st && t !== null,
+            tt = live ? t : 99;
+          const pPh = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1,
+            pC = live
+              ? eOut1(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / 1.25)))
+              : 1,
+            pB = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1;
+          const from = this.bar8From ?? 0,
+            o = {
+              ph: ((1 - pPh) * 100).toFixed(2),
+              bar: Math.round(from + (d.bar - from) * pB),
+            };
+          d.stats.forEach((v, k) => {
+            o["c" + k] = live ? fmtCount(v, pC) : v;
+          });
+          d.desc.forEach((l, k) => {
+            const q = live
+              ? eOut2(
+                  Math.min(
+                    1,
+                    Math.max(
+                      0,
+                      (tt - (this.hold || 0) - k * SLIDE.stag) / SLIDE.dur,
+                    ),
+                  ),
+                )
+              : 1;
+            o["l" + k] = l;
+            o["y" + k] = ((1 - q) * SLIDE.dist).toFixed(1);
+            o["a" + k] = q.toFixed(3);
+          }); // description: lines slide up in, one after another
+          for (let j = 0; j < 6; j++) {
+            const q = live
+              ? eOut2(
+                  Math.min(
+                    1,
+                    Math.max(
+                      0,
+                      (tt - (this.hold || 0) - j * SLIDE.stag) / SLIDE.dur,
+                    ),
+                  ),
+                )
+              : 1;
+            o["yb" + j] = ((1 - q) * SLIDE.dist).toFixed(1);
+            o["ab" + j] = q.toFixed(3);
+          } // stat labels above/below the numbers: same slide-in
+          {
+            const q = live
+              ? eOut2(
+                  Math.min(1, Math.max(0, (tt - (this.hold || 0)) / SLIDE.dur)),
+                )
+              : 1;
+            o.yt = ((1 - q) * SLIDE.dist).toFixed(1);
+            o.at = q.toFixed(3);
+          } // the red story title: same slide-in, leading the copy
+          r["s" + i] = o;
         });
         return r;
       })(),
       mbv: (() => {
-        const k = this.state.mbTab ?? 0, pm = fin ? 1 : (this.state.pM ?? 1), mbSc = MOBILE ? 1 : (this.state.mbSc ?? 1), r = { sc: mbSc.toFixed(4), sh: (708 / mbSc).toFixed(1), ind: [0, 64, 128, 192][k], indh: [62, 62, 62, 98][k], p0: k === 0 ? 'on' : '', px: k === 0 ? '' : 'on', name: MB_TABS[k],
-          c0: fmtCount('100+', pm), c1: fmtCount('180,000+', pm), c2: fmtCount('100', pm), c7: fmtCount('60', pm), c8: fmtCount('63', pm), c9: fmtCount('30', pm), c3: fmtCount('27', pm), c4: fmtCount('$615K', pm), c5: fmtCount('240K', pm), c6: fmtCount('12K', pm) };
-        { const ord = this.state.mbOrd || [3, 2, 1, 0], mv = this.state.mbMv; [3, 2, 1, 0].forEach((t, j) => { const q = ord.indexOf(t); r['y' + j] = MB_STEP * q; r['z' + j] = q + 1; r['v' + j] = (q === 3 ? 'on' : '') + (t === mv ? ' mv' : ''); r['e' + j] = q === 3 ? 'true' : 'false'; }); }
+        const k = this.state.mbTab ?? 0,
+          pm = fin ? 1 : (this.state.pM ?? 1),
+          mbSc = MOBILE ? 1 : (this.state.mbSc ?? 1),
+          r = {
+            sc: mbSc.toFixed(4),
+            sh: (708 / mbSc).toFixed(1),
+            ind: [0, 64, 128, 192][k],
+            indh: [62, 62, 62, 98][k],
+            p0: k === 0 ? "on" : "",
+            px: k === 0 ? "" : "on",
+            name: MB_TABS[k],
+            c0: fmtCount("100+", pm),
+            c1: fmtCount("180,000+", pm),
+            c2: fmtCount("100", pm),
+            c7: fmtCount("60", pm),
+            c8: fmtCount("63", pm),
+            c9: fmtCount("30", pm),
+            c3: fmtCount("27", pm),
+            c4: fmtCount("$615K", pm),
+            c5: fmtCount("240K", pm),
+            c6: fmtCount("12K", pm),
+          };
+        {
+          const ord = this.state.mbOrd || [3, 2, 1, 0],
+            mv = this.state.mbMv;
+          [3, 2, 1, 0].forEach((t, j) => {
+            const q = ord.indexOf(t);
+            r["y" + j] = MB_STEP * q;
+            r["z" + j] = q + 1;
+            r["v" + j] = (q === 3 ? "on" : "") + (t === mv ? " mv" : "");
+            r["e" + j] = q === 3 ? "true" : "false";
+          });
+        }
         // desktop: fixed order Food → Education → Movies → Travel; tapping a card expands it in place (accordion).
         // Collapsed cards show 103px each; the open card is 422px (64px bottom padding, 32px under the next card),
         // or 399px when it is the last card (nothing covers it) — either way the stack fills the 708px under the header
-        { [0, 1, 2, 3].forEach((i) => { r['dy' + i] = i <= k ? i * 103 : k * 103 + MB_OPEN - 32 + (i - k - 1) * 103; r['dz' + i] = i + 1; r['dv' + i] = i === k ? 'on' : ''; r['de' + i] = i === k ? 'true' : 'false'; }); }
-        MB_TABS.forEach((_, i) => { r['t' + i] = i === k ? 'on' : ''; });
-        return r;
-      })(),
-      ...(() => { const r = {}; MB_TABS.forEach((_, i) => { r['mbTab' + i] = (e) => { e.stopPropagation(); this.mbTo(i); }; }); return r; })(),
-      ...(() => { const r = {}; DC8.forEach((d, si) => d.photos.forEach((_, pi) => { r['lb8_' + si + '_' + pi] = (e) => { e.stopPropagation(); this.setState({ lb: { t: 8, s: si, i: d.gi[pi] } }); }; })); return r; })(),
-      // a Top picks card taller than its space scrolls inside; the page only moves on once that content is at its end
-      mbScroll: (e) => {
-        // the card stack (.mbsc) is the only thing that scrolls; a wheel over the copy beside it drives the stack too
-        const el = MOBILE ? e.currentTarget : (e.currentTarget.querySelector('.mbsc') || e.currentTarget), dy = e.deltaY;
-        if (el !== e.currentTarget && !el.contains(e.target) && el.scrollHeight - el.clientHeight > 1) el.scrollTop += dy;
-        const top = el.scrollTop, prev = this.mbPrevEl === el ? this.mbPrevTop : 0;
-        this.mbPrevEl = el; this.mbPrevTop = top;
-        const room = el.scrollHeight - el.clientHeight > 1;
-        // the browser may already have scrolled the content for this event, so "it moved" counts as well as "it can still move"
-        const can = room && (top !== prev || (dy > 0 ? top + el.clientHeight < el.scrollHeight - 1 : top > 0));
-        const now = Date.now(), streak = now - (this.mbLast || 0) < 300; this.mbLast = now;
-        if (can) { this.mbIn = true; this.mbEndAt = 0; e.stopPropagation(); return; }
-        // reached the end: a brief pause (so the content settles at its end), then continued scrolling
-        // carries on to the next section — even within the same gesture (trackpad momentum included)
-        if (this.mbIn && streak) { if (!this.mbEndAt) this.mbEndAt = now; if (now - this.mbEndAt < 350) { e.stopPropagation(); return; } }
-        this.mbIn = false; this.mbEndAt = 0;
-      },
-      topic4: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'mb' }); this.arriveMb(); } }, // Rewarding privileges → Membership page
-      topic5: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'fc1', s15: true }); this.fcEnter(1); } }, // Enhancing SAFRA Clubs & Facilities → its page
-      topic2: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's7' }); this.arrive7(); } },
-      dch7: (() => { const o = (this.state.lay && this.state.lay.dch7) || [0, -340]; const r = { W: (this.state.lay && this.state.lay.dcHW7) || 480 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
-      dcw7: (() => { const o = (this.state.lay && this.state.lay.dcw7) || [0, 0, -440]; const r = { W: (this.state.lay && this.state.lay.dcW7) || 846 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
-      d7: (() => {
-        const st = this.state.step7 || 0, t = fin ? null : (this.state.t7 ?? null), r = {};
-        DC7.forEach((d, i) => {
-          r['on' + i] = st === i ? 'on' : '';
-          const live = i === st && t !== null, tt = live ? t : 99;
-          const pPh = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1, pC = live ? eOut1(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / 1.25))) : 1;
-          const from = this.bar7From ?? 0, pB = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1;
-          const o = { ph: ((1 - pPh) * 100).toFixed(2), bar: Math.round(from + (d.bar - from) * pB) };
-          d.stats.forEach((v, k) => { o['c' + k] = live ? fmtCount(v, pC) : v; });
-          d.desc.forEach((l, k) => { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0) - k * SLIDE.stag) / SLIDE.dur))) : 1; o['l' + k] = l; o['y' + k] = ((1 - q) * SLIDE.dist).toFixed(1); o['a' + k] = q.toFixed(3); }); // description: lines slide up in, one after another
-          for (let j = 0; j < 6; j++) { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0) - j * SLIDE.stag) / SLIDE.dur))) : 1; o['yb' + j] = ((1 - q) * SLIDE.dist).toFixed(1); o['ab' + j] = q.toFixed(3); } // stat labels above/below the numbers: same slide-in
-          { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / SLIDE.dur))) : 1; o.yt = ((1 - q) * SLIDE.dist).toFixed(1); o.at = q.toFixed(3); } // the red story title: same slide-in, leading the copy
-          r['s' + i] = o;
+        {
+          [0, 1, 2, 3].forEach((i) => {
+            r["dy" + i] =
+              i <= k ? i * 103 : k * 103 + MB_OPEN - 32 + (i - k - 1) * 103;
+            r["dz" + i] = i + 1;
+            r["dv" + i] = i === k ? "on" : "";
+            r["de" + i] = i === k ? "true" : "false";
+          });
+        }
+        MB_TABS.forEach((_, i) => {
+          r["t" + i] = i === k ? "on" : "";
         });
         return r;
       })(),
-      topic1: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's6' }); this.arrive6(); } }, // always opens story 1
-      dch: (() => { const o = (this.state.lay && this.state.lay.dch) || [0, -200, -390, 0, -60, -160]; const r = { W: (this.state.lay && this.state.lay.dcHW) || 572 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
-      dcw: (() => { const o = (this.state.lay && this.state.lay.dcw) || [0, -380, -720, 0, -130, -330]; const r = { W: (this.state.lay && this.state.lay.dcW) || 1014 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
+      ...(() => {
+        const r = {};
+        MB_TABS.forEach((_, i) => {
+          r["mbTab" + i] = (e) => {
+            e.stopPropagation();
+            this.mbTo(i);
+          };
+        });
+        return r;
+      })(),
+      ...(() => {
+        const r = {};
+        DC8.forEach((d, si) =>
+          d.photos.forEach((_, pi) => {
+            r["lb8_" + si + "_" + pi] = (e) => {
+              e.stopPropagation();
+              this.setState({ lb: { t: 8, s: si, i: d.gi[pi] } });
+            };
+          }),
+        );
+        return r;
+      })(),
+      // a Top picks card taller than its space scrolls inside; the page only moves on once that content is at its end
+      mbScroll: (e) => {
+        // the card stack (.mbsc) is the only thing that scrolls; a wheel over the copy beside it drives the stack too
+        const el = MOBILE
+            ? e.currentTarget
+            : e.currentTarget.querySelector(".mbsc") || e.currentTarget,
+          dy = e.deltaY;
+        if (
+          el !== e.currentTarget &&
+          !el.contains(e.target) &&
+          el.scrollHeight - el.clientHeight > 1
+        )
+          el.scrollTop += dy;
+        const top = el.scrollTop,
+          prev = this.mbPrevEl === el ? this.mbPrevTop : 0;
+        this.mbPrevEl = el;
+        this.mbPrevTop = top;
+        const room = el.scrollHeight - el.clientHeight > 1;
+        // the browser may already have scrolled the content for this event, so "it moved" counts as well as "it can still move"
+        const can =
+          room &&
+          (top !== prev ||
+            (dy > 0 ? top + el.clientHeight < el.scrollHeight - 1 : top > 0));
+        const now = Date.now(),
+          streak = now - (this.mbLast || 0) < 300;
+        this.mbLast = now;
+        if (can) {
+          this.mbIn = true;
+          this.mbEndAt = 0;
+          e.stopPropagation();
+          return;
+        }
+        // reached the end: a brief pause (so the content settles at its end), then continued scrolling
+        // carries on to the next section — even within the same gesture (trackpad momentum included)
+        if (this.mbIn && streak) {
+          if (!this.mbEndAt) this.mbEndAt = now;
+          if (now - this.mbEndAt < 350) {
+            e.stopPropagation();
+            return;
+          }
+        }
+        this.mbIn = false;
+        this.mbEndAt = 0;
+      },
+      topic4: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (
+          ["s5", "wc"].includes(this.state.view) &&
+          !(this.lockUntil && Date.now() < this.lockUntil)
+        ) {
+          this.lockUntil = Date.now() + 1400;
+          this.setState({ view: "mb" });
+          this.arriveMb();
+        }
+      }, // Rewarding privileges → Membership page
+      topic5: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (
+          ["s5", "wc"].includes(this.state.view) &&
+          !(this.lockUntil && Date.now() < this.lockUntil)
+        ) {
+          this.lockUntil = Date.now() + 1400;
+          this.setState({ view: "fc1", s15: true });
+          this.fcEnter(1);
+        }
+      }, // Enhancing SAFRA Clubs & Facilities → its page
+      topic2: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (
+          ["s5", "wc"].includes(this.state.view) &&
+          !(this.lockUntil && Date.now() < this.lockUntil)
+        ) {
+          this.lockUntil = Date.now() + 1400;
+          this.setState({ view: "s7" });
+          this.arrive7();
+        }
+      },
+      dch7: (() => {
+        const o = (this.state.lay && this.state.lay.dch7) || [0, -340];
+        const r = { W: (this.state.lay && this.state.lay.dcHW7) || 480 };
+        o.forEach((v, i) => {
+          r["w" + i] = v;
+        });
+        return r;
+      })(),
+      dcw7: (() => {
+        const o = (this.state.lay && this.state.lay.dcw7) || [0, 0, -440];
+        const r = { W: (this.state.lay && this.state.lay.dcW7) || 846 };
+        o.forEach((v, i) => {
+          r["w" + i] = v;
+        });
+        return r;
+      })(),
+      d7: (() => {
+        const st = this.state.step7 || 0,
+          t = fin ? null : (this.state.t7 ?? null),
+          r = {};
+        DC7.forEach((d, i) => {
+          r["on" + i] = st === i ? "on" : "";
+          const live = i === st && t !== null,
+            tt = live ? t : 99;
+          const pPh = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1,
+            pC = live
+              ? eOut1(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / 1.25)))
+              : 1;
+          const from = this.bar7From ?? 0,
+            pB = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1;
+          const o = {
+            ph: ((1 - pPh) * 100).toFixed(2),
+            bar: Math.round(from + (d.bar - from) * pB),
+          };
+          d.stats.forEach((v, k) => {
+            o["c" + k] = live ? fmtCount(v, pC) : v;
+          });
+          d.desc.forEach((l, k) => {
+            const q = live
+              ? eOut2(
+                  Math.min(
+                    1,
+                    Math.max(
+                      0,
+                      (tt - (this.hold || 0) - k * SLIDE.stag) / SLIDE.dur,
+                    ),
+                  ),
+                )
+              : 1;
+            o["l" + k] = l;
+            o["y" + k] = ((1 - q) * SLIDE.dist).toFixed(1);
+            o["a" + k] = q.toFixed(3);
+          }); // description: lines slide up in, one after another
+          for (let j = 0; j < 6; j++) {
+            const q = live
+              ? eOut2(
+                  Math.min(
+                    1,
+                    Math.max(
+                      0,
+                      (tt - (this.hold || 0) - j * SLIDE.stag) / SLIDE.dur,
+                    ),
+                  ),
+                )
+              : 1;
+            o["yb" + j] = ((1 - q) * SLIDE.dist).toFixed(1);
+            o["ab" + j] = q.toFixed(3);
+          } // stat labels above/below the numbers: same slide-in
+          {
+            const q = live
+              ? eOut2(
+                  Math.min(1, Math.max(0, (tt - (this.hold || 0)) / SLIDE.dur)),
+                )
+              : 1;
+            o.yt = ((1 - q) * SLIDE.dist).toFixed(1);
+            o.at = q.toFixed(3);
+          } // the red story title: same slide-in, leading the copy
+          r["s" + i] = o;
+        });
+        return r;
+      })(),
+      topic1: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (
+          ["s5", "wc"].includes(this.state.view) &&
+          !(this.lockUntil && Date.now() < this.lockUntil)
+        ) {
+          this.lockUntil = Date.now() + 1400;
+          this.setState({ view: "s6" });
+          this.arrive6();
+        }
+      }, // always opens story 1
+      dch: (() => {
+        const o = (this.state.lay && this.state.lay.dch) || [
+          0, -200, -390, 0, -60, -160,
+        ];
+        const r = { W: (this.state.lay && this.state.lay.dcHW) || 572 };
+        o.forEach((v, i) => {
+          r["w" + i] = v;
+        });
+        return r;
+      })(),
+      dcw: (() => {
+        const o = (this.state.lay && this.state.lay.dcw) || [
+          0, -380, -720, 0, -130, -330,
+        ];
+        const r = { W: (this.state.lay && this.state.lay.dcW) || 1014 };
+        o.forEach((v, i) => {
+          r["w" + i] = v;
+        });
+        return r;
+      })(),
       d6: (() => {
-        const st = this.state.step6 || 0, t = fin ? null : (this.state.t6 ?? null), r = {};
+        const st = this.state.step6 || 0,
+          t = fin ? null : (this.state.t6 ?? null),
+          r = {};
         DC.forEach((d, i) => {
-          r['on' + i] = st === i ? 'on' : '';
-          const live = i === st && t !== null, tt = live ? t : 99;
-          const pPh = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1, pC = live ? eOut1(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / 1.25))) : 1;
-          const from = this.bar6From ?? 0, pB = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1;
-          const o = { ph: ((1 - pPh) * 100).toFixed(2), bar: Math.round(from + (d.bar - from) * pB) };
-          d.stats.forEach((v, k) => { o['c' + k] = live ? fmtCount(v, pC) : v; });
-          d.desc.forEach((l, k) => { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0) - k * SLIDE.stag) / SLIDE.dur))) : 1; o['l' + k] = l; o['y' + k] = ((1 - q) * SLIDE.dist).toFixed(1); o['a' + k] = q.toFixed(3); }); // description: lines slide up in, one after another
-          for (let j = 0; j < 6; j++) { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0) - j * SLIDE.stag) / SLIDE.dur))) : 1; o['yb' + j] = ((1 - q) * SLIDE.dist).toFixed(1); o['ab' + j] = q.toFixed(3); } // stat labels above/below the numbers: same slide-in
-          { const q = live ? eOut2(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / SLIDE.dur))) : 1; o.yt = ((1 - q) * SLIDE.dist).toFixed(1); o.at = q.toFixed(3); } // the red story title: same slide-in, leading the copy
-          r['s' + i] = o;
+          r["on" + i] = st === i ? "on" : "";
+          const live = i === st && t !== null,
+            tt = live ? t : 99;
+          const pPh = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1,
+            pC = live
+              ? eOut1(Math.min(1, Math.max(0, (tt - (this.hold || 0)) / 1.25)))
+              : 1;
+          const from = this.bar6From ?? 0,
+            pB = live ? eOut2(Math.min(1, Math.max(0, tt / 0.8))) : 1;
+          const o = {
+            ph: ((1 - pPh) * 100).toFixed(2),
+            bar: Math.round(from + (d.bar - from) * pB),
+          };
+          d.stats.forEach((v, k) => {
+            o["c" + k] = live ? fmtCount(v, pC) : v;
+          });
+          d.desc.forEach((l, k) => {
+            const q = live
+              ? eOut2(
+                  Math.min(
+                    1,
+                    Math.max(
+                      0,
+                      (tt - (this.hold || 0) - k * SLIDE.stag) / SLIDE.dur,
+                    ),
+                  ),
+                )
+              : 1;
+            o["l" + k] = l;
+            o["y" + k] = ((1 - q) * SLIDE.dist).toFixed(1);
+            o["a" + k] = q.toFixed(3);
+          }); // description: lines slide up in, one after another
+          for (let j = 0; j < 6; j++) {
+            const q = live
+              ? eOut2(
+                  Math.min(
+                    1,
+                    Math.max(
+                      0,
+                      (tt - (this.hold || 0) - j * SLIDE.stag) / SLIDE.dur,
+                    ),
+                  ),
+                )
+              : 1;
+            o["yb" + j] = ((1 - q) * SLIDE.dist).toFixed(1);
+            o["ab" + j] = q.toFixed(3);
+          } // stat labels above/below the numbers: same slide-in
+          {
+            const q = live
+              ? eOut2(
+                  Math.min(1, Math.max(0, (tt - (this.hold || 0)) / SLIDE.dur)),
+                )
+              : 1;
+            o.yt = ((1 - q) * SLIDE.dist).toFixed(1);
+            o.at = q.toFixed(3);
+          } // the red story title: same slide-in, leading the copy
+          r["s" + i] = o;
         });
         return r;
       })(),
       lbv: (() => {
-        const lbOpen = this.state.lb; if (lbOpen) this.lbLast = lbOpen; const lb = lbOpen || this.lbLast; /* while the viewer fades out, keep showing the story it was opened from */ const d = lb && ['lf2', 'lf3'].includes(lb.t) ? lfGallery(lb.t, lb.s) : (lb && lb.t === 8 ? DC8 : lb && lb.t === 7 ? DC7 : DC)[lb ? lb.s : 0], g = d.gallery, k = lb ? lb.i : 0, r = { cls: (lbOpen ? 'open' : '') + (g.length === 1 ? ' lb-single' : ''), gk: lb ? (lb.t || 6) + '-' + lb.s : '0', src: g[k], alt: lb && ['lf2', 'lf3'].includes(lb.t) ? d.alts[k] : 'Photo ' + (k + 1) + ' of ' + g.length };
-        const yt = lbOpen && d.videos && d.videos[k]; /* video stories: play the clip (mp4) in the viewer; only while open, so closing stops it */ r.vid = yt || ''; r.poster = yt ? g[k] : ''; r.vidT = yt ? 'Video ' + (k + 1) + ' of ' + g.length : ''; r.imgCls = d.videos ? 'lb-hide' : ''; r.tv = d.videos ? 'lb-tv' : '';
-        for (let i = 0; i < 12; i++) { r['t' + i] = g[i] || g[0]; r['c' + i] = i >= g.length ? 'none' : (i === k ? 'sel' : ''); }
+        const lbOpen = this.state.lb;
+        if (lbOpen) this.lbLast = lbOpen;
+        const lb = lbOpen || this.lbLast;
+        /* while the viewer fades out, keep showing the story it was opened from */ const d =
+            lb && ["lf2", "lf3"].includes(lb.t)
+              ? lfGallery(lb.t, lb.s)
+              : (lb && lb.t === 8 ? DC8 : lb && lb.t === 7 ? DC7 : DC)[
+                  lb ? lb.s : 0
+                ],
+          g = d.gallery,
+          k = lb ? lb.i : 0,
+          r = {
+            cls: (lbOpen ? "open" : "") + (g.length === 1 ? " lb-single" : ""),
+            gk: lb ? (lb.t || 6) + "-" + lb.s : "0",
+            src: g[k],
+            alt:
+              lb && ["lf2", "lf3"].includes(lb.t)
+                ? d.alts[k]
+                : "Photo " + (k + 1) + " of " + g.length,
+          };
+        const yt = lbOpen && d.videos && d.videos[k];
+        /* video stories: play the clip (mp4) in the viewer; only while open, so closing stops it */ r.vid =
+          yt || "";
+        r.poster = yt ? g[k] : "";
+        r.vidT = yt ? "Video " + (k + 1) + " of " + g.length : "";
+        r.imgCls = d.videos ? "lb-hide" : "";
+        r.tv = d.videos ? "lb-tv" : "";
+        for (let i = 0; i < 12; i++) {
+          r["t" + i] = g[i] || g[0];
+          r["c" + i] = i >= g.length ? "none" : i === k ? "sel" : "";
+        }
         return r;
       })(),
-      lf2Photo0: (e) => { e.stopPropagation(); this.setState({ lb: { t: 'lf2', s: this.state.lf2s || 0, i: 0 } }); },
-      lf2Photo1: (e) => { e.stopPropagation(); this.setState({ lb: { t: 'lf2', s: this.state.lf2s || 0, i: 1 } }); },
-      lf3Photo: (e) => { e.stopPropagation(); this.setState({ lb: { t: 'lf3', s: this.state.lf3s || 0, i: 0 } }); },
-      lf3PhotoLabel: 'View photo: ' + lfGallery('lf3', this.state.lf3s || 0).alts[0],
-      lbClose: (e) => { e.stopPropagation(); this.setState({ lb: null }); },
-      ...(() => { const r = {}; for (let i = 0; i < 12; i++) r['lbT' + i] = (e) => { e.stopPropagation(); if (this.state.lb) this.setState({ lb: { ...this.state.lb, i } }); }; return r; })(),
-      ...(() => { const r = {}; DC7.forEach((d, si) => d.photos.forEach((_, pi) => { r['lb7_' + si + '_' + pi] = (e) => { e.stopPropagation(); this.setState({ lb: { t: 7, s: si, i: d.gi[pi] } }); }; })); return r; })(),
-      ...(() => { const r = {}; DC.forEach((d, si) => d.photos.forEach((_, pi) => { r['lb_' + si + '_' + pi] = (e) => { e.stopPropagation(); this.setState({ lb: { s: si, i: d.gi[pi] } }); }; })); return r; })(),
+      lf2Photo0: (e) => {
+        e.stopPropagation();
+        this.setState({ lb: { t: "lf2", s: this.state.lf2s || 0, i: 0 } });
+      },
+      lf2Photo1: (e) => {
+        e.stopPropagation();
+        this.setState({ lb: { t: "lf2", s: this.state.lf2s || 0, i: 1 } });
+      },
+      lf3Photo: (e) => {
+        e.stopPropagation();
+        this.setState({ lb: { t: "lf3", s: this.state.lf3s || 0, i: 0 } });
+      },
+      lf3PhotoLabel:
+        "View photo: " + lfGallery("lf3", this.state.lf3s || 0).alts[0],
+      lbClose: (e) => {
+        e.stopPropagation();
+        this.setState({ lb: null });
+      },
+      ...(() => {
+        const r = {};
+        for (let i = 0; i < 12; i++)
+          r["lbT" + i] = (e) => {
+            e.stopPropagation();
+            if (this.state.lb) this.setState({ lb: { ...this.state.lb, i } });
+          };
+        return r;
+      })(),
+      ...(() => {
+        const r = {};
+        DC7.forEach((d, si) =>
+          d.photos.forEach((_, pi) => {
+            r["lb7_" + si + "_" + pi] = (e) => {
+              e.stopPropagation();
+              this.setState({ lb: { t: 7, s: si, i: d.gi[pi] } });
+            };
+          }),
+        );
+        return r;
+      })(),
+      ...(() => {
+        const r = {};
+        DC.forEach((d, si) =>
+          d.photos.forEach((_, pi) => {
+            r["lb_" + si + "_" + pi] = (e) => {
+              e.stopPropagation();
+              this.setState({ lb: { s: si, i: d.gi[pi] } });
+            };
+          }),
+        );
+        return r;
+      })(),
       lw: lay ? lay.lW : 9,
-      bar3: (() => { const big = this.state.view === 'tg', lw0 = lay ? lay.lW : 9, nx = lay ? lay.barX : 696, nw = lay ? lay.barW : 15, top = lay ? lay.barTop : 686, bot0 = lay ? lay.lBase : GLANCE_BASE; // the n's stem drips down and becomes the L's upright
+      bar3: (() => {
+        const big = this.state.view === "tg",
+          lw0 = lay ? lay.lW : 9,
+          nx = lay ? lay.barX : 696,
+          nw = lay ? lay.barW : 15,
+          top = lay ? lay.barTop : 686,
+          bot0 = lay ? lay.lBase : GLANCE_BASE; // the n's stem drips down and becomes the L's upright
         // the box is the small-heading geometry; the large heading is reached with a transform (scale about the top centre),
         // run on the compositor in step with the heading's own scale — no width/height animation that could lag behind it
-        const h0 = bot0 - top, sx = big ? TG_SCALE : 1, sy = big ? (TG_BASE - top) / h0 : 1, lw = lw0 * sx;
-        return { x: +(CUE_X - lw0 / 2).toFixed(2), y: +top.toFixed(2), w: lw0, h: +h0.toFixed(2), sx: +sx.toFixed(4), sy: +sy.toFixed(4), cx: +(CUE_X - lw0 * TG_SCALE / 2).toFixed(2), cw: +(lw0 * TG_SCALE).toFixed(2), // slot through the band above: always the large width, so the line is never trimmed while it narrows
+        const h0 = bot0 - top,
+          sx = big ? TG_SCALE : 1,
+          sy = big ? (TG_BASE - top) / h0 : 1,
+          lw = lw0 * sx;
+        return {
+          x: +(CUE_X - lw0 / 2).toFixed(2),
+          y: +top.toFixed(2),
+          w: lw0,
+          h: +h0.toFixed(2),
+          sx: +sx.toFixed(4),
+          sy: +sy.toFixed(4),
+          cx: +(CUE_X - (lw0 * TG_SCALE) / 2).toFixed(2),
+          cw: +(lw0 * TG_SCALE).toFixed(2), // slot through the band above: always the large width, so the line is never trimmed while it narrows
           // while it leaves the masthead it is offset/narrowed to sit on the n's stem
-          dx: +((nx + nw / 2) - CUE_X).toFixed(2), k: +(nw / lw0).toFixed(4) }; })(),
-      endClass: view === 'end' ? 'at-end' : '', // closing section: its gradient fills the letterbox bands above/below the artboard too
-      i4Class: this.state.i4 ? 'i4' : '', lf1Hidden: this.state.lf1 ? 'false' : 'true', lf2v: (() => { const k = this.state.lf2s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', c3: k === 3 ? 'on' : '', a3: k === 3 ? 'true' : 'false', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false' }; })(), lf2To0: (e) => { e.stopPropagation(); this.setState({ lf2s: 0 }); }, noFocusScroll: (e) => { e.preventDefault(); }, /* a click on a story must not focus it — focusing scrolls the column to it (the jump) */ lf3v: (() => { const k = this.state.lf3s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false', ph: k === 2 ? 'short' : '' }; })(), lf3To0: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 0) this.lf3Step(0); }, lf3To1: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 1) this.lf3Step(1); }, lf3To2: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 2) this.lf3Step(2); }, lf2To1: (e) => { e.stopPropagation(); this.setState({ lf2s: 1 }); }, lf2To2: (e) => { e.stopPropagation(); this.setState({ lf2s: 2 }); }, lf2To3: (e) => { e.stopPropagation(); this.setState({ lf2s: 3 }); }, swClass: `${(view === 'tg' || view === 's3') ? 'at3' : ''} ${this.state.swk ? 'swk' : ''} ${this.state.up5 ? 'up5' : ''} ${view === 'wc' && (!this.state.link || this.state.z2top) ? 'at-dk' : ''} ${this.state.link === 'z2' && !this.state.z2top && !this.state.z2end ? 'z2mid' : ''} ${this.state.lf1 && (view === 'nx' || view === 'lf2') ? 'lf1' : ''} ${view === 'lf2' ? 'at-lf2' : ''} ${view === 'nx' && !this.state.link ? 'at-nxv' : ''} ${view === 'lf3' || view === 'end' ? 'at-lf3' : ''} ${(this.state.step6 || 0) === DC.length - 1 ? 'l6' : ''} ${(this.state.step7 || 0) === DC7.length - 1 ? 'l7' : ''} ${(this.state.step8 || 0) === DC8.length - 1 ? 'l8' : ''} ${(!MOBILE && (view === 'fc1' || this.state.link === 'z1')) || this.state.link === 'z2' ? 'xclip' : ''} ${view === 'lf2' ? 'lfs2' : (view === 'lf3' || view === 'end') ? 'lfs3' : ''}`, // Our impact, first reveal: the statement lands first, then the cards rise one by one
-      b3Class: (view === 'tg' || view === 's3') && this.state.b3ok ? 'b3top' : '', // only once the camera has settled (b3ok), so the extension never crosses the masthead on the way down // At a glance: the gradient connector runs up past the artboard to the screen's top edge (tall screens letterbox above)
-      tgClass: view === 'tg' ? 'at-tg' : '', hdClass: (fin || this.state.hd) ? 'is-hd' : '',
+          dx: +(nx + nw / 2 - CUE_X).toFixed(2),
+          k: +(nw / lw0).toFixed(4),
+        };
+      })(),
+      endClass: view === "end" ? "at-end" : "", // closing section: its gradient fills the letterbox bands above/below the artboard too
+      i4Class: this.state.i4 ? "i4" : "",
+      lf1Hidden: this.state.lf1 ? "false" : "true",
+      lf2v: (() => {
+        const k = this.state.lf2s || 0;
+        return {
+          c0: k === 0 ? "on" : "",
+          c1: k === 1 ? "on" : "",
+          c2: k === 2 ? "on" : "",
+          c3: k === 3 ? "on" : "",
+          a3: k === 3 ? "true" : "false",
+          a0: k === 0 ? "true" : "false",
+          a1: k === 1 ? "true" : "false",
+          a2: k === 2 ? "true" : "false",
+        };
+      })(),
+      lf2To0: (e) => {
+        e.stopPropagation();
+        this.setState({ lf2s: 0 });
+      },
+      noFocusScroll: (e) => {
+        e.preventDefault();
+      },
+      /* a click on a story must not focus it — focusing scrolls the column to it (the jump) */ lf3v: (() => {
+        const k = this.state.lf3s || 0;
+        return {
+          c0: k === 0 ? "on" : "",
+          c1: k === 1 ? "on" : "",
+          c2: k === 2 ? "on" : "",
+          a0: k === 0 ? "true" : "false",
+          a1: k === 1 ? "true" : "false",
+          a2: k === 2 ? "true" : "false",
+          ph: k === 2 ? "short" : "",
+        };
+      })(),
+      lf3To0: (e) => {
+        e.stopPropagation();
+        if ((this.state.lf3s || 0) !== 0) this.lf3Step(0);
+      },
+      lf3To1: (e) => {
+        e.stopPropagation();
+        if ((this.state.lf3s || 0) !== 1) this.lf3Step(1);
+      },
+      lf3To2: (e) => {
+        e.stopPropagation();
+        if ((this.state.lf3s || 0) !== 2) this.lf3Step(2);
+      },
+      lf2To1: (e) => {
+        e.stopPropagation();
+        this.setState({ lf2s: 1 });
+      },
+      lf2To2: (e) => {
+        e.stopPropagation();
+        this.setState({ lf2s: 2 });
+      },
+      lf2To3: (e) => {
+        e.stopPropagation();
+        this.setState({ lf2s: 3 });
+      },
+      swClass: `${view === "tg" || view === "s3" ? "at3" : ""} ${this.state.swk ? "swk" : ""} ${this.state.up5 ? "up5" : ""} ${view === "wc" && (!this.state.link || this.state.z2top) ? "at-dk" : ""} ${this.state.link === "z2" && !this.state.z2top && !this.state.z2end ? "z2mid" : ""} ${this.state.lf1 && (view === "nx" || view === "lf2") ? "lf1" : ""} ${view === "lf2" ? "at-lf2" : ""} ${view === "nx" && !this.state.link ? "at-nxv" : ""} ${view === "lf3" || view === "end" ? "at-lf3" : ""} ${(this.state.step6 || 0) === DC.length - 1 ? "l6" : ""} ${(this.state.step7 || 0) === DC7.length - 1 ? "l7" : ""} ${(this.state.step8 || 0) === DC8.length - 1 ? "l8" : ""} ${(!MOBILE && (view === "fc1" || this.state.link === "z1")) || this.state.link === "z2" ? "xclip" : ""} ${view === "lf2" ? "lfs2" : view === "lf3" || view === "end" ? "lfs3" : ""}`, // Our impact, first reveal: the statement lands first, then the cards rise one by one
+      b3Class:
+        (view === "tg" || view === "s3") && this.state.b3ok ? "b3top" : "", // only once the camera has settled (b3ok), so the extension never crosses the masthead on the way down // At a glance: the gradient connector runs up past the artboard to the screen's top edge (tall screens letterbox above)
+      tgClass: view === "tg" ? "at-tg" : "",
+      hdClass: fin || this.state.hd ? "is-hd" : "",
       cd,
       next: () => this.go(1),
-      noop: (e) => { e.preventDefault(); e.stopPropagation(); },
-      cur: { x: ((this.state.curX ?? hx ?? 720) - 60).toFixed(1), y: ((this.state.curY ?? hy ?? 450) - 60).toFixed(1), o: (circle && hx != null && !mobile) ? 1 : 0, s: (circle && hx != null) ? 1 : 0.4 },
+      noop: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      },
+      cur: {
+        x: ((this.state.curX ?? hx ?? 720) - 60).toFixed(1),
+        y: ((this.state.curY ?? hy ?? 450) - 60).toFixed(1),
+        o: circle && hx != null && !mobile ? 1 : 0,
+        s: circle && hx != null ? 1 : 0.4,
+      },
       wheel: (e) => {
         if (Math.abs(e.deltaY) < 4) return;
-        if (MOBILE) { this.mobileWheel(e); return; }
+        if (MOBILE) {
+          this.mobileWheel(e);
+          return;
+        }
         // one wheel/trackpad gesture (events < 220ms apart, incl. momentum) can't carry on past the large AT A GLANCE heading
-        const now = Date.now(), cont = now - (this.lastWheel || 0) < 220; this.lastWheel = now;
-        if (this.holdTg && cont && this.state.view === 'tg') return;
+        const now = Date.now(),
+          cont = now - (this.lastWheel || 0) < 220;
+        this.lastWheel = now;
+        if (this.holdTg && cont && this.state.view === "tg") return;
         this.holdTg = false;
-        if (this.state.menu) { this.setState({ menu: false }); return; }
-        if ((this.state.view === 'end' || this.state.link === 'z3') && this.linkWheel(e.deltaY)) return;
-        if (this.nxWheel(e.deltaY) || this.lf2Wheel(e.deltaY) || this.lf3Wheel(e.deltaY, e.target)) return; if (this.linkWheel(e.deltaY)) return; this.go(e.deltaY > 0 ? 1 : -1);
+        if (this.state.menu) {
+          this.setState({ menu: false });
+          return;
+        }
+        if (
+          (this.state.view === "end" || this.state.link === "z3") &&
+          this.linkWheel(e.deltaY)
+        )
+          return;
+        if (
+          this.nxWheel(e.deltaY) ||
+          this.lf2Wheel(e.deltaY) ||
+          this.lf3Wheel(e.deltaY, e.target)
+        )
+          return;
+        if (this.linkWheel(e.deltaY)) return;
+        this.go(e.deltaY > 0 ? 1 : -1);
       },
-      tabs: (() => { const k = { s6: 0, s7: 1, s8: 2 }[view], on = k != null && MOBILE /* desktop: each topic page has its own header (back · title · next), so the tabs only show on mobile */ && !this.state.lb; /* desktop topic 1 has its own header */ const i = k ?? (this.state.tabLast ?? 0); return { cls: on ? 'on' : '', x: TABS_X[i], w: TABS_W[i], s6: i === 0 ? 'on' : '', s7: i === 1 ? 'on' : '', s8: i === 2 ? 'on' : '', s6sel: String(i === 0), s7sel: String(i === 1), s8sel: String(i === 2) }; })(),
-      tab_s6: (e) => { e.stopPropagation(); this.tabTo('s6'); }, tab_s7: (e) => { e.stopPropagation(); this.tabTo('s7'); }, tab_s8: (e) => { e.stopPropagation(); this.tabTo('s8'); },
-      menu: { cls: ((rankOf(view) ?? 0) >= 2 && !this.state.lb ? 'on' : '') + (this.state.menu ? ' open' : '') + ((MOBILE ? ['fy', 'end', 'mb', 'fc1', 'fc2'] : ['fy', 'end', 'mb']).includes(view) ? ' sm-grad' : ''), exp: this.state.menu ? 'true' : 'false' },
-      menuOpen: (e) => { e.stopPropagation(); this.setState({ menu: true }); },
-      menuClose: (e) => { e.stopPropagation(); this.setState({ menu: false }); },
-      menuStop: (e) => { e.stopPropagation(); if (e.currentTarget.tagName === 'A') e.preventDefault(); },
-      nav_top: (e) => { e.stopPropagation(); this.jumpTo('top'); },
-      nav_s2: (e) => { e.stopPropagation(); this.jumpTo('s2'); },
-      nav_s3: (e) => { e.stopPropagation(); this.jumpTo('s3'); },
-      nav_s5: (e) => { e.stopPropagation(); this.jumpTo('s5'); },
-      nav_fy: (e) => { e.stopPropagation(); this.jumpTo('fy'); },
-      nav_nx: (e) => { e.stopPropagation(); this.jumpTo('nx'); },
-      nav_s6: (e) => { e.stopPropagation(); this.jumpTo('s6'); },
-      nav_s7: (e) => { e.stopPropagation(); this.jumpTo('s7'); },
-      nav_s8: (e) => { e.stopPropagation(); this.jumpTo('s8'); },
-      nav_mb: (e) => { e.stopPropagation(); this.jumpTo('mb'); },
-      nav_fc: (e) => { e.stopPropagation(); this.jumpTo('fc1'); },
-      tap: () => { if (this.state.menu) { this.setState({ menu: false }); return; } if (this.state.view === 'top' || this.state.view === 'logo' || this.state.view === 't2') this.go(1); },
+      tabs: (() => {
+        const k = { s6: 0, s7: 1, s8: 2 }[view],
+          on =
+            k != null &&
+            MOBILE /* desktop: each topic page has its own header (back · title · next), so the tabs only show on mobile */ &&
+            !this.state.lb;
+        /* desktop topic 1 has its own header */ const i =
+          k ?? this.state.tabLast ?? 0;
+        return {
+          cls: on ? "on" : "",
+          x: TABS_X[i],
+          w: TABS_W[i],
+          s6: i === 0 ? "on" : "",
+          s7: i === 1 ? "on" : "",
+          s8: i === 2 ? "on" : "",
+          s6sel: String(i === 0),
+          s7sel: String(i === 1),
+          s8sel: String(i === 2),
+        };
+      })(),
+      tab_s6: (e) => {
+        e.stopPropagation();
+        this.tabTo("s6");
+      },
+      tab_s7: (e) => {
+        e.stopPropagation();
+        this.tabTo("s7");
+      },
+      tab_s8: (e) => {
+        e.stopPropagation();
+        this.tabTo("s8");
+      },
+      menu: {
+        cls:
+          ((rankOf(view) ?? 0) >= 2 && !this.state.lb ? "on" : "") +
+          (this.state.menu ? " open" : "") +
+          ((MOBILE
+            ? ["fy", "end", "mb", "fc1", "fc2"]
+            : ["fy", "end", "mb"]
+          ).includes(view)
+            ? " sm-grad"
+            : ""),
+        exp: this.state.menu ? "true" : "false",
+      },
+      menuOpen: (e) => {
+        e.stopPropagation();
+        this.setState({ menu: true });
+      },
+      menuClose: (e) => {
+        e.stopPropagation();
+        this.setState({ menu: false });
+      },
+      menuStop: (e) => {
+        e.stopPropagation();
+        if (e.currentTarget.tagName === "A") e.preventDefault();
+      },
+      nav_top: (e) => {
+        e.stopPropagation();
+        this.jumpTo("top");
+      },
+      nav_s2: (e) => {
+        e.stopPropagation();
+        this.jumpTo("s2");
+      },
+      nav_s3: (e) => {
+        e.stopPropagation();
+        this.jumpTo("s3");
+      },
+      nav_s5: (e) => {
+        e.stopPropagation();
+        this.jumpTo("s5");
+      },
+      nav_fy: (e) => {
+        e.stopPropagation();
+        this.jumpTo("fy");
+      },
+      nav_nx: (e) => {
+        e.stopPropagation();
+        this.jumpTo("nx");
+      },
+      nav_s6: (e) => {
+        e.stopPropagation();
+        this.jumpTo("s6");
+      },
+      nav_s7: (e) => {
+        e.stopPropagation();
+        this.jumpTo("s7");
+      },
+      nav_s8: (e) => {
+        e.stopPropagation();
+        this.jumpTo("s8");
+      },
+      nav_mb: (e) => {
+        e.stopPropagation();
+        this.jumpTo("mb");
+      },
+      nav_fc: (e) => {
+        e.stopPropagation();
+        this.jumpTo("fc1");
+      },
+      tap: () => {
+        if (this.state.menu) {
+          this.setState({ menu: false });
+          return;
+        }
+        if (
+          this.state.view === "top" ||
+          this.state.view === "logo" ||
+          this.state.view === "t2"
+        )
+          this.go(1);
+      },
       touchStart: (e) => {
         this.ty = e.touches?.[0]?.clientY ?? null;
         this.tyLast = this.ty;
         this.tMoved = false;
         this.touchScroller = MOBILE ? this.mobileScroller(e.target) : null;
-        this.touchScrollStart = this.touchScroller ? { scrollTop: this.touchScroller.scrollTop, clientHeight: this.touchScroller.clientHeight, scrollHeight: this.touchScroller.scrollHeight, dataset: { mobileScrollMin: this.touchScroller.dataset?.mobileScrollMin } } : null;
+        this.touchScrollStart = this.touchScroller
+          ? {
+              scrollTop: this.touchScroller.scrollTop,
+              clientHeight: this.touchScroller.clientHeight,
+              scrollHeight: this.touchScroller.scrollHeight,
+              dataset: {
+                mobileScrollMin: this.touchScroller.dataset?.mobileScrollMin,
+              },
+            }
+          : null;
         this.touchOwned = false;
       },
       // Clubs keeps a gesture until native scrolling has finished, including its last movement.
       touchMove: (e) => {
         const y = e.touches?.[0]?.clientY;
-        if (!MOBILE || y == null || this.tyLast == null || this.state.menu) return;
+        if (!MOBILE || y == null || this.tyLast == null || this.state.menu)
+          return;
         const dy = this.tyLast - y;
-        if (this.mobileCanScroll(this.touchScroller, dy)) this.touchOwned = true;
+        if (this.mobileCanScroll(this.touchScroller, dy))
+          this.touchOwned = true;
         this.tyLast = y;
       },
       touchEnd: (e) => {
-        const y = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null;
+        const y =
+          e.changedTouches && e.changedTouches[0]
+            ? e.changedTouches[0].clientY
+            : null;
         if (this.ty == null || y == null) return;
         if (MOBILE) {
           const dy = this.ty - y;
-          const scrolledFromStart = this.mobileCanScroll(this.touchScrollStart, dy);
-          const threshold = ['lf2', 'lf3'].includes(this.state.view) ? 18 : 30;
-          if (!this.state.menu && !this.state.lb && !this.touchOwned && !scrolledFromStart && !this.mobileCanScroll(this.touchScroller, dy) && Math.abs(dy) > threshold) this.mobileGo(dy > 0 ? 1 : -1);
-          this.ty = null; return;
+          const scrolledFromStart = this.mobileCanScroll(
+            this.touchScrollStart,
+            dy,
+          );
+          const threshold = ["lf2", "lf3"].includes(this.state.view) ? 18 : 30;
+          if (
+            !this.state.menu &&
+            !this.state.lb &&
+            !this.touchOwned &&
+            !scrolledFromStart &&
+            !this.mobileCanScroll(this.touchScroller, dy) &&
+            Math.abs(dy) > threshold
+          )
+            this.mobileGo(dy > 0 ? 1 : -1);
+          this.ty = null;
+          return;
         }
-        if (this.tMoved) { this.tMoved = false; return; } // already followed the finger
+        if (this.tMoved) {
+          this.tMoved = false;
+          return;
+        } // already followed the finger
         if (Math.abs(this.ty - y) > 30) {
           const dy = (this.ty - y) * 1.5;
-          if ((this.state.view === 'end' || this.state.link === 'z3') && this.linkWheel(dy)) return;
-          if (this.nxWheel(dy) || this.lf2Wheel(dy) || this.lf3Wheel(dy)) return;
+          if (
+            (this.state.view === "end" || this.state.link === "z3") &&
+            this.linkWheel(dy)
+          )
+            return;
+          if (this.nxWheel(dy) || this.lf2Wheel(dy) || this.lf3Wheel(dy))
+            return;
           if (this.linkWheel(dy)) return;
           this.go(dy > 0 ? 1 : -1);
         }
@@ -1336,46 +3715,118 @@ export class ArtboardLogic extends Logic {
       // section 2 starts as exactly the bar's rectangle, then opens to the full frame
       wipe: lay && lay.wipe ? lay.wipe : { l: 45, r: 45 },
       bloomX: (+barX + barW / 2).toFixed(2),
-      head: (() => { const big = view === 'tg', capH = lay && lay.Ld ? lay.Ld.sh : 52; return { x: head.x, y: head.y, ox: head.ox, oy: head.oy, s: big ? TG_SCALE.toFixed(4) : 1, ty: big ? +(TG_BASE - GLANCE_BASE - capH * (TG_SCALE - 1)).toFixed(2) : 0 }; })(),
-      v: (() => {
-        const st = this.state.step, q = (i) => (st === i ? p : 1);
-        const K = (n, i, suf) => Math.round(n * q(i)) + suf;
-        const C = (n, i) => Math.round(n * q(i)).toLocaleString('en-US');
-        return { m1: K(417, 0, 'K'), m2: K(86, 0, '%'), o1: (1.72 * q(1)).toFixed(2) + 'M', o2: K(75, 1, 'K'), o3: K(211, 1, 'K'), o4: K(52, 1, 'K'),
-          s1: C(1074, 2) + ' MWh', s2: K(432, 2, ' Tonnes'), s3: C(6850, 2) };
+      head: (() => {
+        const big = view === "tg",
+          capH = lay && lay.Ld ? lay.Ld.sh : 52;
+        return {
+          x: head.x,
+          y: head.y,
+          ox: head.ox,
+          oy: head.oy,
+          s: big ? TG_SCALE.toFixed(4) : 1,
+          ty: big
+            ? +(TG_BASE - GLANCE_BASE - capH * (TG_SCALE - 1)).toFixed(2)
+            : 0,
+        };
       })(),
-      sl0: this.state.step === 0 ? 'on' : '', sl1: this.state.step === 1 ? 'on' : '', sl2: this.state.step === 2 ? 'on' : '',
+      v: (() => {
+        const st = this.state.step,
+          q = (i) => (st === i ? p : 1);
+        const K = (n, i, suf) => Math.round(n * q(i)) + suf;
+        const C = (n, i) => Math.round(n * q(i)).toLocaleString("en-US");
+        return {
+          m1: K(417, 0, "K"),
+          m2: K(86, 0, "%"),
+          o1: (1.72 * q(1)).toFixed(2) + "M",
+          o2: K(75, 1, "K"),
+          o3: K(211, 1, "K"),
+          o4: K(52, 1, "K"),
+          s1: C(1074, 2) + " MWh",
+          s2: K(432, 2, " Tonnes"),
+          s3: C(6850, 2),
+        };
+      })(),
+      sl0: this.state.step === 0 ? "on" : "",
+      sl1: this.state.step === 1 ? "on" : "",
+      sl2: this.state.step === 2 ? "on" : "",
       sweepS: ((this.state.step + 1) / 3).toFixed(4),
-      freshClass: this.state.fresh ? 'fresh' : '',
-      dirClass: this.state.dirB ? 'dirb' : '',
+      freshClass: this.state.fresh ? "fresh" : "",
+      dirClass: this.state.dirB ? "dirb" : "",
       pFamily: tr(-18),
       pConcert: tr(-30),
       pKids: tr(-24),
       pTyres: tr(-36),
-      pp: (() => { const v = this.state.view, on = false && (v === 's6' || v === 's7' || v === 's8'), /* cursor drift removed */ f = (d) => on ? (mx * d * k).toFixed(1) + 'px ' + (my * d * k).toFixed(1) + 'px' : '0px 0px'; return { d0: f(-14), d1: f(-24), d2: f(-20), d3: f(-18) }; })(), // section 6/7 photos drift with the cursor
+      pp: (() => {
+        const v = this.state.view,
+          on = false && (v === "s6" || v === "s7" || v === "s8"),
+          /* cursor drift removed */ f = (d) =>
+            on
+              ? (mx * d * k).toFixed(1) + "px " + (my * d * k).toFixed(1) + "px"
+              : "0px 0px";
+        return { d0: f(-14), d1: f(-24), d2: f(-20), d3: f(-18) };
+      })(), // section 6/7 photos drift with the cursor
       move: (e) => {
         if (MOBILE) return;
-        if (!this.root) { this.root = e.currentTarget; requestAnimationFrame(() => this.measure()); }
+        if (!this.root) {
+          this.root = e.currentTarget;
+          requestAnimationFrame(() => this.measure());
+        }
         const r = e.currentTarget.getBoundingClientRect();
         if (!r.width) return;
         const s = 1440 / r.width;
         const cl = (x) => Math.max(-0.5, Math.min(0.5, x));
         // the red cursor (120px) is kept whole on screen: its centre stays 60px inside the window edges — and, outside the masthead
         // (whose bands are open), inside the artboard's top/bottom too, where the page is clipped
-        const hx0 = (e.clientX - r.left) * s, hy0 = (e.clientY - r.top) * s, mast = this.state.view === 'top' || this.state.view === 'logo';
-        const vx0 = -r.left * s, vx1 = (window.innerWidth - r.left) * s, vy0 = -r.top * s, vy1 = (window.innerHeight - r.top) * s;
-        const y0 = mast ? vy0 : Math.max(vy0, 0), y1 = mast ? vy1 : Math.min(vy1, 900 * (r.width ? 1 : 1));
-        const curX = Math.max(vx0 + 60, Math.min(vx1 - 60, hx0)), curY = Math.max(y0 + 60, Math.min(y1 - 60, hy0));
-        this.setState({ mx: cl((e.clientX - r.left) / r.width - 0.5), my: cl((e.clientY - r.top) / (r.width * 0.625) - 0.5), hx: hx0, hy: hy0, curX, curY });
+        const hx0 = (e.clientX - r.left) * s,
+          hy0 = (e.clientY - r.top) * s,
+          mast = this.state.view === "top" || this.state.view === "logo";
+        const vx0 = -r.left * s,
+          vx1 = (window.innerWidth - r.left) * s,
+          vy0 = -r.top * s,
+          vy1 = (window.innerHeight - r.top) * s;
+        const y0 = mast ? vy0 : Math.max(vy0, 0),
+          y1 = mast ? vy1 : Math.min(vy1, 900 * (r.width ? 1 : 1));
+        const curX = Math.max(vx0 + 60, Math.min(vx1 - 60, hx0)),
+          curY = Math.max(y0 + 60, Math.min(y1 - 60, hy0));
+        this.setState({
+          mx: cl((e.clientX - r.left) / r.width - 0.5),
+          my: cl((e.clientY - r.top) / (r.width * 0.625) - 0.5),
+          hx: hx0,
+          hy: hy0,
+          curX,
+          curY,
+        });
         this.hvMove((e.clientX - r.left) * s, (e.clientY - r.top) * s, s);
-        const tc = e.target && e.target.closest ? e.target.closest('.tc') : null; this.cardStack(this.state.view === 's5' ? tc : null);
+        const tc =
+          e.target && e.target.closest ? e.target.closest(".tc") : null;
+        this.cardStack(this.state.view === "s5" ? tc : null);
       },
-      leave: (e) => { if (MOBILE) return; if (e && e.relatedTarget) return; /* still in the window (side margins): keep following */ this.setState({ mx: 0, my: 0, hx: null, hy: null }); this.hvMove(null, null, 1); this.cardStack(null); },
+      leave: (e) => {
+        if (MOBILE) return;
+        if (e && e.relatedTarget) return;
+        /* still in the window (side margins): keep following */ this.setState({
+          mx: 0,
+          my: 0,
+          hx: null,
+          hy: null,
+        });
+        this.hvMove(null, null, 1);
+        this.cardStack(null);
+      },
       hook: (e) => {
-        try { const r = e.currentTarget.closest('.mh'); if (r) { this.root = r; requestAnimationFrame(() => this.measure()); } } catch (err) {}
+        try {
+          const r = e.currentTarget.closest(".mh");
+          if (r) {
+            this.root = r;
+            requestAnimationFrame(() => this.measure());
+          }
+        } catch (err) {}
       },
-      L: lay && lay.Ld ? lay.Ld : { sx: 6, st: 6, sw: 9, sh: 52, ft: 49, fw: 32, fh: 9 },
-      replay: () => this.restart()
+      L:
+        lay && lay.Ld
+          ? lay.Ld
+          : { sx: 6, st: 6, sw: 9, sh: 52, ft: 49, fw: 32, fh: 9 },
+      replay: () => this.restart(),
     };
   }
 }

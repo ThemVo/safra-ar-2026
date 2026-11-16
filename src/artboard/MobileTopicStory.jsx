@@ -349,7 +349,7 @@ const stories = {
     ],
     copy: "A wide range of appreciation deals for national servicemen, ranging from daily essentials to recreation, were secured through collaborations with merchants islandwide.",
     photos: [
-      photo("nsmen-deals-klook.jpg", [213, 0, 180, 180], [0, 0, 180, 180], 2),
+      photo("nsmen-deals-klook-3.jpg", [213, 0, 180, 180], [0, 0, 180, 180], 2),
       photo(
         "nsmen-deals-jungle-upsara-spa.jpg",
         [180, 278.01, 180, 180],

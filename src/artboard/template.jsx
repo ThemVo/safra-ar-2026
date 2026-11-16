@@ -5138,28 +5138,6 @@ export default function render(v) {
                   className={`st6 ${s(v.d7?.on1)}`}
                   aria-label="Expressing gratitude through storytelling"
                 >
-                  <svg
-                    aria-hidden="true"
-                    width="0"
-                    height="0"
-                    style={{ position: "absolute" }}
-                  >
-                    <defs>
-                      <linearGradient
-                        id="vplayG"
-                        x1="2"
-                        y1="24"
-                        x2="46"
-                        y2="24"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stopColor="#6252A4" />
-                        <stop offset="0.490385" stopColor="#F14192" />
-                        <stop offset="0.927885" stopColor="#F6765D" />
-                        <stop offset="0.9999" stopColor="#F69141" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
                   <button
                     className="dcph"
                     type="button"
@@ -5195,28 +5173,13 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <svg
-                      aria-hidden="true"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      style={{
+                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 3.8435px))`,
-                      }}
-                    >
-                      <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z"
-                        fill="#FFFFFF"
-                      />
-                    </svg>
+                      }} />
                   </button>
                   <button
                     className="dcph"
@@ -5253,28 +5216,13 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <svg
-                      aria-hidden="true"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      style={{
+                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.5000px))`,
-                      }}
-                    >
-                      <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z"
-                        fill="#FFFFFF"
-                      />
-                    </svg>
+                      }} />
                   </button>
                   <button
                     className="dcph"
@@ -5311,28 +5259,13 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <svg
-                      aria-hidden="true"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      style={{
+                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.1902px))`,
-                      }}
-                    >
-                      <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z"
-                        fill="#FFFFFF"
-                      />
-                    </svg>
+                      }} />
                   </button>
                   <button
                     className="dcph"
@@ -5369,28 +5302,13 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <svg
-                      aria-hidden="true"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      style={{
+                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.1128px))`,
-                      }}
-                    >
-                      <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z"
-                        fill="#FFFFFF"
-                      />
-                    </svg>
+                      }} />
                   </button>
                   <div
                     className="dcpn"
@@ -11709,7 +11627,7 @@ export default function render(v) {
                 <h3 className="lf2t">
                   Enhanced experiences at
                   <br />
-                  SAFRA clubs
+                  <span className="lf3-title-clubs">SAFRA clubs</span>
                 </h3>
                 <div className="lf3c">
                   <div className="lf3b">
@@ -11797,7 +11715,7 @@ export default function render(v) {
               }}
             >
               <button
-                className={`lf-photo lf-photo-single lf3ph ${s(v.lf3v?.ph)}`}
+                className={`lf-photo lf3ph ${s(v.lf3v?.ph)}`}
                 type="button"
                 aria-label={v.lf3PhotoLabel}
                 onClick={v.lf3Photo}

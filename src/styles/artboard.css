@@ -608,6 +608,7 @@ body{margin:0;background:#272C3F}
 .mh.m .lf2i.on{padding-bottom:16px}
 .mh.m .lf2i.on .lf2b>p{padding-top:8px}
 .mh.m .lf2c{padding:8px;font-size:11px}
+.mh .lf2l .lf2i:not(.on){padding-top:16px;padding-bottom:16px}
 /* parallax: layers sit lower by --py until the section is in view, then glide into place at different speeds than the camera; the 01 panel above leaves faster */
 .mh .lfp{transform:translateY(var(--py,0px));transition:transform 1.05s cubic-bezier(.6,0,.3,1)}
 .mh.at-lf2 .lfp{transform:none}
@@ -723,8 +724,6 @@ body{margin:0;background:#272C3F}
 .mh .lf-photo,.mh .lf-photo *{cursor:url(../assets/cursors/viewphotos-cursor.svg) 46 46,pointer !important}
 .mh .lf-photo:focus-visible{outline:2px solid #F5765E;outline-offset:4px}
 .mh .lb.lb-single .lb-row{display:none !important}
-
-.mh .lf-photo-single,.mh .lf-photo-single *{cursor:url(../assets/cursors/view-cursor.svg) 46 46,pointer !important}
 
 /* Let the shared photo/video viewer cover the viewport letterbox bands. */
 .mh:has(.lb.open){clip-path:inset(calc(-1 * var(--gy, 0px)) calc(-1 * var(--gx, 0px))) !important}

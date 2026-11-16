@@ -82,7 +82,7 @@ const CARD_IMGS = {
   '#sb-title': ['./assets/sb1-big.jpg', './assets/sb1-a.jpg', './assets/sb1-b.jpg']
 };
 // section 8: Strengthening bonds (one story so far)
-const DC8 = [{"stats": ["52K"], "desc": ["SAFRA’s National Day celebrations at Marina Bay", "and across all SAFRA clubs brought loved ones", "together for the live screening of the NDP,", "live performances and nostalgic games."], "bar": 86.67, "photos": ["./assets/sb1-main.jpg", "./assets/sb1-crowd.jpg", "./assets/sb1-mascot.jpg"], "alts": ["A family smiles in front of red fireworks at a National Day celebration", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["./assets/sb1g-0.jpg", "./assets/sb1g-1.jpg", "./assets/sb1g-2.jpg", "./assets/sb1g-3.jpg", "./assets/sb1g-4.jpg"], "gi": [3, 1, 4]}, {"stats": ["1.2K", "420"], "desc": ["SG60 SAFRA Family Fiesta brought families", "together for fun-filled activities, including the", "SAFRA Diaper Dash and sing-along sessions with", "their favourite Pororo & Friends characters."], "bar": 173.33, "photos": ["./assets/sb2-main.jpg", "./assets/sb2-race.jpg", "./assets/sb2-dash2.jpg"], "alts": ["Children pose with Pororo & Friends characters at the SG60 SAFRA Family Fiesta", "Babies and toddlers race across a colourful mat as families cheer at the SAFRA Diaper Dash", "Parents and toddlers holding Pororo plush toys wait at the start of the SAFRA Diaper Dash"], "gallery": ["./assets/sb2s-0.jpg", "./assets/sb2s-1.jpg", "./assets/sb2s-2.jpg"], "gi": [2, 1, 0]}, {"stats": ["637", "52K"], "desc": ["Cohesion events were organised for SAF NS units", "at various SAFRA clubs and SAF camps, featuring", "a wide range of activities such as archery tag,", "bowling, inflatable games, water telematches and", "various sports competitions."], "bar": 260, "photos": ["./assets/sb3-main.jpg", "./assets/sb3-archery.jpg", "./assets/sb3-team.jpg"], "alts": ["National servicemen play human foosball on an inflatable pitch", "National servicemen in face masks pose with archery tag bows", "An NS unit poses for a team photo after a football match"], "gallery": ["./assets/sb3g-0.jpg", "./assets/sb3g-1.jpg", "./assets/sb3g-2.jpg", "./assets/sb3g-3.jpg", "./assets/sb3g-4.jpg", "./assets/sb3g-5.jpg", "./assets/sb3g-6.jpg"], "gi": [2, 0, 5]}, {"stats": ["1.2K"], "desc": ["SAFRA Youth Fiesta brought youths together to", "compete in the Ultimate Frisbee Tournament", "and indulge in Japanese pop culture at the", "DoujinFes Fair and Hololive Official Card Game", "community workshops."], "bar": 346.67, "photos": ["./assets/sb4-main.jpg", "./assets/sb4-cosplay.jpg", "./assets/sb4-frisbee.jpg"], "alts": ["Youths compete in the Ultimate Frisbee Tournament at SAFRA Youth Fiesta", "Cosplayers at the DoujinFes Fair", "A player throws a frisbee past a defender during the Ultimate Frisbee Tournament"], "gallery": ["./assets/sb4g-0.jpg", "./assets/sb4g-1.jpg", "./assets/sb4g-2.jpg"], "gi": [1, 2, 0]}, {"stats": ["430"], "desc": ["Soundbyte Beer Music Play brought", "national\u00a0servicemen and their friends together to", "enjoy live band performances, high-energy", "DJ sets, games and free flow of drinks."], "bar": 433.33, "photos": ["./assets/sb5-main.jpg", "./assets/sb5-hall.jpg", "./assets/sb5-game.jpg"], "alts": ["Guests dance with their arms raised at Soundbyte Beer Music Play", "A packed hall of guests raises their drinks at Soundbyte Beer Music Play", "Friends play an arcade button game at Soundbyte Beer Music Play"], "gallery": ["./assets/sb5g-0.jpg", "./assets/sb5g-1.jpg", "./assets/sb5g-2.jpg"], "gi": [0, 1, 2]}, {"stats": ["5.5K", "$290K"], "desc": ["SAFRA Swim for Hope rallied the community to", "swim for charity and raise funds for the less", "privileged and those in need."], "bar": 520, "photos": ["./assets/sb6-main.jpg", "./assets/sb6-pool.jpg"], "alts": ["Organisers and partners present a S$290,000 cheque at SAFRA Swim for Hope", "Participants swim for charity at SAFRA Swim for Hope"], "gallery": ["./assets/sb6g-0.jpg", "./assets/sb6g-1.jpg"], "gi": [0, 1]}];
+const DC8 = [{"stats": ["52K"], "desc": ["SAFRA’s National Day celebrations at Marina Bay", "and across all SAFRA clubs brought loved ones", "together for the live screening of the NDP,", "live performances and nostalgic games."], "bar": 86.67, "photos": ["./assets/sb1-main.jpg", "./assets/sb1-crowd.jpg", "./assets/sb1-mascot.jpg"], "alts": ["A family smiles in front of red fireworks at a National Day celebration", "Members cheer with SAFRA thunder sticks at a National Day celebration", "A family on a picnic mat with the SAFRA mascot at a SG60 celebration"], "gallery": ["./assets/sb1g-0.jpg", "./assets/sb1g-1.jpg", "./assets/sb1g-2.jpg", "./assets/sb1g-3.jpg", "./assets/sb1g-4.jpg"], "gi": [3, 1, 4]}, {"stats": ["1.2K", "420"], "desc": ["SG60 SAFRA Family Fiesta brought families", "together for fun-filled activities, including the", "SAFRA Diaper Dash and sing-along sessions with", "their favourite Pororo & Friends characters."], "bar": 173.33, "photos": ["./assets/sb2-main.jpg", "./assets/sb2-race.jpg", "./assets/sb2-dash2.jpg"], "alts": ["Children pose with Pororo & Friends characters at the SG60 SAFRA Family Fiesta", "Babies and toddlers race across a colourful mat as families cheer at the SAFRA Diaper Dash", "Parents and toddlers holding Pororo plush toys wait at the start of the SAFRA Diaper Dash"], "gallery": ["./assets/sb2s-0.jpg", "./assets/sb2s-1.jpg", "./assets/sb2s-2.jpg"], "gi": [2, 1, 0]}, {"stats": ["637", "52K"], "desc": ["Cohesion events were organised for SAF NS units", "at various SAFRA clubs and SAF camps, featuring", "a wide range of activities such as archery tag,", "bowling, inflatable games, water telematches and", "various sports competitions."], "bar": 260, "photos": ["./assets/sb3-main.jpg", "./assets/sb3-archery.jpg", "./assets/sb3-team.jpg"], "alts": ["National servicemen play human foosball on an inflatable pitch", "National servicemen in face masks pose with archery tag bows", "An NS unit poses for a team photo after a football match"], "gallery": ["./assets/sb3g-0.jpg", "./assets/sb3g-1.jpg", "./assets/sb3g-2.jpg", "./assets/sb3g-3.jpg", "./assets/sb3g-4.jpg", "./assets/sb3g-5.jpg", "./assets/sb3g-6.jpg"], "gi": [2, 0, 5]}, {"stats": ["1.2K"], "desc": ["SAFRA Youth Fiesta brought youths together to", "compete in the Ultimate Frisbee Tournament", "and indulge in Japanese pop culture at the", "DoujinFes Fair and Hololive Official Card Game", "community workshops."], "bar": 346.67, "photos": ["./assets/sb4-main.jpg", "./assets/sb4-cosplay.jpg", "./assets/sb4-frisbee.jpg"], "alts": ["Youths compete in the Ultimate Frisbee Tournament at SAFRA Youth Fiesta", "Cosplayers at the DoujinFes Fair", "A player throws a frisbee past a defender during the Ultimate Frisbee Tournament"], "gallery": ["./assets/sb4g-0.jpg", "./assets/sb4g-1.jpg", "./assets/sb4g-2.jpg"], "gi": [1, 2, 0]}, {"stats": ["430"], "desc": ["Soundbyte Beer Music Play brought", "national\u00a0servicemen and their friends together to", "enjoy live band performances, high-energy", "DJ sets, games and free flow of drinks."], "bar": 433.33, "photos": ["./assets/sb5-main.jpg", "./assets/sb5-hall.jpg", "./assets/sb5-game.jpg"], "alts": ["Guests dance with their arms raised at Soundbyte Beer Music Play", "A packed hall of guests raises their drinks at Soundbyte Beer Music Play", "Friends play an arcade button game at Soundbyte Beer Music Play"], "gallery": ["./assets/sb5g-0.jpg", "./assets/sb5g-1.jpg", "./assets/sb5g-2.jpg"], "gi": [0, 1, 2]}, {"stats": ["5.5K", "$290K"], "desc": ["SAFRA Swim for Hope rallied the community to", "swim for charity and raise funds for the less", "privileged and those in need."], "bar": 520, "photos": ["./assets/sb6-main.jpg", "./assets/sb6-pool.jpg"], "alts": ["Organisers and partners present a S$290,000 cheque at SAFRA Swim for Hope", "Participants swim for charity at SAFRA Swim for Hope"], "gallery": ["./assets/sb6-main.jpg", "./assets/sb6g-1.jpg"], "gi": [0, 1]}];
 // section 10: membership categories
 // Looking-forward galleries share the existing photo viewer.
 const LF_GALLERIES = {
@@ -102,7 +102,7 @@ const linkOf = (v) => Object.keys(LINKS).find((k) => LINKS[k].at.some(([x]) => x
 const RANK = { logo: -1, top: 0, s2: 1, tg: 2, s3: 2, s5: 3, s6: 4, s7: 4, s8: 4, t2: 5, mb: 6, fc1: 6, fc2: 6, fy: 7, wc: 8, nx: 9, lf2: 9.5, lf3: 9.7, end: 10 };
 const SCR = { cps: 60, settle: 0.3, set: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%#_' };
 const SLIDE = { dur: 0.7, stag: 0.08, dist: 24 }; // description lines: slide-in timing (s) and travel (px)
-const dcSeconds = (d) => Math.max(0.8, 1.25, (d.desc.length - 1) * SLIDE.stag + SLIDE.dur);
+const dcSeconds = (d) => Math.max(0.8, MOBILE ? 1.5 : 1.25, (d.desc.length - 1) * SLIDE.stag + SLIDE.dur);
 const eOut2 = (x) => 1 - Math.pow(1 - x, 3); // power2.out
 const eOut1 = (x) => 1 - Math.pow(1 - x, 2); // power1.out
 const fmtCount = (v, k) => { const m = /^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/.exec(v); if (!m) return v; const dec = m[2].includes('.') ? m[2].split('.')[1].length : 0; const n = Number(m[2].replace(/,/g, '')) * k; return m[1] + n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec, useGrouping: m[2].includes(',') }) + m[3]; };
@@ -121,6 +121,7 @@ const COUNT_AFTER = 1600; // ms after arriving at section 3
 const INTRO_DONE = 7000; // last headline line has landed → masthead animation complete
 const CURSOR_AFTER = 0; // the red circle cursor appears as soon as the headline has fully revealed
 const TG_AUTO = 1900; // large AT A GLANCE: ms after arriving before it shrinks to the small heading by itself (camera move ≈ 1.2s + a beat to read it)
+const MOBILE_TG_AUTO = 750; // match the mobile camera arrival; the connector has reached the large heading
 const REPLAY_DONE = 5100; // logo → masthead: the headline's last line lands (.post timings: 4.0s delay + 1.1s)
 
 export class ArtboardLogic extends Logic {
@@ -724,10 +725,6 @@ export class ArtboardLogic extends Logic {
   }
   mobileWheel(e) {
     if (this.state.menu || this.state.lb) return;
-    if (['lf2', 'lf3'].includes(this.state.view) && e.target?.closest?.(this.state.view === 'lf2' ? '.lf2l' : '.lf3s') && !(e.deltaY < 0 && this.mobileCanScroll(this.mobileScroller(e.target), e.deltaY))) {
-      if (!(this.state.view === 'lf2' ? this.lf2Wheel(e.deltaY) : this.lf3Wheel(e.deltaY))) this.mobileGo(e.deltaY > 0 ? 1 : -1);
-      return;
-    }
     const now = Date.now(), fresh = now - (this.mobileWheelAt ?? -Infinity) > 220;
     this.mobileWheelAt = now;
     if (fresh) this.mobileWheelOwned = false;
@@ -750,7 +747,7 @@ export class ArtboardLogic extends Logic {
       const key = this.state.view === 'lf2' ? 'lf2s' : 'lf3s';
       const max = this.state.view === 'lf2' ? 3 : 2, index = (this.state[key] || 0) + dir;
       if (index >= 0 && index <= max) {
-        this.lockUntil = now + 900;
+        this.lockUntil = now + 500;
         this.setState({ [key]: index }); return;
       }
     }
@@ -827,7 +824,7 @@ export class ArtboardLogic extends Logic {
       if (dir < 0) this.tgT = setTimeout(() => { if (this.state.view === 'tg') this.setState({ s3: false, fresh: false }); }, 500);
       // coming down: the large AT A GLANCE heading holds a moment, then shrinks into place on its own (on into At a glance)
       clearTimeout(this.tgA);
-      if (dir > 0 && !MOBILE) this.tgA = setTimeout(() => { if (this.state.view === 'tg' && !this.state.menu) { this.lockUntil = 0; this.holdTg = false; this.go(1); } }, TG_AUTO);
+      if (dir > 0) this.tgA = setTimeout(() => { if (this.state.view === 'tg' && !this.state.menu) { this.lockUntil = 0; this.holdTg = false; this.go(1); } }, MOBILE ? MOBILE_TG_AUTO : TG_AUTO);
     }
     if (v === 's3') {
       clearTimeout(this.tgT);
@@ -1085,6 +1082,12 @@ export class ArtboardLogic extends Logic {
     const circle = (masthead && (this.state.curOn || fin)) || (view === 'nx' && !this.state.menu && (!this.state.link || this.state.z2end)); // Looking forward: the same red 'Scroll for more' cursor
     return {
       mobileView: view,
+      // Mobile wraps the same copy into more lines; keep the desktop timing for each line.
+      mobileStoryLine: (index) => {
+        const t = fin ? null : this.state[`t${view.slice(1)}`];
+        const q = t == null ? 1 : eOut2(Math.min(1, Math.max(0, (t - (this.hold || 0) - index * SLIDE.stag) / SLIDE.dur)));
+        return { transform: `translateY(${((1 - q) * SLIDE.dist).toFixed(1)}px)`, opacity: q.toFixed(3) };
+      },
       mobileScrollOffset: this.state.fcY || 0,
       mobileScrollDirection: this.mobileDirection || 1,
       mobilePriorityStory: this.state[view === 'lf2' ? 'lf2s' : 'lf3s'] || 0,
@@ -1295,7 +1298,6 @@ export class ArtboardLogic extends Logic {
         this.ty = e.touches?.[0]?.clientY ?? null;
         this.tyLast = this.ty;
         this.tMoved = false;
-        this.touchStory = MOBILE && ['lf2', 'lf3'].includes(this.state.view) && !!e.target?.closest?.(this.state.view === 'lf2' ? '.lf2l' : '.lf3s');
         this.touchScroller = MOBILE ? this.mobileScroller(e.target) : null;
         this.touchScrollStart = this.touchScroller ? { scrollTop: this.touchScroller.scrollTop, clientHeight: this.touchScroller.clientHeight, scrollHeight: this.touchScroller.scrollHeight, dataset: { mobileScrollMin: this.touchScroller.dataset?.mobileScrollMin } } : null;
         this.touchOwned = false;
@@ -1305,7 +1307,7 @@ export class ArtboardLogic extends Logic {
         const y = e.touches?.[0]?.clientY;
         if (!MOBILE || y == null || this.tyLast == null || this.state.menu) return;
         const dy = this.tyLast - y;
-        if ((!this.touchStory || dy < 0) && this.mobileCanScroll(this.touchScroller, dy)) this.touchOwned = true;
+        if (this.mobileCanScroll(this.touchScroller, dy)) this.touchOwned = true;
         this.tyLast = y;
       },
       touchEnd: (e) => {
@@ -1313,9 +1315,9 @@ export class ArtboardLogic extends Logic {
         if (this.ty == null || y == null) return;
         if (MOBILE) {
           const dy = this.ty - y;
-          const native = !this.touchStory || dy < 0;
-          const scrolledFromStart = native && this.mobileCanScroll(this.touchScrollStart, dy);
-          if (!this.state.menu && !this.state.lb && !this.touchOwned && !scrolledFromStart && !(native && this.mobileCanScroll(this.touchScroller, dy)) && Math.abs(dy) > 30) this.mobileGo(dy > 0 ? 1 : -1);
+          const scrolledFromStart = this.mobileCanScroll(this.touchScrollStart, dy);
+          const threshold = ['lf2', 'lf3'].includes(this.state.view) ? 18 : 30;
+          if (!this.state.menu && !this.state.lb && !this.touchOwned && !scrolledFromStart && !this.mobileCanScroll(this.touchScroller, dy) && Math.abs(dy) > threshold) this.mobileGo(dy > 0 ? 1 : -1);
           this.ty = null; return;
         }
         if (this.tMoved) { this.tMoved = false; return; } // already followed the finger

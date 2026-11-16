@@ -2,7 +2,7 @@
 
 The scroll-driven key-highlights experience, from the SAFRA logo masthead through to the
 "One year. Many connections." closing, as a Vite + React app. All copy is live text and
-all icons are inline SVG.
+icons use shared SVG artwork.
 
 ## Run it
 
@@ -112,3 +112,18 @@ The default `./` prefixes
 support hosting the build in a subdirectory. For remote prefixes, upload each
 file to the corresponding configured location. Development continues to serve
 the source images at `/assets/…`.
+
+Mobile filenames assembled at runtime use `src/utils/assetUrl.js` so photos
+and SVG controls follow the same `URL_IMAGE` / `URL_SVG` prefixes. Videos in
+the shared mobile gallery continue to use `URL_IMAGE`.
+
+## Shared image and icon sources
+
+Mobile story photos and topic cards reuse desktop/gallery assets from `public/assets/`.
+The mobile layout keeps its own crop/slot geometry in `MobileTopicStory.jsx` and CSS;
+reuse an existing image filename when adding the same photograph to another viewport.
+Separate artwork remains only where the baked crop or image content differs.
+Both layouts use `video-play.svg`; mobile story controls use `topic-back.svg` and
+`story-divider.svg` instead of per-story exports. `StickyMenu.jsx` shares its inline
+menu icons across both layouts. Use `assetUrl()` for runtime filenames so image and
+SVG hosting prefixes still work in every build mode.

@@ -1,5 +1,48 @@
 # Changelog
 
+## 2026-11-16 — Rà soát tiếp tài nguyên desktop/mobile
+
+- Đối chiếu ảnh và icon qua computer use; gom thêm hai SVG máy bay và tàu biển về `mb-tv-plane.svg` và `mb-tv-ship.svg`, giữ kích thước mobile 40×40px.
+- Giữ riêng các ảnh có crop khác và icon khách sạn/vòng quay có chi tiết hoặc gradient khác. Bốn video và poster tiếp tục dùng chung dữ liệu gallery desktop/mobile.
+
+## 2026-11-16 — Chuyển động ưu tiên 01 ↔ 02 ↔ 03 trên mobile
+
+- Giữ ba phần Looking forward story 1, Strengthening commitment và Supporting NSmen cùng tồn tại: phần sau trượt lên phủ phần trước và trượt xuống khi quay lại, phần nền đứng yên và tối dần như desktop (750ms, cùng easing).
+- Giữ vị trí cuộn, accordion, gallery và URL; chỉ phần đang xem nhận tương tác và được đọc bởi trình đọc màn hình. Tôn trọng chế độ giảm chuyển động.
+- Đối chiếu trực tiếp desktop/mobile bằng trình duyệt, kiểm tra hai chiều 01 ↔ 02 và 02 ↔ 03, tải URL trực tiếp và cuộn ngược từ footer; 34 kiểm tra tự động và build đạt.
+
+## 2026-11-16 — Giữ animation nội dung con Initiatives trên mobile
+
+- Nối cả 14 story mobile với timeline desktop: ảnh trượt trong khung crop, tiêu đề và nhãn hiện dần, số đếm và mô tả xuất hiện lần lượt từng dòng.
+- Giữ bố cục/crop mobile; bổ sung thời gian cho các dòng mô tả dài hơn và hiệu ứng ảnh/chữ cho Clubs & Facilities.
+- Thêm kiểm tra các trạng thái đầu, giữa và cuối animation cho toàn bộ story.
+
+## 2026-11-16 — Icon Looking Forward mobile
+
+- Thêm icon “Scroll for more” 96×96px từ Figma, căn giữa và cách dòng giới thiệu 3 ưu tiên 40px; dùng lại SVG có sẵn trùng khớp với thiết kế.
+- Nhấn icon mở ưu tiên đầu tiên bằng luồng chuyển màn hiện có.
+- Kiểm tra hiển thị tại 393×853 và 320×640, thao tác mở ưu tiên, 30 kiểm tra tự động và build thành công.
+
+## 2026-11-16 — Clubs & Facilities mobile theo Figma 4010:311
+
+- Tiêu đề 20px, chia hai dòng; nút quay lại dùng nền tròn và icon chung theo thiết kế.
+- Sắp xếp ảnh gym nghiêng và chồng khối chữ bên phải; cụm CMPB có ảnh lounge phía trên bên trái, ảnh café phía sau và khối chữ bên trái.
+- Chỉnh tiêu đề card 14px, mô tả 12px/1.8, padding và khoảng cách theo Figma; giữ nội dung dùng chung và cuộn toàn màn.
+- Kiểm tra trực quan tại 393px, kiểm tra 320px không tràn ngang và ảnh tải đầy đủ; 30 kiểm tra tự động đạt.
+
+## 2026-11-16 — Dùng chung ảnh và icon mobile/desktop
+
+- Story mobile, ảnh chủ đề và các ảnh At a glance trùng nội dung dùng lại ảnh desktop/gallery; giữ slot và crop bằng CSS của mobile.
+- Dùng một `video-play.svg` cho cả hai giao diện, một `topic-back.svg` và một `story-divider.svg` cho các story; menu dùng chung SVG trong component `StickyMenu`.
+- Xóa 85 tệp dư (khoảng 124 MiB), thêm 3 SVG dùng chung. Giữ riêng ảnh có crop xuất sẵn khác nhau và ảnh riêng của thiết kế mobile.
+- Kiểm tra render/đường dẫn ảnh, gallery và video ở cả ba mode build; kiểm tra trực quan màn video tại 393×853 và 1440×900.
+
+## 2026-11-16 — Build media mobile
+
+- Sửa ảnh và SVG mobile ghép tên động để dùng đúng `URL_IMAGE` / `URL_SVG` khi build; development vẫn dùng `./assets/`.
+- Thêm kiểm tra đường dẫn build cho 14 story mobile, các màn chính, gallery và cả 4 video ở chế độ mặc định, UAT và production.
+- Các tệp: `vite.config.js`, `src/utils/assetUrl.js`, `src/artboard/MobileTopicStory.jsx`, `src/artboard/templateMobile.jsx`, `tests/mobile-render.test.js`, `README.md`.
+
 ## 2026-11-16 — Initiatives theo Figma 4072:319
 
 - Cho phép cuộn toàn màn Initiatives, bỏ thu nhỏ nội dung để vừa chiều cao. Đây là ngoại lệ mới cho yêu cầu màn cố định bên dưới.

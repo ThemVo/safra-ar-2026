@@ -9432,7 +9432,8 @@ export default function render(v) {
                           opacity: ".8",
                         }}
                       >
-                        Members enjoyed daily discounts and a <span className="mobile-nowrap">1-for-1</span> weekend
+                        Members enjoyed daily discounts and a{" "}
+                        <span className="mobile-nowrap">1-for-1</span> weekend
                         movie ticket deal at Shaw Theatres, along with
                         complimentary ticket giveaways to watch blockbuster
                         movies throughout the year. They also enjoyed up to 20%
@@ -11196,8 +11197,11 @@ export default function render(v) {
                     fontWeight: "700",
                     lineHeight: "1.2",
                     letterSpacing: "0.64px",
-                    textTransform: "uppercase",
-                    color: "#F34141",
+                    background:
+                      "linear-gradient(90deg, #6252A4 0%, #F14192 100%)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
                   }}
                 >
                   Check out the highlights of our 3 key priorities
@@ -11800,7 +11804,8 @@ export default function render(v) {
                   iBat at SAFRA Tampines
                 </span>
                 <span className={`lf3k ${s(v.lf3v?.c1)}`}>
-                  Artist’s impression of the new resort-style villas
+                  Artist's impression of the new resort-style villas at SAFRA
+                  Jurong
                 </span>
                 <span className={`lf3k ${s(v.lf3v?.c2)}`}>
                   Future location of SAFRA Bayshore

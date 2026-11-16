@@ -201,11 +201,7 @@ function ForwardIntro() {
           needs of national servicemen and their families.
         </p>
       </div>
-      <strong>
-        CHECK OUT THE HIGHLIGHTS OF
-        <br />
-        OUR 3 KEY PRIORITIES
-      </strong>
+      <strong>Check out the highlights of our 3 key priorities</strong>
     </div>
   );
 }
@@ -566,7 +562,7 @@ function Priorities({ v, desktop, supporting = false }) {
       {supporting && (
         <p className="mobile-photo-caption">
           {v.lf3v.c1 === "on"
-            ? "Artist’s impression of the new resort-style villas"
+            ? "Artist's impression of the new resort-style villas at SAFRA Jurong"
             : v.lf3v.c2 === "on"
               ? "Future location of SAFRA Bayshore"
               : "iBat at SAFRA Tampines"}
@@ -726,7 +722,9 @@ function MobileExperience({ v }) {
   const scrollSection = useRef(null);
   const scrollable =
     (continuous && !priority && !closingPriority) ||
-    ["s6", "s7", "s8", "mb", "s5", "fc1", "fc2", "lf2", "lf3", "end"].includes(view);
+    ["s6", "s7", "s8", "mb", "s5", "fc1", "fc2", "lf2", "lf3", "end"].includes(
+      view,
+    );
   const previousScrollView = useRef(view);
   const enteringFuture = useRef(false);
   const screenKey = opening

@@ -302,7 +302,8 @@ export default function MobileGlance(v) {
           v.v?.s2,
           false,
           <>
-            Equivalent to the annual CO<sub>2</sub> absorption of 19,800 trees
+            Equivalent to the annual CO<sub>2</sub> absorption of{" "}
+            <span style={{ whiteSpace: "nowrap" }}>19,800 mature trees</span>
           </>,
         )}
         {photo(

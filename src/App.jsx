@@ -6,7 +6,9 @@ import { initializeMarker } from "./utils/marker.ts";
 const isMobile = () => window.innerWidth < 970;
 const FRAME = { d: [1440, 900] };
 
-initializeMarker();
+if (import.meta.env.NODE_ENV !== "prod" && import.meta.env.MODE !== "prod") {
+  initializeMarker();
+}
 
 export default function App() {
   const wrap = useRef(null);

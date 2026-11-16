@@ -6,7 +6,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 const withSlash = (value) => `${value.replace(/\/+$/, '')}/`;
 
 export default defineConfig(({ mode, command }) => {
-  const env = { ...loadEnv(mode, process.cwd(), 'URL_'), ...process.env };
+  const env = { ...loadEnv(mode, process.cwd(), ['URL_', 'NODE_ENV']), ...process.env };
   const paths = {
     image: withSlash(env.URL_IMAGE || './'),
     svg: withSlash(env.URL_SVG || env.URL_IMAGE || './'),
@@ -43,6 +43,7 @@ export default defineConfig(({ mode, command }) => {
       },
     },
     define: {
+      'import.meta.env.NODE_ENV': JSON.stringify(env.NODE_ENV || mode),
       'import.meta.env.URL_PDF': JSON.stringify(env.URL_PDF || '#'),
       'import.meta.env.URL_IMAGE': JSON.stringify(command === 'build' ? paths.image : './assets/'),
       'import.meta.env.URL_SVG': JSON.stringify(command === 'build' ? paths.svg : './assets/'),

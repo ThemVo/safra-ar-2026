@@ -1,15 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { beforeEach } from 'node:test';
+beforeEach(t => {
+  t.mock.method(globalThis, 'setTimeout', () => 1);
+  t.mock.method(globalThis, 'requestAnimationFrame', () => 1);
+  t.mock.method(globalThis, 'cancelAnimationFrame', () => {});
+});
+globalThis.requestAnimationFrame = () => 1;
+globalThis.cancelAnimationFrame = () => {};
+
 import { ArtboardLogic } from '../src/artboard/ArtboardLogic.js';
 
-function setup() {
+function setup(view = 'mb') {
   const logic = new ArtboardLogic({ mobile: true, mobileWidth: 390, mobileHeight: 844 });
-  logic.state.view = 's5';
+  logic.state.view = view;
+  if (view === 'lf2') logic.state.lf2s = 3;
+  if (view === 'lf3') logic.state.lf3s = 2;
   const navigation = [];
   logic.go = direction => navigation.push(direction);
   logic.nxWheel = logic.linkWheel = () => false;
-  const scroller = { scrollTop: 200, clientHeight: 600, scrollHeight: 1200, classList: { contains: name => name === 'mobile-topics' } };
-  const target = { closest: () => scroller };
+  const scroller = { scrollTop: 200, clientHeight: 600, scrollHeight: 1200, classList: { contains: name => name === 'mobile-membership-cards' } };
+  const target = { closest: selector => selector === '[data-mobile-scroll]' ? scroller : null };
   return { handlers: logic.renderVals(), navigation, scroller, target };
 }
 
@@ -33,6 +44,40 @@ test('wheel finishes scrolling before a new gesture can leave either edge', t =>
   }
 });
 
+test('native sections wait for momentum to stop before leaving the bottom', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  for (const view of ['mb', 'fc1', 'nx', 'lf2', 'lf3', 'end']) {
+    const { handlers, navigation, scroller, target } = setup(view);
+    scroller.scrollTop = 600;
+    const nativeScroll = view === 'mb' ? handlers.mobileMembershipScroll : view === 'fc1' ? handlers.mobileScroll : handlers.mobileContentScroll;
+    nativeScroll({currentTarget:scroller});
+    now += 250; // A gap between wheel events can still belong to native momentum.
+    handlers.wheel({target, deltaY:60});
+    assert.deepEqual(navigation, [], `${view} must pause at the bottom`);
+    now += 400;
+    handlers.wheel({target, deltaY:60});
+    assert.deepEqual(navigation, [1], `${view} advances on a new gesture after settling`);
+  }
+});
+
+test('a swipe that starts above the bottom cannot also leave a native section', () => {
+  for (const view of ['mb', 'fc1', 'nx', 'lf2', 'lf3', 'end']) {
+    const { handlers, navigation, scroller, target } = setup(view);
+    const point = y => ({target, touches:[{clientY:y}], changedTouches:[{clientY:y}]});
+    handlers.touchStart(point(300));
+    // The browser may finish scrolling before React observes the final touch movement.
+    scroller.scrollTop = 600;
+    handlers.touchMove(point(200));
+    handlers.touchEnd(point(150));
+    assert.deepEqual(navigation, [], `${view} keeps the swipe that reached the bottom`);
+    handlers.touchStart(point(300));
+    handlers.touchMove(point(200));
+    handlers.touchEnd(point(150));
+    assert.deepEqual(navigation, [1], `${view} advances on the next swipe`);
+  }
+});
+
 test('touch scroll reaches either edge before a second swipe changes screens', () => {
   for (const direction of [-1, 1]) {
     const { handlers, navigation, scroller, target } = setup();
@@ -49,7 +94,7 @@ test('touch scroll reaches either edge before a second swipe changes screens', (
   }
 });
 
-test('mobile topics follow the list in both directions and show the matching Next label', () => {
+test('mobile topics follow the list in both directions', () => {
   const logic = new ArtboardLogic({ mobile: true, mobileWidth: 390, mobileHeight: 844 });
   const moves = [];
   logic.l2To = (view, dir) => moves.push([view, dir]);
@@ -69,11 +114,23 @@ test('mobile topics follow the list in both directions and show the matching Nex
   logic.state.view = 'wc';
   logic.go(-1);
   assert.deepEqual(moves.pop(), ['s5', -1], 'swiping back from With commitment returns to the Initiatives list');
-  const nextLabels = ['Appreciating NSmen', 'Strengthening bonds', 'Rewarding privileges', 'Enhancing SAFRA Clubs & Facilities', 'Looking forward'];
-  for (let i = 1; i <= 5; i++) {
-    logic.state.view = order[i];
-    assert.equal(logic.renderVals().mobileInitiativeNext.label, nextLabels[i - 1]);
-  }
+
+});
+
+test('mobile opening holds the connected heading until the next scroll', t => {
+  const timers = [];
+  t.mock.method(globalThis, 'setTimeout', (callback, delay) => { timers.push({ callback, delay }); return 1; });
+  const logic = new ArtboardLogic({ mobile: true });
+  Object.assign(logic.state, { view: 'top', ready: true, curOn: true });
+  logic.mobileGo(1);
+  assert.equal(logic.state.view, 'tg');
+  assert.ok(!timers.some(timer => timer.delay === 1900), 'mobile must not automatically skip the large heading');
+  logic.lockUntil = 0;
+  logic.mobileGo(1);
+  assert.equal(logic.state.view, 's3');
+  logic.lockUntil = 0;
+  logic.mobileGo(-1);
+  assert.equal(logic.state.view, 'tg', 'reverse scroll returns to the large connected heading');
 });
 
 test('scrolling past Initiatives opens With commitment without opening a topic card', () => {
@@ -83,4 +140,284 @@ test('scrolling past Initiatives opens With commitment without opening a topic c
   logic.go(1);
   assert.equal(logic.state.view, 'wc');
   assert.equal(logic.state.s12, true);
+});
+
+
+test('mobile priority swipes visit every accordion before advancing', () => {
+  const logic = new ArtboardLogic({mobile:true});
+  const advances = [];
+  logic.go = dir => advances.push(dir);
+  for (const [view, key, last] of [['lf2','lf2s',3],['lf3','lf3s',2]]) {
+    logic.state.view = view;
+    logic.state[key] = 0;
+    for (let i = 1; i <= last; i++) {
+      logic.lockUntil = 0;
+      logic.mobileGo(1);
+      assert.equal(logic.state[key],i);
+      assert.deepEqual(advances,[]);
+    }
+    logic.lockUntil = 0;
+    logic.mobileGo(1);
+    assert.deepEqual(advances.splice(0),[1]);
+    for (let i = last - 1; i >= 0; i--) {
+      logic.lockUntil = 0;
+      logic.mobileGo(-1);
+      assert.equal(logic.state[key],i);
+    }
+    logic.lockUntil = 0;
+    logic.mobileGo(-1);
+    assert.deepEqual(advances.splice(0),[-1]);
+  }
+});
+
+test('With commitment advances to the Looking forward introduction', () => {
+  for (const mobile of [true, false]) {
+    const logic = new ArtboardLogic({ mobile });
+    logic.state.view = 'wc';
+    logic.go(1);
+    assert.equal(logic.state.view, 'nx');
+    assert.equal(logic.state.lf1, false, 'the SAFRA cue leads to the introduction before the first priority');
+  }
+});
+
+test('native section scrolling updates the mobile route without locking gestures', () => {
+  const logic = new ArtboardLogic({ mobile: true });
+  logic.state.view = 's5';
+  logic.lockUntil = 0;
+  logic.renderVals().mobileScrollSection('wc');
+  assert.equal(logic.state.view, 'wc');
+  assert.equal(logic.state.s12, true);
+  assert.equal(logic.lockUntil, 0);
+  logic.renderVals().mobileScrollSection('nx');
+  assert.equal(logic.state.view, 'nx');
+  assert.equal(logic.state.lf1, false, 'native scrolling reaches the intro before opening the priority');
+  logic.nxReady = 0;
+  logic.mobileGo(1);
+  assert.equal(logic.state.lf1, true);
+  logic.nxReady = logic.lockUntil = 0;
+  logic.mobileGo(-1);
+  assert.equal(logic.state.view, 'nx', 'closing the circle stays on Looking forward');
+  assert.equal(logic.state.lf1, false);
+  logic.lockUntil = 0;
+  logic.renderVals().mobileScrollSection('wc');
+  assert.equal(logic.state.view, 'wc', 'reverse native scrolling reveals With commitment');
+  logic.renderVals().mobileScrollSection('s5');
+  assert.equal(logic.state.view, 's5');
+  assert.equal(logic.lockUntil, 0);
+});
+
+
+test('Annual Report can leave the boundary with a fresh reverse gesture', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  const { handlers, navigation, scroller, target } = setup('end');
+  scroller.dataset = { mobileScrollMin: '500' };
+  scroller.scrollTop = 600;
+  handlers.mobileContentScroll({currentTarget:scroller});
+  handlers.wheel({target, deltaY:-60});
+  scroller.scrollTop = 500;
+  handlers.mobileContentScroll({currentTarget:scroller});
+  now += 250;
+  handlers.wheel({target, deltaY:-60});
+  assert.deepEqual(navigation, []);
+  now += 400;
+  handlers.wheel({target, deltaY:-60});
+  assert.deepEqual(navigation, [-1]);
+
+  const touch = setup('end');
+  touch.scroller.dataset = { mobileScrollMin: '500' };
+  touch.scroller.scrollTop = 500;
+  const point = y => ({target:touch.target, touches:[{clientY:y}], changedTouches:[{clientY:y}]});
+  touch.handlers.touchStart(point(150));
+  touch.handlers.touchMove(point(250));
+  touch.handlers.touchEnd(point(300));
+  assert.deepEqual(touch.navigation, [-1], 'a new upward swipe releases the boundary');
+});
+
+test('native reverse scrolling leaves Annual Report without resetting the story or waiting for a new gesture', () => {
+  const logic = new ArtboardLogic({ mobile: true });
+  logic.state.view = 'end';
+  logic.state.lf3s = 2;
+  logic.lockUntil = Date.now() + 1200;
+  logic.renderVals().mobileScrollSection('lf3');
+  assert.equal(logic.state.view, 'lf3');
+  assert.equal(logic.state.lf3s, 2);
+});
+
+test('Annual Report boundary corrections do not keep reverse scrolling locked', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  const { handlers, navigation, scroller, target } = setup('end');
+  scroller.dataset = { mobileScrollMin: '500' };
+  scroller.scrollTop = 550;
+  handlers.mobileContentScroll({currentTarget:scroller});
+  for (const top of [490, 500, 499.5, 500]) {
+    now += 100;
+    scroller.scrollTop = top;
+    handlers.mobileContentScroll({currentTarget:scroller});
+  }
+  handlers.wheel({target, deltaY:-60});
+  assert.deepEqual(navigation, [-1], 'clamping at the boundary must allow a fresh reverse gesture');
+});
+
+
+test('Looking forward pauses on every arrival and consumes the arriving gesture', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  const logic = new ArtboardLogic({ mobile: true });
+  logic.state.view = 'wc';
+  const handlers = logic.renderVals();
+  for (let arrival = 0; arrival < 2; arrival++) {
+    handlers.mobileScrollSection('nx');
+    assert.equal(logic.mobileWheelOwned, true);
+    assert.equal(logic.touchOwned, true);
+    now += 1499;
+    logic.mobileGo(1);
+    assert.equal(logic.state.lf1, false, 'the introduction must stay visible during its pause');
+    now += 1;
+    logic.mobileGo(1);
+    assert.equal(logic.state.lf1, true, 'a new gesture after the pause can open the priority');
+    logic.lockUntil = 0;
+    handlers.mobileScrollSection('wc');
+    now += 2000;
+  }
+});
+
+test('commitment momentum changes only one story and keeps the camera fixed', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  const logic = new ArtboardLogic({ mobile: false });
+  logic.state.view = 'lf2';
+  logic.state.lf2s = 0;
+  const camera = logic.camNow();
+  assert.equal(logic.lf2Wheel(60), true);
+  for (let i = 0; i < 40; i++) {
+    now += 100;
+    assert.equal(logic.lf2Wheel(60), true);
+    assert.equal(logic.state.lf2s, 1);
+    assert.equal(logic.camNow(), camera);
+  }
+  now += 300;
+  logic.lf2Wheel(60);
+  assert.equal(logic.state.lf2s, 2);
+  now += 1200;
+  logic.lf2Wheel(-60);
+  assert.equal(logic.state.lf2s, 1);
+});
+
+test('mobile commitment wheel over the list changes content before native scrolling', () => {
+  const logic = new ArtboardLogic({ mobile: true });
+  logic.state.view = 'lf2';
+  logic.state.lf2s = 0;
+  const scroller = { scrollTop: 350, clientHeight: 600, scrollHeight: 1600 };
+  const target = { closest: selector => selector === '.lf2l' ? {} : scroller };
+  logic.mobileWheel({ target, deltaY: 60 });
+  assert.equal(logic.state.lf2s, 1);
+  assert.equal(logic.state.view, 'lf2');
+  assert.equal(scroller.scrollTop, 350);
+});
+
+test('Supporting NSmen switches immediately without scrolling the column or camera', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  const logic = new ArtboardLogic({ mobile: false });
+  logic.state.view = 'lf3';
+  logic.state.lf3s = 0;
+  const column = { scrollTop: 0, scrollHeight: 1600, clientHeight: 600, contains: () => true };
+  logic.nxEl = () => column;
+  const camera = logic.camNow();
+  assert.equal(logic.lf3Wheel(60, {}), true);
+  assert.equal(logic.state.lf3s, 1, 'advance before scrolling the long first story');
+  for (let i = 0; i < 40; i++) {
+    now += 100;
+    assert.equal(logic.lf3Wheel(60, {}), true);
+    assert.equal(logic.state.lf3s, 1);
+    assert.equal(column.scrollTop, 0);
+    assert.equal(logic.camNow(), camera);
+  }
+  now += 300;
+  logic.lf3Wheel(60);
+  assert.equal(logic.state.lf3s, 2);
+  now += 1200;
+  logic.lf3Wheel(-60);
+  assert.equal(logic.state.lf3s, 1);
+  assert.equal(logic.state.view, 'lf3');
+});
+
+test('mobile Supporting NSmen list gestures change the story in place', () => {
+  const logic = new ArtboardLogic({ mobile: true });
+  logic.state.view = 'lf3';
+  logic.state.lf3s = 0;
+  const scroller = { scrollTop: 350, clientHeight: 600, scrollHeight: 1600 };
+  const target = { closest: selector => selector === '.lf3s' ? {} : scroller };
+  logic.mobileWheel({ target, deltaY: 60 });
+  assert.equal(logic.state.lf3s, 1);
+  assert.equal(scroller.scrollTop, 350);
+  logic.lockUntil = 0;
+  const handlers = logic.renderVals();
+  handlers.touchStart({ target, touches: [{ clientY: 400 }] });
+  handlers.touchMove({ touches: [{ clientY: 300 }] });
+  handlers.touchEnd({ changedTouches: [{ clientY: 300 }] });
+  assert.equal(logic.state.lf3s, 2);
+  assert.equal(logic.state.view, 'lf3');
+  assert.equal(scroller.scrollTop, 350);
+});
+
+test('reverse gestures over priority copy scroll to the top before changing the story', () => {
+  for (const [view, selector, key] of [['lf2', '.lf2l', 'lf2s'], ['lf3', '.lf3s', 'lf3s']]) {
+    const logic = new ArtboardLogic({ mobile: true });
+    logic.state.view = view;
+    logic.state[key] = 1;
+    const scroller = { scrollTop: 350, clientHeight: 600, scrollHeight: 1600 };
+    const target = { closest: value => value === selector ? {} : value === '[data-mobile-scroll]' ? scroller : null };
+    const handlers = logic.renderVals();
+    handlers.wheel({ target, deltaY: -60 });
+    assert.equal(logic.state[key], 1, `${view}: wheel over copy permits native reverse scrolling`);
+    const point = y => ({ target, touches: [{ clientY: y }], changedTouches: [{ clientY: y }] });
+    handlers.touchStart(point(200));
+    scroller.scrollTop = 0;
+    handlers.touchMove(point(300));
+    handlers.touchEnd(point(350));
+    assert.equal(logic.state[key], 1, `${view}: the swipe reaching the top keeps its story`);
+    handlers.touchStart(point(200));
+    handlers.touchMove(point(300));
+    handlers.touchEnd(point(350));
+    assert.equal(logic.state[key], 0, `${view}: the next swipe returns to the preceding story`);
+    assert.equal(logic.state.view, view);
+  }
+});
+
+test('desktop Annual Report reverse gestures finish the footer movement before changing stories', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  for (const region of ['lf3s', 'lfp3', 'background']) {
+    const logic = new ArtboardLogic({ mobile: false });
+    logic.state = { ...logic.state, view: 'end', lf3s: 2 };
+    const handlers = logic.renderVals();
+    const target = { closest: selector => selector.includes(region) ? {} : null };
+    handlers.wheel({ target, deltaY: -80 });
+    assert.equal(logic.lkPos, 157, `${region}: reverse wheel starts hiding the footer`);
+    // Simulate the camera reaching the start of the closing stretch.
+    logic.state.view = 'lf3';
+    logic.state.linkY = 0;
+    logic.lkPos = 0;
+    logic.lkEdge = now;
+    now += 50;
+    handlers.wheel({ target, deltaY: -80 });
+    assert.equal(logic.state.lf3s, 2, `${region}: arriving momentum cannot switch stories`);
+    assert.equal(logic.state.link, 'z3');
+    now += 1000;
+    handlers.wheel({ target, deltaY: -80 });
+    assert.equal(logic.state.link, null);
+    assert.equal(logic.state.lf3s, 2, 'settling the footer does not skip a story');
+    now += 300;
+    handlers.wheel({ target, deltaY: -80 });
+    assert.equal(logic.state.lf3s, 1, 'the following reverse gesture opens the preceding story');
+    now += 1500;
+    logic.state = { ...logic.state, view: 'end', link: null, lf3s: 2 };
+    logic.lockUntil = 0;
+    handlers.touchStart({ target, touches: [{ clientY: 200 }] });
+    handlers.touchEnd({ target, changedTouches: [{ clientY: 280 }] });
+    assert.equal(logic.lkPos, 117, `${region}: touch also moves the footer camera`);
+  }
 });

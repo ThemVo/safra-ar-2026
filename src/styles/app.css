@@ -7,8 +7,8 @@ html, html body { margin: 0; height: 100%; background: var(--bg); color: var(--f
 .wrap { position: relative; width: 1440px; height: 900px; transform-origin: 50% 50%; flex: none; }
 .stage { cursor: url(../assets/cursors/pointer-cursor.svg) 3 3, auto; } /* side margins use the site's arrow cursor */
 .stage:has(.v-cur), .stage:has(.v-cur) * { cursor: none !important; } /* masthead once the red circle shows: no system cursor anywhere */
-/* mobile: the page is driven by swipes, so the browser shouldn't scroll or zoom it */
-.stage-m { touch-action: none; overscroll-behavior: none; cursor: auto; }
+/* Mobile navigation uses swipes; Clubs & Facilities may scroll natively. */
+.stage-m { touch-action: pan-y pinch-zoom; overscroll-behavior: none; cursor: auto; }
 /* mobile layout previewed on a wide screen: a phone-sized frame on the page background */
 /* Membership (desktop L2 page): its gradient also fills the letterbox bands above/below the artboard, fading in and out with the page.
    Same gradient over the same box as the section's border-image outset (the full window), so the two meet seamlessly. */

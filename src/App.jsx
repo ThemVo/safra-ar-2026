@@ -1,22 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Artboard from "./artboard/Artboard.jsx";
 import { initializeMarker } from "./utils/marker.ts";
 
-// Responsive: one artboard, layout chosen from the window width.
-// - desktop (window 768px and wider): the 1440 × 900 comp, scaled to fit the viewport, including scaling up
-//   on larger displays so the frame reaches the top and bottom; backgrounds fill the side gutters.
-// - mobile (phones narrower than 768px): a 390 × 844 portrait frame, scaled to fit the screen the same way.
-// Crossing the breakpoint (resize / rotate) switches layout automatically.
-const MOBILE_MAX = 767;
-// Desktop is the default: the mobile layout is used only on touch-first devices (phones) narrower than 768px.
-// A narrow desktop browser window (or a side panel preview) keeps the desktop layout, scaled down to fit.
-const isMobile = () =>
-  window.innerWidth <= MOBILE_MAX &&
-  !!(
-    window.matchMedia &&
-    window.matchMedia("(hover: none) and (pointer: coarse)").matches
-  );
-const FRAME = { d: [1440, 900], m: [390, 844] };
+// Layout follows the viewport width, including tablets and narrow desktop windows.
+const isMobile = () => window.innerWidth < 970;
+const FRAME = { d: [1440, 900] };
 
 initializeMarker();
 
@@ -26,7 +14,7 @@ export default function App() {
   const [gx, setGx] = useState(0);
   const [gy, setGy] = useState(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fit = () => {
       const narrow = isMobile();
       if (narrow !== mobile) {
@@ -35,11 +23,11 @@ export default function App() {
       } // re-runs with the new layout
       const el = wrap.current;
       if (!el) return;
-      const [fw, fh] = mobile ? FRAME.m : FRAME.d;
+      const [fw, fh] = mobile ? [window.innerWidth, window.innerHeight] : FRAME.d;
       const vw = window.innerWidth,
         vh = window.innerHeight;
       // Preserve the artwork's proportions while using all available height whenever the width allows it.
-      const k = Math.min(vw / fw, vh / fh);
+      const k = mobile ? 1 : Math.min(vw / fw, vh / fh);
       const g = Math.max(0, (vw / k - fw) / 2); // side gutter, in artboard pixels
       el.style.width = fw + "px";
       el.style.height = fh + "px";
@@ -54,13 +42,17 @@ export default function App() {
     };
     fit();
     window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    window.visualViewport?.addEventListener("resize", fit);
+    return () => {
+      window.removeEventListener("resize", fit);
+      window.visualViewport?.removeEventListener("resize", fit);
+    };
   }, [mobile]);
 
   return (
     <div className={"stage" + (mobile ? " stage-m" : "")}>
       <div className="wrap" id="wrap" ref={wrap}>
-        {/* crossing the breakpoint remounts the artboard so it starts fresh in the new geometry */}
+        {/* crossing the breakpoint remounts the artboard and restores the current section/story from its URL */}
         <Artboard key={mobile ? "m" : "d"} mobile={mobile} gx={gx} gy={gy} />
       </div>
     </div>

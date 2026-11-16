@@ -617,6 +617,9 @@ body{margin:0;background:#272C3F}
 /* 03 Supporting NSmen's needs */
 .mh .lf3s{scrollbar-width:none;overscroll-behavior:contain}
 .mh .lf3s::-webkit-scrollbar{display:none}
+/* The desktop camera owns gestures across the closing section, including copy and photos. */
+.mh:not(.m).at-lf3{touch-action:none}
+.mh:not(.m).at-lf3 .lf3s{overflow-y:hidden !important;overscroll-behavior:auto}
 .mh .lf3b{padding-top:16px;color:#DDDDDD}
 .mh .lf3b h4{margin:0;font-size:20px;font-weight:700;line-height:1.6;letter-spacing:.4px}
 .mh .lf3b p{margin:0 0 32px;font-size:18px;line-height:1.6;letter-spacing:.4px}

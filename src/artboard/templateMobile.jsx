@@ -150,7 +150,7 @@ function Membership({ v, desktop }) {
         let content = find(card, n => has(n, 'mbc'));
         if (i === 1) {
           header = cloneElement(header, {}, Children.map(header.props.children, child =>
-            child?.type === 'img' ? cloneElement(child, { src: assetUrl('membership-education-icon-mobile.svg'), width:40, height:40 }) : child));
+            child?.type === 'img' ? cloneElement(child, { src: assetUrl('membership-education-icon-mobile.svg'), width:44, height:44 }) : child));
           content = cloneElement(content, {}, Children.map(content.props.children, child =>
             has(child, 'mbi') ? cloneElement(child, {}, <img src={assetUrl('education-award-recipients-mobile.png')} alt={find(child, n => n.type === 'img').props.alt} />) : child));
         }

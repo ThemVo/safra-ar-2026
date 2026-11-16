@@ -404,6 +404,7 @@
 #rewarding-privileges-card-3 .mobile-offer-grid { grid-template-columns:repeat(3,minmax(0,1fr)) !important; padding-top:16px !important; }
 #rewarding-privileges-card-3 .mobile-offer-grid>.mbi { grid-column:auto; }
 #rewarding-privileges-card-3 .mobile-offer-grid>.mbi>img { width:100%; height:100%; object-fit:cover; }
+#rewarding-privileges-card-3 .mobile-nowrap { white-space:nowrap; }
 
 .mobile-layout[data-view=wc],.mobile-layout[data-view=lf2],.mobile-layout[data-view=lf3],.mobile-layout[data-view=end] { background:#18212a; }
 .mobile-layout[data-view=mb] { background:linear-gradient(120deg,#6252a4,#f14192 45%,#f6765d); }

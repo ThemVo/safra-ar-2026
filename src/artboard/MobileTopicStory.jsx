@@ -75,7 +75,7 @@ const stories = {
     statWidth: 101,
     title: "Strengthening teamwork and camaraderie",
     stats: [
-      ["Over", "53K", "national servicemen\nengaged"],
+      ["Over", "53K", "national servicemen\nengaged"],
       ["", "637", "cohesion\nevents"],
     ],
     copy: "Cohesion events were organised for SAF NS units at various SAFRA clubs and SAF camps, featuring a  wide range of activities such as archery tag, bowling, inflatable games, water telematches and various sports competitions.",
@@ -132,7 +132,7 @@ const stories = {
     progress: 149.646,
     title: "Unwinding with buddies",
     stats: [["Over", "430", "people enjoyed"]],
-    copy: "Soundbyte Beer Music Play brought national servicemen and their friends together to enjoy live band performances, high-energy DJ sets, games and free flow of drinks.",
+    copy: "Soundbyte Beer Music Play brought national servicemen and their friends together to enjoy live band performances, high-energy DJ sets, games and free flow of drinks.",
     photos: [
       photo(
         "soundbyte-music-event-gallery-01.jpg",
@@ -278,7 +278,7 @@ const stories = {
       ["Over", "35K", "preschoolers"],
       ["Over", "460", "preschools centres"],
     ],
-    copy: "Through the Appreciating NSmen Art Jam initiative, preschoolers learnt about national servicemen's contributions and made personalised gifts to thank their fathers for defending Singapore.",
+    copy: "Through the Appreciating NSmen Art Jam initiative, preschoolers learnt about national servicemen's contributions and made personalised gifts to thank their fathers for defending Singapore.",
     photos: [
       photo(
         "nsmen-art-jam-thank-you-card.jpg",
@@ -309,7 +309,7 @@ const stories = {
       ["", "145", "students"],
       ["", "44", "videos"],
     ],
-    copy: "The Appreciating NSmen Video Competition saw students using creative storytelling to highlight the contributions of national servicemen and show their support.",
+    copy: "The Appreciating NSmen Video Competition saw students using creative storytelling to highlight the contributions of national servicemen and show their support.",
     photos: [
       photo(
         "gratitude-in-bloom-poster.jpg",
@@ -346,7 +346,7 @@ const stories = {
       ["Over", "180", "partner merchants"],
       ["Over", "240", "deals"],
     ],
-    copy: "A wide range of appreciation deals for national servicemen, ranging from daily essentials to recreation, were secured through collaborations with merchants islandwide.",
+    copy: "A wide range of appreciation deals for national servicemen, ranging from daily essentials to recreation, were secured through collaborations with merchants islandwide.",
     photos: [
       photo("nsmen-deals-klook-3.jpg", [213, 0, 180, 180], [0, 0, 180, 180], 2),
       photo(
@@ -375,12 +375,12 @@ const stories = {
     progress: 210,
     next: ["Strengthening", "Bonds"],
     nextRight: true,
-    title: "Fueling up our national servicemen",
+    title: "Fueling up our national servicemen",
     stats: [
       ["Over", "15K", "snacks"],
       ["", "15", "food truck activities"],
     ],
-    copy: "SAFRA gave away complimentary snacks to national servicemen at various SAF camps, SAFRA clubs and events.",
+    copy: "SAFRA gave away complimentary snacks to national servicemen at various SAF camps, SAFRA clubs and events.",
     photos: [
       photo(
         "nsmen-food-truck-gallery-03.jpg",
@@ -445,7 +445,7 @@ const copyLines = {
   ],
   "s8-4": [
     "Soundbyte Beer Music Play",
-    "brought national servicemen",
+    "brought national servicemen",
     "and their friends together to",
     "enjoy live band performances,",
     "high-energy DJ sets, games",
@@ -485,7 +485,7 @@ const copyLines = {
     "Through the Appreciating",
     "NSmen Art Jam initiative,",
     "preschoolers learnt about",
-    "national servicemen's",
+    "national servicemen's",
     "contributions and made",
     "personalised gifts to thank their",
     "fathers for defending",
@@ -496,12 +496,12 @@ const copyLines = {
     "Competition saw students",
     "using creative storytelling to",
     "highlight the contributions of",
-    "national servicemen and show",
+    "national servicemen and show",
     "their support.",
   ],
   "s7-2": [
     "A wide range of appreciation",
-    "deals for national servicemen,",
+    "deals for national servicemen,",
     "ranging from daily essentials to",
     "recreation, were secured",
     "through collaborations with",
@@ -510,7 +510,7 @@ const copyLines = {
   "s7-3": [
     "SAFRA gave away",
     "complimentary snacks to",
-    "national servicemen at various",
+    "national servicemen at various",
     "SAF camps, SAFRA clubs",
     "and events.",
   ],

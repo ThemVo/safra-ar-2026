@@ -863,7 +863,6 @@ export class ArtboardLogic extends Logic {
     setTimeout(go, 4000);
   }
   queueUrlSync() {
-    if (this.props.persistRoute === false) return;
     if (!this.urlMounted || this.restoringUrl || this.urlQueued) return;
     this.urlQueued = true;
     queueMicrotask(() => {
@@ -1017,10 +1016,23 @@ export class ArtboardLogic extends Logic {
     const was = this.state.view,
       s13w = this.state.s13,
       lf1w = this.state.lf1,
-      s15w = this.state.s15;
+      s15w = this.state.s15,
+      finalStoryWasVisible = was === "lf3" && this.state.lf3s === 2;
     super.setState(update, cb);
     const now = this.state.view;
     this.queueUrlSync();
+    const finalStoryVisible = now === "lf3" && this.state.lf3s === 2;
+    if (!MOBILE && !finalStoryVisible) clearTimeout(this.footerRevealT);
+    if (!MOBILE && finalStoryVisible && !finalStoryWasVisible && was !== "end") {
+      clearTimeout(this.footerRevealT);
+      // Let Bayshore's content finish opening before easing the camera down.
+      this.footerRevealT = setTimeout(() => {
+        if (this.state.view !== "lf3" || this.state.lf3s !== 2 || this.state.lb || this.state.menu || this.state.link) return;
+        this.lkPos = 0;
+        this.setState({ link: "z3", linkY: 0 });
+        this.linkGo(LINKS.z3.len);
+      }, 950);
+    }
     // Clubs & Facilities: once the 1st item has fully come in (cards land by ~1.95s), the 2nd comes in by itself — no need to scroll to it
     if (this.state.s15 && !s15w && !this.state.s16) {
       clearTimeout(this.fc2T);
@@ -1218,6 +1230,7 @@ export class ArtboardLogic extends Logic {
       "swT",
       "up5T",
       "fc2T",
+      "footerRevealT",
       "landT",
       "mbHT",
       "i4T",
@@ -1578,6 +1591,7 @@ export class ArtboardLogic extends Logic {
   linkGo(target) {
     this.lkPos = target;
     if (this.lkRaf) return;
+    let footerMotion = null;
     const tick = () => {
       const key = this.state.link;
       if (!key) {
@@ -1587,7 +1601,20 @@ export class ArtboardLogic extends Logic {
       const L = LINKS[key],
         cur = this.state.linkY || 0,
         d = this.lkPos - cur;
-      const y = Math.abs(d) < 0.5 ? this.lkPos : cur + d * 0.2;
+      let y = Math.abs(d) < 0.5 ? this.lkPos : cur + d * 0.2;
+      let moving = Math.abs(d) >= 0.5;
+      if (key === "z3") {
+        // Ease both ends of the footer reveal; proportional stepping starts
+        // with a visible jump (almost 48px for the full footer).
+        const time = performance.now();
+        if (!footerMotion || footerMotion.target !== this.lkPos) {
+          footerMotion = { from: cur, target: this.lkPos, start: time };
+        }
+        const progress = Math.min(1, (time - footerMotion.start) / 900);
+        const eased = progress * progress * (3 - 2 * progress);
+        y = footerMotion.from + (footerMotion.target - footerMotion.from) * eased;
+        moving = progress < 1;
+      }
       let view = L.at[0][0];
       for (const [v, from] of L.at) if (y >= from) view = v;
       const up = {};
@@ -1605,7 +1632,7 @@ export class ArtboardLogic extends Logic {
         if (up.s10) this.arriveMb();
       } else this.quiet({ linkY: y });
       this.camToDom();
-      this.lkRaf = Math.abs(d) < 0.5 ? 0 : requestAnimationFrame(tick);
+      this.lkRaf = moving ? requestAnimationFrame(tick) : 0;
     };
     this.lkRaf = requestAnimationFrame(tick);
   }

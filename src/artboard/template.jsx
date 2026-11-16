@@ -9432,7 +9432,7 @@ export default function render(v) {
                           opacity: ".8",
                         }}
                       >
-                        Members enjoyed daily discounts and a 1-for-1 weekend
+                        Members enjoyed daily discounts and a <span className="mobile-nowrap">1-for-1</span> weekend
                         movie ticket deal at Shaw Theatres, along with
                         complimentary ticket giveaways to watch blockbuster
                         movies throughout the year. They also enjoyed up to 20%

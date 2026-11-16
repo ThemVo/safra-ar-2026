@@ -35,10 +35,16 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
     assert.equal(listeners.has('hashchange'), false);
     disabled.jumpTo('s6');
     await Promise.resolve();
-    assert.equal(writes.length, 0, 'disabled persistence never saves the section');
+    assert.equal(window.location.hash, '#bringing-defence-closer', 'URL still tracks the section with restoration disabled');
+    disabled.play6(2, 0);
+    await Promise.resolve();
+    assert.deepEqual(writes.at(-1), { method: 'pushState', hash: '#bringing-defence-closer-story-3' });
     disabled.restoreUrl();
     assert.equal(disabled.state.view, 's6', 'disabled persistence ignores URL restoration');
     disabled.componentWillUnmount();
+    const reloaded = mount(window.location.hash, mobile, false);
+    assert.equal(reloaded.state.view, 'top', 'reload starts at the top even with a section ID in the URL');
+    reloaded.componentWillUnmount();
   }
   let logic = mount('');
   await Promise.resolve();

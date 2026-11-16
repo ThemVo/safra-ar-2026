@@ -1,8 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import viteConfig from '../vite.config.js';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-test('Vite defaults do not hide the deployment NODE_ENV in env files', () => {
+test('Vite defaults do not hide the deployment NODE_ENV in env files', (t) => {
+  const directory = mkdtempSync(join(tmpdir(), 'safra-env-test-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  writeFileSync(join(directory, '.env'), 'NODE_ENV=uat\n');
+  writeFileSync(join(directory, '.env.prod'), 'NODE_ENV=prod\n');
+  t.mock.method(process, 'cwd', () => directory);
   const original = process.env.NODE_ENV;
   try {
     for (const defaultEnv of ['development', 'production']) {

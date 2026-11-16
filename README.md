@@ -127,3 +127,7 @@ Both layouts use `video-play.svg`; mobile story controls use `topic-back.svg` an
 `story-divider.svg` instead of per-story exports. `StickyMenu.jsx` shares its inline
 menu icons across both layouts. Use `assetUrl()` for runtime filenames so image and
 SVG hosting prefixes still work in every build mode.
+
+### Asset filenames
+
+Use lowercase English names separated by hyphens, based on the image content or icon action: `ns-experience-camp-gallery-01.jpg`, `gratitude-in-bloom-poster.jpg`, `travel-airplane.svg`. Gallery numbers start at 01. Keep `-mobile`, `-desktop`, or `-alternate` only for distinct artwork/crops; shared artwork uses one filename in both layouts. Travel icons in the mobile layout use the explicit `travelIcons` lookup in `templateMobile.jsx`.

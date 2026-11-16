@@ -25,15 +25,15 @@ function all(node, test) {
 }
 const has = (node, name) => (node.props.className || '').split(' ').includes(name);
 const MOBILE_ASSETS = {
-  mastheadTR: './assets/mobile-mastheadTR.jpg',
-  mastheadTL: './assets/sb1g-4.jpg',
-  mastheadBL: './assets/mobile-mastheadBL.jpg',
-  mastheadBR: './assets/tc3-hover.jpg',
-  topicDefence: './assets/tc1-hover.jpg',
-  topicNSmen: './assets/an1-card.jpg',
-  topicBonds: './assets/tc3-hover.jpg',
-  topicRewards: './assets/tc4-hover.jpg',
-  topicFacilities: './assets/tc5-hover.jpg',
+  mastheadTR: './assets/masthead-obstacle-course-mobile.jpg',
+  mastheadTL: './assets/national-day-celebration-gallery-05.jpg',
+  mastheadBL: './assets/masthead-spin-class-mobile.jpg',
+  mastheadBR: './assets/topic-strengthening-bonds-preview.jpg',
+  topicDefence: './assets/topic-defence-preview.jpg',
+  topicNSmen: './assets/nsmen-art-jam-thank-you-card.jpg',
+  topicBonds: './assets/topic-strengthening-bonds-preview.jpg',
+  topicRewards: './assets/topic-rewarding-privileges-preview.jpg',
+  topicFacilities: './assets/topic-clubs-and-facilities-preview.jpg',
 };
 const asset = name => MOBILE_ASSETS[name];
 const topics = [
@@ -78,7 +78,7 @@ function flow(node, copyLines, lineMotion) {
 
 function Cue({ v, future = false }) {
   return <button type="button" className={`mobile-cue ${future ? 'future' : ''}`} onClick={e => { e.stopPropagation(); v.next(); }} aria-label={future ? "See what's next for SAFRA" : 'Scroll for more'}>
-    <img src="./assets/mobile-cursor.svg" alt="" />
+    <img src="./assets/scroll-for-more-mobile.svg" alt="" />
   </button>;
 }
 function ForwardIntro() {
@@ -103,11 +103,17 @@ function Story({ v, desktop }) {
   return <section id={SECTION_IDS[v.mobileView]} className={`mobile-story-section${veterans ? ' mobile-veterans-story' : ''}`}>
     <Header v={v} title={topic[1]} />
     <article id={screenId(v.mobileView, v.mobileStory)} key={v.mobileStory} aria-label={story?.props['aria-label']} className="mobile-collage">
-      {photos.map((photo, i) => cloneElement(photo, { key: i, style: {}, className: `mobile-story-photo photo-${i}` }, veterans ? <img style={{transform:`translateY(${v.d6?.s2?.ph || 0}%)`}} src={assetUrl(i === 0 ? 'g3-0.jpg' : 'g3-1.jpg')} alt="" /> : photo.props.children))}
+      {photos.map((photo, i) => cloneElement(photo, { key: i, style: {}, className: `mobile-story-photo photo-${i}` }, veterans ? <img style={{transform:`translateY(${v.d6?.s2?.ph || 0}%)`}} src={assetUrl(i === 0 ? 'defence-veterans-gallery-01.jpg' : 'defence-veterans-gallery-02.jpg')} alt="" /> : photo.props.children))}
       <div className="mobile-story-panel">{flow(panel?.props.children, veterans ? ['Commitment to Defence (C2D)', 'Ambassadors from the SAF', 'Veterans’ League shared real-', 'life experiences, reinforcing', 'the importance of a', 'strong defence.'] : undefined, v.mobileStoryLine)}<div className="mobile-story-progress" aria-hidden="true" style={{width:`${veterans ? 148.92 : (v[`d${v.mobileView.slice(1)}`]?.[`s${v.mobileStory}`]?.bar || 0) / 520 * 100}${veterans ? 'px' : '%'}`}} /></div>
     </article>
   </section>;
 }
+const travelIcons = {
+  plane: 'travel-airplane.svg',
+  hotel: 'travel-hotel-mobile.svg',
+  ship: 'travel-cruise-ship.svg',
+  flyer: 'travel-singapore-flyer-mobile.svg',
+};
 function MobileTravelContent({ content }) {
   const offers = [
     ['60% off', 'plane', 'on travel booking platforms'],
@@ -123,7 +129,7 @@ function MobileTravelContent({ content }) {
             <p className="mobile-travel-eyebrow">{label ? 'Up to' : 'Free'}</p>
             {label ? flow(find(content, n => n.props['aria-label'] === label)) : <p className="mobile-travel-upgrades">Upgrades, onboard<br />credits &amp; deals</p>}
           </div>
-          <div className={`mobile-travel-icon mobile-travel-icon-${icon}`}><img src={assetUrl(`${icon === 'plane' || icon === 'ship' ? 'mb-tv' : 'mobile-travel'}-${icon}.svg`)} alt="" /></div>
+          <div className={`mobile-travel-icon mobile-travel-icon-${icon}`}><img src={assetUrl(travelIcons[icon])} alt="" /></div>
         </div>
         <p className="mobile-travel-description">{description}</p>
       </div>)}
@@ -144,13 +150,13 @@ function Membership({ v, desktop }) {
         let content = find(card, n => has(n, 'mbc'));
         if (i === 1) {
           header = cloneElement(header, {}, Children.map(header.props.children, child =>
-            child?.type === 'img' ? cloneElement(child, { src: assetUrl('mobile-education-icon.svg'), width:44, height:44 }) : child));
+            child?.type === 'img' ? cloneElement(child, { src: assetUrl('membership-education-icon-mobile.svg'), width:44, height:44 }) : child));
           content = cloneElement(content, {}, Children.map(content.props.children, child =>
-            has(child, 'mbi') ? cloneElement(child, {}, <img src={assetUrl('mobile-education-recipients.png')} alt={find(child, n => n.type === 'img').props.alt} />) : child));
+            has(child, 'mbi') ? cloneElement(child, {}, <img src={assetUrl('education-award-recipients-mobile.png')} alt={find(child, n => n.type === 'img').props.alt} />) : child));
         }
         if (i === 3) {
           header = cloneElement(header, {}, Children.map(header.props.children, child =>
-            child?.type === 'img' ? <span className="mobile-travel-header-icon"><img src={assetUrl('mobile-travel-beach.svg')} alt="" /></span> : child));
+            child?.type === 'img' ? <span className="mobile-travel-header-icon"><img src={assetUrl('membership-travel-icon-mobile.svg')} alt="" /></span> : child));
         }
         return <article key={i} id={screenId('mb', i)} className={`mobile-membership-card ${v.mobileMembership === i ? 'on' : ''}`} style={{ background: card.props.style.background }}>
         {flow(header)}
@@ -359,8 +365,8 @@ function MobileExperience({ v }) {
     </section>;
     content = <MobileOpening view={view} masthead={hero} panel={panel} />;
   }
-  else if (continuous) content = <>{futureOrigin.current === 'fc1' ? <Facilities v={v} desktop={desktop} /> : <section id={SECTION_IDS.s5} className="mobile-initiatives"><h2 className="mobile-gradient">Discover how our initiatives made a difference in the lives of national servicemen and their families.</h2><nav aria-label="Topics">{topics.map(([id,title,desc,image],i) => <a key={id} className="mobile-topic" href={`#${SECTION_IDS[id]}`} onClick={v[`topic${i + 1}`]} style={{'--i':i}}><div><h3>{title}</h3><span className="mobile-topic-image"><img src={asset(image)} alt="" /></span></div><p>{desc}</p><span className="mobile-topic-arrow"><img src="./assets/mobile-arrow.svg" alt="" /></span></a>)}</nav></section>}<section id={SECTION_IDS.wc} className="mobile-with-commitment"><h2><span>The year may over.</span><strong className="mobile-gradient">We’re building for<br />the future.</strong></h2><img className="mobile-tongue" src="./assets/mobile-tongue.svg" alt="" /><button type="button" className="mobile-future-cue" onClick={e => { e.stopPropagation(); scroller.current?.scrollTo({ top: document.getElementById(SECTION_IDS.nx).offsetTop, behavior: 'smooth' }); }} aria-label="See what’s next for SAFRA"><img src="./assets/mobile-future-cue.svg" alt="" /></button></section><section id={SECTION_IDS.nx} className={`mobile-looking-forward ${view === 'nx' || priorityPage || forwardRevealed ? 'forward-visible' : ''} ${priority ? 'priority-open' : ''}`}>
-      <div className="mobile-forward-base" inert={priority ? '' : undefined} aria-hidden={priority}><ForwardIntro /><button type="button" className="mobile-forward-cue" onClick={e => { e.stopPropagation(); v.mobileAdvance(1); }} aria-label="Explore SAFRA’s three key priorities"><img src="./assets/mobile-forward-cursor.svg" alt="" /></button></div>
+  else if (continuous) content = <>{futureOrigin.current === 'fc1' ? <Facilities v={v} desktop={desktop} /> : <section id={SECTION_IDS.s5} className="mobile-initiatives"><h2 className="mobile-gradient">Discover how our initiatives made a difference in the lives of national servicemen and their families.</h2><nav aria-label="Topics">{topics.map(([id,title,desc,image],i) => <a key={id} className="mobile-topic" href={`#${SECTION_IDS[id]}`} onClick={v[`topic${i + 1}`]} style={{'--i':i}}><div><h3>{title}</h3><span className="mobile-topic-image"><img src={asset(image)} alt="" /></span></div><p>{desc}</p><span className="mobile-topic-arrow"><img src="./assets/topic-arrow-right-mobile.svg" alt="" /></span></a>)}</nav></section>}<section id={SECTION_IDS.wc} className="mobile-with-commitment"><h2><span>The year may over.</span><strong className="mobile-gradient">We’re building for<br />the future.</strong></h2><img className="mobile-tongue" src="./assets/future-transition-curve-mobile.svg" alt="" /><button type="button" className="mobile-future-cue" onClick={e => { e.stopPropagation(); scroller.current?.scrollTo({ top: document.getElementById(SECTION_IDS.nx).offsetTop, behavior: 'smooth' }); }} aria-label="See what’s next for SAFRA"><img src="./assets/whats-next-mobile.svg" alt="" /></button></section><section id={SECTION_IDS.nx} className={`mobile-looking-forward ${view === 'nx' || priorityPage || forwardRevealed ? 'forward-visible' : ''} ${priority ? 'priority-open' : ''}`}>
+      <div className="mobile-forward-base" inert={priority ? '' : undefined} aria-hidden={priority}><ForwardIntro /><button type="button" className="mobile-forward-cue" onClick={e => { e.stopPropagation(); v.mobileAdvance(1); }} aria-label="Explore SAFRA’s three key priorities"><img src="./assets/explore-priorities-mobile.svg" alt="" /></button></div>
       <div className="mobile-priority-reveal" inert={!priority ? '' : undefined} aria-hidden={!priority}>
         <div id={screenId('nx', 0)} className="mobile-priority-one">{flow(find(find(desktop,n => n.props.id === SECTION_IDS.nx),n => has(n,'lf1c'))?.props.children)}</div>
       </div>

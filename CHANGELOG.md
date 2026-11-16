@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-16 — Đặt tên ảnh và SVG theo nội dung
+
+- Đổi tên 206 ảnh/SVG public và 3 SVG cursor sang tên tiếng Anh có ý nghĩa, chữ thường, phân cách bằng dấu gạch nối; giữ nguyên nội dung file.
+- Cập nhật đường dẫn desktop/mobile, gallery, poster, CSS và các kiểm tra; icon travel dùng bảng tên tường minh thay vì ghép tên cũ.
+- Giữ các biến thể crop riêng và tài nguyên dùng chung; bổ sung quy tắc đặt tên trong README.
+
 ## 2026-11-16 — Rà soát tiếp tài nguyên desktop/mobile
 
 - Đối chiếu ảnh và icon qua computer use; gom thêm hai SVG máy bay và tàu biển về `mb-tv-plane.svg` và `mb-tv-ship.svg`, giữ kích thước mobile 40×40px.

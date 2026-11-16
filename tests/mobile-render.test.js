@@ -72,8 +72,8 @@ test('main screens retain content and long sections expose native scrolling', ()
   assert.match(opened, /Hawker discount day/);
   const education = markup('mb', 0, {mbTab:1});
   assert.match(education, /class="mbc"/);
-  assert.match(education, /mobile-education-icon\.svg/);
-  assert.match(education, /mobile-education-recipients\.png/);
+  assert.match(education, /membership-education-icon-mobile\.svg/);
+  assert.match(education, /education-award-recipients-mobile\.png/);
   verifyAssets(education);
   for (let i = 0; i < 3; i++) verifyAssets(markup('s3',i));
 });

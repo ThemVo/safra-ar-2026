@@ -115,7 +115,7 @@ export default function MobileGlance(v) { return (<section
               >
                 <img
                   className="pic"
-                  src="./assets/mobile-glanceMembers.jpg"
+                  src="./assets/membership-running-group-mobile.jpg"
                   alt="A running group of members in SAFRA singlets posing outdoors at sunset"
                   style={{
                     display: "block",
@@ -140,7 +140,7 @@ export default function MobileGlance(v) { return (<section
               >
                 <img
                   className="pic"
-                  src="./assets/mobile-glanceFamily.jpg"
+                  src="./assets/membership-family-celebration-mobile.jpg"
                   alt="Members and their children with a gingerbread mascot at a festive celebration"
                   style={{
                     display: "block",
@@ -197,22 +197,22 @@ export default function MobileGlance(v) { return (<section
             </div>
             <div id={screenId("s3", 1)} className={`sl ${s(v.sl1)}`} aria-label="Outreach and Engagement">
               <div className="sub"><h3 className="mobile-gradient">Outreach &amp; Engagement</h3></div>
-              {photo('outreach-bikes', './assets/mobile-glance-bikes.png', 'Children participating in a SAFRA cycling activity')}
+              {photo('outreach-bikes', './assets/outreach-balance-bike-race-mobile.png', 'Children participating in a SAFRA cycling activity')}
               {stat('outreach-activities', 'Participation in SAFRA Activities', 'Over 1.72M', v.v?.o1, true)}
               {stat('outreach-appreciation', 'People Engaged Through Appreciating NSmen Initiatives', 'Over 75K', v.v?.o2, true)}
-              {photo('outreach-card', './assets/an1-card.jpg', 'A handmade card showing appreciation for NSmen')}
-              {photo('outreach-defence-photo', './assets/g1-5.jpg', 'Participants taking part in a defence activity')}
+              {photo('outreach-card', './assets/nsmen-art-jam-thank-you-card.jpg', 'A handmade card showing appreciation for NSmen')}
+              {photo('outreach-defence-photo', './assets/ns-experience-camp-gallery-06.jpg', 'Participants taking part in a defence activity')}
               {stat('outreach-defence', 'Participation in Defence Initiatives', 'Over 211K', v.v?.o3, true)}
               {stat('outreach-cohesion', 'Participation in Cohesion Activities for NS Units', 'Over 52K', v.v?.o4, true)}
-              {photo('outreach-group', './assets/an4s-2.jpg', 'NSmen posing together at a cohesion activity')}
+              {photo('outreach-group', './assets/nsmen-food-truck-gallery-03.jpg', 'NSmen posing together at a cohesion activity')}
             </div>
             <div id={screenId("s3", 2)} className={`sl ${s(v.sl2)}`} aria-label="Sustainability">
               <div className="sub"><h3 className="mobile-gradient">Sustainability</h3></div>
-              {photo('sustainability-solar', './assets/mobile-glance-solar.png', 'Solar panels under a blue sky')}
+              {photo('sustainability-solar', './assets/sustainability-solar-panels-mobile.png', 'Solar panels under a blue sky')}
               {stat('sustainability-panels', 'Number of Solar Panels Across SAFRA Clubs Inclusive of 870 New Panels Installed at SAFRA Yishun', '6,850', v.v?.s3)}
               {stat('sustainability-energy', 'Solar Energy Generated', '1074 MWh', v.v?.s1?.replace(',', ''), false, 'Equivalent to the electricity usage of over 320 4-room HDB flats for a year')}
               {stat('sustainability-carbon', <>Reduction in Carbon Dioxide (CO<sub>2</sub>) Emissions</>, '432 Tonnes', v.v?.s2, false, <>Equivalent to the annual CO<sub>2</sub> absorption of 19,800 trees</>)}
-              {photo('sustainability-trees', './assets/mobile-glance-trees.png', 'Sunlight shining through a green tree canopy')}
+              {photo('sustainability-trees', './assets/sustainability-tree-canopy-mobile.png', 'Sunlight shining through a green tree canopy')}
             </div>
           </section>); }
 

@@ -84,7 +84,7 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
       if (view === 'end') assert.equal(logic.state.s14, true);
       logic.componentWillUnmount();
     }
-    for (const [view, max] of Object.entries({ s3: 3, s6: 4, s7: mobile ? 1 : 4, s8: mobile ? 1 : 6, mb: 4, lf2: 4, lf3: 3 })) {
+    for (const [view, max] of Object.entries({ s3: 3, s6: 4, s7: 4, s8: 6, mb: 4, lf2: 4, lf3: 3 })) {
       for (let i = 0; i < max; i++) {
         const hash = '#' + screenId(view, i);
         logic = mount(hash, mobile);
@@ -172,17 +172,21 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   logic.componentWillUnmount();
   assert.equal(listeners.size, 0);
   assert.equal(parseRoute('#%invalid'), null);
-  assert.equal(parseRoute('#strengthening-bonds-story-6', true).index, 0);
+  assert.equal(parseRoute('#strengthening-bonds-story-6', true).index, 5);
   assert.equal(routeHash({ view: 'top' }), '');
   assert.equal(routeHash({ view: 'logo' }), '');
 });
 
-test('both templates expose stable section and screen IDs', () => {
-  for (const file of ['template.jsx', 'templateMobile.jsx']) {
-    const markup = readFileSync(new URL('../src/artboard/' + file, import.meta.url), 'utf8');
-    for (const view of ['top', 'tg', 's3', 's5', 's6', 's7', 's8', 'mb', 'fc1', 'wc', 'nx', 'lf2', 'lf3', 'end']) {
-      assert.ok(markup.includes(`id={SECTION_IDS.${view}}`), `${file}: ${view}`);
+test('desktop and mobile retain stable URL identifiers', () => {
+  const markup = readFileSync(new URL('../src/artboard/template.jsx', import.meta.url), 'utf8');
+  for (const view of ['top', 'tg', 's3', 's5', 's6', 's7', 's8', 'mb', 'fc1', 'wc', 'nx', 'lf2', 'lf3', 'end']) {
+    assert.ok(markup.includes(`id={SECTION_IDS.${view}}`), `desktop: ${view}`);
+  }
+  for (const [view, count] of Object.entries({s3:3,s6:4,s7:4,s8:6,mb:4,lf2:4,lf3:3})) {
+    for (let i = 0; i < count; i++) {
+      const route = parseRoute('#' + screenId(view, i), true);
+      assert.equal(route.view, view);
+      assert.equal(route.index, i);
     }
-    for (let i = 0; i < 3; i++) assert.ok(markup.includes(`id={screenId("s3", ${i})}`));
   }
 });

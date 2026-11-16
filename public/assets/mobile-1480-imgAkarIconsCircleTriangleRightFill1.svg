@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="akar-icons:circle-triangle-right-fill">
+<circle id="Ellipse 63" cx="12" cy="12" r="11" fill="url(#paint0_linear_0_17)"/>
+<path id="Vector" d="M12 1C5.925 1 1 5.925 1 12C1 18.075 5.925 23 12 23C18.075 23 23 18.075 23 12C23 5.925 18.075 1 12 1ZM10 8.8C10 8.505 10.152 8.234 10.396 8.095C10.5146 8.02679 10.6503 7.99427 10.7869 8.00137C10.9235 8.00847 11.0551 8.05487 11.166 8.135L15.666 11.335C15.7702 11.4117 15.8547 11.5119 15.9128 11.6274C15.9708 11.743 16.0007 11.8707 16 12C16.0009 12.1295 15.9711 12.2574 15.913 12.3731C15.855 12.4889 15.7703 12.5892 15.666 12.666L11.166 15.866C11.0551 15.9461 10.9235 15.9925 10.7869 15.9996C10.6503 16.0067 10.5146 15.9742 10.396 15.906C10.2739 15.8334 10.173 15.7299 10.1035 15.606C10.034 15.4821 9.99829 15.3421 10 15.2V8.8Z" fill-rule="evenodd" clip-rule="evenodd" fill="white"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_17" x1="1" y1="12" x2="23" y2="12" gradientUnits="userSpaceOnUse">
+<stop stop-color="#6252A4"/>
+<stop offset="0.490385" stop-color="#F14192"/>
+<stop offset="0.927885" stop-color="#F6765D"/>
+<stop offset="0.9999" stop-color="#F69141"/>
+</linearGradient>
+</defs>
+</svg>

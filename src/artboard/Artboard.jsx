@@ -36,6 +36,18 @@ export default class Artboard extends Component {
     this.onWheel = (e) => {
       if (outside(e)) this.vals?.wheel?.(e);
     };
+    // React's wheel listener is passive. Cancel native scrolling separately so
+    // story changes cannot also scroll the frame or its mobile content column.
+    this.onStoryWheel = (e) => {
+      if (!this.props.mobile && !this.logic.state.lb && !this.logic.state.menu && (this.logic.state.view === 'end' || this.logic.state.link === 'z3')) {
+        e.preventDefault();
+        return;
+      }
+      if (!['lf2', 'lf3'].includes(this.logic.state.view) || this.logic.state.lb || this.logic.state.menu) return;
+      const content = e.target?.closest?.(this.logic.state.view === 'lf2' ? '.lf2l' : '.lf3s');
+      const reverseScroll = e.deltaY < 0 && this.logic.mobileCanScroll(this.logic.mobileScroller(e.target), e.deltaY);
+      if (!this.props.mobile || (content && !reverseScroll)) e.preventDefault();
+    };
     this.onTouchStart = (e) => {
       if (outside(e)) this.vals?.touchStart?.(e);
     };
@@ -62,6 +74,7 @@ export default class Artboard extends Component {
     };
     this.onLeave = () => this.vals?.leave?.();
     window.addEventListener("wheel", this.onWheel, { passive: true });
+    window.addEventListener("wheel", this.onStoryWheel, { passive: false, capture: true });
     window.addEventListener("touchstart", this.onTouchStart, { passive: true });
     window.addEventListener("touchend", this.onTouchEnd, { passive: true });
     window.addEventListener("touchmove", this.onTouchMove, { passive: true });
@@ -78,6 +91,7 @@ export default class Artboard extends Component {
   }
   componentWillUnmount() {
     window.removeEventListener("wheel", this.onWheel);
+    window.removeEventListener("wheel", this.onStoryWheel, true);
     window.removeEventListener("touchstart", this.onTouchStart);
     window.removeEventListener("touchend", this.onTouchEnd);
     window.removeEventListener("touchmove", this.onTouchMove);

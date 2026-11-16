@@ -111,7 +111,7 @@ function scramble(lines, t, seed) {
   return lines.map((line) => { let out = ''; for (const c of line) { const at = o / SCR.cps; if (t >= at) out += (t >= at + SCR.settle || /\s/.test(c)) ? c : SCR.set[(Math.imul(seed + o * 31 + step * 7, 2654435761) >>> 0) % SCR.set.length]; o++; } o++; return out; });
 }
 const ORDER = ['top', 'tg', 's3', 's5']; // '& beyond' (t2) removed: below the cards comes Clubs & Facilities (desktop) / Membership (mobile)
-const AFTER = () => (MOBILE ? 'mb' : 'wc'); // the initiatives (s6/s7/s8) are L2 pages opened from the topic cards, off the main scroll; // section 2 (AGM countdown) removed: the masthead leads straight into At a glance // s7 is reached from the last s6 story via the cards (see go) // the statement and the topic cards are one stop (s5)
+const AFTER = () => 'wc'; // the initiatives (s6/s7/s8) are L2 pages opened from the topic cards, off the main scroll; // section 2 (AGM countdown) removed: the masthead leads straight into At a glance // s7 is reached from the last s6 story via the cards (see go) // the statement and the topic cards are one stop (s5)
 const STEM_TOP = 732 + 56; // top of the arrow's stem (cam coords)
 const ROLL_AFTER = 1500, ROLL_DUR = 1200; // countdown roll-up once the tiles have slid in
 const viewOf = (v) => /^10|membership/i.test(v || '') ? 'mb' : /^9|transition-2/i.test(v || '') ? 's5' : /^8|strengthening|1sg60/i.test(v || '') ? 's8' : /^7|appreciating/i.test(v || '') ? 's7' : /^6|defence closer|community/i.test(v || '') ? 's6' : /^5|topic/i.test(v || '') ? 's5' : /^4|transition/i.test(v || '') ? 's5' : /^3|glance/i.test(v || '') ? 's3' : /^2|countdown|registration/i.test(v || '') ? 's2' : 'top';
@@ -128,7 +128,7 @@ export class ArtboardLogic extends Logic {
     super(props);
     applyGeo(props.mobile);
     const sv = viewOf(props.startView);
-    this.state = { phase: 'run', mx: 0, my: 0, p: 0, lay: null, view: sv, s2: sv !== 'top', s3: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 2, s4: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 3, s6: sv === 's6', step6: 0, t6: null, s7: sv === 's7', step7: 0, t7: null, s8: sv === 's8', step8: 0, t8: null, s9: sv === 't2' || sv === 'mb', s10: sv === 'mb', mbTab: MOBILE ? 0 : -1, mbOrd: [3, 2, 1, 0], mbMv: null, lb: null, hx: null, hy: null, ready: false, now: Date.now(), step: 0, fresh: sv === 's3', cdP: sv === 'top' ? 0 : 1 };
+    this.state = { phase: 'run', mx: 0, my: 0, p: 0, lay: null, view: sv, s2: sv !== 'top', s3: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 2, s4: ['top', 'tg', 's3', 's5', 's6'].indexOf(sv) >= 3, s6: sv === 's6', step6: 0, t6: null, s7: sv === 's7', step7: 0, t7: null, s8: sv === 's8', step8: 0, t8: null, s9: sv === 't2' || sv === 'mb', s10: sv === 'mb', mbTab: -1, mbOrd: [3, 2, 1, 0], mbMv: null, lb: null, hx: null, hy: null, ready: false, now: Date.now(), step: 0, fresh: sv === 's3', cdP: sv === 'top' ? 0 : 1 };
     this.played2 = sv !== 'top';
   }
   componentDidMount() {
@@ -180,7 +180,7 @@ export class ArtboardLogic extends Logic {
       const to = route?.view || 'top';
       this.jumpTo(to);
       const patch = { link: null, linkY: 0, z2top: false, z2end: false, lb: null, ready: true, curOn: true, s3: to !== 'top', s4: to !== 'top',
-        step: 0, fresh: false, hd: to === 'tg' || to === 's3', mbTab: MOBILE ? 0 : -1, mbOrd: [3, 2, 1, 0] };
+        step: 0, fresh: false, hd: to === 'tg' || to === 's3', mbTab: -1, mbOrd: [3, 2, 1, 0] };
       if (to === 's3') patch.step = route.index ?? 0;
       if (to === 'mb' && route.index != null) {
         patch.mbTab = route.index;
@@ -238,7 +238,10 @@ export class ArtboardLogic extends Logic {
     this.queueUrlSync();
     // Clubs & Facilities: once the 1st item has fully come in (cards land by ~1.95s), the 2nd comes in by itself — no need to scroll to it
     if (this.state.s15 && !s15w && !this.state.s16) { clearTimeout(this.fc2T); this.fc2T = setTimeout(() => { if (this.state.s15 && !this.state.s16) super.setState({ s16: true }); }, 1200); }
-    if (this.state.s13 && !s13w) this.nxReady = Date.now() + 1500; // Looking forward's text animates in (title .55s + body .7s delay, .75s each)
+    if ((this.state.s13 && !s13w) || (MOBILE && now === 'nx' && was !== 'nx')) {
+      this.nxReady = Date.now() + 1500; // Let the introduction settle on every arrival.
+      if (MOBILE) { this.mobileWheelOwned = true; this.touchOwned = true; }
+    }
     if (this.state.lf1 && !lf1w) this.nxReady = Date.now() + 2000; // the circle, then the 01 panel's three lines (from .85s, .12s apart, .8s each)
     if (now !== was && (now === 'lf2' || now === 'lf3')) this.barReset = { sel: now === 'lf2' ? '.s17' : '.s18', t: performance.now() + 450 };
     if (['nx', 'lf2', 'lf3', 'end'].includes(now)) this.barLoop();
@@ -323,7 +326,7 @@ export class ArtboardLogic extends Logic {
       });
     });
   }
-  componentWillUnmount() { this.urlMounted = false; window.removeEventListener('popstate', this.onUrlChange); window.removeEventListener('hashchange', this.onUrlChange); clearInterval(this.stkT); this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); }
+  componentWillUnmount() { this.urlMounted = false; window.removeEventListener('popstate', this.onUrlChange); window.removeEventListener('hashchange', this.onUrlChange); clearInterval(this.stkT); ['tgA', 'tgT', 'b3T', 'swT', 'up5T', 'fc2T', 'landT', 'mbHT', 'i4T'].forEach(k => clearTimeout(this[k])); if (this.barRaf) cancelAnimationFrame(this.barRaf); if (this.raf8) cancelAnimationFrame(this.raf8); this.clearAll(); clearInterval(this.tick); clearTimeout(this.hopT); if (this.raf6) cancelAnimationFrame(this.raf6); if (this.raf7) cancelAnimationFrame(this.raf7); }
   // Section 6: play a story's entrance (photos rise into their frames, numbers count, description decodes, red bar fills)
   play6(n, delay, hold) {
     if (this.raf6) cancelAnimationFrame(this.raf6);
@@ -368,6 +371,12 @@ export class ArtboardLogic extends Logic {
     if (Math.abs(sc - (this.state.mbSc ?? 1)) > 0.002) this.setState({ mbSc: sc });
   }
   mbTo(t) {
+    if (MOBILE) {
+      const next = this.state.mbTab === t ? -1 : t, ord = [3, 2, 1, 0];
+      if (next >= 0) while (ord[3] !== next) ord.unshift(ord.pop());
+      this.setState({ mbTab: next, mbOrd: ord });
+      return;
+    }
     if (!MOBILE) {
       // accordion: tap a card to open it (the open one folds shut), tap the open card again to close it;
       // the content height animates, and the stack scrolls back so it sits from the top
@@ -386,18 +395,6 @@ export class ArtboardLogic extends Logic {
       }));
       return;
     }
-    const ord = this.state.mbOrd || [3, 2, 1, 0];
-    let steps = 3 - ord.indexOf(t);
-    if (steps <= 0 || this.mbBusy) return;
-    this.mbBusy = true;
-    const step = () => {
-      const o = this.state.mbOrd || [3, 2, 1, 0], n = [o[3], o[0], o[1], o[2]];
-      this.setState({ mbOrd: n, mbTab: n[3], mbMv: o[3] });
-      steps--;
-      clearTimeout(this.mbT);
-      this.mbT = setTimeout(() => { this.setState({ mbMv: null }); if (steps > 0) step(); else this.mbBusy = false; }, steps > 0 ? 300 : 560);
-    };
-    step();
   }
   // While AT A GLANCE scales down, the connector is trimmed so it never runs past the top of the L;
   // scaling back up lets it reach up to the masthead again.
@@ -431,68 +428,38 @@ export class ArtboardLogic extends Logic {
     this.setState({ nxTab: k });
     requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; el.style.scrollBehavior = 'auto'; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = at === 'end' ? this.nxMax(el) : 0; this.nxPos = el.scrollTop; this.nxReveal(el); el.style.scrollBehavior = ''; });
   }
-  // "03 Supporting NSmen's needs": the left column scrolls (the photo stays put); at either end the page moves on.
+  // "03 Supporting NSmen's needs": change stories in place before moving on.
   lf3Enter(dir) {
     this.nxPos = null; this.nxEdge = Date.now(); this.setState({ lf3s: dir > 0 ? 0 : 2 });
-    requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = dir > 0 ? 0 : this.nxMax(el); });
+    requestAnimationFrame(() => { const el = this.nxEl(); if (!el) return; if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; } el.scrollTop = 0; });
   }
-  lf3Step(k, at) {
+  lf3Step(k) {
     if (this.state.link === 'z3') this.linkStop();
     if (this.state.view === 'end') this.setState({ view: 'lf3' });
-    this.lockUntil = Date.now() + 950; this.nxEdge = Date.now(); this.nxPos = null; this.l3Busy = false;
+    this.lockUntil = Date.now() + 950;
+    this.nxPos = null;
     if (this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; }
     this.setState({ lf3s: k });
-    const el = this.nxEl(); if (!el) return;
-    // the newly opened story glides from where it is on screen to the top of the list while the others close —
-    // no jump: each frame the column is scrolled so the story's top follows one eased path to its final place (same 0.75s curve)
-    const items = el.querySelectorAll(':scope > .lf2i'), tgt = items[k]; if (!tgt) return;
-    const s0 = el.scrollTop, p0 = tgt.offsetTop - s0, t0 = performance.now(), D = 750;
-    // where the opened story will finally sit (scroll 0): its top minus the body of any open story above it, which is closing
-    // = the closed heights of the stories above it: top padding (none on the first) + title + bottom padding
-    let pf = 0;
-    for (const it of items) { if (it === tgt) break; const h = it.querySelector(':scope > .lf2t'); pf += (it === items[0] ? 0 : (MOBILE ? 12 : 16)) + (h ? h.offsetHeight : 0) + (MOBILE ? 0 : 16); }
-    // room below while it runs, so the shrinking column never forces its scroll (that forced shift was the jump)
-    if (el.dataset.pb0 === undefined) el.dataset.pb0 = el.style.paddingBottom; el.style.paddingBottom = `calc(${el.dataset.pb0 || '0px'} + 900px)`;
-    const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
-    const pin = () => {
-      const e = this.nxEl(); if (!e) return;
-      const x = Math.min(1, (performance.now() - t0) / D), q = ease(x);
-      const o = tgt.offsetTop, oNext = o + (o - (pin.o ?? o)); pin.o = o; // the layout runs a frame ahead of this read: use where it will be
-      e.scrollTop = at === 'end' ? this.nxMax(e) : Math.min(s0, Math.max(0, oNext - (p0 + (pf - p0) * q))); // never scrolls past where it started (no lift when it was already at the top)
-      if (x < 1) requestAnimationFrame(pin); else { e.style.paddingBottom = e.dataset.pb0 || ''; delete e.dataset.pb0; if (at !== 'end') e.scrollTop = 0; }
-    };
-    requestAnimationFrame(pin);
   }
-  lf3Wheel(dy, target) {
+  lf3Wheel(dy) {
     if (this.state.link === 'z3') {
-      if (dy < 0 && this.lkPos <= 0 && this.state.linkY <= 0.5) this.linkStop();
-      else return false; // Hide the footer before changing the active story.
+      return false; // Finish moving the camera before changing the active story.
     }
     if (this.state.view !== 'lf3' || this.state.lb) return false;
-    const el = this.nxEl(); if (!el) return false;
     const now = Date.now(), streak = now - (this.l3Last || 0) < 160; this.l3Last = now;
     if (this.lockUntil && now < this.lockUntil) return true;
-    if (!streak) this.l3Busy = false; // a fresh gesture
-    // over the column itself the browser scrolls it natively (smooth, trackpad-precise) — only follow along; elsewhere scroll it ourselves
-    const native = !MOBILE && target && el.contains(target);
-    if (native && this.nxRaf) { cancelAnimationFrame(this.nxRaf); this.nxRaf = 0; }
-    const max = this.nxMax(el), pos = native ? el.scrollTop : (this.nxPos ?? el.scrollTop);
-    if (native) this.nxPos = null;
-    if (dy > 0 && pos < max - 1) { if (!native) this.nxGo(el, Math.min(max, pos + dy)); this.nxEdge = now; this.l3Busy = true; return true; }
-    if (dy < 0 && pos > 1) { if (!native) this.nxGo(el, Math.max(0, pos + dy)); this.nxEdge = now; this.l3Busy = true; return true; }
-    if (this.l3Busy || (streak && now - (this.nxEdge || 0) < 900)) return true; // the gesture that scrolled the column to its end never also moves the page: that takes a fresh one
-    this.nxPos = null;
-    const k = this.state.lf3s || 0; // then on to the next / previous story (Enhanced experiences ⇄ Upgrading of SAFRA Jurong ⇄ New SAFRA Bayshore)
-    if (dy > 0 && k < 2) { this.lf3Step(k + 1, 'top'); return true; }
-    if (dy < 0 && k > 0) { this.lf3Step(k - 1, 'top'); return true; } // back up: the previous story opens from its top
+    if (streak) return true;
+    const k = this.state.lf3s || 0;
+    if (dy > 0 && k < 2) { this.lf3Step(k + 1); return true; }
+    if (dy < 0 && k > 0) { this.lf3Step(k - 1); return true; }
     return false;
   }
-  // "02 Strengthening commitment to defence": scroll steps between its two stories (NS Experience Camps → FitX Challenge → Commemorating NS60 → More volunteering opportunities), then moves on.
+  // One fresh gesture per story; momentum must never carry into another section.
   lf2Wheel(dy) {
     if (this.state.view !== 'lf2' || this.state.lb) return false;
     const now = Date.now(), streak = now - (this.l2Last || 0) < 160; this.l2Last = now;
     if (this.lockUntil && now < this.lockUntil) return true;
-    if (streak && now - (this.l2Edge || 0) < 1400) return true;
+    if (streak) return true;
     const k = this.state.lf2s || 0;
     if (dy > 0 && k < 3) { this.lockUntil = now + 900; this.l2Edge = now; this.setState({ lf2s: k + 1 }); return true; }
     if (dy < 0 && k > 0) { this.lockUntil = now + 900; this.l2Edge = now; this.setState({ lf2s: k - 1 }); return true; }
@@ -541,6 +508,7 @@ export class ArtboardLogic extends Logic {
     if (atEnd) {
       if (streak && now - (this.lkEdge || 0) < 900) { this.lkEdge = now; return true; } // reached the end with this gesture: wait
       this.linkSettle();
+      if (key === 'z3') return true;
       return this.state.view === 'nx' && dy > 0; // fresh gesture at the end: hand over to the snap (or to Looking Forward's own column)
     }
     this.linkGo(Math.max(0, Math.min(L.len, pos + dy)));
@@ -740,19 +708,71 @@ export class ArtboardLogic extends Logic {
     this.setState({ step: n, fresh: false, p: 0, dirB: n < this.state.step });
     this.countT = setTimeout(() => this.countUp(), 420);
   }
+  mobileScroller(target) {
+    return target?.closest?.('[data-mobile-scroll]') || null;
+  }
+  mobileCanScroll(el, dy) {
+    return el && (dy > 0 ? el.scrollTop + el.clientHeight < el.scrollHeight - 2 : el.scrollTop > Number(el.dataset?.mobileScrollMin || 0) + 2);
+  }
+  mobileScrolled(el) {
+    // The Annual Report clamps reverse scrolling at the previous section's
+    // boundary. Those corrective scroll events are not native momentum: if
+    // they refresh this timer, every attempt to scroll up keeps the exit locked.
+    if (this.state.view === 'end' && el.dataset?.mobileScrollMin != null && el.scrollTop <= Number(el.dataset.mobileScrollMin) + 2) return;
+    this.mobileNativeScroller = el;
+    this.mobileNativeScrollAt = Date.now();
+  }
+  mobileWheel(e) {
+    if (this.state.menu || this.state.lb) return;
+    if (['lf2', 'lf3'].includes(this.state.view) && e.target?.closest?.(this.state.view === 'lf2' ? '.lf2l' : '.lf3s') && !(e.deltaY < 0 && this.mobileCanScroll(this.mobileScroller(e.target), e.deltaY))) {
+      if (!(this.state.view === 'lf2' ? this.lf2Wheel(e.deltaY) : this.lf3Wheel(e.deltaY))) this.mobileGo(e.deltaY > 0 ? 1 : -1);
+      return;
+    }
+    const now = Date.now(), fresh = now - (this.mobileWheelAt ?? -Infinity) > 220;
+    this.mobileWheelAt = now;
+    if (fresh) this.mobileWheelOwned = false;
+    const el = this.mobileScroller(e.target);
+    if (this.mobileCanScroll(el, e.deltaY)) { this.mobileWheelOwned = true; return; }
+    // Native scrolling (including momentum) can reach the edge before this wheel event.
+    // Keep that gesture on the current screen until the content has stopped moving.
+    if (['mb', 'fc1', 'nx', 'lf2', 'lf3', 'end'].includes(this.state.view) && el === this.mobileNativeScroller && now - this.mobileNativeScrollAt < 350) {
+      this.mobileWheelOwned = true; return;
+    }
+    if (this.mobileWheelOwned) return;
+    this.mobileWheelOwned = true;
+    this.mobileGo(e.deltaY > 0 ? 1 : -1);
+  }
+  mobileGo(dir) {
+    const now = Date.now();
+    if (this.lockUntil && now < this.lockUntil) return;
+    this.mobileDirection = dir;
+    if (['lf2', 'lf3'].includes(this.state.view)) {
+      const key = this.state.view === 'lf2' ? 'lf2s' : 'lf3s';
+      const max = this.state.view === 'lf2' ? 3 : 2, index = (this.state[key] || 0) + dir;
+      if (index >= 0 && index <= max) {
+        this.lockUntil = now + 900;
+        this.setState({ [key]: index }); return;
+      }
+    }
+    this.go(dir);
+  }
   go(dir) {
     const now = Date.now();
     if (this.state.link) this.linkStop();
     if (this.lockUntil && now < this.lockUntil) return;
     if (this.state.view === 'top' && !this.state.curOn) return; // masthead: no scrolling until the headline and the red cursor are in
     if (this.state.view === 'nx' && now < (this.nxReady || 0)) return; // Looking forward: … until its text has come in
+    if (MOBILE && this.state.view === 'nx') {
+      if (dir > 0 && !this.state.lf1) { this.setState({ lf1: true }); this.lockUntil = now + 1200; return; }
+      if (dir < 0 && this.state.lf1) { this.setState({ lf1: false }); this.lockUntil = now + 900; return; }
+    }
     // section 1 ⇄ the SAFRA logo it started from
     if (this.state.view === 'top' && dir < 0) { if (this.state.ready) { this.lockUntil = now + 1700; this.setState({ view: 'logo' }); } return; }
     if (this.state.view === 'logo') { if (dir > 0) { this.lockUntil = now + 1300; this.setState({ view: 'top', curOn: false }); clearTimeout(this.curT); this.curT = setTimeout(() => this.setState({ curOn: true }), REPLAY_DONE + CURSOR_AFTER); } return; }
     if (this.state.lb) return; // gallery open
-    if (!MOBILE && this.state.view === 'mb') { this.l2To(dir > 0 ? 'fc1' : 's8', dir); return; } // Membership: on to Clubs & Facilities / back to Strengthening Bonds
-    if (!MOBILE && this.state.view === 'fc1') { if (dir > 0) this.skipTo(AFTER()); else this.l2To('mb', -1); return; } // Clubs & Facilities page: once its own scroll ends, on below the cards / back up to the cards // Membership page: down to & beyond, up back to the cards
-    { const TAIL = (MOBILE ? ['mb', 'fc1', 'wc', 'nx', 'lf2', 'lf3', 'end'] : ['wc', 'nx', 'lf2', 'lf3', 'end']) /* 'fy' (Our year in summary) removed */, ti = TAIL.indexOf(this.state.view);
+    if (this.state.view === 'mb') { this.l2To(dir > 0 ? 'fc1' : 's8', dir); return; } // Membership: on to Clubs & Facilities / back to Strengthening Bonds
+    if (this.state.view === 'fc1') { if (dir > 0) this.skipTo(AFTER()); else this.l2To('mb', -1); return; } // Clubs & Facilities page: once its own scroll ends, on below the cards / back up to the cards // Membership page: down to & beyond, up back to the cards
+    { const TAIL = ['wc', 'nx', 'lf2', 'lf3', 'end'] /* 'fy' (Our year in summary) removed */, ti = TAIL.indexOf(this.state.view);
       if (ti >= 0) {
         if (ti === 0 && dir < 0) { this.toCards(); return; }
         const nv = TAIL[ti + dir]; if (!nv) return;
@@ -772,19 +792,19 @@ export class ArtboardLogic extends Logic {
     }
     if (this.state.view === 's8') {
       const ns = (this.state.step8 || 0) + dir;
-      if (ns >= (MOBILE ? 1 : DC8.length)) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('mb', 1); return; } // mobile: story 2 not laid out yet
-      if (ns < 0) { if (MOBILE) this.toCards(); else this.l2To('s7', -1); return; }
+      if (ns >= DC8.length) { this.l2To('mb', 1); return; }
+      if (ns < 0) { this.l2To('s7', -1); return; }
       this.lockUntil = now + 900; this.play8(ns, 0.2); return;
     }
     if (this.state.view === 's7') {
       const ns = (this.state.step7 || 0) + dir;
-      if (ns >= (MOBILE ? 1 : DC7.length)) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('s8', 1); return; } // mobile: story 2 not laid out yet
-      if (ns < 0) { if (MOBILE) this.toCards(); else this.l2To('s6', -1); return; }
+      if (ns >= DC7.length) { this.l2To('s8', 1); return; }
+      if (ns < 0) { this.l2To('s6', -1); return; }
       this.lockUntil = now + 900; this.play7(ns, 0.2); return;
     }
     if (this.state.view === 's6') {
       const ns = (this.state.step6 || 0) + dir;
-      if (ns >= DC.length) { if (MOBILE) this.skipTo(AFTER()); else this.l2To('s7', 1); return; }
+      if (ns >= DC.length) { this.l2To('s7', 1); return; }
       if (ns < 0) { this.toCards(); return; }
       this.lockUntil = now + 900; this.play6(ns, 0.2); return;
     }
@@ -792,7 +812,7 @@ export class ArtboardLogic extends Logic {
       const ns = this.state.step + dir;
       if (ns >= 0 && ns <= 2) { this.lockUntil = now + 1150; this.setStep(ns); return; }
     }
-    if (this.state.view === 's5' && dir > 0) { this.lockUntil = now + 1200; if (MOBILE) { this.setState({ view: 'mb' }); this.arriveMb(); } else { this.setState({ view: 'wc', s12: true }); setTimeout(() => this.hvLayout(), 60); } return; }
+    if (this.state.view === 's5' && dir > 0) { this.lockUntil = now + 1200; this.setState({ view: 'wc', s12: true }); setTimeout(() => this.hvLayout(), 60); return; }
     const j = ORDER.indexOf(this.state.view) + dir;
     if (j < 0 || j >= ORDER.length) return;
     const v = ORDER[j];
@@ -807,7 +827,7 @@ export class ArtboardLogic extends Logic {
       if (dir < 0) this.tgT = setTimeout(() => { if (this.state.view === 'tg') this.setState({ s3: false, fresh: false }); }, 500);
       // coming down: the large AT A GLANCE heading holds a moment, then shrinks into place on its own (on into At a glance)
       clearTimeout(this.tgA);
-      if (dir > 0) this.tgA = setTimeout(() => { if (this.state.view === 'tg' && !this.state.menu) { this.lockUntil = 0; this.holdTg = false; this.go(1); } }, TG_AUTO);
+      if (dir > 0 && !MOBILE) this.tgA = setTimeout(() => { if (this.state.view === 'tg' && !this.state.menu) { this.lockUntil = 0; this.holdTg = false; this.go(1); } }, TG_AUTO);
     }
     if (v === 's3') {
       clearTimeout(this.tgT);
@@ -1064,6 +1084,30 @@ export class ArtboardLogic extends Logic {
     const mobile = MOBILE; // arrow cursor while the headline reveals, then the red circle replaces it
     const circle = (masthead && (this.state.curOn || fin)) || (view === 'nx' && !this.state.menu && (!this.state.link || this.state.z2end)); // Looking forward: the same red 'Scroll for more' cursor
     return {
+      mobileView: view,
+      mobileScrollOffset: this.state.fcY || 0,
+      mobileScrollDirection: this.mobileDirection || 1,
+      mobilePriorityStory: this.state[view === 'lf2' ? 'lf2s' : 'lf3s'] || 0,
+      mobileContentScroll: (e) => this.mobileScrolled(e.currentTarget),
+      mobileScroll: (e) => { this.mobileScrolled(e.currentTarget); this.state.fcY = e.currentTarget.scrollTop; this.queueUrlSync(); },
+      mobileMembershipScroll: (e) => this.mobileScrolled(e.currentTarget),
+      // The originating section and future content share native scroll flow.
+      mobileScrollSection: (view) => {
+        if (MOBILE && this.state.view === 'end' && view === 'lf3') {
+          this.setState({ view: 'lf3' });
+          return;
+        }
+        if (MOBILE && ['s5', 'fc1', 'fc2', 'wc', 'nx'].includes(this.state.view) && ['s5', 'fc1', 'wc', 'nx'].includes(view) && view !== this.state.view) {
+          this.setState({ view, ...(view === 'wc' ? { s12: true } : view === 'nx' ? { s13: true, lf1: false } : view === 'fc1' ? { s15: true } : {}) });
+        }
+      },
+      mobileStep: this.state.step,
+      mobileStory: this.state[{ s6: 'step6', s7: 'step7', s8: 'step8' }[view]] || 0,
+      mobileMembership: this.state.mbTab ?? -1,
+      mobilePriority: !!this.state.lf1,
+      mobileMenu: !!this.state.menu,
+      mobileGallery: this.state.lb,
+      mobileAdvance: (dir) => this.mobileGo(dir),
       stageClass,
       mClass: MOBILE ? 'm' : '',
       s2Class: (fin || this.state.s2) ? 'is-s2' : '',
@@ -1100,7 +1144,7 @@ export class ArtboardLogic extends Logic {
       backFc: (e) => { e.stopPropagation(); if (this.state.view === 'fc1') this.toCards(); },
       backMb: (e) => { e.stopPropagation(); if (this.state.view === 'mb') this.toCards(); },
       skip8: (e) => { e.stopPropagation(); if (this.state.view === 's8') this.skipTo(AFTER()); },
-      topic3: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's8' }); this.arrive8(); } },
+      topic3: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's8' }); this.arrive8(); } },
       dch8: (() => { const o = (this.state.lay && this.state.lay.dch8) || [0, -360]; const r = { W: (this.state.lay && this.state.lay.dcHW8) || 500 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       dcw8: { W: (this.state.lay && this.state.lay.dcW8) || 480 },
       d8: (() => {
@@ -1148,9 +1192,9 @@ export class ArtboardLogic extends Logic {
         if (this.mbIn && streak) { if (!this.mbEndAt) this.mbEndAt = now; if (now - this.mbEndAt < 350) { e.stopPropagation(); return; } }
         this.mbIn = false; this.mbEndAt = 0;
       },
-      topic4: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'mb' }); this.arriveMb(); } }, // Rewarding privileges → Membership page
-      topic5: (e) => { e.preventDefault(); e.stopPropagation(); if (!MOBILE && this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'fc1', s15: true }); this.fcEnter(1); } }, // Enhancing SAFRA Clubs & Facilities → its page
-      topic2: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's7' }); this.arrive7(); } },
+      topic4: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'mb' }); this.arriveMb(); } }, // Rewarding privileges → Membership page
+      topic5: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 'fc1', s15: true }); this.fcEnter(1); } }, // Enhancing SAFRA Clubs & Facilities → its page
+      topic2: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's7' }); this.arrive7(); } },
       dch7: (() => { const o = (this.state.lay && this.state.lay.dch7) || [0, -340]; const r = { W: (this.state.lay && this.state.lay.dcHW7) || 480 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       dcw7: (() => { const o = (this.state.lay && this.state.lay.dcw7) || [0, 0, -440]; const r = { W: (this.state.lay && this.state.lay.dcW7) || 846 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       d7: (() => {
@@ -1169,7 +1213,7 @@ export class ArtboardLogic extends Logic {
         });
         return r;
       })(),
-      topic1: (e) => { e.preventDefault(); e.stopPropagation(); if (this.state.view === 's5' && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's6' }); this.arrive6(); } }, // always opens story 1
+      topic1: (e) => { e.preventDefault(); e.stopPropagation(); if (['s5', 'wc'].includes(this.state.view) && !(this.lockUntil && Date.now() < this.lockUntil)) { this.lockUntil = Date.now() + 1400; this.setState({ view: 's6' }); this.arrive6(); } }, // always opens story 1
       dch: (() => { const o = (this.state.lay && this.state.lay.dch) || [0, -200, -390, 0, -60, -160]; const r = { W: (this.state.lay && this.state.lay.dcHW) || 572 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       dcw: (() => { const o = (this.state.lay && this.state.lay.dcw) || [0, -380, -720, 0, -130, -330]; const r = { W: (this.state.lay && this.state.lay.dcW) || 1014 }; o.forEach((v, i) => { r['w' + i] = v; }); return r; })(),
       d6: (() => {
@@ -1211,7 +1255,7 @@ export class ArtboardLogic extends Logic {
           // while it leaves the masthead it is offset/narrowed to sit on the n's stem
           dx: +((nx + nw / 2) - CUE_X).toFixed(2), k: +(nw / lw0).toFixed(4) }; })(),
       endClass: view === 'end' ? 'at-end' : '', // closing section: its gradient fills the letterbox bands above/below the artboard too
-      i4Class: this.state.i4 ? 'i4' : '', lf1Hidden: this.state.lf1 ? 'false' : 'true', lf2v: (() => { const k = this.state.lf2s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', c3: k === 3 ? 'on' : '', a3: k === 3 ? 'true' : 'false', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false' }; })(), lf2To0: (e) => { e.stopPropagation(); this.setState({ lf2s: 0 }); }, noFocusScroll: (e) => { e.preventDefault(); }, /* a click on a story must not focus it — focusing scrolls the column to it (the jump) */ lf3v: (() => { const k = this.state.lf3s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false', ph: k === 2 ? 'short' : '' }; })(), lf3To0: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 0) this.lf3Step(0, 'top'); }, lf3To1: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 1) this.lf3Step(1, 'top'); }, lf3To2: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 2) this.lf3Step(2, 'top'); }, lf2To1: (e) => { e.stopPropagation(); this.setState({ lf2s: 1 }); }, lf2To2: (e) => { e.stopPropagation(); this.setState({ lf2s: 2 }); }, lf2To3: (e) => { e.stopPropagation(); this.setState({ lf2s: 3 }); }, swClass: `${(view === 'tg' || view === 's3') ? 'at3' : ''} ${this.state.swk ? 'swk' : ''} ${this.state.up5 ? 'up5' : ''} ${view === 'wc' && (!this.state.link || this.state.z2top) ? 'at-dk' : ''} ${this.state.link === 'z2' && !this.state.z2top && !this.state.z2end ? 'z2mid' : ''} ${this.state.lf1 && (view === 'nx' || view === 'lf2') ? 'lf1' : ''} ${view === 'lf2' ? 'at-lf2' : ''} ${view === 'nx' && !this.state.link ? 'at-nxv' : ''} ${view === 'lf3' || view === 'end' ? 'at-lf3' : ''} ${(this.state.step6 || 0) === DC.length - 1 ? 'l6' : ''} ${(this.state.step7 || 0) === DC7.length - 1 ? 'l7' : ''} ${(this.state.step8 || 0) === DC8.length - 1 ? 'l8' : ''} ${(!MOBILE && (view === 'fc1' || this.state.link === 'z1')) || this.state.link === 'z2' ? 'xclip' : ''} ${view === 'lf2' ? 'lfs2' : (view === 'lf3' || view === 'end') ? 'lfs3' : ''}`, // Our impact, first reveal: the statement lands first, then the cards rise one by one
+      i4Class: this.state.i4 ? 'i4' : '', lf1Hidden: this.state.lf1 ? 'false' : 'true', lf2v: (() => { const k = this.state.lf2s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', c3: k === 3 ? 'on' : '', a3: k === 3 ? 'true' : 'false', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false' }; })(), lf2To0: (e) => { e.stopPropagation(); this.setState({ lf2s: 0 }); }, noFocusScroll: (e) => { e.preventDefault(); }, /* a click on a story must not focus it — focusing scrolls the column to it (the jump) */ lf3v: (() => { const k = this.state.lf3s || 0; return { c0: k === 0 ? 'on' : '', c1: k === 1 ? 'on' : '', c2: k === 2 ? 'on' : '', a0: k === 0 ? 'true' : 'false', a1: k === 1 ? 'true' : 'false', a2: k === 2 ? 'true' : 'false', ph: k === 2 ? 'short' : '' }; })(), lf3To0: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 0) this.lf3Step(0); }, lf3To1: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 1) this.lf3Step(1); }, lf3To2: (e) => { e.stopPropagation(); if ((this.state.lf3s || 0) !== 2) this.lf3Step(2); }, lf2To1: (e) => { e.stopPropagation(); this.setState({ lf2s: 1 }); }, lf2To2: (e) => { e.stopPropagation(); this.setState({ lf2s: 2 }); }, lf2To3: (e) => { e.stopPropagation(); this.setState({ lf2s: 3 }); }, swClass: `${(view === 'tg' || view === 's3') ? 'at3' : ''} ${this.state.swk ? 'swk' : ''} ${this.state.up5 ? 'up5' : ''} ${view === 'wc' && (!this.state.link || this.state.z2top) ? 'at-dk' : ''} ${this.state.link === 'z2' && !this.state.z2top && !this.state.z2end ? 'z2mid' : ''} ${this.state.lf1 && (view === 'nx' || view === 'lf2') ? 'lf1' : ''} ${view === 'lf2' ? 'at-lf2' : ''} ${view === 'nx' && !this.state.link ? 'at-nxv' : ''} ${view === 'lf3' || view === 'end' ? 'at-lf3' : ''} ${(this.state.step6 || 0) === DC.length - 1 ? 'l6' : ''} ${(this.state.step7 || 0) === DC7.length - 1 ? 'l7' : ''} ${(this.state.step8 || 0) === DC8.length - 1 ? 'l8' : ''} ${(!MOBILE && (view === 'fc1' || this.state.link === 'z1')) || this.state.link === 'z2' ? 'xclip' : ''} ${view === 'lf2' ? 'lfs2' : (view === 'lf3' || view === 'end') ? 'lfs3' : ''}`, // Our impact, first reveal: the statement lands first, then the cards rise one by one
       b3Class: (view === 'tg' || view === 's3') && this.state.b3ok ? 'b3top' : '', // only once the camera has settled (b3ok), so the extension never crosses the masthead on the way down // At a glance: the gradient connector runs up past the artboard to the screen's top edge (tall screens letterbox above)
       tgClass: view === 'tg' ? 'at-tg' : '', hdClass: (fin || this.state.hd) ? 'is-hd' : '',
       cd,
@@ -1220,11 +1264,14 @@ export class ArtboardLogic extends Logic {
       cur: { x: ((this.state.curX ?? hx ?? 720) - 60).toFixed(1), y: ((this.state.curY ?? hy ?? 450) - 60).toFixed(1), o: (circle && hx != null && !mobile) ? 1 : 0, s: (circle && hx != null) ? 1 : 0.4 },
       wheel: (e) => {
         if (Math.abs(e.deltaY) < 4) return;
+        if (MOBILE) { this.mobileWheel(e); return; }
         // one wheel/trackpad gesture (events < 220ms apart, incl. momentum) can't carry on past the large AT A GLANCE heading
         const now = Date.now(), cont = now - (this.lastWheel || 0) < 220; this.lastWheel = now;
         if (this.holdTg && cont && this.state.view === 'tg') return;
         this.holdTg = false;
-        if (this.state.menu) { this.setState({ menu: false }); return; } if (this.nxWheel(e.deltaY) || this.lf2Wheel(e.deltaY) || this.lf3Wheel(e.deltaY, e.target)) return; if (this.linkWheel(e.deltaY)) return; this.go(e.deltaY > 0 ? 1 : -1);
+        if (this.state.menu) { this.setState({ menu: false }); return; }
+        if ((this.state.view === 'end' || this.state.link === 'z3') && this.linkWheel(e.deltaY)) return;
+        if (this.nxWheel(e.deltaY) || this.lf2Wheel(e.deltaY) || this.lf3Wheel(e.deltaY, e.target)) return; if (this.linkWheel(e.deltaY)) return; this.go(e.deltaY > 0 ? 1 : -1);
       },
       tabs: (() => { const k = { s6: 0, s7: 1, s8: 2 }[view], on = k != null && MOBILE /* desktop: each topic page has its own header (back · title · next), so the tabs only show on mobile */ && !this.state.lb; /* desktop topic 1 has its own header */ const i = k ?? (this.state.tabLast ?? 0); return { cls: on ? 'on' : '', x: TABS_X[i], w: TABS_W[i], s6: i === 0 ? 'on' : '', s7: i === 1 ? 'on' : '', s8: i === 2 ? 'on' : '', s6sel: String(i === 0), s7sel: String(i === 1), s8sel: String(i === 2) }; })(),
       tab_s6: (e) => { e.stopPropagation(); this.tabTo('s6'); }, tab_s7: (e) => { e.stopPropagation(); this.tabTo('s7'); }, tab_s8: (e) => { e.stopPropagation(); this.tabTo('s8'); },
@@ -1244,22 +1291,41 @@ export class ArtboardLogic extends Logic {
       nav_mb: (e) => { e.stopPropagation(); this.jumpTo('mb'); },
       nav_fc: (e) => { e.stopPropagation(); this.jumpTo('fc1'); },
       tap: () => { if (this.state.menu) { this.setState({ menu: false }); return; } if (this.state.view === 'top' || this.state.view === 'logo' || this.state.view === 't2') this.go(1); },
-      touchStart: (e) => { this.ty = e.touches && e.touches[0] ? e.touches[0].clientY : null; this.tyLast = this.ty; this.tMoved = false; },
-      // mobile: inside the scroll-linked stretches (and Looking forward's column) the page follows the finger
+      touchStart: (e) => {
+        this.ty = e.touches?.[0]?.clientY ?? null;
+        this.tyLast = this.ty;
+        this.tMoved = false;
+        this.touchStory = MOBILE && ['lf2', 'lf3'].includes(this.state.view) && !!e.target?.closest?.(this.state.view === 'lf2' ? '.lf2l' : '.lf3s');
+        this.touchScroller = MOBILE ? this.mobileScroller(e.target) : null;
+        this.touchScrollStart = this.touchScroller ? { scrollTop: this.touchScroller.scrollTop, clientHeight: this.touchScroller.clientHeight, scrollHeight: this.touchScroller.scrollHeight, dataset: { mobileScrollMin: this.touchScroller.dataset?.mobileScrollMin } } : null;
+        this.touchOwned = false;
+      },
+      // Clubs keeps a gesture until native scrolling has finished, including its last movement.
       touchMove: (e) => {
-        const y = e.touches && e.touches[0] ? e.touches[0].clientY : null;
+        const y = e.touches?.[0]?.clientY;
         if (!MOBILE || y == null || this.tyLast == null || this.state.menu) return;
-        const r = e.currentTarget && e.currentTarget.getBoundingClientRect ? e.currentTarget.getBoundingClientRect() : null;
-        const k = r && r.width ? W / r.width : 1; // screen px → artboard px
-        const dy = (this.tyLast - y) * k; this.tyLast = y;
-        if (Math.abs(dy) < 0.5) return;
-        if (this.nxWheel(dy) || this.lf2Wheel(dy) || this.lf3Wheel(dy) || ((this.state.link || linkOf(this.state.view)) && this.linkWheel(dy))) this.tMoved = true;
+        const dy = this.tyLast - y;
+        if ((!this.touchStory || dy < 0) && this.mobileCanScroll(this.touchScroller, dy)) this.touchOwned = true;
+        this.tyLast = y;
       },
       touchEnd: (e) => {
         const y = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null;
         if (this.ty == null || y == null) return;
+        if (MOBILE) {
+          const dy = this.ty - y;
+          const native = !this.touchStory || dy < 0;
+          const scrolledFromStart = native && this.mobileCanScroll(this.touchScrollStart, dy);
+          if (!this.state.menu && !this.state.lb && !this.touchOwned && !scrolledFromStart && !(native && this.mobileCanScroll(this.touchScroller, dy)) && Math.abs(dy) > 30) this.mobileGo(dy > 0 ? 1 : -1);
+          this.ty = null; return;
+        }
         if (this.tMoved) { this.tMoved = false; return; } // already followed the finger
-        if (Math.abs(this.ty - y) > 30) { if (this.nxWheel((this.ty - y) * 1.5) || this.lf2Wheel((this.ty - y) * 1.5) || this.lf3Wheel((this.ty - y) * 1.5)) return; if (this.linkWheel((this.ty - y) * 1.5)) return; this.go(this.ty > y ? 1 : -1); }
+        if (Math.abs(this.ty - y) > 30) {
+          const dy = (this.ty - y) * 1.5;
+          if ((this.state.view === 'end' || this.state.link === 'z3') && this.linkWheel(dy)) return;
+          if (this.nxWheel(dy) || this.lf2Wheel(dy) || this.lf3Wheel(dy)) return;
+          if (this.linkWheel(dy)) return;
+          this.go(dy > 0 ? 1 : -1);
+        }
       },
       t,
       ...letters,

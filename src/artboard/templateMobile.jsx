@@ -726,7 +726,7 @@ function MobileExperience({ v }) {
   const scrollSection = useRef(null);
   const scrollable =
     (continuous && !priority && !closingPriority) ||
-    ["mb", "s5", "fc1", "fc2", "lf2", "lf3", "end"].includes(view);
+    ["s6", "s7", "s8", "mb", "s5", "fc1", "fc2", "lf2", "lf3", "end"].includes(view);
   const previousScrollView = useRef(view);
   const enteringFuture = useRef(false);
   const screenKey = opening
@@ -862,7 +862,7 @@ function MobileExperience({ v }) {
             }
             v.mobileContentScroll(e);
           }
-        : view === "mb"
+        : ["mb", "s6", "s7", "s8"].includes(view)
           ? v.mobileContentScroll
           : view === "fc1"
             ? v.mobileScroll
@@ -1124,6 +1124,20 @@ function MobileExperience({ v }) {
   }, [topicTransition]);
   const topicScreen = (
     <>
+      <div ref={mainFrame} className="mobile-content" key={screenKey}>
+        {content}
+      </div>
+    </>
+  );
+  return (
+    <div
+      className={`${classes}${topicTransition ? " mobile-topic-transition" : ""}`}
+      data-view={view}
+      onWheel={v.wheel}
+      onTouchStart={v.touchStart}
+      onTouchMove={v.touchMove}
+      onTouchEnd={v.touchEnd}
+    >
       {["s6", "s7", "s8"].includes(view) && (
         <div className="mobile-topic-fixed-header">
           <Header
@@ -1142,23 +1156,9 @@ function MobileExperience({ v }) {
           />
         </div>
       )}
-      <div ref={mainFrame} className="mobile-content" key={screenKey}>
-        {content}
-      </div>
-    </>
-  );
-  return (
-    <div
-      className={`${classes}${topicTransition ? " mobile-topic-transition" : ""}`}
-      data-view={view}
-      onWheel={v.wheel}
-      onTouchStart={v.touchStart}
-      onTouchMove={v.touchMove}
-      onTouchEnd={v.touchEnd}
-    >
       <main
         ref={mainScroller}
-        key={["s6", "s7", "s8"].includes(view) ? view : screenKey}
+        key={screenKey}
         className={`mobile-screen ${view === "s5" ? "mobile-topics" : ""} screen-${priorityPage ? "nx" : view} ${priority || closingPriority ? "priority-locked" : ""} ${futureGated ? "future-gated" : ""}`}
         data-mobile-scroll={scrollable && !priorityPage ? true : undefined}
         onScroll={priorityPage ? undefined : onScroll}

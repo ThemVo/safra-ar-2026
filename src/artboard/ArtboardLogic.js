@@ -2009,7 +2009,7 @@ export class ArtboardLogic extends Logic {
     // Native scrolling (including momentum) can reach the edge before this wheel event.
     // Keep that gesture on the current screen until the content has stopped moving.
     if (
-      ["mb", "fc1", "nx", "lf2", "lf3", "end"].includes(this.state.view) &&
+      ["s6", "s7", "s8", "mb", "fc1", "nx", "lf2", "lf3", "end"].includes(this.state.view) &&
       el === this.mobileNativeScroller &&
       now - this.mobileNativeScrollAt < 350
     ) {
@@ -3739,6 +3739,11 @@ export class ArtboardLogic extends Logic {
             !this.state.menu &&
             !this.state.lb &&
             !this.touchOwned &&
+            !(
+              ["s6", "s7", "s8"].includes(this.state.view) &&
+              this.touchScroller === this.mobileNativeScroller &&
+              Date.now() - this.mobileNativeScrollAt < 350
+            ) &&
             !scrolledFromStart &&
             !this.mobileCanScroll(this.touchScroller, dy) &&
             Math.abs(dy) > threshold

@@ -547,7 +547,7 @@ export default function MobileTopicStory({ v, photos }) {
             onClick={photos[p.gallery]?.props.onClick}
             aria-label={photos[p.gallery]?.props["aria-label"]}
             style={{
-              left: Math.min(p.slot[0], 393 - 16 - p.slot[2]),
+              left: `max(16px, min(${p.slot[0]}px, calc(100% - ${16 + p.slot[2]}px)))`,
               top: p.slot[1],
               width: p.slot[2],
               height: p.slot[3],

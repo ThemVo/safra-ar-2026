@@ -50,7 +50,7 @@ test('all fourteen mobile stories render their own content and galleries without
       assert.match(html, /Back to the topics/);
       assert.equal((html.match(/class="mobile-topic-fixed-header"/g) || []).length, 1);
       assert.equal((html.match(/aria-label="Back to the topics"/g) || []).length, 1);
-      assert.match(html, /mobile-topic-fixed-header[\s\S]*?<\/header><\/div><div[^>]*class="mobile-content"/);
+      assert.match(html, /mobile-topic-fixed-header[\s\S]*?<\/header><\/div><main[^>]*>[\s\S]*?class="mobile-content"/);
       assert.doesNotMatch(html, /Previous|Next story|NEXT:|mobile-story-pager|Continue/);
       verifyAssets(html);
       const gallery = markup(view, i, {lb:{t:Number(view.slice(1)),s:i,i:0}});

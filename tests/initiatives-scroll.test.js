@@ -510,3 +510,27 @@ test('desktop initiatives cursor waits for all five cards and resets on departur
   returnReveal.callback();
   assert.equal(logic.state.cardsCursorReady, false, 'a stale reveal cannot enable the cursor elsewhere');
 });
+
+test('mobile topic stories pause after native scrolling before a fresh swipe advances', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  for (const view of ['s6', 's7', 's8']) {
+    const { handlers, navigation, scroller, target } = setup(view);
+    const swipe = () => {
+      handlers.touchStart({ target, touches: [{ clientY: 300 }] });
+      handlers.touchEnd({ changedTouches: [{ clientY: 200 }] });
+    };
+    handlers.touchStart({ target, touches: [{ clientY: 300 }] });
+    scroller.scrollTop = 600;
+    handlers.mobileContentScroll({ currentTarget: scroller });
+    handlers.touchEnd({ changedTouches: [{ clientY: 200 }] });
+    assert.deepEqual(navigation, [], `${view}: arriving swipe stays on the story`);
+    now += 200;
+    swipe();
+    assert.deepEqual(navigation, [], `${view}: bottom pause holds`);
+    now += 151;
+    swipe();
+    assert.deepEqual(navigation, [1], `${view}: fresh swipe after the pause advances`);
+    now += 1000;
+  }
+});

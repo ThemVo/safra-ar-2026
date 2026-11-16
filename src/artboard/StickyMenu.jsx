@@ -1,7 +1,24 @@
+import { useEffect, useRef } from 'react';
+
 // Shared section links, handlers and theme classes for both viewport layouts.
 export default function StickyMenu({ v, mobile = false }) {
+  const menuRef = useRef(null);
+  const open = v.menu?.exp === 'true';
+
+  useEffect(() => {
+    if (!mobile || !open) return;
+    const closeOutside = (event) => {
+      if (menuRef.current?.contains(event.target)) return;
+      event.preventDefault();
+      v.menuClose(event);
+    };
+    // Capture taps even when the page content is inert while the menu is open.
+    document.addEventListener('click', closeOutside, true);
+    return () => document.removeEventListener('click', closeOutside, true);
+  }, [mobile, open, v.menuClose]);
+
   return (
-    <nav className={`smenu ${v.menu?.cls || ""}`} onKeyDown={(e) => { if (e.key === "Escape") v.menuClose(e); }} aria-label="Sections">
+    <nav ref={menuRef} className={`smenu ${v.menu?.cls || ""}`} onKeyDown={(e) => { if (e.key === "Escape") v.menuClose(e); }} aria-label="Sections">
       <button
         className="sm-btn"
         type="button"
@@ -62,7 +79,7 @@ export default function StickyMenu({ v, mobile = false }) {
           aria-label="Close menu"
           onClick={v.menuClose}
         >
-          {mobile ? <img className="sm-xw" src="./assets/mobile-menu-close.svg" alt="" aria-hidden="true" /> : (<svg
+          <svg
             className="sm-xw"
             width="18"
             height="15"
@@ -77,7 +94,7 @@ export default function StickyMenu({ v, mobile = false }) {
               strokeWidth="2"
               strokeLinecap="round"
             />
-          </svg>)}
+          </svg>
           <svg
             className="sm-xg"
             width="19"
@@ -153,7 +170,7 @@ export default function StickyMenu({ v, mobile = false }) {
             href={import.meta.env.URL_PDF}
             onClick={(e) => e.stopPropagation()}
           >
-            {mobile ? <img className="sm-dlg" src="./assets/mobile-menu-download.svg" alt="" aria-hidden="true" /> : (<svg
+            <svg
               className="sm-dlg"
               width="22"
               height="20"
@@ -183,7 +200,7 @@ export default function StickyMenu({ v, mobile = false }) {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-            </svg>)}
+            </svg>
             <svg
               className="sm-dlw"
               width="25"

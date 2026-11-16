@@ -117,20 +117,34 @@ test('mobile topics follow the list in both directions', () => {
 
 });
 
-test('mobile opening holds the connected heading until the next scroll', t => {
+test('mobile opening automatically shrinks the connected heading on arrival', t => {
   const timers = [];
   t.mock.method(globalThis, 'setTimeout', (callback, delay) => { timers.push({ callback, delay }); return 1; });
   const logic = new ArtboardLogic({ mobile: true });
   Object.assign(logic.state, { view: 'top', ready: true, curOn: true });
   logic.mobileGo(1);
   assert.equal(logic.state.view, 'tg');
-  assert.ok(!timers.some(timer => timer.delay === 1900), 'mobile must not automatically skip the large heading');
-  logic.lockUntil = 0;
-  logic.mobileGo(1);
+  const arrival = timers.find(timer => timer.delay === 750);
+  assert.ok(arrival, 'shrink starts when the mobile camera and connector arrive');
+  arrival.callback();
   assert.equal(logic.state.view, 's3');
+  assert.equal(logic.state.s3, true, 'the statistics reveal starts without another swipe');
   logic.lockUntil = 0;
   logic.mobileGo(-1);
   assert.equal(logic.state.view, 'tg', 'reverse scroll returns to the large connected heading');
+});
+
+test('mobile opening auto-shrink does not navigate away from another view or an open menu', t => {
+  for (const interrupted of [{ view: 'top' }, { menu: true }]) {
+    const timers = [];
+    t.mock.method(globalThis, 'setTimeout', (callback, delay) => { timers.push({ callback, delay }); return 1; });
+    const logic = new ArtboardLogic({ mobile: true });
+    Object.assign(logic.state, { view: 'top', ready: true, curOn: true });
+    logic.mobileGo(1);
+    Object.assign(logic.state, interrupted);
+    timers.find(timer => timer.delay === 750).callback();
+    assert.equal(logic.state.view, interrupted.view || 'tg');
+  }
 });
 
 test('scrolling past Initiatives opens With commitment without opening a topic card', () => {
@@ -305,16 +319,33 @@ test('commitment momentum changes only one story and keeps the camera fixed', t 
   assert.equal(logic.state.lf2s, 1);
 });
 
-test('mobile commitment wheel over the list changes content before native scrolling', () => {
-  const logic = new ArtboardLogic({ mobile: true });
-  logic.state.view = 'lf2';
-  logic.state.lf2s = 0;
-  const scroller = { scrollTop: 350, clientHeight: 600, scrollHeight: 1600 };
-  const target = { closest: selector => selector === '.lf2l' ? {} : scroller };
-  logic.mobileWheel({ target, deltaY: 60 });
-  assert.equal(logic.state.lf2s, 1);
-  assert.equal(logic.state.view, 'lf2');
-  assert.equal(scroller.scrollTop, 350);
+test('mobile priority wheel pauses at either edge before changing stories', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  for (const [view, selector, key] of [['lf2', '.lf2l', 'lf2s'], ['lf3', '.lf3s', 'lf3s']]) {
+    for (const direction of [-1, 1]) {
+      const logic = new ArtboardLogic({ mobile: true });
+      logic.state.view = view;
+      logic.state[key] = 1;
+      const scroller = { scrollTop: 350, clientHeight: 600, scrollHeight: 1600 };
+      const target = { closest: value => value === selector ? {} : value === '[data-mobile-scroll]' ? scroller : null };
+      const wheel = () => logic.mobileWheel({ target, deltaY: direction * 60 });
+      wheel();
+      assert.equal(logic.state[key], 1, `${view}: copy scrolls before switching`);
+      scroller.scrollTop = direction > 0 ? 1000 : 0;
+      now += 20;
+      logic.mobileScrolled(scroller);
+      wheel();
+      assert.equal(logic.state[key], 1, `${view}: momentum stops at the edge`);
+      now += 400;
+      wheel();
+      assert.equal(logic.state[key], 1 + direction, `${view}: a fresh gesture changes one story`);
+      now += 20;
+      wheel();
+      assert.equal(logic.state[key], 1 + direction, `${view}: momentum cannot skip another story`);
+      now += 2000;
+    }
+  }
 });
 
 test('Supporting NSmen switches immediately without scrolling the column or camera', t => {
@@ -344,23 +375,55 @@ test('Supporting NSmen switches immediately without scrolling the column or came
   assert.equal(logic.state.view, 'lf3');
 });
 
-test('mobile Supporting NSmen list gestures change the story in place', () => {
-  const logic = new ArtboardLogic({ mobile: true });
-  logic.state.view = 'lf3';
-  logic.state.lf3s = 0;
-  const scroller = { scrollTop: 350, clientHeight: 600, scrollHeight: 1600 };
-  const target = { closest: selector => selector === '.lf3s' ? {} : scroller };
-  logic.mobileWheel({ target, deltaY: 60 });
-  assert.equal(logic.state.lf3s, 1);
-  assert.equal(scroller.scrollTop, 350);
-  logic.lockUntil = 0;
-  const handlers = logic.renderVals();
-  handlers.touchStart({ target, touches: [{ clientY: 400 }] });
-  handlers.touchMove({ touches: [{ clientY: 300 }] });
-  handlers.touchEnd({ changedTouches: [{ clientY: 300 }] });
-  assert.equal(logic.state.lf3s, 2);
-  assert.equal(logic.state.view, 'lf3');
-  assert.equal(scroller.scrollTop, 350);
+test('mobile priority copy requires a fresh swipe after reaching the bottom', () => {
+  for (const [view, selector, key] of [['lf2', '.lf2l', 'lf2s'], ['lf3', '.lf3s', 'lf3s']]) {
+    const logic = new ArtboardLogic({ mobile: true });
+    logic.state.view = view;
+    logic.state[key] = 0;
+    const scroller = { scrollTop: 350, clientHeight: 600, scrollHeight: 1600 };
+    const target = { closest: value => value === selector ? {} : value === '[data-mobile-scroll]' ? scroller : null };
+    const handlers = logic.renderVals();
+    const point = y => ({ target, touches: [{ clientY: y }], changedTouches: [{ clientY: y }] });
+    handlers.touchStart(point(400));
+    scroller.scrollTop = 1000;
+    handlers.touchMove(point(300));
+    handlers.touchEnd(point(250));
+    assert.equal(logic.state[key], 0, `${view}: the swipe reaching the bottom keeps its story`);
+    handlers.touchStart(point(400));
+    handlers.touchMove(point(300));
+    handlers.touchEnd(point(250));
+    assert.equal(logic.state[key], 1, `${view}: the next swipe opens the next story`);
+    assert.equal(logic.state.view, view);
+    assert.equal(scroller.scrollTop, 1000);
+  }
+});
+
+test('light swipes change priority stories at either edge over copy, photos and background', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  for (const [view, key] of [['lf2', 'lf2s'], ['lf3', 'lf3s']]) {
+    for (const region of ['copy', 'photo', 'background']) {
+      for (const direction of [-1, 1]) {
+        const logic = new ArtboardLogic({ mobile: true });
+        logic.state.view = view;
+        logic.state[key] = 1;
+        const scroller = { scrollTop: direction > 0 ? 1000 : 0, clientHeight: 600, scrollHeight: 1600 };
+        const target = { closest: value => value === '[data-mobile-scroll]' ? scroller : region === 'copy' ? {} : null };
+        const handlers = logic.renderVals();
+        const swipe = () => {
+          handlers.touchStart({ target, touches: [{ clientY: 300 }] });
+          handlers.touchMove({ touches: [{ clientY: 300 - direction * 24 }] });
+          handlers.touchEnd({ changedTouches: [{ clientY: 300 - direction * 24 }] });
+        };
+        swipe();
+        assert.equal(logic.state[key], 1 + direction, `${view}/${region}: a light swipe changes the story`);
+        now += 550;
+        swipe();
+        assert.notEqual(logic.state[key], 1, `${view}/${region}: following swipes do not reverse direction`);
+        now += 1000;
+      }
+    }
+  }
 });
 
 test('reverse gestures over priority copy scroll to the top before changing the story', () => {

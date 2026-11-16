@@ -111,10 +111,10 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
   const event = { stopPropagation() {} };
   for (const mobile of [false, true]) {
     for (const [fragment, t, story, photo, asset, single] of [
-      ['strengthening-commitment', 'lf2', 0, 2, 'lf2-fitx.jpg', false],
-      ['supporting-nsmen', 'lf3', 0, 1, 'lf3-ibat.jpg', true],
-      ['supporting-nsmen-story-2', 'lf3', 1, 1, 'lf3-jurong.jpg', true],
-      ['supporting-nsmen-story-3', 'lf3', 2, 1, 'lf3-bayshore.jpg', true],
+      ['strengthening-commitment', 'lf2', 0, 2, 'future-fitx-challenge.jpg', false],
+      ['supporting-nsmen', 'lf3', 0, 1, 'future-tampines-ibat.jpg', true],
+      ['supporting-nsmen-story-2', 'lf3', 1, 1, 'future-jurong-resort-villas.jpg', true],
+      ['supporting-nsmen-story-3', 'lf3', 2, 1, 'future-bayshore-location-map.jpg', true],
     ]) {
       logic = mount('#' + fragment + '?photo=' + photo, mobile);
       assert.deepEqual(logic.state.lb, { t, s: story, i: photo - 1 });
@@ -125,7 +125,7 @@ test('artboard URL navigation, reload and history restoration', async (t) => {
       assert.equal(vals.lbv.c2, 'none');
       if (!single) {
         vals.lbT0(event);
-        assert.equal(logic.renderVals().lbv.src, './assets/lf2-camp.jpg');
+        assert.equal(logic.renderVals().lbv.src, './assets/future-ns-experience-camp.jpg');
       }
       vals.lbClose(event);
       assert.equal(logic.state.lb, null);

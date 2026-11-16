@@ -44,6 +44,8 @@ export default defineConfig(({ mode, command }) => {
     },
     define: {
       'import.meta.env.URL_PDF': JSON.stringify(env.URL_PDF || '#'),
+      'import.meta.env.URL_IMAGE': JSON.stringify(command === 'build' ? paths.image : './assets/'),
+      'import.meta.env.URL_SVG': JSON.stringify(command === 'build' ? paths.svg : './assets/'),
     },
     plugins: [
       {

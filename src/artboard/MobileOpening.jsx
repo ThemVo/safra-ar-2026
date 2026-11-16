@@ -56,12 +56,13 @@ export default function MobileOpening({ view, masthead, panel }) {
       const nX = np.x + (nr[0] + nr[1]) / 2 * nk;
       const lX = lp.x + (lr[0] + lr[1]) / 2 * lk;
       const lineTop = nBase - 12 * nk;
-      const bigScale = Math.min(54, root.clientWidth * .112) / parseFloat(ls.fontSize);
+      // Match the masthead text at every viewport width, including its font weight.
+      const bigScale = parseFloat(ns.fontSize) / parseFloat(ls.fontSize);
       const bigBase = height * 1.55;
       const values = {
         '--opening-height': `${height}px`, '--link-x': `${lX}px`, '--link-top': `${lineTop}px`,
-        '--link-width': `${(lr[1] - lr[0]) * lk}px`, '--link-height': `${lBase - lineTop}px`,
-        '--link-dx': `${nX - lX}px`, '--link-n-scale': (nr[1] - nr[0]) * nk / ((lr[1] - lr[0]) * lk),
+        '--link-width': `${(nr[1] - nr[0]) * nk}px`, '--link-height': `${lBase - lineTop}px`,
+        '--link-dx': `${nX - lX}px`,
         '--title-origin-x': `${lX - tp.x}px`, '--title-origin-y': `${lBase - tp.y}px`,
         '--title-big-scale': bigScale, '--title-big-y': `${bigBase - lBase}px`,
         '--link-big-y-scale': (bigBase - lineTop) / (lBase - lineTop),

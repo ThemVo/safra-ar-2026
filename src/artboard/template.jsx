@@ -108,7 +108,7 @@ export default function render(v) {
               >
                 <img
                   className="ph ph1"
-                  src="./assets/mh-tr.jpg"
+                  src="./assets/masthead-obstacle-course.jpg"
                   alt="A father and child crawl under camouflage netting on an obstacle course"
                   style={{
                     display: "block",
@@ -134,7 +134,7 @@ export default function render(v) {
               >
                 <img
                   className="ph ph2"
-                  src="./assets/mh-tl.jpg"
+                  src="./assets/masthead-national-day-family.jpg"
                   alt="A family in red poses with the SAFRA mascot at a National Day picnic"
                   style={{ display: "block", width: "339px", height: "214px" }}
                 />
@@ -154,7 +154,7 @@ export default function render(v) {
               >
                 <img
                   className="ph ph3"
-                  src="./assets/mh-bl.jpg"
+                  src="./assets/masthead-spin-class.jpg"
                   alt="Members on exercise bikes in a spin class"
                   style={{
                     display: "block",
@@ -180,7 +180,7 @@ export default function render(v) {
               >
                 <img
                   className="ph ph4"
-                  src="./assets/mh-br.jpg"
+                  src="./assets/masthead-bowling-group.jpg"
                   alt="A group of members holding bowling balls at a bowling alley"
                   style={{
                     display: "block",
@@ -207,7 +207,7 @@ export default function render(v) {
             />
             <img
               onLoad={v.hook}
-              src="./assets/ff8847615d28660626f1034069988996.png"
+              src="./assets/safra-logo.png"
               alt=""
               style={{ display: "none" }}
             />
@@ -1186,7 +1186,7 @@ export default function render(v) {
               >
                 <img
                   className="pic"
-                  src="./assets/ag-run.jpg"
+                  src="./assets/membership-running-group.jpg"
                   alt="A running group of members in SAFRA singlets posing outdoors at sunset"
                   style={{
                     display: "block",
@@ -1211,7 +1211,7 @@ export default function render(v) {
               >
                 <img
                   className="pic"
-                  src="./assets/25ac34a7bb7e63a91ebb2d45156f874c.png"
+                  src="./assets/membership-family-gingerbread-mascot.png"
                   alt="Members and their children with a gingerbread mascot at a festive celebration"
                   style={{
                     display: "block",
@@ -1315,7 +1315,7 @@ export default function render(v) {
               >
                 <img
                   className="pic"
-                  src="./assets/ag-bikes.jpg"
+                  src="./assets/outreach-balance-bike-race.jpg"
                   alt="Young children racing on balance bikes at a SAFRA event"
                   style={{
                     display: "block",
@@ -1454,7 +1454,7 @@ export default function render(v) {
               >
                 <img
                   className="pic"
-                  src="./assets/ag-card.jpg"
+                  src="./assets/outreach-nsmen-thank-you-card.jpg"
                   alt="A child’s handmade thank-you card with a family photo for an NSman father"
                   style={{
                     display: "block",
@@ -1479,7 +1479,7 @@ export default function render(v) {
               >
                 <img
                   className="pic"
-                  src="./assets/ag-blaster.jpg"
+                  src="./assets/outreach-water-blaster-activity.jpg"
                   alt="Children in Army T-shirts trying out water blasters"
                   style={{
                     display: "block",
@@ -1616,7 +1616,7 @@ export default function render(v) {
               >
                 <img
                   className="pic"
-                  src="./assets/ag-group.jpg"
+                  src="./assets/outreach-nsmen-snack-packs.jpg"
                   alt="A group of NSmen in singlets cheering with snack packs"
                   style={{
                     display: "block",
@@ -1676,7 +1676,7 @@ export default function render(v) {
               >
                 <img
                   className="pic"
-                  src="./assets/ag-solar-fy26.jpg"
+                  src="./assets/sustainability-solar-panels.jpg"
                   alt="Rooftop solar panels under a blue sky"
                   style={{
                     display: "block",
@@ -1909,7 +1909,7 @@ export default function render(v) {
               >
                 <img
                   className="pic"
-                  src="./assets/ag-trees-fy26.jpg"
+                  src="./assets/sustainability-tree-canopy.jpg"
                   alt="Looking up into the green canopy of a large tree"
                   style={{
                     display: "block",
@@ -2176,7 +2176,7 @@ export default function render(v) {
                     <img
                       className="tc-ph"
                       alt=""
-                      src="./assets/tc1-hover.jpg"
+                      src="./assets/topic-defence-preview.jpg"
                       style={{
                         position: "absolute",
                         left: "0px",
@@ -2557,7 +2557,7 @@ export default function render(v) {
                     <img
                       className="tc-ph"
                       alt=""
-                      src="./assets/tc3-hover.jpg"
+                      src="./assets/topic-strengthening-bonds-preview.jpg"
                       style={{
                         position: "absolute",
                         left: "-5.75px",
@@ -2747,7 +2747,7 @@ export default function render(v) {
                     <img
                       className="tc-ph"
                       alt=""
-                      src="./assets/tc4-hover.jpg"
+                      src="./assets/topic-rewarding-privileges-preview.jpg"
                       style={{
                         position: "absolute",
                         left: "-0.54px",
@@ -2937,7 +2937,7 @@ export default function render(v) {
                     <img
                       className="tc-ph"
                       alt=""
-                      src="./assets/tc5-hover.jpg"
+                      src="./assets/topic-clubs-and-facilities-preview.jpg"
                       style={{
                         position: "absolute",
                         left: "0px",
@@ -3317,7 +3317,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc4-main.jpg"
+                      src="./assets/ns-experience-camp-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -3349,7 +3349,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc4-a2.jpg"
+                      src="./assets/ns-experience-camp-detail-01-desktop.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -3381,7 +3381,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc4-b2.jpg"
+                      src="./assets/ns-experience-camp-detail-02-desktop.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -3676,7 +3676,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc3-main.jpg"
+                      src="./assets/safra-open-house-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -3708,7 +3708,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc3-a.jpg"
+                      src="./assets/safra-open-house-detail-01.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -3740,7 +3740,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc3-b.jpg"
+                      src="./assets/safra-open-house-detail-02.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -3995,7 +3995,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc1-main.jpg"
+                      src="./assets/defence-veterans-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -4027,7 +4027,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc1-a2.jpg"
+                      src="./assets/defence-veterans-detail-01-desktop.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -4282,7 +4282,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc2-main.jpg"
+                      src="./assets/total-defence-day-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -4314,7 +4314,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc2-a2.jpg"
+                      src="./assets/total-defence-day-detail-01-desktop.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -4346,7 +4346,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/dc2-b2.jpg"
+                      src="./assets/total-defence-day-detail-02-desktop.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -4742,7 +4742,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an1-main3.jpg"
+                      src="./assets/nsmen-art-jam-main-desktop.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -4775,7 +4775,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an1-kids2.jpg"
+                      src="./assets/nsmen-art-jam-children-desktop.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -4808,7 +4808,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an1-card2.jpg"
+                      src="./assets/nsmen-art-jam-thank-you-card-desktop.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -5138,28 +5138,6 @@ export default function render(v) {
                   className={`st6 ${s(v.d7?.on1)}`}
                   aria-label="Expressing gratitude through storytelling"
                 >
-                  <svg
-                    aria-hidden="true"
-                    width="0"
-                    height="0"
-                    style={{ position: "absolute" }}
-                  >
-                    <defs>
-                      <linearGradient
-                        id="vplayG"
-                        x1="2"
-                        y1="24"
-                        x2="46"
-                        y2="24"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stopColor="#6252A4" />
-                        <stop offset="0.490385" stopColor="#F14192" />
-                        <stop offset="0.927885" stopColor="#F6765D" />
-                        <stop offset="0.9999" stopColor="#F69141" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
                   <button
                     className="dcph"
                     type="button"
@@ -5181,7 +5159,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an2-v1.jpg"
+                      src="./assets/gratitude-in-bloom-poster.jpg"
                       alt=""
                       style={{
                         position: "absolute",
@@ -5195,28 +5173,13 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <svg
-                      aria-hidden="true"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      style={{
+                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 3.8435px))`,
-                      }}
-                    >
-                      <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z"
-                        fill="#FFFFFF"
-                      />
-                    </svg>
+                      }} />
                   </button>
                   <button
                     className="dcph"
@@ -5239,7 +5202,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an2-v2.jpg"
+                      src="./assets/serving-together-poster.jpg"
                       alt=""
                       style={{
                         position: "absolute",
@@ -5253,28 +5216,13 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <svg
-                      aria-hidden="true"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      style={{
+                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.5000px))`,
-                      }}
-                    >
-                      <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z"
-                        fill="#FFFFFF"
-                      />
-                    </svg>
+                      }} />
                   </button>
                   <button
                     className="dcph"
@@ -5297,7 +5245,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an2-v3.jpg"
+                      src="./assets/once-upon-a-time-poster.jpg"
                       alt=""
                       style={{
                         position: "absolute",
@@ -5311,28 +5259,13 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <svg
-                      aria-hidden="true"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      style={{
+                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.1902px))`,
-                      }}
-                    >
-                      <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z"
-                        fill="#FFFFFF"
-                      />
-                    </svg>
+                      }} />
                   </button>
                   <button
                     className="dcph"
@@ -5355,7 +5288,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an2-v4.jpg"
+                      src="./assets/the-strength-within-poster.jpg"
                       alt=""
                       style={{
                         position: "absolute",
@@ -5369,28 +5302,13 @@ export default function render(v) {
                         transform: `translateY(${s(v.d7?.s1?.ph)}%)`,
                       }}
                     />
-                    <svg
-                      aria-hidden="true"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      style={{
+                    <img src="./assets/video-play.svg" alt="" aria-hidden="true" width="48" height="48" style={{
                         position: "absolute",
                         left: "calc(50% - 24px)",
                         top: "calc(50% - 24px)",
                         pointerEvents: "none",
                         transform: `translateY(calc(${s(v.d7?.s1?.ph)} * 2.1128px))`,
-                      }}
-                    >
-                      <circle cx="24" cy="24" r="22" fill="url(#vplayG)" />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M24 2C11.85 2 2 11.85 2 24C2 36.15 11.85 46 24 46C36.15 46 46 36.15 46 24C46 11.85 36.15 2 24 2ZM20 17.6C20 17.01 20.304 16.468 20.792 16.19C21.0291 16.0536 21.3006 15.9885 21.5738 16.0027C21.847 16.0169 22.1103 16.1097 22.332 16.27L31.332 22.67C31.5403 22.8233 31.7095 23.0237 31.8256 23.2549C31.9417 23.486 32.0014 23.7413 32 24C32.0017 24.259 31.9421 24.5147 31.826 24.7462C31.7099 24.9778 31.5406 25.1785 31.332 25.332L22.332 31.732C22.1103 31.8923 21.847 31.9851 21.5738 31.9993C21.3006 32.0135 21.0291 31.9484 20.792 31.812C20.5477 31.6668 20.346 31.4599 20.207 31.212C20.068 30.9642 19.9966 30.6841 20 30.4V17.6Z"
-                        fill="#FFFFFF"
-                      />
-                    </svg>
+                      }} />
                   </button>
                   <div
                     className="dcpn"
@@ -5662,7 +5580,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an3-bk.jpg"
+                      src="./assets/nsmen-deals-burger-king.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -5694,7 +5612,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an3-popeyes.jpg"
+                      src="./assets/nsmen-deals-popeyes.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -5726,7 +5644,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an3-klook.jpg"
+                      src="./assets/nsmen-deals-klook.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -5758,7 +5676,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an3-spa.jpg"
+                      src="./assets/nsmen-deals-jungle-upsara-spa.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -6095,7 +6013,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an4-main.jpg"
+                      src="./assets/nsmen-food-truck-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -6128,7 +6046,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an4-truck.jpg"
+                      src="./assets/nsmen-food-truck-pizza-truck.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -6161,7 +6079,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/an4-group.jpg"
+                      src="./assets/nsmen-food-truck-group.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -6638,7 +6556,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb1-main.jpg"
+                      src="./assets/national-day-celebration-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -6670,7 +6588,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb1-crowd.jpg"
+                      src="./assets/national-day-celebration-crowd.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -6702,7 +6620,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb1-mascot.jpg"
+                      src="./assets/national-day-celebration-family-mascot.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -6957,7 +6875,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb2-main.jpg"
+                      src="./assets/family-fiesta-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -6989,7 +6907,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb2-race.jpg"
+                      src="./assets/family-fiesta-toddler-race.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -7021,7 +6939,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb2-dash2.jpg"
+                      src="./assets/family-fiesta-diaper-dash-desktop.jpg"
                       alt=""
                       style={{
                         position: "absolute",
@@ -7358,7 +7276,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb3-main.jpg"
+                      src="./assets/ns-unit-cohesion-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -7390,7 +7308,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb3-archery.jpg"
+                      src="./assets/ns-unit-cohesion-archery-tag.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -7422,7 +7340,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb3-team.jpg"
+                      src="./assets/ns-unit-cohesion-football-team.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -7755,7 +7673,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb4-main.jpg"
+                      src="./assets/youth-fiesta-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -7787,7 +7705,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb4-cosplay.jpg"
+                      src="./assets/youth-fiesta-cosplayers.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -7819,7 +7737,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb4-frisbee.jpg"
+                      src="./assets/youth-fiesta-frisbee-tournament.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -8093,7 +8011,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb5-main.jpg"
+                      src="./assets/soundbyte-music-event-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -8125,7 +8043,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb5-hall.jpg"
+                      src="./assets/soundbyte-music-event-hall.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -8157,7 +8075,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb5-game.jpg"
+                      src="./assets/soundbyte-music-event-arcade-game.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -8412,7 +8330,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb6-main.jpg"
+                      src="./assets/swim-for-hope-main.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -8444,7 +8362,7 @@ export default function render(v) {
                     }}
                   >
                     <img
-                      src="./assets/sb6-pool.jpg"
+                      src="./assets/swim-for-hope-swimmers.jpg"
                       alt=""
                       style={{
                         display: "block",
@@ -8968,7 +8886,7 @@ export default function render(v) {
                         }}
                       >
                         <img
-                          src="./assets/mb2-ic-food.svg"
+                          src="./assets/membership-food-header-icon.svg"
                           alt=""
                           width="48"
                           height="48"
@@ -9074,7 +8992,7 @@ export default function render(v) {
                           }}
                         >
                           <img
-                            src="./assets/mb-f1.jpg"
+                            src="./assets/membership-delifrance-sandwich-offer.jpg"
                             alt="Délifrance 1-for-1 signature sandwich offer for SAFRA members"
                             style={{
                               display: "block",
@@ -9094,7 +9012,7 @@ export default function render(v) {
                           }}
                         >
                           <img
-                            src="./assets/mb-f2.jpg"
+                            src="./assets/membership-playmade-beverage-offer.jpg"
                             alt="PlayMade 1-for-1 beverage offer for SAFRA members"
                             style={{
                               display: "block",
@@ -9114,7 +9032,7 @@ export default function render(v) {
                           }}
                         >
                           <img
-                            src="./assets/mb-f3.jpg"
+                            src="./assets/membership-hawker-discount-day.jpg"
                             alt="Hawker discount day at Bukit Merah Central Food Centre"
                             style={{
                               display: "block",
@@ -9165,7 +9083,7 @@ export default function render(v) {
                         }}
                       >
                         <img
-                          src="./assets/mb2-ic-education.svg"
+                          src="./assets/membership-education-header-icon.svg"
                           alt=""
                           width="48"
                           height="48"
@@ -9297,7 +9215,7 @@ export default function render(v) {
                         }}
                       >
                         <img
-                          src="./assets/mb-edu2.jpg"
+                          src="./assets/education-award-recipients-desktop.jpg"
                           alt="Sponsorship recipients on stage at the SAFRA Bond-Free Education Scheme Awards Presentation"
                           style={{
                             display: "block",
@@ -9347,7 +9265,7 @@ export default function render(v) {
                         }}
                       >
                         <img
-                          src="./assets/mb2-ic-movies.svg"
+                          src="./assets/membership-movies-header-icon.svg"
                           alt=""
                           width="48"
                           height="48"
@@ -9510,7 +9428,7 @@ export default function render(v) {
                           }}
                         >
                           <img
-                            src="./assets/mb-mv3.jpg"
+                            src="./assets/membership-movie-ticket-deals.jpg"
                             alt={
                               "SAFRA Members’ Exclusive movie deals: daily discounts, 1-for-1 weekend tickets, Free Fridays and voucher deals"
                             }
@@ -9532,7 +9450,7 @@ export default function render(v) {
                           }}
                         >
                           <img
-                            src="./assets/mb-mv1.jpg"
+                            src="./assets/membership-disney-on-ice-offer.jpg"
                             alt={
                               "Disney On Ice Magic in the Stars: SAFRA members enjoy 12% off"
                             }
@@ -9554,7 +9472,7 @@ export default function render(v) {
                           }}
                         >
                           <img
-                            src="./assets/mb-mv2.jpg"
+                            src="./assets/membership-festival-of-football-offer.jpg"
                             alt={
                               "Singapore Festival of Football: SAFRA exclusive 20% off Arsenal vs AC Milan tickets"
                             }
@@ -9607,7 +9525,7 @@ export default function render(v) {
                         }}
                       >
                         <img
-                          src="./assets/mb2-ic-travel.svg"
+                          src="./assets/membership-travel-header-icon.svg"
                           alt=""
                           width="48"
                           height="48"
@@ -9714,7 +9632,7 @@ export default function render(v) {
                                 </p>
                               </div>
                               <img
-                                src="./assets/mb-tv-plane.svg"
+                                src="./assets/travel-airplane.svg"
                                 alt=""
                                 width="48"
                                 height="48"
@@ -9794,7 +9712,7 @@ export default function render(v) {
                                 </p>
                               </div>
                               <img
-                                src="./assets/mb-tv-hotel.svg"
+                                src="./assets/travel-hotel-desktop.svg"
                                 alt=""
                                 width="48"
                                 height="48"
@@ -9879,7 +9797,7 @@ export default function render(v) {
                                 </p>
                               </div>
                               <img
-                                src="./assets/mb-tv-ship.svg"
+                                src="./assets/travel-cruise-ship.svg"
                                 alt=""
                                 width="48"
                                 height="48"
@@ -9959,7 +9877,7 @@ export default function render(v) {
                                 </p>
                               </div>
                               <img
-                                src="./assets/mb-tv-wheel2.png"
+                                src="./assets/travel-ferris-wheel-gradient.png"
                                 alt=""
                                 width="48"
                                 height="48"
@@ -10124,7 +10042,7 @@ export default function render(v) {
             >
               <img
                 className="fcp"
-                src="./assets/fc-gym.jpg"
+                src="./assets/facilities-toa-payoh-energyone-gym.jpg"
                 alt="EnergyOne Gym at SAFRA Toa Payoh with its illuminated ceiling sign, free weights and training zones"
                 style={{
                   display: "block",
@@ -10202,7 +10120,7 @@ export default function render(v) {
             >
               <img
                 className="fcp"
-                src="./assets/fc-cmpb-cafe.jpg"
+                src="./assets/facilities-cmpb-cafe.jpg"
                 alt="Diners at the new SAFRA café lounge at Central Manpower Base"
                 style={{
                   display: "block",
@@ -10229,7 +10147,7 @@ export default function render(v) {
             >
               <img
                 className="fcp"
-                src="./assets/fc-cmpb-lounge.jpg"
+                src="./assets/facilities-cmpb-lounge.jpg"
                 alt="The SAFRA@CMPB lounge with sofas and a membership promotion screen"
                 style={{
                   display: "block",
@@ -11564,7 +11482,7 @@ export default function render(v) {
                 onClick={v.lf2Photo0}
               >
                 <img
-                  src="./assets/lf2-camp.jpg"
+                  src="./assets/future-ns-experience-camp.jpg"
                   alt="Children with camouflage face paint racing through a tyre obstacle course at an NS Experience Camp"
                   style={{
                     display: "block",
@@ -11595,7 +11513,7 @@ export default function render(v) {
                 onClick={v.lf2Photo1}
               >
                 <img
-                  src="./assets/lf2-fitx.jpg"
+                  src="./assets/future-fitx-challenge.jpg"
                   alt="Two participants doing a leopard crawl under camouflage netting at the FitX Challenge"
                   style={{
                     display: "block",
@@ -11709,7 +11627,7 @@ export default function render(v) {
                 <h3 className="lf2t">
                   Enhanced experiences at
                   <br />
-                  SAFRA clubs
+                  <span className="lf3-title-clubs">SAFRA clubs</span>
                 </h3>
                 <div className="lf3c">
                   <div className="lf3b">
@@ -11797,7 +11715,7 @@ export default function render(v) {
               }}
             >
               <button
-                className={`lf-photo lf-photo-single lf3ph ${s(v.lf3v?.ph)}`}
+                className={`lf-photo lf3ph ${s(v.lf3v?.ph)}`}
                 type="button"
                 aria-label={v.lf3PhotoLabel}
                 onClick={v.lf3Photo}
@@ -11805,7 +11723,7 @@ export default function render(v) {
               >
                 <img
                   className={`lf3im ${s(v.lf3v?.c0)}`}
-                  src="./assets/lf3-ibat.jpg"
+                  src="./assets/future-tampines-ibat.jpg"
                   alt="A man at bat in the rooftop batting cage at SAFRA Tampines, with automated pitching lanes ahead"
                   style={{
                     display: "block",
@@ -11817,7 +11735,7 @@ export default function render(v) {
                 />
                 <img
                   className={`lf3im ${s(v.lf3v?.c1)}`}
-                  src="./assets/lf3-jurong.jpg"
+                  src="./assets/future-jurong-resort-villas.jpg"
                   alt="Artist’s impression of the new resort-style villas at SAFRA Jurong"
                   style={{
                     display: "block",
@@ -11832,7 +11750,7 @@ export default function render(v) {
                 />
                 <img
                   className={`lf3im ${s(v.lf3v?.c2)}`}
-                  src="./assets/lf3-bayshore.jpg"
+                  src="./assets/future-bayshore-location-map.jpg"
                   alt="Map of the future SAFRA Bayshore next to the Bedok South MRT station and Integrated Transport Hub, serving NSmen and families in the East"
                   style={{
                     display: "block",
@@ -12756,7 +12674,7 @@ export default function render(v) {
             />
             <img
               className="arw"
-              src="./assets/ecab593f3aa08a52a88a40fbfd710038.svg"
+              src="./assets/scroll-down-arrow.svg"
               alt=""
               style={{
                 position: "absolute",
@@ -12768,7 +12686,7 @@ export default function render(v) {
             />
             <img
               className="ring"
-              src="./assets/c5353b1ebbdc4fab6ae53df32b4380dd.svg"
+              src="./assets/scroll-for-more-text-ring.svg"
               alt=""
               style={{
                 position: "absolute",

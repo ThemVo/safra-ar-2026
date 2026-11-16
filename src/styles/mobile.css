@@ -185,6 +185,12 @@
 .mobile-membership-card .mbh>span:not(.mobile-travel-header-icon) { font-size:18px !important; font-weight:600; }
 .mobile-membership-card .mbh>img { width:40px; height:40px; flex:none; }
 .mh.mobile-layout .mobile-membership-card .mbpl { display:block; width:40px; height:40px; margin-left:auto; flex:none; }
+.mobile-membership-toggle { display:block; width:40px; height:40px; margin-left:auto; flex:none; }
+.mobile-membership-toggle>img { display:block; }
+.mh.mobile-layout .mobile-membership-card .mobile-membership-toggle .mbpl { display:none !important; }
+.mh.mobile-layout .mobile-membership-card.on .mobile-membership-toggle .mbpl { display:block !important; }
+.mobile-membership-card.on .mobile-membership-toggle>img { display:none; }
+.mobile-membership-toggle .mbpl path { transform:scale(.675); transform-origin:20px 20px; }
 .mobile-membership-fold { display:grid; grid-template-rows:0fr; transition:grid-template-rows .55s cubic-bezier(.4,0,.2,1); }
 .mobile-membership-card.on .mobile-membership-fold { grid-template-rows:1fr; }
 .mobile-membership-fold>div { overflow:hidden; min-height:0; }
@@ -196,7 +202,6 @@
 .mobile-membership-fold .mbc p[aria-label] { font-size:36px !important; }
 #rewarding-privileges-card-2.mobile-membership-card { padding:12px 16px 24px; font-family:'Bonds Google Sans Flex',sans-serif; }
 #rewarding-privileges-card-2.mobile-membership-card.on { padding:16px 16px 44px; }
-#rewarding-privileges-card-2 .mbh>img { width:44px; height:44px; }
 #rewarding-privileges-card-2 .mobile-membership-fold .mbc { padding:40px 0 0; gap:32px; }
 #rewarding-privileges-card-2 .mbc>div:first-child { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:center; }
 #rewarding-privileges-card-2 .mbc>div:first-child p { font-size:12px !important; line-height:1.4 !important; letter-spacing:.24px !important; color:#eee; }
@@ -206,7 +211,7 @@
 #rewarding-privileges-card-2 .mobile-membership-fold .mbc>.mbi>img { width:max(332.343px,101.016%); max-width:none; height:auto; transform:translateY(-41.81%); }
 #rewarding-privileges-card-4.mobile-membership-card { padding:12px 16px; font-family:'Bonds Google Sans Flex',sans-serif; }
 #rewarding-privileges-card-4.mobile-membership-card.on { padding:16px; }
-#rewarding-privileges-card-4 .mobile-travel-header-icon { display:flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; border-radius:12px; background:#ddd; }
+#rewarding-privileges-card-4 .mobile-travel-header-icon { display:flex; align-items:center; justify-content:center; flex:none; width:40px; height:40px; border-radius:12px; background:#ddd; }
 #rewarding-privileges-card-4 .mobile-travel-header-icon img { display:block; }
 #rewarding-privileges-card-4 .mobile-travel-content { padding:40px 0 0; gap:32px; }
 #rewarding-privileges-card-4 .mobile-travel-stats { display:flex; flex-direction:column; gap:12px; }

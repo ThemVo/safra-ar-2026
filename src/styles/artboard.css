@@ -539,6 +539,9 @@ body{margin:0;background:#272C3F}
 .mh:not(.m) .s10 .mbsc::-webkit-scrollbar{display:none;width:0;height:0} /* open card on top: 422 − 32 + 2 × 103 + 112 = 708; the next card covers 32px of its bottom padding */
 
 /* Membership (desktop): + on each card header becomes − when the card is open (Figma 2215:1806) */
+/* Compensate for the artboard zoom so the displayed icon stays 40px. */
+.mh:not(.m) .mbpl{width:calc(40px / var(--artboard-scale,1));height:calc(40px / var(--artboard-scale,1));flex:none}
+.mh:not(.m) .s10 .mbh>img{width:calc(48px / var(--artboard-scale,1)) !important;height:calc(48px / var(--artboard-scale,1)) !important;flex:none}
 .mh .mbs.on .mbpl .mbpv{display:none} /* instant swap */
 .mh.m .mbpl{display:none}
 

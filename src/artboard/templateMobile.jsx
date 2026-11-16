@@ -6,6 +6,7 @@ import MobileGlance from './MobileGlance.jsx';
 import MobileBackIcon from './MobileBackIcon.jsx';
 import MobileOpening from './MobileOpening.jsx';
 import AnnualReportDownload from './AnnualReportDownload.jsx';
+import MembershipToggleIcon from './MembershipToggleIcon.jsx';
 import { SECTION_IDS, screenId } from './routes.js';
 import { assetUrl } from '../utils/assetUrl.js';
 
@@ -149,7 +150,7 @@ function Membership({ v, desktop }) {
         let content = find(card, n => has(n, 'mbc'));
         if (i === 1) {
           header = cloneElement(header, {}, Children.map(header.props.children, child =>
-            child?.type === 'img' ? cloneElement(child, { src: assetUrl('membership-education-icon-mobile.svg'), width:44, height:44 }) : child));
+            child?.type === 'img' ? cloneElement(child, { src: assetUrl('membership-education-icon-mobile.svg'), width:40, height:40 }) : child));
           content = cloneElement(content, {}, Children.map(content.props.children, child =>
             has(child, 'mbi') ? cloneElement(child, {}, <img src={assetUrl('education-award-recipients-mobile.png')} alt={find(child, n => n.type === 'img').props.alt} />) : child));
         }
@@ -157,6 +158,11 @@ function Membership({ v, desktop }) {
           header = cloneElement(header, {}, Children.map(header.props.children, child =>
             child?.type === 'img' ? <span className="mobile-travel-header-icon"><img src={assetUrl('membership-travel-icon-mobile.svg')} alt="" /></span> : child));
         }
+        header = cloneElement(header, {}, Children.map(header.props.children, child =>
+          child?.type === MembershipToggleIcon ? <span className="mobile-membership-toggle" aria-hidden="true">
+            <img src={assetUrl('membership-toggle-plus-mobile.svg')} alt="" width="40" height="40" />
+            <MembershipToggleIcon />
+          </span> : child));
         return <article key={i} id={screenId('mb', i)} className={`mobile-membership-card ${v.mobileMembership === i ? 'on' : ''}`} style={{ background: card.props.style.background }}>
         {flow(header)}
         <div className="mobile-membership-fold" inert={v.mobileMembership === i ? undefined : ''}>

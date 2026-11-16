@@ -34,6 +34,7 @@ export default function App() {
       el.style.width = fw + "px";
       el.style.height = fh + "px";
       el.style.transform = `scale(${k})`;
+      el.style.setProperty("--artboard-scale", String(k));
       el.style.setProperty("--gx", `${g.toFixed(2)}px`);
       el.style.setProperty(
         "--gy",

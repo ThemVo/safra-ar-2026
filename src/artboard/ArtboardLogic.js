@@ -2383,10 +2383,12 @@ export class ArtboardLogic extends Logic {
       const mark = root && root.querySelector(".gLb");
       let Lx, Lbase;
       if (span && mark && span.offsetParent) {
-        // sub-pixel exact (offsetLeft/Top round to whole pixels, which left the line ~0.5px off the L)
+        // Keep the fractional layout width: offsetWidth rounds to whole pixels,
+        // skewing the scale and leaving the L's foot poking out beside the line.
         const pe = span.offsetParent,
           pr = pe.getBoundingClientRect(),
-          k = pe.offsetWidth ? pr.width / pe.offsetWidth : 1;
+          layoutWidth = parseFloat(getComputedStyle(pe).width),
+          k = layoutWidth ? pr.width / layoutWidth : 1;
         const sr = span.getBoundingClientRect(),
           mr = mark.getBoundingClientRect();
         Lx = k ? (sr.left - pr.left) / k - pe.clientLeft : span.offsetLeft;
@@ -2405,10 +2407,10 @@ export class ArtboardLogic extends Logic {
       const ox = Lx + lsb + lW / 2;
       const oy = Lbase - capH;
       const head = {
-        x: +(CUE_X - ox).toFixed(2),
-        y: +(GLANCE_BASE - Lbase).toFixed(2),
-        ox: +ox.toFixed(2),
-        oy: +oy.toFixed(2),
+        x: CUE_X - ox,
+        y: GLANCE_BASE - Lbase,
+        ox,
+        oy,
       };
       const base =
         markTop != null ? markTop : Lbase - (span ? span.offsetTop : 0);
@@ -3400,12 +3402,17 @@ export class ArtboardLogic extends Logic {
           nx = lay ? lay.barX : 696,
           nw = lay ? lay.barW : 15,
           top = lay ? lay.barTop : 686,
-          bot0 = lay ? lay.lBase : GLANCE_BASE; // the n's stem drips down and becomes the L's upright
+          baseline = lay ? lay.lBase : GLANCE_BASE,
+          // End inside the foot, rather than on its lower edge. Separate DOM
+          // transforms round differently at large scales and can otherwise leave
+          // the connector protruding below the L. The overlap also seals the join.
+          joinDepth = (lay?.Ld?.fh ?? 8) / 2,
+          bot0 = baseline - joinDepth;
         // the box is the small-heading geometry; the large heading is reached with a transform (scale about the top centre),
         // run on the compositor in step with the heading's own scale — no width/height animation that could lag behind it
         const h0 = bot0 - top,
           sx = big ? TG_SCALE : 1,
-          sy = big ? (TG_BASE - top) / h0 : 1,
+          sy = big ? (TG_BASE - joinDepth * TG_SCALE - top) / h0 : 1,
           lw = lw0 * sx;
         return {
           x: +(CUE_X - lw0 / 2).toFixed(2),

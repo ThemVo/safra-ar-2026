@@ -719,6 +719,8 @@ body{margin:0;background:#272C3F}
    the page opens into the band below, which the section itself fills, sitting above the closing section */
 .mh.at-lf3:not(.m){clip-path:inset(0 calc(-1 * var(--gx, 0px)) calc(-1 * var(--gy, 0px))) !important}
 .mh.at-lf3:not(.m) .s18{z-index:2}
+/* Keep the footer above the supporting section’s viewport-height background bleed. */
+.mh.at-lf3:not(.m) .s14{z-index:3}
 .mh.at-lf3:not(.m) .s18::before{content:"";position:absolute;left:calc(-1 * var(--gx, 0px));right:calc(-1 * var(--gx, 0px));top:100%;height:var(--gy, 0px);background:#18212A;pointer-events:none}
 /* Looking forward (intro + 01): the section paints the bands above/below itself — navy for the intro, and the dark circle
    spreads right across them — instead of leaving them to a delayed page-level fill (that left a navy strip on 01) */

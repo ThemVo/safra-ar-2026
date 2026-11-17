@@ -786,7 +786,7 @@ function MobileExperience({ v }) {
         : 0;
     scroller.current?.scrollTo(0, top);
   }, [screenKey, continuous && view, view === "end"]);
-  const finalSupportingStory = supporting && v.mobilePriorityStory === 2;
+  const finalSupportingStory = supporting && v.mobilePriorityStory > 0;
   useEffect(() => {
     if (!finalSupportingStory || view === "end" || v.mobileScrollDirection < 0)
       return;
@@ -844,7 +844,7 @@ function MobileExperience({ v }) {
             );
             if (
               view === "lf3" &&
-              v.mobilePriorityStory === 2 &&
+              v.mobilePriorityStory > 0 &&
               main.scrollTop > minimum + 2
             ) {
               main.dataset.mobileScrollMin = minimum;
@@ -1232,7 +1232,7 @@ function MobileExperience({ v }) {
           >
             <div ref={supportingFrame} className="mobile-content">
               <Priorities v={v} desktop={desktop} supporting />
-              {(view === "end" || v.mobilePriorityStory === 2) && (
+              {(view === "end" || v.mobilePriorityStory > 0) && (
                 <footer id={SECTION_IDS.end} className="mobile-footer">
                   <AnnualReportDownload />
                 </footer>

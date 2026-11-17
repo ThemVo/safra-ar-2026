@@ -1017,21 +1017,16 @@ export class ArtboardLogic extends Logic {
       s13w = this.state.s13,
       lf1w = this.state.lf1,
       s15w = this.state.s15,
-      finalStoryWasVisible = was === "lf3" && this.state.lf3s === 2;
+      supportingStory = this.state.lf3s;
     super.setState(update, cb);
     const now = this.state.view;
     this.queueUrlSync();
-    const finalStoryVisible = now === "lf3" && this.state.lf3s === 2;
-    if (!MOBILE && !finalStoryVisible) clearTimeout(this.footerRevealT);
-    if (!MOBILE && finalStoryVisible && !finalStoryWasVisible && was !== "end") {
-      clearTimeout(this.footerRevealT);
-      // Let Bayshore's content finish opening before easing the camera down.
-      this.footerRevealT = setTimeout(() => {
-        if (this.state.view !== "lf3" || this.state.lf3s !== 2 || this.state.lb || this.state.menu || this.state.link) return;
-        this.lkPos = 0;
-        this.setState({ link: "z3", linkY: 0 });
-        this.linkGo(LINKS.z3.len);
-      }, 950);
+    // Reveal the footer in the same motion that opens the next supporting story.
+    if (!MOBILE && now === "lf3" && was === "lf3" &&
+        this.state.lf3s > supportingStory && !this.state.link) {
+      this.lkPos = 0;
+      super.setState({ link: "z3", linkY: 0 });
+      this.linkGo(LINKS.z3.len);
     }
     // Clubs & Facilities: once the 1st item has fully come in (cards land by ~1.95s), the 2nd comes in by itself — no need to scroll to it
     if (this.state.s15 && !s15w && !this.state.s16) {
@@ -1459,6 +1454,16 @@ export class ArtboardLogic extends Logic {
     this.setState({ lf3s: k });
   }
   lf3Wheel(dy) {
+    if (this.state.view === "end" && dy > 0 && this.state.lf3s < 2) {
+      const now = Date.now();
+      const streak = now - (this.l3Last || 0) < 160;
+      this.l3Last = now;
+      if (!streak && now >= (this.lockUntil || 0)) {
+        this.lockUntil = now + 950;
+        this.setState({ lf3s: this.state.lf3s + 1 });
+      }
+      return true;
+    }
     if (this.state.link === "z3") {
       return false; // Finish moving the camera before changing the active story.
     }
@@ -1576,6 +1581,9 @@ export class ArtboardLogic extends Logic {
       pos = this.lkPos ?? this.state.linkY ?? 0;
     const atEnd = (dy < 0 && pos <= 0.5) || (dy > 0 && pos >= L.len - 0.5);
     if (atEnd) {
+      // Momentum can reach the target before the eased footer camera gets there.
+      // Keep its animation alive instead of settling back at the current position.
+      if (key === "z3" && this.lkRaf && Math.abs((this.state.linkY || 0) - pos) > 0.5) return true;
       if (streak && now - (this.lkEdge || 0) < 900) {
         this.lkEdge = now;
         return true;
@@ -2032,7 +2040,7 @@ export class ArtboardLogic extends Logic {
     const now = Date.now();
     if (this.lockUntil && now < this.lockUntil) return;
     this.mobileDirection = dir;
-    if (["lf2", "lf3"].includes(this.state.view)) {
+    if (["lf2", "lf3"].includes(this.state.view) || (this.state.view === "end" && dir > 0)) {
       const key = this.state.view === "lf2" ? "lf2s" : "lf3s";
       const max = this.state.view === "lf2" ? 3 : 2,
         index = (this.state[key] || 0) + dir;
@@ -2807,7 +2815,7 @@ export class ArtboardLogic extends Logic {
       mobileMembershipScroll: (e) => this.mobileScrolled(e.currentTarget),
       // The originating section and future content share native scroll flow.
       mobileScrollSection: (view) => {
-        if (MOBILE && this.state.view === "lf3" && this.state.lf3s === 2 && view === "end") {
+        if (MOBILE && this.state.view === "lf3" && this.state.lf3s > 0 && view === "end") {
           this.setState({ view: "end" });
           return;
         }
@@ -3577,6 +3585,7 @@ export class ArtboardLogic extends Logic {
           this.setState({ menu: false });
           return;
         }
+        if (this.state.view === "end" && e.deltaY > 0 && this.lf3Wheel(e.deltaY)) return;
         if (
           (this.state.view === "end" || this.state.link === "z3") &&
           this.linkWheel(e.deltaY)
@@ -3765,6 +3774,7 @@ export class ArtboardLogic extends Logic {
         } // already followed the finger
         if (Math.abs(this.ty - y) > 30) {
           const dy = (this.ty - y) * 1.5;
+          if (this.state.view === "end" && dy > 0 && this.lf3Wheel(dy)) return;
           if (
             (this.state.view === "end" || this.state.link === "z3") &&
             this.linkWheel(dy)

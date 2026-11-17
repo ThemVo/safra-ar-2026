@@ -15,7 +15,7 @@ function setup(view = 'mb') {
   const logic = new ArtboardLogic({ mobile: true, mobileWidth: 390, mobileHeight: 844 });
   logic.state.view = view;
   if (view === 'lf2') logic.state.lf2s = 3;
-  if (view === 'lf3') logic.state.lf3s = 2;
+  if (view === 'lf3' || view === 'end') logic.state.lf3s = 2;
   const navigation = [];
   logic.go = direction => navigation.push(direction);
   logic.nxWheel = logic.linkWheel = () => false;
@@ -348,31 +348,49 @@ test('mobile priority wheel pauses at either edge before changing stories', t =>
   }
 });
 
-test('Supporting NSmen switches immediately without scrolling the column or camera', t => {
+test('Supporting NSmen reveals Annual Report while opening the next story', t => {
   let now = 1000;
   t.mock.method(Date, 'now', () => now);
   const logic = new ArtboardLogic({ mobile: false });
   logic.state.view = 'lf3';
   logic.state.lf3s = 0;
-  const column = { scrollTop: 0, scrollHeight: 1600, clientHeight: 600, contains: () => true };
-  logic.nxEl = () => column;
-  const camera = logic.camNow();
-  assert.equal(logic.lf3Wheel(60, {}), true);
-  assert.equal(logic.state.lf3s, 1, 'advance before scrolling the long first story');
-  for (let i = 0; i < 40; i++) {
-    now += 100;
-    assert.equal(logic.lf3Wheel(60, {}), true);
-    assert.equal(logic.state.lf3s, 1);
-    assert.equal(column.scrollTop, 0);
-    assert.equal(logic.camNow(), camera);
-  }
-  now += 300;
-  logic.lf3Wheel(60);
-  assert.equal(logic.state.lf3s, 2);
-  now += 1200;
-  logic.lf3Wheel(-60);
+  assert.equal(logic.lf3Wheel(60), true);
   assert.equal(logic.state.lf3s, 1);
-  assert.equal(logic.state.view, 'lf3');
+  assert.equal(logic.state.link, 'z3');
+  assert.equal(logic.lkPos, 237, 'footer reveal starts with the story change');
+  logic.state.view = 'end';
+  logic.state.linkY = 237;
+  now += 1200;
+  logic.renderVals().wheel({ deltaY: 60 });
+  assert.equal(logic.state.lf3s, 2, 'remaining story stays accessible with the footer visible');
+  assert.equal(logic.state.linkY, 237);
+});
+
+test('desktop footer reveal survives wheel momentum before the camera arrives', t => {
+  let now = 5000;
+  t.mock.method(Date, 'now', () => now);
+  const logic = new ArtboardLogic({ mobile: false });
+  logic.state.view = 'lf3';
+  logic.state.lf3s = 0;
+  const handlers = logic.renderVals();
+  handlers.wheel({ deltaY: 60 });
+  assert.equal(logic.state.link, 'z3');
+  for (let i = 0; i < 12; i++) {
+    now += 20;
+    handlers.wheel({ deltaY: 60 });
+    assert.equal(logic.state.link, 'z3');
+    assert.equal(logic.lkPos, 237);
+    assert.equal(logic.state.lf3s, 1);
+  }
+});
+
+test('mobile Annual Report retains access to the remaining supporting story', () => {
+  const logic = new ArtboardLogic({ mobile: true });
+  logic.state.view = 'end';
+  logic.state.lf3s = 1;
+  logic.mobileGo(1);
+  assert.equal(logic.state.view, 'end');
+  assert.equal(logic.state.lf3s, 2);
 });
 
 test('mobile priority copy requires a fresh swipe after reaching the bottom', () => {

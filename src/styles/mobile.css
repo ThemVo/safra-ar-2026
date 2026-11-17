@@ -533,9 +533,9 @@
 /* The topic header sits outside the native content scroller. */
 .mobile-layout[data-view="s6"],.mobile-layout[data-view="s7"],.mobile-layout[data-view="s8"] { padding-top:88px; }
 .mobile-topic-fixed-header { height:88px; background:#272c3f; }
-.mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-content { min-height:0; }
+.mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-content { min-height:0; --screen-offset:0px !important; }
 .mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) :is(.mobile-figma-story,.mobile-veterans-story) { height:auto; min-height:0 !important; }
 .mobile-screen.screen-s6 .mobile-veterans-story .mobile-collage { height:696px; }
 .mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-story-section>.mobile-topic-header[aria-hidden="true"],
-.mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-figma-story>.mobile-topic-header[aria-hidden="true"] { padding:0; height:0; margin:0 0 45px; }
+.mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-figma-story>.mobile-topic-header[aria-hidden="true"] { padding:0; height:0; margin:0; }
 .mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-topic-header[aria-hidden="true"]::before { display:none; }

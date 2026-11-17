@@ -49,10 +49,19 @@ export default defineConfig(({ mode, command }) => {
       assetsInlineLimit: (filePath) => /\.(?:woff2?|ttf|otf|eot)$/i.test(filePath),
       rollupOptions: {
         output: {
-          entryFileNames: outputPath('[name]-[hash].js'),
-          chunkFileNames: outputPath('[name]-[hash].js'),
-          assetFileNames: (asset) => outputPath(asset.name || 'asset')
-            .replace(/[^/]+$/, '[name]-[hash][extname]'),
+          // Hex hashes stay lowercase, including after Rollup resolves placeholders.
+          hashCharacters: 'hex',
+          entryFileNames: (chunk) => outputPath(`${chunk.name.toLowerCase()}-[hash].js`),
+          chunkFileNames: (chunk) => outputPath(`${chunk.name.toLowerCase()}-[hash].js`),
+          assetFileNames: (asset) => {
+            const name = asset.name || 'asset';
+            if (['css', 'js'].includes(kindOf(name))) {
+              const extension = posix.extname(name);
+              const stem = posix.basename(name, extension).toLowerCase();
+              return outputPath(`${stem}-[hash]${extension.toLowerCase()}`);
+            }
+            return outputPath(name).replace(/[^/]+$/, '[name]-[hash][extname]');
+          },
         },
       },
     },

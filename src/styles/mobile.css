@@ -540,3 +540,11 @@
 .mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-story-section>.mobile-topic-header[aria-hidden="true"],
 .mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-figma-story>.mobile-topic-header[aria-hidden="true"] { padding:0; height:0; margin:0; }
 .mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-topic-header[aria-hidden="true"]::before { display:none; }
+
+/* 4223 mobile handover: 375 × 678 topic frames and 375 × 720 bonds frames.
+   Fit the complete composition uniformly beneath the fixed topic header. */
+.mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-content { width:375px; max-width:none; }
+.mobile-screen:is(.screen-s6,.screen-s7,.screen-s8) .mobile-figma-story { padding:0; }
+.mobile-figma-collage { height:var(--story-height); }
+.mobile-figma-collage .figma-story-stats { padding-right:0 !important; }
+.mobile-figma-collage .mobile-story-next { bottom:16px; }

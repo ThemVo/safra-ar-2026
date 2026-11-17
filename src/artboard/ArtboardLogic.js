@@ -1975,13 +1975,12 @@ export class ArtboardLogic extends Logic {
     return target?.closest?.("[data-mobile-scroll]") || null;
   }
   mobileTopicSwipe(e) {
-    if (!this.props.mobile || !["s6", "s7", "s8"].includes(this.state.view) ||
-        this.state.menu || this.state.lb || !this.touchTopicSettled || this.touchOwned ||
+    if (!this.props.mobile || !["s6", "s7", "s8", "mb", "fc1"].includes(this.state.view) ||
+        this.state.menu || this.state.lb || this.touchOwned ||
         !this.touchScroller || this.ty == null || e.touches?.length !== 1) return false;
     const dy = this.ty - e.touches[0].clientY;
     // Reserve a fresh outward swipe before native overscroll can take it over.
-    return Math.abs(dy) > 0 && !this.mobileCanScroll(this.touchScrollStart, dy) &&
-      !this.mobileCanScroll(this.touchScroller, dy);
+    return Math.abs(dy) > 0 && !this.mobileCanScroll(this.touchScrollStart, dy);
   }
   mobileCanScroll(el, dy) {
     return (
@@ -3720,16 +3719,17 @@ export class ArtboardLogic extends Logic {
             }
           : null;
         this.touchOwned = false;
-        this.touchTopicSettled = this.touchScroller !== this.mobileNativeScroller ||
-          Date.now() - this.mobileNativeScrollAt >= 350;
       },
       // Clubs keeps a gesture until native scrolling has finished, including its last movement.
       touchMove: (e) => {
         const y = e.touches?.[0]?.clientY;
         if (!MOBILE || y == null || this.tyLast == null || this.state.menu)
           return;
-        const dy = this.tyLast - y;
-        if (this.mobileCanScroll(this.touchScroller, dy))
+        const topic = ["s6", "s7", "s8", "mb", "fc1"].includes(this.state.view);
+        const dy = topic ? this.ty - y : this.tyLast - y;
+        // A topic swipe belongs to the edge visible when the finger touched down.
+        // Late momentum must not reclaim that fresh gesture.
+        if (this.mobileCanScroll(topic ? this.touchScrollStart : this.touchScroller, dy))
           this.touchOwned = true;
         this.tyLast = y;
       },
@@ -3750,14 +3750,9 @@ export class ArtboardLogic extends Logic {
             !this.state.menu &&
             !this.state.lb &&
             !this.touchOwned &&
-            !(
-              ["s6", "s7", "s8"].includes(this.state.view) &&
-              !this.touchTopicSettled &&
-              this.touchScroller === this.mobileNativeScroller &&
-              Date.now() - this.mobileNativeScrollAt < 350
-            ) &&
             !scrolledFromStart &&
-            !this.mobileCanScroll(this.touchScroller, dy) &&
+            (["s6", "s7", "s8", "mb", "fc1"].includes(this.state.view) ||
+              !this.mobileCanScroll(this.touchScroller, dy)) &&
             Math.abs(dy) > threshold
           )
             this.mobileGo(dy > 0 ? 1 : -1);

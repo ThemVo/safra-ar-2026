@@ -511,7 +511,7 @@ test('desktop initiatives cursor waits for all five cards and resets on departur
   assert.equal(logic.state.cardsCursorReady, false, 'a stale reveal cannot enable the cursor elsewhere');
 });
 
-test('mobile topic stories pause after native scrolling before a fresh swipe advances', t => {
+test('mobile topic stories advance on the next swipe at the bottom without waiting', t => {
   let now = 1000;
   t.mock.method(Date, 'now', () => now);
   for (const view of ['s6', 's7', 's8']) {
@@ -525,12 +525,9 @@ test('mobile topic stories pause after native scrolling before a fresh swipe adv
     handlers.mobileContentScroll({ currentTarget: scroller });
     handlers.touchEnd({ changedTouches: [{ clientY: 200 }] });
     assert.deepEqual(navigation, [], `${view}: arriving swipe stays on the story`);
-    now += 200;
+    now += 1;
     swipe();
-    assert.deepEqual(navigation, [], `${view}: bottom pause holds`);
-    now += 151;
-    swipe();
-    assert.deepEqual(navigation, [1], `${view}: fresh swipe after the pause advances`);
+    assert.deepEqual(navigation, [1], `${view}: the next swipe advances immediately`);
     now += 1000;
   }
 });
@@ -549,7 +546,7 @@ test('fresh topic edge swipes reserve touch movement before native overscroll', 
       const target = { closest: () => scroller };
       const point = y => ({ target, touches: [{ clientY: y }], changedTouches: [{ clientY: y }] });
       handlers.mobileContentScroll({ currentTarget: scroller });
-      now += 400;
+      now += 1;
       handlers.touchStart(point(300));
       assert.equal(logic.mobileTopicSwipe(point(300 - direction * 10)), true);
       // Some phones report a final edge scroll between touchstart and touchend.
@@ -560,6 +557,28 @@ test('fresh topic edge swipes reserve touch movement before native overscroll', 
       handlers.touchStart(point(300));
       assert.equal(logic.mobileTopicSwipe(point(300 - direction * 10)), false, 'reading content keeps native scrolling');
       now += 1000;
+    }
+  }
+});
+
+test('topic swipe uses the top or bottom visible at touchstart despite late momentum', () => {
+  for (const view of ['s6', 's7', 's8', 'mb', 'fc1']) {
+    for (const direction of [-1, 1]) {
+      const logic = new ArtboardLogic({ mobile: true });
+      logic.state.view = view;
+      const navigation = [];
+      logic.go = dir => navigation.push(dir);
+      const handlers = logic.renderVals();
+      const scroller = { scrollTop: direction > 0 ? 599.5 : 0.5, clientHeight: 600, scrollHeight: 1200 };
+      const target = { closest: () => scroller };
+      const point = y => ({ target, touches: [{ clientY: y }], changedTouches: [{ clientY: y }] });
+      handlers.touchStart(point(300));
+      scroller.scrollTop = direction > 0 ? 590 : 10;
+      handlers.mobileContentScroll({ currentTarget: scroller });
+      assert.equal(logic.mobileTopicSwipe(point(300 - direction * 10)), true);
+      handlers.touchMove(point(300 - direction * 60));
+      handlers.touchEnd(point(300 - direction * 100));
+      assert.deepEqual(navigation, [direction], `${view}: visible edge reserves the next swipe`);
     }
   }
 });

@@ -722,7 +722,7 @@ function MobileExperience({ v }) {
   const scrollSection = useRef(null);
   const scrollable =
     (continuous && !priority && !closingPriority) ||
-    ["s6", "s7", "s8", "mb", "s5", "fc1", "fc2", "lf2", "lf3", "end"].includes(
+    ["mb", "s5", "fc1", "fc2", "lf2", "lf3", "end"].includes(
       view,
     );
   const previousScrollView = useRef(view);
@@ -860,7 +860,7 @@ function MobileExperience({ v }) {
             }
             v.mobileContentScroll(e);
           }
-        : ["mb", "s6", "s7", "s8"].includes(view)
+        : view === "mb"
           ? v.mobileContentScroll
           : view === "fc1"
             ? v.mobileScroll

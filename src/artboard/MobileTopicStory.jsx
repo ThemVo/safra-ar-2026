@@ -265,6 +265,7 @@ const stories = {
     progress: 210,
     center: true,
     next: ["Appreciating", "NSmen"],
+    nextRight: true,
     title: "Building preparedness together",
     stats: [["Over", "40K", "people engaged"]],
     copy: "Total Defence Day commemorative activities equipped participants with practical skills through hands-on demonstrations and interactive games.",

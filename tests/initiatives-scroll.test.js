@@ -21,7 +21,7 @@ function setup(view = 'mb') {
   logic.nxWheel = logic.linkWheel = () => false;
   const scroller = { scrollTop: 200, clientHeight: 600, scrollHeight: 1200, classList: { contains: name => name === 'mobile-membership-cards' } };
   const target = { closest: selector => selector === '[data-mobile-scroll]' ? scroller : null };
-  return { handlers: logic.renderVals(), navigation, scroller, target };
+  return { logic, handlers: logic.renderVals(), navigation, scroller, target };
 }
 
 test('wheel finishes scrolling before a new gesture can leave either edge', t => {
@@ -224,7 +224,7 @@ test('native section scrolling updates the mobile route without locking gestures
 test('Annual Report can leave the boundary with a fresh reverse gesture', t => {
   let now = 1000;
   t.mock.method(Date, 'now', () => now);
-  const { handlers, navigation, scroller, target } = setup('end');
+  const { logic, handlers, navigation, scroller, target } = setup('end');
   scroller.dataset = { mobileScrollMin: '500' };
   scroller.scrollTop = 600;
   handlers.mobileContentScroll({currentTarget:scroller});
@@ -236,7 +236,8 @@ test('Annual Report can leave the boundary with a fresh reverse gesture', t => {
   assert.deepEqual(navigation, []);
   now += 400;
   handlers.wheel({target, deltaY:-60});
-  assert.deepEqual(navigation, [-1]);
+  assert.equal(logic.state.view, 'lf3');
+  assert.equal(logic.state.lf3s, 1);
 
   const touch = setup('end');
   touch.scroller.dataset = { mobileScrollMin: '500' };
@@ -245,7 +246,18 @@ test('Annual Report can leave the boundary with a fresh reverse gesture', t => {
   touch.handlers.touchStart(point(150));
   touch.handlers.touchMove(point(250));
   touch.handlers.touchEnd(point(300));
-  assert.deepEqual(touch.navigation, [-1], 'a new upward swipe releases the boundary');
+  assert.equal(touch.logic.state.view, 'lf3', 'a new upward swipe releases the boundary');
+  assert.equal(touch.logic.state.lf3s, 1);
+});
+
+test('native scrolling reaches Annual Report from the first Supporting NSmen story without waiting', () => {
+  const logic = new ArtboardLogic({ mobile: true });
+  logic.state.view = 'lf3';
+  logic.state.lf3s = 0;
+  logic.lockUntil = Date.now() + 1200;
+  logic.renderVals().mobileScrollSection('end');
+  assert.equal(logic.state.view, 'end');
+  assert.equal(logic.state.lf3s, 0);
 });
 
 test('native reverse scrolling leaves Annual Report without resetting the story or waiting for a new gesture', () => {
@@ -258,10 +270,26 @@ test('native reverse scrolling leaves Annual Report without resetting the story 
   assert.equal(logic.state.lf3s, 2);
 });
 
+test('returning from Annual Report visits supporting stories in reverse after a direct scroll', () => {
+  const logic = new ArtboardLogic({ mobile: true });
+  logic.state.view = 'lf3';
+  logic.state.lf3s = 0;
+  logic.renderVals().mobileScrollSection('end');
+  logic.renderVals().mobileScrollSection('lf3');
+  assert.equal(logic.state.lf3s, 2);
+  assert.equal(logic.mobileDirection, -1);
+  for (const expected of [1, 0]) {
+    logic.lockUntil = 0;
+    logic.mobileGo(-1);
+    assert.equal(logic.state.view, 'lf3');
+    assert.equal(logic.state.lf3s, expected);
+  }
+});
+
 test('Annual Report boundary corrections do not keep reverse scrolling locked', t => {
   let now = 1000;
   t.mock.method(Date, 'now', () => now);
-  const { handlers, navigation, scroller, target } = setup('end');
+  const { logic, handlers, scroller, target } = setup('end');
   scroller.dataset = { mobileScrollMin: '500' };
   scroller.scrollTop = 550;
   handlers.mobileContentScroll({currentTarget:scroller});
@@ -271,7 +299,19 @@ test('Annual Report boundary corrections do not keep reverse scrolling locked', 
     handlers.mobileContentScroll({currentTarget:scroller});
   }
   handlers.wheel({target, deltaY:-60});
-  assert.deepEqual(navigation, [-1], 'clamping at the boundary must allow a fresh reverse gesture');
+  assert.equal(logic.state.view, 'lf3', 'the boundary must allow a fresh reverse gesture');
+  assert.equal(logic.state.lf3s, 1);
+});
+
+test('reverse swipe at zero scroll opens the previous supporting story', () => {
+  const { logic, handlers, scroller, target } = setup('end');
+  scroller.scrollTop = 0;
+  scroller.dataset = { mobileScrollMin: '0' };
+  handlers.touchStart({target, touches:[{clientY:200}]});
+  handlers.touchMove({touches:[{clientY:260}]});
+  handlers.touchEnd({changedTouches:[{clientY:300}]});
+  assert.equal(logic.state.view, 'lf3');
+  assert.equal(logic.state.lf3s, 1);
 });
 
 

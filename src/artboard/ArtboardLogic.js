@@ -2040,6 +2040,13 @@ export class ArtboardLogic extends Logic {
     const now = Date.now();
     if (this.lockUntil && now < this.lockUntil) return;
     this.mobileDirection = dir;
+    if (this.state.view === "end" && dir < 0) {
+      // A short story can already be at scrollTop 0, so no native scroll
+      // event is available to release the footer before this reverse swipe.
+      this.lockUntil = now + 500;
+      this.setState({ view: "lf3", lf3s: Math.max(0, (this.state.lf3s || 0) - 1) });
+      return;
+    }
     if (["lf2", "lf3"].includes(this.state.view) || (this.state.view === "end" && dir > 0)) {
       const key = this.state.view === "lf2" ? "lf2s" : "lf3s";
       const max = this.state.view === "lf2" ? 3 : 2,
@@ -2815,12 +2822,15 @@ export class ArtboardLogic extends Logic {
       mobileMembershipScroll: (e) => this.mobileScrolled(e.currentTarget),
       // The originating section and future content share native scroll flow.
       mobileScrollSection: (view) => {
-        if (MOBILE && this.state.view === "lf3" && this.state.lf3s > 0 && view === "end") {
+        if (MOBILE && this.state.view === "lf3" && view === "end") {
           this.setState({ view: "end" });
           return;
         }
         if (MOBILE && this.state.view === "end" && view === "lf3") {
-          this.setState({ view: "lf3" });
+          // Reverse through the supporting stories from the footer, even when
+          // native scrolling reached it directly from the first story.
+          this.mobileDirection = -1;
+          this.setState({ view: "lf3", lf3s: 2 });
           return;
         }
         if (

@@ -775,7 +775,7 @@ function MobileExperience({ v }) {
         main.scrollTo(0, main.scrollHeight);
       } else {
         delete main.dataset.mobileScrollMin;
-        main.scrollTo(0, v.mobileScrollDirection < 0 ? main.scrollHeight : 0);
+        main.scrollTo(0, from !== "end" && v.mobileScrollDirection < 0 ? main.scrollHeight : 0);
       }
       return;
     }
@@ -786,19 +786,6 @@ function MobileExperience({ v }) {
         : 0;
     scroller.current?.scrollTo(0, top);
   }, [screenKey, continuous && view, view === "end"]);
-  const finalSupportingStory = supporting && v.mobilePriorityStory > 0;
-  useEffect(() => {
-    if (!finalSupportingStory || view === "end" || v.mobileScrollDirection < 0)
-      return;
-    // Wait for the final story and footer to lay out, then reveal the following
-    // content with native easing. Keep this independent of the URL/view change
-    // so crossing into the footer does not restart the motion.
-    const main = supportingScroller.current;
-    const reveal = requestAnimationFrame(() => {
-      main?.scrollTo({ top: main.scrollHeight, behavior: "smooth" });
-    });
-    return () => cancelAnimationFrame(reveal);
-  }, [finalSupportingStory]);
   const onScroll =
     continuous && !priorityPage
       ? (e) => {
@@ -844,7 +831,6 @@ function MobileExperience({ v }) {
             );
             if (
               view === "lf3" &&
-              v.mobilePriorityStory > 0 &&
               main.scrollTop > minimum + 2
             ) {
               main.dataset.mobileScrollMin = minimum;
@@ -853,7 +839,7 @@ function MobileExperience({ v }) {
             }
             // Return to the preceding story in the same native scroll gesture.
             // Clamping here forced users to stop and swipe again to leave the footer.
-            if (view === "end" && main.scrollTop < minimum - 2) {
+            if (view === "end" && main.scrollTop <= minimum + 2) {
               delete main.dataset.mobileScrollMin;
               scrollSection.current = "lf3";
               v.mobileScrollSection("lf3");
@@ -1232,11 +1218,9 @@ function MobileExperience({ v }) {
           >
             <div ref={supportingFrame} className="mobile-content">
               <Priorities v={v} desktop={desktop} supporting />
-              {(view === "end" || v.mobilePriorityStory > 0) && (
-                <footer id={SECTION_IDS.end} className="mobile-footer">
-                  <AnnualReportDownload />
-                </footer>
-              )}
+              <footer id={SECTION_IDS.end} className="mobile-footer">
+                <AnnualReportDownload />
+              </footer>
             </div>
           </main>
         </>

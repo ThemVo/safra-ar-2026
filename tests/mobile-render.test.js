@@ -147,7 +147,9 @@ test('Annual Report follows Supporting NSmen inside one native scroll container'
     assert.ok(list, `${view} contains its story list`);
     assert.doesNotMatch(list, /(?:^|[;"\s])overflow(?:-y|-x)?:/, `${view} must let the main screen own scrolling over copy`);
   }
-  assert.match(markup('lf3', 0, {lf3s:2}), /class="mobile-footer"/);
+  for (const lf3s of [0, 1, 2]) {
+    assert.match(markup('lf3', 0, {lf3s}), /class="mobile-footer"/);
+  }
 });
 
 

@@ -45,7 +45,8 @@ export default defineConfig(({ mode, command }) => {
     publicDir: command === 'build' ? false : 'public',
     build: {
       assetsDir: '',
-      assetsInlineLimit: 0,
+      // Embed fonts as data URLs; keep other assets as separate files.
+      assetsInlineLimit: (filePath) => /\.(?:woff2?|ttf|otf|eot)$/i.test(filePath),
       rollupOptions: {
         output: {
           entryFileNames: outputPath('[name]-[hash].js'),

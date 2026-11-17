@@ -1974,6 +1974,15 @@ export class ArtboardLogic extends Logic {
   mobileScroller(target) {
     return target?.closest?.("[data-mobile-scroll]") || null;
   }
+  mobileTopicSwipe(e) {
+    if (!this.props.mobile || !["s6", "s7", "s8"].includes(this.state.view) ||
+        this.state.menu || this.state.lb || !this.touchTopicSettled || this.touchOwned ||
+        !this.touchScroller || this.ty == null || e.touches?.length !== 1) return false;
+    const dy = this.ty - e.touches[0].clientY;
+    // Reserve a fresh outward swipe before native overscroll can take it over.
+    return Math.abs(dy) > 0 && !this.mobileCanScroll(this.touchScrollStart, dy) &&
+      !this.mobileCanScroll(this.touchScroller, dy);
+  }
   mobileCanScroll(el, dy) {
     return (
       el &&
@@ -3711,6 +3720,8 @@ export class ArtboardLogic extends Logic {
             }
           : null;
         this.touchOwned = false;
+        this.touchTopicSettled = this.touchScroller !== this.mobileNativeScroller ||
+          Date.now() - this.mobileNativeScrollAt >= 350;
       },
       // Clubs keeps a gesture until native scrolling has finished, including its last movement.
       touchMove: (e) => {
@@ -3741,6 +3752,7 @@ export class ArtboardLogic extends Logic {
             !this.touchOwned &&
             !(
               ["s6", "s7", "s8"].includes(this.state.view) &&
+              !this.touchTopicSettled &&
               this.touchScroller === this.mobileNativeScroller &&
               Date.now() - this.mobileNativeScrollAt < 350
             ) &&

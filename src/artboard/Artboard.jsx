@@ -60,6 +60,9 @@ export default class Artboard extends Component {
         this.vals?.touchMove?.({ touches: e.touches, currentTarget: mh });
       }
     };
+    this.onTopicTouchMove = (e) => {
+      if (this.logic.mobileTopicSwipe(e) && e.cancelable) e.preventDefault();
+    };
     // Pointer over the side margins: hand it to the artboard as if it were over the 1440px column.
     this.onMove = (e) => {
       if (!outside(e)) return;
@@ -78,6 +81,7 @@ export default class Artboard extends Component {
     window.addEventListener("touchstart", this.onTouchStart, { passive: true });
     window.addEventListener("touchend", this.onTouchEnd, { passive: true });
     window.addEventListener("touchmove", this.onTouchMove, { passive: true });
+    window.addEventListener("touchmove", this.onTopicTouchMove, { passive: false, capture: true });
     window.addEventListener("mousemove", this.onMove, { passive: true });
     document.documentElement.addEventListener("mouseleave", this.onLeave);
   }
@@ -95,6 +99,7 @@ export default class Artboard extends Component {
     window.removeEventListener("touchstart", this.onTouchStart);
     window.removeEventListener("touchend", this.onTouchEnd);
     window.removeEventListener("touchmove", this.onTouchMove);
+    window.removeEventListener("touchmove", this.onTopicTouchMove, true);
     window.removeEventListener("mousemove", this.onMove);
     document.documentElement.removeEventListener("mouseleave", this.onLeave);
     this.logic.host = null;

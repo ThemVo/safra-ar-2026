@@ -534,3 +534,32 @@ test('mobile topic stories pause after native scrolling before a fresh swipe adv
     now += 1000;
   }
 });
+
+test('fresh topic edge swipes reserve touch movement before native overscroll', t => {
+  let now = 1000;
+  t.mock.method(Date, 'now', () => now);
+  for (const view of ['s6', 's7', 's8']) {
+    for (const direction of [-1, 1]) {
+      const logic = new ArtboardLogic({ mobile: true });
+      logic.state.view = view;
+      const navigation = [];
+      logic.go = dir => navigation.push(dir);
+      const handlers = logic.renderVals();
+      const scroller = { scrollTop: direction > 0 ? 600 : 0, clientHeight: 600, scrollHeight: 1200 };
+      const target = { closest: () => scroller };
+      const point = y => ({ target, touches: [{ clientY: y }], changedTouches: [{ clientY: y }] });
+      handlers.mobileContentScroll({ currentTarget: scroller });
+      now += 400;
+      handlers.touchStart(point(300));
+      assert.equal(logic.mobileTopicSwipe(point(300 - direction * 10)), true);
+      // Some phones report a final edge scroll between touchstart and touchend.
+      handlers.mobileContentScroll({ currentTarget: scroller });
+      handlers.touchEnd(point(300 - direction * 100));
+      assert.deepEqual(navigation, [direction]);
+      scroller.scrollTop = 200;
+      handlers.touchStart(point(300));
+      assert.equal(logic.mobileTopicSwipe(point(300 - direction * 10)), false, 'reading content keeps native scrolling');
+      now += 1000;
+    }
+  }
+});

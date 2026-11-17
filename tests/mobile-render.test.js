@@ -191,8 +191,10 @@ test('mobile build paths cover dynamic photos, SVG controls and all four videos 
     for (const view of ['top','s3','s5','mb','fc1','wc','nx','lf2','lf3','end']) verify(renderBuilt(view));
     for (let i = 0; i < 4; i++) {
       const video = renderBuilt('s7',1,{lb:{t:7,s:1,i}});
-      assert.match(video, /<video/);
-      assert.match(video, /\.mp4/);
+      assert.match(video, /<iframe/);
+      const videoIds = ['ypCWyIf5Q-M', '3ugFAZ-VJTQ', '9VxOeOBJt9Q', 'MycosziSLUs'];
+      assert.ok(video.includes(`https://www.youtube.com/embed/${videoIds[i]}?`));
+      assert.doesNotMatch(video, /<video|\.mp4/);
       verify(video);
     }
   }

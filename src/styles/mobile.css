@@ -340,7 +340,7 @@
 .mobile-gallery { position:absolute; inset:0; background:#18212a; z-index:50; padding:max(16px,env(safe-area-inset-top)) 16px max(32px,env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:16px; }
 .mobile-gallery-close { align-self:flex-end; flex:none; width:52px; height:52px; padding:0; border:0; background:transparent; cursor:pointer; }
 .mobile-gallery-media { display:flex; align-items:center; justify-content:center; flex:1; min-height:0; overflow:hidden; touch-action:pan-y; }
-.mobile-gallery-media>img,.mobile-gallery-media>video { width:100%; height:100%; object-fit:contain; animation:lbIn .5s ease both; }
+.mobile-gallery-media>img,.mobile-gallery-media>iframe { width:100%; height:100%; object-fit:contain; animation:lbIn .5s ease both; }
 .mobile-gallery-thumbs { display:flex; flex:none; gap:6px; overflow-x:auto; overscroll-behavior:contain; padding:4px 0; touch-action:pan-x; }
 .mobile-gallery-thumb { position:relative; width:64px; height:64px; flex:none; border:0; background:none; padding:0; }
 .mobile-gallery-thumb:first-child { margin-left:auto; }
@@ -548,3 +548,5 @@
 .mobile-figma-collage { height:var(--story-height); }
 .mobile-figma-collage .figma-story-stats { padding-right:0 !important; }
 .mobile-figma-collage .mobile-story-next { bottom:16px; }
+
+.mobile-gallery-media>iframe { border:0; height:auto; aspect-ratio:16/9; }

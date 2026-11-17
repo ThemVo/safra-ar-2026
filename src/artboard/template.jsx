@@ -11979,16 +11979,13 @@ export default function render(v) {
               }}
             />
             {v.lbv?.vid ? (
-              <video
+              <iframe
                 className="lb-vid"
                 key={v.lbv?.vid}
                 src={v.lbv?.vid}
-                poster={v.lbv?.poster}
-                aria-label={v.lbv?.vidT}
-                controls
-                autoPlay
-                playsInline
-                preload="auto"
+                title={v.lbv?.vidT}
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowFullScreen
                 style={{
                   position: "absolute",
                   left: "131.5px",

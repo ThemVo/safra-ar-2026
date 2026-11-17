@@ -370,10 +370,10 @@ const DC7 = [
       "./assets/the-strength-within-poster.jpg",
     ],
     videos: [
-      "./assets/gratitude-in-bloom.mp4",
-      "./assets/serving-together.mp4",
-      "./assets/once-upon-a-time.mp4",
-      "./assets/the-strength-within.mp4",
+      "https://www.youtube.com/embed/ypCWyIf5Q-M?autoplay=1&playsinline=1&rel=0&list=PL8zxXGNDGP_CV5X7Qw0_w70cmFV1BiH3e&index=7",
+      "https://www.youtube.com/embed/3ugFAZ-VJTQ?autoplay=1&playsinline=1&rel=0&list=PL8zxXGNDGP_CV5X7Qw0_w70cmFV1BiH3e&index=6",
+      "https://www.youtube.com/embed/9VxOeOBJt9Q?autoplay=1&playsinline=1&rel=0&list=PL8zxXGNDGP_CV5X7Qw0_w70cmFV1BiH3e&index=5",
+      "https://www.youtube.com/embed/MycosziSLUs?autoplay=1&playsinline=1&rel=0&list=PL8zxXGNDGP_CV5X7Qw0_w70cmFV1BiH3e&index=4",
     ],
     gi: [0, 1, 2, 3],
   },
@@ -3407,7 +3407,7 @@ export class ArtboardLogic extends Logic {
                 : "Photo " + (k + 1) + " of " + g.length,
           };
         const yt = lbOpen && d.videos && d.videos[k];
-        /* video stories: play the clip (mp4) in the viewer; only while open, so closing stops it */ r.vid =
+        /* Mount the YouTube player only while open so closing stops playback. */ r.vid =
           yt || "";
         r.poster = yt ? g[k] : "";
         r.vidT = yt ? "Video " + (k + 1) + " of " + g.length : "";

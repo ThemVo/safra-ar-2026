@@ -625,13 +625,12 @@ function Gallery({ v, desktop }) {
         }}
       >
         {v.lbv.vid ? (
-          <video
+          <iframe
             key={v.lbv.vid}
             src={v.lbv.vid}
-            poster={v.lbv.poster}
-            controls
-            playsInline
-            autoPlay
+            title={v.lbv.vidT}
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
           />
         ) : (
           <img key={v.lbv.src} src={v.lbv.src} alt={v.lbv.alt} />

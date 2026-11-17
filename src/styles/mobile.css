@@ -443,6 +443,7 @@
 .mh.mobile-layout .supporting .lf3b p,.mh.mobile-layout .supporting .lf3b h4 { font-size:14px; line-height:1.4; letter-spacing:0; }
 .mh.mobile-layout .supporting .lf3b p { margin-bottom:14px; }
 .mobile-priorities.supporting { padding-top:32px; padding-bottom:24px; }
+.mobile-layout #supporting-nsmen .lf3s.lfp3 { padding-bottom:0 !important; }
 .mobile-priorities.supporting .mobile-priority-photos { margin-bottom:0; }
 .mobile-priorities.supporting .mobile-priority-photos>div:first-child { width:100%; }
 .mobile-priorities.supporting .mobile-priority-photos .lf-photo { max-height:210px; }

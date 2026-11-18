@@ -726,6 +726,41 @@ function MobileExperience({ v }) {
     );
   const previousScrollView = useRef(view);
   const enteringFuture = useRef(false);
+  const reverseFutureArmed = useRef(false);
+  const futureWheelAt = useRef(0);
+  const armReverseFuture = () => {
+    const main = mainScroller.current;
+    const top = main?.querySelector(".mobile-with-commitment")?.offsetTop;
+    reverseFutureArmed.current = !enteringFuture.current && view === "wc" &&
+      top != null && Math.abs(main.scrollTop - top) <= 2;
+  };
+  const futureSnapFrame = useRef(null);
+  const snapFuture = (main, from, to, done) => {
+    cancelAnimationFrame(futureSnapFrame.current);
+    enteringFuture.current = true;
+    reverseFutureArmed.current = false;
+    const start = performance.now();
+    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 750;
+    const tick = (now) => {
+      const progress = duration ? Math.min(1, (now - start) / duration) : 1;
+      // Full-screen travel in both directions, matching the desktop camera timing.
+      const eased = progress < 0.5
+        ? 4 * progress ** 3
+        : 1 - (-2 * progress + 2) ** 3 / 2;
+      main.scrollTop = from + (to - from) * eased;
+      if (progress < 1) futureSnapFrame.current = requestAnimationFrame(tick);
+      else {
+        done?.();
+        // Keep the final programmatic scroll event out of section detection.
+        futureSnapFrame.current = requestAnimationFrame(() => {
+          enteringFuture.current = false;
+        });
+      }
+    };
+    main.scrollTop = from;
+    futureSnapFrame.current = requestAnimationFrame(tick);
+  };
+  useEffect(() => () => cancelAnimationFrame(futureSnapFrame.current), []);
   const screenKey = opening
     ? "opening"
     : continuous
@@ -740,11 +775,7 @@ function MobileExperience({ v }) {
         0,
         document.getElementById(SECTION_IDS.wc).offsetTop - main.clientHeight,
       );
-      enteringFuture.current = true;
-      main.scrollTo({
-        top: boundary + Math.min(80, main.clientHeight * 0.1),
-        behavior: "smooth",
-      });
+      snapFuture(main, boundary, document.getElementById(SECTION_IDS.wc).offsetTop);
       return;
     }
     if (scrollSection.current === view) {
@@ -788,7 +819,7 @@ function MobileExperience({ v }) {
   const onScroll =
     continuous && !priorityPage
       ? (e) => {
-          if (priority || closingPriority) return;
+          if (priority || closingPriority || enteringFuture.current) return;
           const main = e.currentTarget;
           if (futureGated) {
             if (view === "fc1") v.mobileScroll(e);
@@ -800,9 +831,22 @@ function MobileExperience({ v }) {
             0,
             commitment.offsetTop - main.clientHeight,
           );
-          if (enteringFuture.current) {
-            if (main.scrollTop <= boundary + 1) return;
-            enteringFuture.current = false;
+          if (["wc", "nx"].includes(view) && main.scrollTop < commitment.offsetTop - 2) {
+            // A gesture arriving from below stops at Commitment's top.
+            // Only a new gesture that starts there may leave for the origin.
+            if (!reverseFutureArmed.current) {
+              main.scrollTop = commitment.offsetTop;
+              if (view !== "wc") {
+                scrollSection.current = "wc";
+                v.mobileScrollSection("wc");
+              }
+              return;
+            }
+            snapFuture(main, main.scrollTop, boundary, () => {
+              scrollSection.current = futureOrigin.current;
+              v.mobileScrollSection(futureOrigin.current);
+            });
+            return;
           }
           const cue = commitment
             .querySelector(".mobile-future-cue")
@@ -1116,8 +1160,16 @@ function MobileExperience({ v }) {
     <div
       className={`${classes}${topicTransition ? " mobile-topic-transition" : ""}`}
       data-view={view}
-      onWheel={v.wheel}
-      onTouchStart={v.touchStart}
+      onWheel={(e) => {
+        const now = performance.now();
+        if (now - futureWheelAt.current > 200) armReverseFuture();
+        futureWheelAt.current = now;
+        v.wheel(e);
+      }}
+      onTouchStart={(e) => {
+        armReverseFuture();
+        v.touchStart(e);
+      }}
       onTouchMove={v.touchMove}
       onTouchEnd={v.touchEnd}
     >

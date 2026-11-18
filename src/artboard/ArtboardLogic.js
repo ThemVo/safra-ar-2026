@@ -676,7 +676,11 @@ const MB_TABS = [
 const rankOf = (v) =>
   (v === "mb" || v === "fc1" || v === "fc2") && !MOBILE ? 4 : RANK[v]; // desktop: Membership and Clubs & Facilities are L2 pages like s6–s8
 const linkOf = (v) =>
-  Object.keys(LINKS).find((k) => LINKS[k].at.some(([x]) => x === v));
+  // Desktop Commitment ⇄ Looking forward uses the same full-screen snap as
+  // Initiatives ⇄ Commitment; keep the scroll-linked stretch for mobile only.
+  Object.keys(LINKS).find(
+    (k) => (MOBILE || k !== "z2") && LINKS[k].at.some(([x]) => x === v),
+  );
 const RANK = {
   logo: -1,
   top: 0,

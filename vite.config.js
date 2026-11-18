@@ -55,6 +55,8 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: (chunk) => outputPath(`${chunk.name.toLowerCase()}-[hash].js`),
           assetFileNames: (asset) => {
             const name = asset.name || 'asset';
+            // Imported SVGs keep their source filenames, just like public SVGs.
+            if (kindOf(name) === 'svg') return outputPath(name);
             if (['css', 'js'].includes(kindOf(name))) {
               const extension = posix.extname(name);
               const stem = posix.basename(name, extension).toLowerCase();

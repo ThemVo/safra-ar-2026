@@ -129,6 +129,7 @@
 /* Figma 4072:319: joined cards at their natural size, with native page scrolling. */
 .mobile-topic { position:relative; display:flex; flex-direction:column; gap:16px; padding:24px; color:#bbb; border:2px solid transparent; border-radius:0; background:linear-gradient(#272c3f,#272c3f) padding-box,var(--mobile-gradient) border-box; text-decoration:none; margin-bottom:-2px; animation:mhUp .7s cubic-bezier(.16,.8,.24,1) calc(.2s + var(--i)*.08s) both; font-variation-settings:"GRAD" 0,"ROND" 0,"wdth" 100; }
 .mobile-topic:first-child { border-radius:16px 16px 0 0; }
+.mobile-topic:is(:link,:visited,:hover,:focus,:active) { color:#bbb; text-decoration:none; }
 .mobile-topic:last-child { border-radius:0 0 16px 16px; margin-bottom:0; }
 .mobile-topic>div { display:flex; align-items:center; gap:16px; }
 .mobile-topic:first-child>div { align-items:flex-start; }
@@ -143,7 +144,6 @@
 .mobile-topic:first-child p { margin-bottom:-8px; }
 .mobile-layout .mobile-topic-arrow { position:relative; display:block; align-self:flex-end; width:23.75px; height:20px; }
 .mobile-topic-arrow img { position:absolute; width:21.9969px; height:25.7515px; max-width:none; left:50%; top:50%; transform:translate(-50%,-50%) rotate(-90deg); }
-.mobile-topic:active { background:linear-gradient(#000722,#000722) padding-box,var(--mobile-gradient) border-box; }
 .mobile-topic-header { display:flex; gap:12px; align-items:center; padding:24px 0 0; margin-bottom:45px; }
 .mobile-topic-header>button { display:flex; align-items:center; justify-content:center; width:40px; height:40px; padding:0; flex:none; border:0; border-radius:80px; background:#313851; }
 .mobile-topic-header[aria-hidden="true"]::before { content:""; display:block; padding-block:20px; }

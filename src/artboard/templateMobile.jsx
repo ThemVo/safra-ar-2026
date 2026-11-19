@@ -17,6 +17,7 @@ import AnnualReportDownload from "./AnnualReportDownload.jsx";
 import MembershipToggleIcon from "./MembershipToggleIcon.jsx";
 import { SECTION_IDS, screenId } from "./routes.js";
 import { assetUrl } from "../utils/assetUrl.js";
+import { futureScrollState } from "./futureScroll.js";
 
 // Reuse desktop content, icons, counters and handlers. Only its layout is changed.
 function find(node, test) {
@@ -728,6 +729,8 @@ function MobileExperience({ v }) {
   const enteringFuture = useRef(false);
   const reverseFutureArmed = useRef(false);
   const futureWheelAt = useRef(0);
+  const futureHoldUntil = useRef(0);
+  const futureGesture = useRef({});
   const armReverseFuture = () => {
     const main = mainScroller.current;
     const top = main?.querySelector(".mobile-with-commitment")?.offsetTop;
@@ -735,21 +738,41 @@ function MobileExperience({ v }) {
       top != null && Math.abs(main.scrollTop - top) <= 2;
   };
   const futureSnapFrame = useRef(null);
+  const futureState = (main) => futureScrollState(
+    main.scrollTop,
+    main.querySelector(".mobile-with-commitment").offsetTop,
+    main.querySelector(".mobile-looking-forward").offsetTop,
+  );
   const snapFuture = (main, from, to, done) => {
     cancelAnimationFrame(futureSnapFrame.current);
     enteringFuture.current = true;
     reverseFutureArmed.current = false;
     const start = performance.now();
     const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 750;
+    const commitmentTop = main.querySelector(".mobile-with-commitment").offsetTop;
+    const forwardTop = main.querySelector(".mobile-looking-forward").offsetTop;
+    let introRevealed = forwardRevealed;
     const tick = (now) => {
       const progress = duration ? Math.min(1, (now - start) / duration) : 1;
       // Full-screen travel in both directions, matching the desktop camera timing.
-      const eased = progress < 0.5
-        ? 4 * progress ** 3
-        : 1 - (-2 * progress + 2) ** 3 / 2;
+      // Solve the same cubic-bezier(.6,0,.3,1) used by the desktop camera.
+      let lower = 0, upper = 1;
+      for (let i = 0; i < 16; i++) {
+        const t = (lower + upper) / 2;
+        const x = 3 * (1 - t) ** 2 * t * .6 + 3 * (1 - t) * t ** 2 * .3 + t ** 3;
+        if (x < progress) lower = t;
+        else upper = t;
+      }
+      const t = (lower + upper) / 2;
+      const eased = progress === 1 ? 1 : 3 * (1 - t) * t ** 2 + t ** 3;
       main.scrollTop = from + (to - from) * eased;
+      if (!introRevealed && futureScrollState(main.scrollTop, commitmentTop, forwardTop).revealIntro) {
+        introRevealed = true;
+        setForwardRevealed(true);
+      }
       if (progress < 1) futureSnapFrame.current = requestAnimationFrame(tick);
       else {
+        futureHoldUntil.current = performance.now() + 350;
         done?.();
         // Keep the final programmatic scroll event out of section detection.
         futureSnapFrame.current = requestAnimationFrame(() => {
@@ -766,6 +789,80 @@ function MobileExperience({ v }) {
     : continuous
       ? `${futureOrigin.current}-future`
       : `${view}-${view === "s3" ? v.mobileStep : v.mobileStory}`;
+  useEffect(() => {
+    const main = mainScroller.current;
+    if (!main || !["wc", "nx"].includes(view) || priority || closingPriority) return;
+    futureHoldUntil.current = Math.max(futureHoldUntil.current, performance.now() + 350);
+    const edge = () => view === "wc"
+      ? Math.max(main.querySelector(".mobile-with-commitment").offsetTop,
+          main.querySelector(".mobile-looking-forward").offsetTop - main.clientHeight)
+      : main.querySelector(".mobile-looking-forward").offsetTop;
+    const atEdge = () => Math.abs(main.scrollTop - edge()) <= 2;
+    const atCommitmentTop = () => view === "wc" && main.scrollTop <=
+      main.querySelector(".mobile-with-commitment").offsetTop + 2;
+    const start = (e) => {
+      futureGesture.current = { y: e.touches[0].clientY,
+        reverseArmed: atCommitmentTop() && !enteringFuture.current,
+        armed: atEdge() &&
+        !enteringFuture.current && performance.now() >= futureHoldUntil.current };
+    };
+    const move = (e) => {
+      const gesture = futureGesture.current;
+      // The camera owns the entire gesture, including a finger reversing
+      // direction or momentum continuing after the destination view changes.
+      if (enteringFuture.current || gesture.used) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      const dy = e.touches ? gesture.y - e.touches[0].clientY : e.deltaY;
+      if (dy < 0 && atCommitmentTop()) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!gesture.reverseArmed || gesture.used || enteringFuture.current ||
+            Math.abs(dy) < (e.touches ? 18 : 1)) return;
+        gesture.used = true;
+        const top = main.querySelector(".mobile-with-commitment").offsetTop;
+        snapFuture(main, main.scrollTop, Math.max(0, top - main.clientHeight), () => {
+          scrollSection.current = futureOrigin.current;
+          v.mobileScrollSection(futureOrigin.current);
+        });
+        return;
+      }
+      const outward = view === "wc" ? dy > 0 : dy < 0;
+      if (!outward || (!atEdge() && !enteringFuture.current)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.touches ? Math.abs(dy) < 30 : Math.abs(dy) < 1) return;
+      if (!gesture.armed || gesture.used || enteringFuture.current) return;
+      gesture.used = true;
+      v.mobileScrollSection(view === "wc" ? "nx" : "wc");
+    };
+    const wheel = (e) => {
+      const now = performance.now();
+      if (now - futureWheelAt.current > 220) {
+        futureGesture.current = {
+          reverseArmed: atCommitmentTop() && !enteringFuture.current,
+          armed: atEdge() && !enteringFuture.current &&
+          now >= futureHoldUntil.current };
+      }
+      futureWheelAt.current = now;
+      move(e);
+    };
+    const end = (e) => {
+      if (futureGesture.current.used || enteringFuture.current) e.stopPropagation();
+    };
+    main.addEventListener("touchstart", start, { passive: true });
+    main.addEventListener("touchmove", move, { passive: false });
+    main.addEventListener("touchend", end);
+    main.addEventListener("wheel", wheel, { passive: false });
+    return () => {
+      main.removeEventListener("touchstart", start);
+      main.removeEventListener("touchmove", move);
+      main.removeEventListener("touchend", end);
+      main.removeEventListener("wheel", wheel);
+    };
+  }, [view, screenKey, priority, closingPriority]);
   useLayoutEffect(() => {
     const from = previousScrollView.current;
     previousScrollView.current = view;
@@ -780,6 +877,11 @@ function MobileExperience({ v }) {
     }
     if (scrollSection.current === view) {
       scrollSection.current = null;
+      return;
+    }
+    if (["wc", "nx"].includes(from) && ["wc", "nx"].includes(view)) {
+      const main = mainScroller.current;
+      snapFuture(main, main.scrollTop, document.getElementById(SECTION_IDS[view]).offsetTop);
       return;
     }
     if (priorityPage) {
@@ -827,6 +929,16 @@ function MobileExperience({ v }) {
           }
           v.mobileContentScroll(e);
           const commitment = main.querySelector(".mobile-with-commitment");
+          const forward = main.querySelector(".mobile-looking-forward");
+          const stop = view === "wc"
+            ? Math.max(commitment.offsetTop, forward.offsetTop - main.clientHeight)
+            : forward.offsetTop;
+          if ((view === "wc" && main.scrollTop > stop) ||
+              (view === "nx" && main.scrollTop < stop)) {
+            main.scrollTop = stop;
+            futureHoldUntil.current = performance.now() + 350;
+            return;
+          }
           const boundary = Math.max(
             0,
             commitment.offsetTop - main.clientHeight,
@@ -848,17 +960,12 @@ function MobileExperience({ v }) {
             });
             return;
           }
-          const cue = commitment
-            .querySelector(".mobile-future-cue")
-            .getBoundingClientRect();
-          const passedFutureCue =
-            cue.bottom <= main.getBoundingClientRect().top + 2;
+          const motion = futureState(main);
+          if (motion.revealIntro) setForwardRevealed(true);
           const nextView =
             main.scrollTop <= boundary + 1
               ? futureOrigin.current
-              : passedFutureCue
-                ? "nx"
-                : "wc";
+              : motion.view;
           if (nextView !== view) {
             scrollSection.current = nextView;
             v.mobileScrollSection(nextView);
@@ -1046,7 +1153,7 @@ function MobileExperience({ v }) {
             </nav>
           </section>
         )}
-        <section id={SECTION_IDS.wc} className="mobile-with-commitment">
+        <section id={SECTION_IDS.wc} className={`mobile-with-commitment ${!futureGated ? "commitment-visible" : ""}`}>
           <h2>
             <span>The year may over.</span>
             <strong className="mobile-gradient">
@@ -1065,9 +1172,10 @@ function MobileExperience({ v }) {
             className="mobile-future-cue"
             onClick={(e) => {
               e.stopPropagation();
-              scroller.current?.scrollTo({
-                top: document.getElementById(SECTION_IDS.nx).offsetTop,
-                behavior: "smooth",
+              const main = mainScroller.current;
+              snapFuture(main, main.scrollTop, document.getElementById(SECTION_IDS.nx).offsetTop, () => {
+                scrollSection.current = "nx";
+                v.mobileScrollSection("nx");
               });
             }}
             aria-label="See what’s next for SAFRA"

@@ -3651,7 +3651,7 @@ export class ArtboardLogic extends Logic {
           ((rankOf(view) ?? 0) >= 2 && !this.state.lb ? "on" : "") +
           (this.state.menu ? " open" : "") +
           ((MOBILE
-            ? ["fy", "end", "mb", "fc1", "fc2"]
+            ? ["fy", "mb"]
             : ["fy", "end", "mb"]
           ).includes(view)
             ? " sm-grad"

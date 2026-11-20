@@ -1006,6 +1006,7 @@ function MobileExperience({ v }) {
       inner = frame.current;
     if (!outer || !inner) return;
     const fit = () => {
+      inner.style.setProperty("--mobile-screen-height", `${outer.clientHeight}px`);
       const scale =
         continuous || scrollable
           ? 1

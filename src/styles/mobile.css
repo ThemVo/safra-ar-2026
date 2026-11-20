@@ -252,24 +252,23 @@
 .mobile-facility-copy h3 { color:#f34141; margin:0; font-size:14px; font-weight:500; line-height:1.2; letter-spacing:.28px; }
 .mobile-facility-copy p { margin:0; color:#ddd; opacity:.8; font-size:12px; font-weight:400; line-height:1.8; }
 .mobile-layout .mobile-facilities-next { display:flex; flex-direction:column; align-items:flex-end; width:100%; padding:0; border:0; background:transparent; color:#6e778b; font-size:14px; font-weight:600; line-height:1.2; text-align:right; text-transform:uppercase; }
-.mobile-content>.mobile-with-commitment { position:relative; display:flex; align-items:center; justify-content:center; background:#18212a; text-align:center; padding:64px 16px 48px; height:calc(100svh - 64px); min-height:0; }
-.mobile-with-commitment::after { content:""; position:absolute; top:100%; left:0; width:100%; height:64px; background:#18212a; }
-.mobile-with-commitment::before { content:""; position:absolute; top:100%; left:0; width:100%; height:64px; background:#272c3f; z-index:1; }
+.mobile-content>.mobile-with-commitment { position:relative; display:flex; align-items:center; justify-content:center; background:#18212a; text-align:center; padding:64px 16px 112px; height:var(--mobile-screen-height,100svh); min-height:0; overflow:hidden; }
+.mobile-with-commitment::before { content:""; position:absolute; bottom:0; left:0; width:100%; height:64px; background:#272c3f; z-index:1; }
 .mobile-with-commitment h2 { position:relative; margin:0; font-size:34px; line-height:1.1; letter-spacing:.02em; font-weight:500; z-index:1; }
 .mobile-with-commitment h2>span { display:block; color:#6e778b; margin-bottom:8px; }
 .mobile-with-commitment strong { display:block; font-weight:500; }
 .commitment-visible h2>span { animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .55s both; }
 .commitment-visible strong { animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .8s both; }
-.mobile-tongue { position:absolute; bottom:-43px; left:0; width:100%; height:109px; z-index:1; }
-.mobile-future-cue { position:absolute; z-index:2; bottom:-51px; left:calc(50% - 48px); width:96px; height:96px; padding:0; border:0; background:transparent; }
+.mobile-tongue { position:absolute; bottom:21px; left:0; width:100%; height:109px; z-index:1; }
+.mobile-future-cue { position:absolute; z-index:2; bottom:13px; left:calc(50% - 48px); width:96px; height:96px; padding:0; border:0; background:transparent; }
 .mobile-future-cue img { display:block; width:96px; height:96px; }
 /* Bring the curved footer and its cue up together as the title settles,
    matching the desktop Commitment entrance. */
 .commitment-visible::before,.commitment-visible .mobile-tongue { animation:mobileCommitmentFooter .85s cubic-bezier(.2,.75,.2,1) 1.3s both; }
 .commitment-visible .mobile-future-cue { animation:mobileCommitmentFooter .85s cubic-bezier(.2,.75,.2,1) 1.36s both; }
 @keyframes mobileCommitmentFooter { from { transform:translateY(120px); } to { transform:translateY(0); } }
-/* Figma reserves 64px below the title frame for the curved edge and cue. */
-.mobile-looking-forward { position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center; margin-top:64px; padding:40px 16px 176px; background:#272c3f; }
+/* The curved footer and cue fit inside the measured Commitment viewport. */
+.mobile-looking-forward { position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center; margin-top:0; padding:40px 16px 176px; background:#272c3f; }
 .mobile-content>.mobile-looking-forward { height:100svh; min-height:0; }
 /* Match desktop's two circles: background below the intro, dimming above it. */
 .mobile-looking-forward::before,.mobile-looking-forward::after { content:""; position:absolute; top:50%; left:50%; width:200vmax; height:200vmax; margin:-100vmax; border-radius:50%; background:#18212a; transform:scale(0); transition:transform .8s cubic-bezier(.65,0,.35,1); pointer-events:none; }

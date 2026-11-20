@@ -1987,11 +1987,13 @@ export class ArtboardLogic extends Logic {
     return target?.closest?.("[data-mobile-scroll]") || null;
   }
   mobileTopicSwipe(e) {
-    if (!this.props.mobile || !["s6", "s7", "s8", "mb", "fc1"].includes(this.state.view) ||
+    if (!this.props.mobile || !["s5", "s6", "s7", "s8", "mb", "fc1"].includes(this.state.view) ||
         this.state.menu || this.state.lb || this.touchOwned ||
         !this.touchScroller || this.ty == null || e.touches?.length !== 1) return false;
     const dy = this.ty - e.touches[0].clientY;
     // Reserve a fresh outward swipe before native overscroll can take it over.
+    // Initiatives also hands off to a scripted camera; Safari rubber-banding
+    // must not compete with that animation when the future sections appear.
     return Math.abs(dy) > 0 && !this.mobileCanScroll(this.touchScrollStart, dy);
   }
   mobileCanScroll(el, dy) {
@@ -3748,7 +3750,7 @@ export class ArtboardLogic extends Logic {
         const y = e.touches?.[0]?.clientY;
         if (!MOBILE || y == null || this.tyLast == null || this.state.menu)
           return;
-        const topic = ["s6", "s7", "s8", "mb", "fc1"].includes(this.state.view);
+        const topic = ["s5", "s6", "s7", "s8", "mb", "fc1"].includes(this.state.view);
         const dy = topic ? this.ty - y : this.tyLast - y;
         // A topic swipe belongs to the edge visible when the finger touched down.
         // Late momentum must not reclaim that fresh gesture.
@@ -3774,7 +3776,7 @@ export class ArtboardLogic extends Logic {
             !this.state.lb &&
             !this.touchOwned &&
             !scrolledFromStart &&
-            (["s6", "s7", "s8", "mb", "fc1"].includes(this.state.view) ||
+            (["s5", "s6", "s7", "s8", "mb", "fc1"].includes(this.state.view) ||
               !this.mobileCanScroll(this.touchScroller, dy)) &&
             Math.abs(dy) > threshold
           )

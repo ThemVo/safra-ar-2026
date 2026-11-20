@@ -593,7 +593,7 @@ test('mobile topic stories advance on the next swipe at the bottom without waiti
 test('fresh topic edge swipes reserve touch movement before native overscroll', t => {
   let now = 1000;
   t.mock.method(Date, 'now', () => now);
-  for (const view of ['s6', 's7', 's8']) {
+  for (const view of ['s5', 's6', 's7', 's8']) {
     for (const direction of [-1, 1]) {
       const logic = new ArtboardLogic({ mobile: true });
       logic.state.view = view;
@@ -620,7 +620,7 @@ test('fresh topic edge swipes reserve touch movement before native overscroll', 
 });
 
 test('topic swipe uses the top or bottom visible at touchstart despite late momentum', () => {
-  for (const view of ['s6', 's7', 's8', 'mb', 'fc1']) {
+  for (const view of ['s5', 's6', 's7', 's8', 'mb', 'fc1']) {
     for (const direction of [-1, 1]) {
       const logic = new ArtboardLogic({ mobile: true });
       logic.state.view = view;

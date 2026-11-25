@@ -255,7 +255,7 @@
 .mobile-content>.mobile-with-commitment { position:relative; display:flex; align-items:center; justify-content:center; background:#18212a; text-align:center; padding:64px 16px 112px; height:var(--mobile-screen-height,100svh); min-height:0; overflow:hidden; }
 .mobile-with-commitment::before { content:""; position:absolute; bottom:0; left:0; width:100%; height:64px; background:#272c3f; z-index:1; }
 .mobile-with-commitment h2 { position:relative; margin:0; font-size:34px; line-height:1.1; letter-spacing:.02em; font-weight:500; z-index:1; }
-.mobile-with-commitment h2>span { display:block; color:#6e778b; margin-bottom:8px; }
+.mobile-with-commitment h2>span { display:block; color:#6e778b; margin-bottom:8px; font-size:32px; white-space:nowrap; }
 .mobile-with-commitment strong { display:block; font-weight:500; }
 .commitment-visible h2>span { animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .55s both; }
 .commitment-visible strong { animation:mhLine .8s cubic-bezier(.2,.7,.2,1) .8s both; }

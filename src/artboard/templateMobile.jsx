@@ -722,9 +722,7 @@ function MobileExperience({ v }) {
   const scrollSection = useRef(null);
   const scrollable =
     (continuous && !priority && !closingPriority) ||
-    ["mb", "s5", "fc1", "fc2", "lf2", "lf3", "end"].includes(
-      view,
-    );
+    ["mb", "s5", "fc1", "fc2", "lf2", "lf3", "end"].includes(view);
   const previousScrollView = useRef(view);
   const enteringFuture = useRef(false);
   const reverseFutureArmed = useRef(false);
@@ -734,39 +732,53 @@ function MobileExperience({ v }) {
   const armReverseFuture = () => {
     const main = mainScroller.current;
     const top = main?.querySelector(".mobile-with-commitment")?.offsetTop;
-    reverseFutureArmed.current = !enteringFuture.current && view === "wc" &&
-      top != null && Math.abs(main.scrollTop - top) <= 2;
+    reverseFutureArmed.current =
+      !enteringFuture.current &&
+      view === "wc" &&
+      top != null &&
+      Math.abs(main.scrollTop - top) <= 2;
   };
   const futureSnapFrame = useRef(null);
-  const futureState = (main) => futureScrollState(
-    main.scrollTop,
-    main.querySelector(".mobile-with-commitment").offsetTop,
-    main.querySelector(".mobile-looking-forward").offsetTop,
-  );
+  const futureState = (main) =>
+    futureScrollState(
+      main.scrollTop,
+      main.querySelector(".mobile-with-commitment").offsetTop,
+      main.querySelector(".mobile-looking-forward").offsetTop,
+    );
   const snapFuture = (main, from, to, done) => {
     cancelAnimationFrame(futureSnapFrame.current);
     enteringFuture.current = true;
     reverseFutureArmed.current = false;
     const start = performance.now();
-    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 750;
-    const commitmentTop = main.querySelector(".mobile-with-commitment").offsetTop;
+    const duration = window.matchMedia("(prefers-reduced-motion: reduce)")
+      .matches
+      ? 0
+      : 750;
+    const commitmentTop = main.querySelector(
+      ".mobile-with-commitment",
+    ).offsetTop;
     const forwardTop = main.querySelector(".mobile-looking-forward").offsetTop;
     let introRevealed = forwardRevealed;
     const tick = (now) => {
       const progress = duration ? Math.min(1, (now - start) / duration) : 1;
       // Full-screen travel in both directions, matching the desktop camera timing.
       // Solve the same cubic-bezier(.6,0,.3,1) used by the desktop camera.
-      let lower = 0, upper = 1;
+      let lower = 0,
+        upper = 1;
       for (let i = 0; i < 16; i++) {
         const t = (lower + upper) / 2;
-        const x = 3 * (1 - t) ** 2 * t * .6 + 3 * (1 - t) * t ** 2 * .3 + t ** 3;
+        const x =
+          3 * (1 - t) ** 2 * t * 0.6 + 3 * (1 - t) * t ** 2 * 0.3 + t ** 3;
         if (x < progress) lower = t;
         else upper = t;
       }
       const t = (lower + upper) / 2;
       const eased = progress === 1 ? 1 : 3 * (1 - t) * t ** 2 + t ** 3;
       main.scrollTop = from + (to - from) * eased;
-      if (!introRevealed && futureScrollState(main.scrollTop, commitmentTop, forwardTop).revealIntro) {
+      if (
+        !introRevealed &&
+        futureScrollState(main.scrollTop, commitmentTop, forwardTop).revealIntro
+      ) {
         introRevealed = true;
         setForwardRevealed(true);
       }
@@ -791,20 +803,34 @@ function MobileExperience({ v }) {
       : `${view}-${view === "s3" ? v.mobileStep : v.mobileStory}`;
   useEffect(() => {
     const main = mainScroller.current;
-    if (!main || !["wc", "nx"].includes(view) || priority || closingPriority) return;
-    futureHoldUntil.current = Math.max(futureHoldUntil.current, performance.now() + 350);
-    const edge = () => view === "wc"
-      ? Math.max(main.querySelector(".mobile-with-commitment").offsetTop,
-          main.querySelector(".mobile-looking-forward").offsetTop - main.clientHeight)
-      : main.querySelector(".mobile-looking-forward").offsetTop;
+    if (!main || !["wc", "nx"].includes(view) || priority || closingPriority)
+      return;
+    futureHoldUntil.current = Math.max(
+      futureHoldUntil.current,
+      performance.now() + 350,
+    );
+    const edge = () =>
+      view === "wc"
+        ? Math.max(
+            main.querySelector(".mobile-with-commitment").offsetTop,
+            main.querySelector(".mobile-looking-forward").offsetTop -
+              main.clientHeight,
+          )
+        : main.querySelector(".mobile-looking-forward").offsetTop;
     const atEdge = () => Math.abs(main.scrollTop - edge()) <= 2;
-    const atCommitmentTop = () => view === "wc" && main.scrollTop <=
-      main.querySelector(".mobile-with-commitment").offsetTop + 2;
+    const atCommitmentTop = () =>
+      view === "wc" &&
+      main.scrollTop <=
+        main.querySelector(".mobile-with-commitment").offsetTop + 2;
     const start = (e) => {
-      futureGesture.current = { y: e.touches[0].clientY,
+      futureGesture.current = {
+        y: e.touches[0].clientY,
         reverseArmed: atCommitmentTop() && !enteringFuture.current,
-        armed: atEdge() &&
-        !enteringFuture.current && performance.now() >= futureHoldUntil.current };
+        armed:
+          atEdge() &&
+          !enteringFuture.current &&
+          performance.now() >= futureHoldUntil.current,
+      };
     };
     const move = (e) => {
       const gesture = futureGesture.current;
@@ -819,14 +845,24 @@ function MobileExperience({ v }) {
       if (dy < 0 && atCommitmentTop()) {
         e.preventDefault();
         e.stopPropagation();
-        if (!gesture.reverseArmed || gesture.used || enteringFuture.current ||
-            Math.abs(dy) < (e.touches ? 18 : 1)) return;
+        if (
+          !gesture.reverseArmed ||
+          gesture.used ||
+          enteringFuture.current ||
+          Math.abs(dy) < (e.touches ? 18 : 1)
+        )
+          return;
         gesture.used = true;
         const top = main.querySelector(".mobile-with-commitment").offsetTop;
-        snapFuture(main, main.scrollTop, Math.max(0, top - main.clientHeight), () => {
-          scrollSection.current = futureOrigin.current;
-          v.mobileScrollSection(futureOrigin.current);
-        });
+        snapFuture(
+          main,
+          main.scrollTop,
+          Math.max(0, top - main.clientHeight),
+          () => {
+            scrollSection.current = futureOrigin.current;
+            v.mobileScrollSection(futureOrigin.current);
+          },
+        );
         return;
       }
       const outward = view === "wc" ? dy > 0 : dy < 0;
@@ -843,14 +879,18 @@ function MobileExperience({ v }) {
       if (now - futureWheelAt.current > 220) {
         futureGesture.current = {
           reverseArmed: atCommitmentTop() && !enteringFuture.current,
-          armed: atEdge() && !enteringFuture.current &&
-          now >= futureHoldUntil.current };
+          armed:
+            atEdge() &&
+            !enteringFuture.current &&
+            now >= futureHoldUntil.current,
+        };
       }
       futureWheelAt.current = now;
       move(e);
     };
     const end = (e) => {
-      if (futureGesture.current.used || enteringFuture.current) e.stopPropagation();
+      if (futureGesture.current.used || enteringFuture.current)
+        e.stopPropagation();
     };
     main.addEventListener("touchstart", start, { passive: true });
     main.addEventListener("touchmove", move, { passive: false });
@@ -872,7 +912,11 @@ function MobileExperience({ v }) {
         0,
         document.getElementById(SECTION_IDS.wc).offsetTop - main.clientHeight,
       );
-      snapFuture(main, boundary, document.getElementById(SECTION_IDS.wc).offsetTop);
+      snapFuture(
+        main,
+        boundary,
+        document.getElementById(SECTION_IDS.wc).offsetTop,
+      );
       return;
     }
     if (scrollSection.current === view) {
@@ -881,7 +925,11 @@ function MobileExperience({ v }) {
     }
     if (["wc", "nx"].includes(from) && ["wc", "nx"].includes(view)) {
       const main = mainScroller.current;
-      snapFuture(main, main.scrollTop, document.getElementById(SECTION_IDS[view]).offsetTop);
+      snapFuture(
+        main,
+        main.scrollTop,
+        document.getElementById(SECTION_IDS[view]).offsetTop,
+      );
       return;
     }
     if (priorityPage) {
@@ -907,7 +955,10 @@ function MobileExperience({ v }) {
         main.scrollTo(0, main.scrollHeight);
       } else {
         delete main.dataset.mobileScrollMin;
-        main.scrollTo(0, from !== "end" && v.mobileScrollDirection < 0 ? main.scrollHeight : 0);
+        main.scrollTo(
+          0,
+          from !== "end" && v.mobileScrollDirection < 0 ? main.scrollHeight : 0,
+        );
       }
       return;
     }
@@ -930,11 +981,17 @@ function MobileExperience({ v }) {
           v.mobileContentScroll(e);
           const commitment = main.querySelector(".mobile-with-commitment");
           const forward = main.querySelector(".mobile-looking-forward");
-          const stop = view === "wc"
-            ? Math.max(commitment.offsetTop, forward.offsetTop - main.clientHeight)
-            : forward.offsetTop;
-          if ((view === "wc" && main.scrollTop > stop) ||
-              (view === "nx" && main.scrollTop < stop)) {
+          const stop =
+            view === "wc"
+              ? Math.max(
+                  commitment.offsetTop,
+                  forward.offsetTop - main.clientHeight,
+                )
+              : forward.offsetTop;
+          if (
+            (view === "wc" && main.scrollTop > stop) ||
+            (view === "nx" && main.scrollTop < stop)
+          ) {
             main.scrollTop = stop;
             futureHoldUntil.current = performance.now() + 350;
             return;
@@ -943,7 +1000,10 @@ function MobileExperience({ v }) {
             0,
             commitment.offsetTop - main.clientHeight,
           );
-          if (["wc", "nx"].includes(view) && main.scrollTop < commitment.offsetTop - 2) {
+          if (
+            ["wc", "nx"].includes(view) &&
+            main.scrollTop < commitment.offsetTop - 2
+          ) {
             // A gesture arriving from below stops at Commitment's top.
             // Only a new gesture that starts there may leave for the origin.
             if (!reverseFutureArmed.current) {
@@ -963,9 +1023,7 @@ function MobileExperience({ v }) {
           const motion = futureState(main);
           if (motion.revealIntro) setForwardRevealed(true);
           const nextView =
-            main.scrollTop <= boundary + 1
-              ? futureOrigin.current
-              : motion.view;
+            main.scrollTop <= boundary + 1 ? futureOrigin.current : motion.view;
           if (nextView !== view) {
             scrollSection.current = nextView;
             v.mobileScrollSection(nextView);
@@ -979,10 +1037,7 @@ function MobileExperience({ v }) {
               main.querySelector(".mobile-priorities").offsetHeight -
                 main.clientHeight,
             );
-            if (
-              view === "lf3" &&
-              main.scrollTop > minimum + 2
-            ) {
+            if (view === "lf3" && main.scrollTop > minimum + 2) {
               main.dataset.mobileScrollMin = minimum;
               scrollSection.current = "end";
               v.mobileScrollSection("end");
@@ -1006,7 +1061,10 @@ function MobileExperience({ v }) {
       inner = frame.current;
     if (!outer || !inner) return;
     const fit = () => {
-      inner.style.setProperty("--mobile-screen-height", `${outer.clientHeight}px`);
+      inner.style.setProperty(
+        "--mobile-screen-height",
+        `${outer.clientHeight}px`,
+      );
       const scale =
         continuous || scrollable
           ? 1
@@ -1154,9 +1212,12 @@ function MobileExperience({ v }) {
             </nav>
           </section>
         )}
-        <section id={SECTION_IDS.wc} className={`mobile-with-commitment ${!futureGated ? "commitment-visible" : ""}`}>
+        <section
+          id={SECTION_IDS.wc}
+          className={`mobile-with-commitment ${!futureGated ? "commitment-visible" : ""}`}
+        >
           <h2>
-            <span>The year may over.</span>
+            <span>The year may be over.</span>
             <strong className="mobile-gradient">
               We’re building for
               <br />
@@ -1174,10 +1235,15 @@ function MobileExperience({ v }) {
             onClick={(e) => {
               e.stopPropagation();
               const main = mainScroller.current;
-              snapFuture(main, main.scrollTop, document.getElementById(SECTION_IDS.nx).offsetTop, () => {
-                scrollSection.current = "nx";
-                v.mobileScrollSection("nx");
-              });
+              snapFuture(
+                main,
+                main.scrollTop,
+                document.getElementById(SECTION_IDS.nx).offsetTop,
+                () => {
+                  scrollSection.current = "nx";
+                  v.mobileScrollSection("nx");
+                },
+              );
             }}
             aria-label="See what’s next for SAFRA"
           >

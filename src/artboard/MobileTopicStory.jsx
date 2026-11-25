@@ -221,7 +221,7 @@ const stories = {
     height: 300,
     progress: 94.012,
     center: true,
-    title: "Commemorating SAFRA60 at SAFRA",
+    title: "Commemorating SAF60 at SAFRA",
     stats: [["Over", "140K", "people engaged"]],
     copy: "Be@SAFRA Open Houses brought families together to reflect on the SAF's role as they enjoyed interactive activities, flight simulators and military K9 encounters.",
     photos: [
@@ -254,8 +254,18 @@ const stories = {
     stats: [["Over", "20K", "people engaged"]],
     copy: "Commitment to Defence (C2D) Ambassadors from the SAF Veterans’ League shared real-life experiences, reinforcing the importance of a strong defence.",
     photos: [
-      photo("defence-veterans-gallery-01.jpg", [182, 8, 177, 209], [-38, -65.64, 369, 277], 0),
-      photo("defence-veterans-gallery-02.jpg", [123, 353.36, 148, 205], [-230, -47, 697, 313], 1),
+      photo(
+        "defence-veterans-gallery-01.jpg",
+        [182, 8, 177, 209],
+        [-38, -65.64, 369, 277],
+        0,
+      ),
+      photo(
+        "defence-veterans-gallery-02.jpg",
+        [123, 353.36, 148, 205],
+        [-230, -47, 697, 313],
+        1,
+      ),
     ],
   },
   "s6-3": {
@@ -372,8 +382,7 @@ const stories = {
     ],
     copy: "A wide range of appreciation deals for national servicemen, ranging from daily essentials to recreation, were secured through collaborations with merchants islandwide.",
     photos: [
-      photo("nsmen-deals-klook-3.jpg", [222, 0, 141, 140],
-        [0, 0, 141, 141], 2),
+      photo("nsmen-deals-klook-3.jpg", [222, 0, 141, 140], [0, 0, 141, 141], 2),
       photo(
         "nsmen-deals-jungle-upsara-spa.jpg",
         [221, 266, 134, 134],
@@ -557,7 +566,10 @@ export default function MobileTopicStory({ v, photos }) {
     <section
       id={SECTION_IDS[v.mobileView]}
       className="mobile-figma-story mobile-bonds-story"
-      style={{ "--story-header": `${header}px`, "--story-height": v.mobileView === "s8" ? "632px" : "590px" }}
+      style={{
+        "--story-header": `${header}px`,
+        "--story-height": v.mobileView === "s8" ? "632px" : "590px",
+      }}
     >
       <div className="mobile-topic-header" aria-hidden="true" />
       <article
@@ -634,16 +646,20 @@ export default function MobileTopicStory({ v, photos }) {
                 </div>
               ))}
             </div>
-            <div
-              className="figma-story-divider"
-              aria-hidden="true"
-            />
+            <div className="figma-story-divider" aria-hidden="true" />
             <p aria-label={data.copy}>
-              {lines ? lines.map((line, i) => (
-                <span className="figma-story-copy-line" key={i} style={v.mobileStoryLine(i)}>
-                  {line}{i < lines.length - 1 ? " " : ""}
-                </span>
-              )) : data.copy}
+              {lines
+                ? lines.map((line, i) => (
+                    <span
+                      className="figma-story-copy-line"
+                      key={i}
+                      style={v.mobileStoryLine(i)}
+                    >
+                      {line}
+                      {i < lines.length - 1 ? " " : ""}
+                    </span>
+                  ))
+                : data.copy}
             </p>
           </div>
           <div

@@ -77,8 +77,8 @@ const stories = {
     statWidth: 101,
     title: "Strengthening teamwork and camaraderie",
     stats: [
-      ["Over", "53K", "national servicemen\nengaged"],
-      ["", "637", "cohesion\nevents"],
+      ["Over", "637", "national servicemen\nengaged"],
+      ["", "52K", "cohesion\nevents"],
     ],
     copy: "Cohesion events were organised for SAF NS units at various SAFRA clubs and SAF camps, featuring a  wide range of activities such as archery tag, bowling, inflatable games, water telematches and various sports competitions.",
     photos: [
@@ -554,7 +554,8 @@ export function hasMobileTopicStory(view, index) {
   return Boolean(stories[`${view}-${index}`]);
 }
 export default function MobileTopicStory({ v, photos }) {
-  const data = stories[`${v.mobileView}-${v.mobileStory}`];
+  const id = `${v.mobileView}-${v.mobileStory}`;
+  const data = stories[id];
   const motion = v[`d${v.mobileView.slice(1)}`]?.[`s${v.mobileStory}`] || {};
   const reveal = (y, a) => ({
     transform: `translateY(${y || 0}px)`,
@@ -634,7 +635,9 @@ export default function MobileTopicStory({ v, photos }) {
                       {over}
                     </span>
                   )}
-                  <strong>{motion[`c${i}`] ?? value}</strong>
+                  <strong>
+                    {motion[`c${id === "s8-2" ? 1 - i : i}`] ?? value}
+                  </strong>
                   <span
                     style={reveal(
                       motion[`yb${i * 2 + 1}`],

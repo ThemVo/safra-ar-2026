@@ -413,7 +413,7 @@ const stories = {
     title: "Fueling up our national servicemen",
     stats: [
       ["Over", "15K", "snacks"],
-      ["", "15", "food truck activities"],
+      ["", "15", "food truck activations"],
     ],
     copy: "SAFRA gave away complimentary snacks to national servicemen at various SAF camps, SAFRA clubs and events.",
     photos: [
